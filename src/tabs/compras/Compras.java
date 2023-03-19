@@ -162,6 +162,10 @@ public class Compras extends JPanel implements properties.Constantes, properties
         panelRecargas.vaciarCampos();
     }
 
+    public static void setProveedor(String rif, String nombre){
+        panelCompras.setProveedor(rif, nombre);
+    }
+    
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
@@ -199,6 +203,8 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
                     } else {
                         RegistrarDB.compra(cantidad, precio, provRIF);
                     }
+                    
+                    vaciarCampos();
                 }
             }
         }
@@ -356,7 +362,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
      * @param rif RIF del proveedor
      * @param nombre Nombre del proveedor
      */
-    public void setProveedor(String rif, String nombre) {
+    protected void setProveedor(String rif, String nombre) {
         provRIF = rif;
         provNombre = nombre;
 
@@ -648,6 +654,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         factura.setPrecioCadaUno(0);
         factura.setBotellonesTotal(0);
         factura.setMontoTotal(0.00);
+        factura.setInformacion("", "");
 
         //Vaciar los atributos
         cantidad = 0;

@@ -1,6 +1,9 @@
 package tabs.historial;
 
 import components.CampoTexto;
+import components.Tabla;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 /**
@@ -16,6 +19,8 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
         this.setOpaque(false);
 
         initComponents();
+        
+        listener();
     }
     
     /**
@@ -23,7 +28,9 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
      */
     private void initComponents() {
         txtBusqueda.setToolTipText("Ingrese cualquier texto para buscar alguna coincidencia en la tabla");
+        
         this.add(txtBusqueda);
+        this.add(tabla);
     }
     
     /**
@@ -38,6 +45,12 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
         int fieldWidth = this.getWidth() - padding * 2;
         
         txtBusqueda.setBounds(padding, padding, fieldWidth, fieldHeight);
+        
+        int y = fieldHeight + padding*2;
+        int h = size.height - y - padding;
+        int w = size.width - padding*2;
+        
+        tabla.setBounds(padding, y, w, h);
     }
 
     /**
@@ -47,6 +60,24 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
         txtBusqueda.setText("");
     }
     
+    /**
+     * Función para actualizar los datos de la tabla del historial
+     */
+    protected void actualizarDatos(){
+        tabla.actualizarDatos();
+    }
+    
+    private void listener(){
+        //KEY LISTENER
+        txtBusqueda.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tabla.buscar(txtBusqueda.getText());
+            }
+        });
+    }
+    
     //COMPONENTES
+    private static final Tabla tabla = new Tabla(HISTORIAL_VENTA);
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Venta", CUALQUIER);
 }

@@ -2,7 +2,6 @@ package login.recuperacion;
 
 import components.Boton;
 import components.CampoClave;
-import components.CampoTexto;
 import components.Label;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;

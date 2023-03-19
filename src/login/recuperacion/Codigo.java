@@ -191,7 +191,7 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
     //COMPONENTES
     private static final Label lblInfo = new Label("", NORMAL, 16);
     private static final Label lblCodigo = new Label("Código de seguridad", NORMAL, 15);
-    private static final CampoTexto txtCodigo = new CampoTexto("Ingrese el código", CORREO);
+    private static final CampoTexto txtCodigo = new CampoTexto("Ingrese el código", CUALQUIER);
     private static final Boton btnConfirmar = new Boton("Confirmar código", CELESTE);
     private static final Boton btnVolver = new Boton("Volver", ROJO_OSCURO);
     private static final Label lblReenviar = new Label("¿No recibió el código? ", NORMAL, 16);

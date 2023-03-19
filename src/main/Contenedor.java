@@ -49,8 +49,8 @@ public class Contenedor extends JPanel implements properties.Constantes {
         if (actualComponent.equals(panelInicio)) {
             panelInicio.relocateComponents(size);
         }
-        if (actualComponent.equals(panelclientes)) {
-            panelclientes.relocateComponents(size);
+        if (actualComponent.equals(panelClientes)) {
+            panelClientes.relocateComponents(size);
         }
         if (actualComponent.equals(panelVentas)) {
             panelVentas.relocateComponents(size);
@@ -89,8 +89,8 @@ public class Contenedor extends JPanel implements properties.Constantes {
                 panelInicio.relocateComponents(this.getSize());
                 break;
             case CLIENTES:
-                this.add(panelclientes, BorderLayout.CENTER);
-                panelclientes.relocateComponents(this.getSize());
+                this.add(panelClientes, BorderLayout.CENTER);
+                panelClientes.relocateComponents(this.getSize());
                 break;
             case VENTAS:
                 this.add(panelVentas, BorderLayout.CENTER);
@@ -103,10 +103,12 @@ public class Contenedor extends JPanel implements properties.Constantes {
             case HISTORIAL:
                 this.add(panelHistorial, BorderLayout.CENTER);
                 panelHistorial.relocateComponents(this.getSize());
+                panelHistorial.actualizarDatos();
                 break;
             case PROVEEDOR:
                 this.add(panelProv, BorderLayout.CENTER);
                 panelProv.relocateComponents(this.getSize());
+                panelProv.actualizarDatos();
                 break;
             case ADMIN:
                 this.add(panelAdmin, BorderLayout.CENTER);
@@ -124,7 +126,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
      * Función para vaciar todos los campos de todos los paneles
      */
     protected void vaciarCampos(){
-        panelclientes.vaciarCampos();
+        panelClientes.vaciarCampos();
         panelVentas.vaciarCampos();
         panelHistorial.vaciarCampos();
         panelCompras.vaciarCampos();
@@ -134,7 +136,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
     
     //COMPONENTES
     private static final Inicio panelInicio = new Inicio();
-    private static final Clientes panelclientes = new Clientes();
+    private static final Clientes panelClientes = new Clientes();
     private static final Ventas panelVentas = new Ventas();
     private static final Historial panelHistorial = new Historial();
     private static final Compras panelCompras = new Compras();

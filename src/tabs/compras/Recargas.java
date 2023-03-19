@@ -49,6 +49,8 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
                     } else {
                         RegistrarDB.recarga(cantidad, precio, provRIF);
                     }
+                    
+                    vaciarCampos();
                 }
             }
         }
@@ -206,7 +208,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
      * @param rif RIF del proveedor
      * @param nombre Nombre del proveedor
      */
-    public void setProveedor(String rif, String nombre) {
+    public static void setProveedor(String rif, String nombre) {
         provRIF = rif;
         provNombre = nombre;
 
@@ -498,6 +500,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
         factura.setPrecioCadaUno(0);
         factura.setBotellonesTotal(0);
         factura.setMontoTotal(0.00);
+        factura.setInformacion("", "");
 
         //Vaciar los atributos
         cantidad = 0;

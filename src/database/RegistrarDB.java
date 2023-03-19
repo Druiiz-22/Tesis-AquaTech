@@ -1,6 +1,6 @@
 package database;
 
-import static database.DatosDB.*;
+import static database.ReadDB.*;
 import static properties.Mensaje.msjInformativo;
 
 /**

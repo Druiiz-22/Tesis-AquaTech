@@ -1,6 +1,9 @@
 package tabs.historial;
 
 import components.CampoTexto;
+import components.Tabla;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 /**
@@ -16,6 +19,8 @@ public class HistorialCompras extends JPanel implements properties.Constantes, p
         this.setOpaque(false);
 
         initComponents();
+        
+        listener();
     }
 
     /**
@@ -23,9 +28,11 @@ public class HistorialCompras extends JPanel implements properties.Constantes, p
      */
     private void initComponents() {
         txtBusqueda.setToolTipText("Ingrese cualquier texto para buscar alguna coincidencia en la tabla");
+        
         this.add(txtBusqueda);
+        this.add(tabla);
     }
-
+    
     /**
      * Función para reposicionar y redimensionar los componentes
      * @param size Tamaño del parent contenedor
@@ -38,6 +45,12 @@ public class HistorialCompras extends JPanel implements properties.Constantes, p
         int fieldWidth = this.getWidth() - padding * 2;
         
         txtBusqueda.setBounds(padding, padding, fieldWidth, fieldHeight);
+        
+        int y = fieldHeight + padding*2;
+        int h = size.height - y - padding;
+        int w = size.width - padding*2;
+        
+        tabla.setBounds(padding, y, w, h);
     }
 
     /**
@@ -47,6 +60,24 @@ public class HistorialCompras extends JPanel implements properties.Constantes, p
         txtBusqueda.setText("");
     }
     
+    /**
+     * Función para actualizar los datos de la tabla del historial
+     */
+    protected void actualizarDatos(){
+        tabla.actualizarDatos();
+    }
+    
+    private void listener(){
+        //KEY LISTENER
+        txtBusqueda.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tabla.buscar(txtBusqueda.getText());
+            }
+        });
+    }
+    
     //COMPONENTES
+    private static final Tabla tabla = new Tabla(HISTORIAL_COMPRA);
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Compra", CUALQUIER);
 }

@@ -84,9 +84,9 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             btnPerfil.setIcon(getImageIcon("profile"));
             btnAbajo.setIcon(getImageIcon("abajo"));
             
-            itemNotif.setIcon(getImageIcon("bell_black"));
-            itemWeb.setIcon(getImageIcon("web_black"));
-            itemPerfil.setIcon(getImageIcon("profile_black"));
+            itemNotif.setIcon(getImageIcon("popup/bell"));
+            itemWeb.setIcon(getImageIcon("popup/web"));
+            itemPerfil.setIcon(getImageIcon("popup/profile"));
             
         } catch (Exception e) {
             msjError("No se pudo cargar algún ícono en el menú superior.");
@@ -143,8 +143,8 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         int size;
         if(type.equals("abajo")){
             size = 38;
-        } else if (type.contains("_black")){
-            size = 20;
+        } else if (type.contains("popup")){
+            size = 22;
         } else {
             size = 32;
         }

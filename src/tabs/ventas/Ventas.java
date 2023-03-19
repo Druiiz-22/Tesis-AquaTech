@@ -5,7 +5,7 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelFactura;
 import components.PanelInfo;
-import database.DatosDB;
+import database.ReadDB;
 import database.RegistrarDB;
 import java.awt.Cursor;
 import java.awt.CardLayout;
@@ -193,6 +193,10 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
         panelPedidos.vaciarCampos();
     }
 
+    public static void setCliente(String ci, String apellido){
+        panelVentas.setCliente(ci, apellido);
+    }
+    
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 5));
@@ -234,6 +238,8 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
                     } else {
                         RegistrarDB.venta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
                     }
+                    
+                    vaciarCampos();
                 }
             }
         }
@@ -380,7 +386,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         informacion.actualizarDatos();
         
         //Obtener el precio
-        precio = DatosDB.getPrecioVenta();
+        precio = ReadDB.getPrecioVenta();
 
         //Reposicionar el panel de información, según el 
         //ancho del contenedor
@@ -404,7 +410,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
      * @param ci Cédula del cliente seleccionado
      * @param apellido Apellido del cliente seleccionado
      */
-    public void setCliente(String ci, String apellido) {
+    protected void setCliente(String ci, String apellido) {
         clienteCI = ci;
         clienteApellido = apellido;
 
@@ -709,6 +715,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         factura.setDelivery(false);
         factura.setTipoPago("");
         factura.setMontoTotal(0.00);
+        factura.setInformacion("", "");
 
         //Vaciar los atributos
         cantidad = 0;

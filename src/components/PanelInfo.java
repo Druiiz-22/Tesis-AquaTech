@@ -2,7 +2,7 @@ package components;
 
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.JPanel;
-import static database.DatosDB.*;
+import static database.ReadDB.*;
 
 /**
  * Clase para la creación de los paneles informativos dentro del programa

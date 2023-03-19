@@ -12,6 +12,7 @@ public class Run {
         //Iniciar el login
         iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
+        //Comando de prueba
     }
     
     /**

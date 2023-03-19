@@ -186,7 +186,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
     //COMPONENTES
     private static final Label lblInfo = new Label("", NORMAL, 16);
     private static final Label lblCorreo = new Label("Correo electrónico", NORMAL, 16);
-    private static final CampoTexto txtCorreo = new CampoTexto("Ingrese su correo", CUALQUIER);
+    private static final CampoTexto txtCorreo = new CampoTexto("Ingrese su correo", CORREO);
     private static final Boton btnEnviar = new Boton("Enviar código", CELESTE);
     private static final Label lblIniciar = new Label("¿Ya recuperaste tu clave? ", NORMAL, 16);
     private static final Label btnIniciar = new Label("Inicia sesión", LINK, 16);

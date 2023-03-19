@@ -5,7 +5,7 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelFactura;
 import components.PanelInfo;
-import database.DatosDB;
+import database.ReadDB;
 import database.RegistrarDB;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -58,6 +58,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
                     } else {
                         RegistrarDB.trasvaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
                     }
+                    
+                    vaciarCampos();
                 }
             }
         }
@@ -228,7 +230,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     protected void actualizarDatos() {
         informacion.actualizarDatos();
 
-        precio = DatosDB.getPrecioTrasvaso();
+        precio = ReadDB.getPrecioTrasvaso();
         
         //Reposicionar el panel de información, según el 
         //ancho del contenedor
@@ -252,7 +254,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * @param ci Cédula del cliente seleccionado
      * @param apellido Apellido del cliente seleccionado
      */
-    public void setCliente(String ci, String apellido) {
+    public static void setCliente(String ci, String apellido) {
         clienteCI = ci;
         clienteApellido = apellido;
 
@@ -580,6 +582,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         factura.setDelivery(false);
         factura.setTipoPago("");
         factura.setMontoTotal(0.00);
+        factura.setInformacion("", "");
 
         //Vaciar los atributos
         entregados = 0;

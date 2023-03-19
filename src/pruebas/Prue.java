@@ -4,9 +4,9 @@
  */
 package pruebas;
 
+import components.Tabla;
 import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.JCheckBox;
 
 /**
  *
@@ -14,6 +14,8 @@ import javax.swing.JCheckBox;
  */
 public class Prue extends javax.swing.JFrame {
 
+    private Tabla prov;
+    
     /**
      * Creates new form Prue
      */
@@ -24,10 +26,24 @@ public class Prue extends javax.swing.JFrame {
         this.setSize(min);
         this.getContentPane().setBackground(Color.GRAY);
         
-        JCheckBox check = new JCheckBox("Entrega a domicilio");
-        check.setBounds(50, 50, 150, 80);
+        prov = new Tabla(properties.Constantes.PROVEEDOR);
         
-        this.add(check);
+        //"RIF", "Nombre", "Telefono", "Direccion"
+        String[][] rows = {
+                {"J-516513", "Agua Rica", "04120268754", "Sur America"},
+                {"J-516510", "Agua Blanca", "04166484512", "Los Robles"},
+                {"J-516671", "Rica Agua", "04241349765", "Haticos"},
+                {"J-671164", "Manantial", "041231645077", "Sierra Maestra"},
+                {"J-944102", "La Catedral", "04129780213", "Coromoto"},
+                {"J-355177", "Agua Cristal", "04120641212", "Cumbres"},
+                {"J-300187", "Monarca", "04161345216", "Varillal"},
+                {"J-971230", "Agua vida", "04167980124", "Sabana Grande"},
+                {"J-813218", "AquaTech", "04260132485", "San Felipe"},
+        };
+        
+        prov.setBounds(10, 10, jPanel1.getWidth()-20, jPanel1.getHeight()-50);
+        
+        this.jPanel1.add(prov);
     }
 
     /**
@@ -40,6 +56,8 @@ public class Prue extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -49,27 +67,32 @@ public class Prue extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(204, 255, 255));
         jPanel1.setLayout(null);
 
+        jLabel1.setText("Filtrar:");
+        jPanel1.add(jLabel1);
+        jLabel1.setBounds(100, 380, 70, 16);
+
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
+        });
+        jPanel1.add(jTextField1);
+        jTextField1.setBounds(180, 380, 300, 22);
+
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Cedula", "Nombre", "Apellido", "Telefono", "Direccion"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, true
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -78,7 +101,7 @@ public class Prue extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(20, 10, 660, 402);
+        jScrollPane1.setBounds(120, 30, 452, 310);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,6 +122,10 @@ public class Prue extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+        prov.buscar(jTextField1.getText());
+    }//GEN-LAST:event_jTextField1KeyReleased
 
     
     /**
@@ -225,8 +252,10 @@ public class Prue extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

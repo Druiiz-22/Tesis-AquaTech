@@ -141,7 +141,20 @@ public class Historial extends JPanel implements properties.Constantes, properti
                         : (type == HISTORIAL_RECARGA) ? "2"
                                 : (type == HISTORIAL_VENTA) ? "3" : "4"
         );
-
+        
+        //Actualizar los datos del historial que se esté visualizando
+        if(btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)){
+            panelTrasvasos.actualizarDatos();
+            
+        }else if(btnRecargas.getForeground().equals(AZUL_PRINCIPAL)){
+            panelRecargas.actualizarDatos();
+            
+        }else if(btnVentas.getForeground().equals(AZUL_PRINCIPAL)){
+            panelVentas.actualizarDatos();
+            
+        }else if(btnCompras.getForeground().equals(AZUL_PRINCIPAL)){
+            panelCompras.actualizarDatos();
+        }
     }
 
     public void vaciarCampos(){
@@ -149,6 +162,22 @@ public class Historial extends JPanel implements properties.Constantes, properti
         panelRecargas.vaciarCampos();
         panelVentas.vaciarCampos();
         panelCompras.vaciarCampos();
+    }
+    
+    public void actualizarDatos(){
+        //Actualizar los datos del historial que se esté visualizando
+        if(btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)){
+            panelTrasvasos.actualizarDatos();
+            
+        }else if(btnRecargas.getForeground().equals(AZUL_PRINCIPAL)){
+            panelRecargas.actualizarDatos();
+            
+        }else if(btnVentas.getForeground().equals(AZUL_PRINCIPAL)){
+            panelVentas.actualizarDatos();
+            
+        }else if(btnCompras.getForeground().equals(AZUL_PRINCIPAL)){
+            panelCompras.actualizarDatos();
+        }
     }
     
     //COMPONENTES

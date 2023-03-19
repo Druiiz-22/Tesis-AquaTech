@@ -3,19 +3,20 @@ package tabs.clientes;
 import components.Boton;
 import components.CampoTexto;
 import components.Label;
+import components.Tabla;
 import java.awt.Cursor;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 /**
- * Función para la creación del apartado de los clientes, esta clase 
- * contiene el menú de navegación superior y el panel contenedor
- * 
+ * Función para la creación del apartado de los clientes, esta clase contiene el
+ * menú de navegación superior y el panel contenedor
+ *
  */
 public class Clientes extends JPanel implements properties.Constantes, properties.Colores {
 
@@ -25,11 +26,11 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
     public Clientes() {
         this.setLayout(null);
         this.setOpaque(false);
-        
+
         initComponents();
         mouseListeners();
     }
-    
+
     /**
      * Función para iniciar los componentes
      */
@@ -37,7 +38,7 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
 
         //Activar el botón de clientes
         btnClientes.setForeground(AZUL_PRINCIPAL);
-        
+
         //Asignar el cursor de mano a los botones
         btnClientes.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnDeudas.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -58,7 +59,7 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         contenedor.add(panelClientes, "1");
         contenedor.add(panelDeudas, "2");
         card.show(contenedor, "1");
-        
+
         //Agregar el menú y contenedor 
         //al panel de la clase
         this.add(menu);
@@ -84,8 +85,8 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
     }
 
     /**
-     * Función para reposicionar los componentes según el 
-     * tamaño del parent
+     * Función para reposicionar los componentes según el tamaño del parent
+     *
      * @param size Tamaño del parent contenedor
      */
     public void relocateComponents(java.awt.Dimension size) {
@@ -96,16 +97,17 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         int contY = menu.getHeight();
         contenedor.setLocation(0, contY);
         contenedor.setSize(size.width, size.height - contY);
-        
+
         //Comprobar qué botón está presionado para cambiar
         //el tamaño de su panel
         panelClientes.relocateComponents(contenedor.getSize());
         panelDeudas.relocateComponents(contenedor.getSize());
-        
+
     }
 
     /**
      * Función para navegar entre los paneles dentro de clientes
+     *
      * @param type panel que será mostrado
      */
     public static void replacePanel(int type) {
@@ -117,14 +119,23 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         //Mostrar el panel, según el tipo
         card.show(contenedor, (type == CLIENTES) ? "1" : "2");
 
+        //Actualizar datos cuando se muestre el panel de clientes
+        if(btnClientes.getForeground().equals(AZUL_PRINCIPAL)){
+            panelClientes.actualizarDatos();
+        }
+        
     }
 
     /**
      * Función para vaciar clientes y deudas
      */
-    public void vaciarCampos(){
+    public void vaciarCampos() {
         panelClientes.vaciarCampos();
         panelDeudas.vaciarCampos();
+    }
+
+    public void actualizarDatos(){
+        panelClientes.actualizarDatos();
     }
     
     //COMPONENTES
@@ -151,7 +162,7 @@ class PanelClientes extends JPanel implements properties.Colores, properties.Con
         this.setOpaque(false);
 
         initComponents();
-        mouseListeners();
+        listeners();
     }
 
     /**
@@ -163,20 +174,33 @@ class PanelClientes extends JPanel implements properties.Colores, properties.Con
 
         this.add(txtBusqueda);
         this.add(btnAgregar);
+        this.add(tabla);
     }
+
     /**
-     * Función para asignar los mouse listener a los componentes
+     * Función para asignar los listener a los componentes
      */
-    private void mouseListeners() {
+    private void listeners() {
+        //MOUSE LISTENER
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
 
             }
         });
+        //KEY LISTENER
+        txtBusqueda.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tabla.buscar(txtBusqueda.getText());
+            }
+        });
+        
     }
+
     /**
      * Función para reposicionar y redimensionar los componentes
+     *
      * @param size Tamaño del parent contenedor
      */
     protected void relocateComponents(java.awt.Dimension size) {
@@ -203,20 +227,26 @@ class PanelClientes extends JPanel implements properties.Colores, properties.Con
             txtBusqueda.setBounds(padding, padding, txtWidth, fieldHeight);
         }
 
+        //Posicionar la tabla
+        int tablaY = txtBusqueda.getY() + txtBusqueda.getHeight() + padding;
+        int tablaH = size.height - tablaY - padding;
+        int tablaW = size.width - padding * 2;
+        tabla.setBounds(padding, tablaY, tablaW, tablaH);
     }
-    
+
     /**
      * Función para vaciar los campos
-     */ 
-    protected void vaciarCampos(){
+     */
+    protected void vaciarCampos() {
         txtBusqueda.setText("");
     }
-    
+
+    protected void actualizarDatos(){
+        tabla.actualizarDatos();
+    }
     
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Cliente", VERDE);
-    private static final JScrollPane scrollTable = new JScrollPane();
-    private static final JTable tabla = new JTable();
-    private static final String[] header = {"Cedula", "Nombre", "Apellido", "Telefono", "Direccion"};
+    private static final Tabla tabla = new Tabla(CLIENTES);
 }

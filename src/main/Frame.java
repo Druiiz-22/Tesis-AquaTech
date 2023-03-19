@@ -85,11 +85,6 @@ public class Frame extends JFrame implements properties.Constantes {
         lateral.setVisible(false);
         
         //LISTA DE COSAS PENDIENTES
-        //- Hacer las tablas.
-        //- Dar la función a los campos de busquedas.
-        //- Agregar un popUp menu a la tabla
-        //- Redireccionar los registros de clientes y proveedores
-        
         //- Hacer la ventana de ingresar nuevo cliente
         //- Hacer la ventana de ingresar nuevo proveedor
         

@@ -2,6 +2,9 @@ package tabs;
 
 import components.Boton;
 import components.CampoTexto;
+import components.Tabla;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
@@ -19,7 +22,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         this.setOpaque(false);
         
         initComponents();
-        mouseListeners();
+        listeners();
     }
     
     /**
@@ -31,15 +34,25 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         
         this.add(txtBusqueda);
         this.add(btnAgregar);
+        this.add(tabla);
     }
     /**
-     * Función para asignar los mouse listener a los componentes
+     * Función para asignar los listener a los componentes
      */
-    private void mouseListeners(){
+    private void listeners(){
+        //MOUSE LISTENER
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
             
+            }
+        });
+        
+        //KEY LISTENER
+        txtBusqueda.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tabla.buscar(txtBusqueda.getText());
             }
         });
     }
@@ -73,7 +86,11 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
             int txtWidth = this.getWidth() - padding*3 - btnWidth;;
             txtBusqueda.setBounds(padding, padding, txtWidth, fieldHeight);
         }
-        
+        //Posicionar la tabla
+        int tablaY = txtBusqueda.getY() + txtBusqueda.getHeight() + padding;
+        int tablaH = size.height - tablaY - padding;
+        int tablaW = size.width - padding * 2;
+        tabla.setBounds(padding, tablaY, tablaW, tablaH);
     }
     
     /**
@@ -83,7 +100,12 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         txtBusqueda.setText("");
     }
     
+    public void actualizarDatos(){
+        tabla.actualizarDatos();
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);
+    private static final Tabla tabla = new Tabla(PROVEEDOR);
 }
