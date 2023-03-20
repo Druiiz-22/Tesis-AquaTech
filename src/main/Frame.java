@@ -85,8 +85,8 @@ public class Frame extends JFrame implements properties.Constantes {
         lateral.setVisible(false);
         
         //LISTA DE COSAS PENDIENTES
-        //- Hacer la ventana de ingresar nuevo cliente
-        //- Hacer la ventana de ingresar nuevo proveedor
+        // - Agregar la función de validar que exista el registro cuando 
+        //   se borre un cliente y un proveedor.
         
         //- Hacer el panel de notificaciones.
         

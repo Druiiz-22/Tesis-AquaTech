@@ -45,7 +45,7 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-
+                nuevoCliente.agregar();
             }
         });
         //KEY LISTENER
@@ -55,7 +55,7 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
                 tabla.buscar(txtBusqueda.getText());
             }
         });
-        
+
     }
 
     /**
@@ -101,17 +101,36 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
         txtBusqueda.setText("");
     }
 
-    protected void actualizarDatos(){
+    /**
+     * Función para actualizar los datos de la tabla de clientes
+     */
+    protected void actualizarDatos() {
         tabla.actualizarDatos();
     }
-    
-    protected static void addCliente(String[] informacion){
+
+    /**
+     * Función para agregar un nuevo cliente a la tabla de clientes
+     *
+     * @param informacion Información del nuevo cliente:
+     * <ul>
+     * <li>Cedula</li>
+     * <li>Nombre</li>
+     * <li>Apellido</li>
+     * <li>Telefono</li>
+     * <li>Direccion</li>
+     * </ul>
+     */
+    protected static void addCliente(String[] informacion) {
         tabla.agregar(informacion);
+    }
+
+    public static void editCliente(String cedula, String nombre, String apellido, String telefono, String direccion){
+       nuevoCliente.editar(cedula, nombre, apellido, telefono, direccion);
     }
     
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Cliente", VERDE);
     private static final Tabla tabla = new Tabla(CLIENTES);
+    private static final NuevoCliente nuevoCliente = new NuevoCliente();
 }
-

@@ -22,6 +22,8 @@ import static properties.Mensaje.msjError;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
+import tabs.Proveedores;
+import tabs.clientes.PanelClientes;
 
 public class Tabla extends JScrollPane implements properties.Constantes {
 
@@ -30,7 +32,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * Función para aplicar los listeners a los items del menú
      */
     private void listeners() {
-        
+
         //ACTION LISTENER A LOS ITEMS
         itemBorrar.addActionListener((ActionEvent e) -> {
             eliminar();
@@ -131,9 +133,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * saltará un mensaje de error.</p>
      */
     private void eliminar() {
-        
+
         if (validarSelect()) {
-            
+
             //Mensaje de confirmación
             if (msjYesNo("¿Está seguro de borrar el registro seleccionado?")) {
                 try {
@@ -163,7 +165,37 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     public void editar() {
         if (validarSelect()) {
+            if (type == CLIENTES) {
 
+                Object cedula = modelo.getValueAt(tabla.getSelectedRow(), 0);
+                Object nombre = modelo.getValueAt(tabla.getSelectedRow(), 1);
+                Object apellido = modelo.getValueAt(tabla.getSelectedRow(), 2);
+                Object telefono = modelo.getValueAt(tabla.getSelectedRow(), 3);
+                Object direccion = modelo.getValueAt(tabla.getSelectedRow(), 4);
+
+                PanelClientes.editCliente(
+                        cedula.toString(),
+                        nombre.toString(),
+                        apellido.toString(),
+                        telefono.toString(),
+                        direccion.toString()
+                );
+
+            } else if (type == PROVEEDOR) {
+
+                Object rif = modelo.getValueAt(tabla.getSelectedRow(), 0);
+                Object nombre = modelo.getValueAt(tabla.getSelectedRow(), 1);
+                Object telefono = modelo.getValueAt(tabla.getSelectedRow(), 2);
+                Object direccion = modelo.getValueAt(tabla.getSelectedRow(), 3);
+
+                Proveedores.editProveedor(
+                        rif.toString(),
+                        nombre.toString(),
+                        telefono.toString(),
+                        direccion.toString()
+                );
+
+            }
         }
     }
 

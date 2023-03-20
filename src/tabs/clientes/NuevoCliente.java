@@ -90,10 +90,12 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         txtDireccion.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (crearCliente) {
-                    crear();
-                } else {
-                    actualizar();
+                if (e.getKeyChar() == TECLA_ENTER) {
+                    if (crearCliente) {
+                        crear();
+                    } else {
+                        actualizar();
+                    }
                 }
             }
         });
@@ -396,7 +398,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     /**
      * Función para agregar un nuevo cliente
      */
-    public void agregar() {
+    protected void agregar() {
         this.setTitle("Agregar un cliente - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -420,7 +422,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * @param telefono
      * @param direc
      */
-    public void editar(String nombre, String apellido, String cedula, String telefono, String direc) {
+    protected void editar(String cedula, String nombre, String apellido, String telefono, String direc) {
         this.setTitle("Editar un cliente - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -434,9 +436,9 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         logo.setText("Editar Cliente");
         logo.setSize(logo.getPreferredSize());
 
+        txtCedula.setText(cedula);
         txtNombre.setText(nombre);
         txtApellido.setText(apellido);
-        txtCedula.setText(cedula);
         txtTelefono.setText(telefono);
         txtDireccion.setText(direc);
 
@@ -446,7 +448,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     /**
      * Función para vaciar los campos de la ventana
      */
-    private void vaciarCampos() {
+    protected void vaciarCampos() {
         //Vaciar los campos
         txtNombre.setText("");
         txtApellido.setText("");

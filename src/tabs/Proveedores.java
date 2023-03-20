@@ -44,7 +44,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-            
+                nuevoProv.agregar();
             }
         });
         
@@ -98,18 +98,37 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      */ 
     public void vaciarCampos(){
         txtBusqueda.setText("");
+        nuevoProv.vaciarCampos();
     }
     
+    /**
+     * Función para actualizar los datos en la tabla de proveedores
+     */
     public void actualizarDatos(){
         tabla.actualizarDatos();
     }
     
+    /**
+     * Función para agregar un proveedor a la tabla de proveedores
+     * @param informacion Información del nuevo proveedor:
+     * <ul>
+     * <li>RIF</li>
+     * <li>Nombre</li>
+     * <li>Telefono</li>
+     * <li>Direccion</li>
+     * </ul>
+     */
     protected static void addProveedor(String[] informacion){
         tabla.agregar(informacion);
+    }
+    
+    public static void editProveedor(String rif, String nombre, String telefono, String direccion){
+       nuevoProv.editar(rif, nombre, telefono, direccion);
     }
     
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);
     private static final Tabla tabla = new Tabla(PROVEEDOR);
+    private static final NuevoProveedor nuevoProv = new NuevoProveedor();
 }

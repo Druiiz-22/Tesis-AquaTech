@@ -90,10 +90,12 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         txtDireccion.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (crearProveedor) {
-                    crear();
-                } else {
-                    actualizar();
+                if (e.getKeyChar() == TECLA_ENTER) {
+                    if (crearProveedor) {
+                        crear();
+                    } else {
+                        actualizar();
+                    }
                 }
             }
         });
@@ -370,7 +372,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     /**
      * Función para agregar un nuevo proveedor
      */
-    public void agregar() {
+    protected void agregar() {
         this.setTitle("Agregar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -393,7 +395,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * @param telefono
      * @param direc
      */
-    public void editar(String nombre, String rif, String telefono, String direc) {
+    protected void editar(String rif, String nombre, String telefono, String direc) {
         this.setTitle("Editar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -407,8 +409,8 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         logo.setText("Editar Proveedor");
         logo.setSize(logo.getPreferredSize());
 
-        txtNombre.setText(nombre);
         txtRif.setText(rif);
+        txtNombre.setText(nombre);
         txtTelefono.setText(telefono);
         txtDireccion.setText(direc);
 
@@ -418,7 +420,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     /**
      * Función para vaciar los campos de la ventana
      */
-    private void vaciarCampos() {
+    protected void vaciarCampos() {
         //Vaciar los campos
         txtNombre.setText("");
         txtRif.setText("");
@@ -426,6 +428,12 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         txtDireccion.setText("");
 
         //Vaciar los atributos
+        id = 0;
+        rifViejo = null;
+        nombre = null;
+        rif = null;
+        telefono = null;
+        direccion = null;
     }
 
     /**
