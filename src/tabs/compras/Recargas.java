@@ -13,7 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import static javax.swing.BorderFactory.createLineBorder;
-import static javax.swing.JOptionPane.YES_OPTION;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjYesNoWarning;
@@ -30,7 +29,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
     // ========== BACKEND ==========
     private void registrar() {
         //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de realizar el registro de la recarga?") == YES_OPTION) {
+        if (msjYesNo("¿Está seguro de realizar el registro de la recarga?")) {
 
             if (validarCampos()) {
                 if (validarDatos()) {
@@ -42,7 +41,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
                         String msj = "Está apunto de realizar un registro con una alta\n"
                                 + "cantidad de botellones, ¿Está seguro de realizar el registro?";
 
-                        if (msjYesNoWarning(msj) == YES_OPTION) {
+                        if (msjYesNoWarning(msj)) {
                             RegistrarDB.recarga(cantidad, precio, provRIF);
                         }
 
@@ -136,7 +135,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
             public void mouseReleased(MouseEvent e) {
                 //Mensaje de confirmación
                 String msj = "¿Está seguro de cancelar el trasvaso?\nSe vaciarán los campos y los datos.";
-                if (msjYesNo(msj) == YES_OPTION) {
+                if (msjYesNo(msj)) {
                     vaciarCampos();
                 }
             }
@@ -523,10 +522,10 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
 
     private static final Label lblTitulo = new Label("Recarga de botellones", TITULO, 24);
 
-    private static final Label lblCantidad = new Label("Cantidad de botellones", NORMAL, 18, true);
+    private static final Label lblCantidad = new Label("Cantidad de botellones", PLANO, 18, true);
     private static final CampoTexto txtCantidad = new CampoTexto("Botellones recargados", NUMERO);
 
-    private static final Label lblPrecio = new Label("Precio de cada botellón", NORMAL, 18, true);
+    private static final Label lblPrecio = new Label("Precio de cada botellón", PLANO, 18, true);
     private static final CampoTexto txtPrecio = new CampoTexto("Precio de la recarga", DECIMAL);
 
     private static final Boton btnAceptar = new Boton("Registrar", VERDE);

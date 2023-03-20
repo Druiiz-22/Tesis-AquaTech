@@ -6,7 +6,6 @@ import components.Label;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import static javax.swing.JOptionPane.YES_OPTION;
 import static properties.Mensaje.msjYesNo;
 import static login.Frame.replacePanel;
 import static login.Registro.getContentSize;
@@ -184,7 +183,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
 
                 //Mostrar mensaje para afirmar que se quiere devolver al 
                 //inicio y borrar todo el progreso que ha realizado
-                if (msjYesNo(mensaje) == YES_OPTION) {
+                if (msjYesNo(mensaje)) {
                     replacePanel(INICIO);
                     replaceContainer(DATOS);
                 }
@@ -200,12 +199,12 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", NORMAL, 16);
-    private static final Label lblNueva = new Label("Contraseña nueva", NORMAL, 16);
+    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblNueva = new Label("Contraseña nueva", PLANO, 16);
     private static final CampoClave txtNueva = new CampoClave("Ingrese su contraseña");
-    private static final Label lblRepetida = new Label("Repita la contraseña", NORMAL, 16);
+    private static final Label lblRepetida = new Label("Repita la contraseña", PLANO, 16);
     private static final CampoClave txtRepetida = new CampoClave("Ingrese su contraseña");
     private static final Boton btnCrear = new Boton("Crear cuenta", CELESTE);
-    private static final Label lblIniciar = new Label("¿Ya tienes tu cuenta? ", NORMAL, 16);
+    private static final Label lblIniciar = new Label("¿Ya tienes tu cuenta? ", PLANO, 16);
     private static final Label btnIniciar = new Label("Inicia sesión", LINK, 16);
 }

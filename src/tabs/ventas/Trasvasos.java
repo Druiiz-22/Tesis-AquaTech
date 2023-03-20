@@ -17,9 +17,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JOptionPane;
 import static javax.swing.BorderFactory.createLineBorder;
-import static javax.swing.JOptionPane.YES_OPTION;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjError;
@@ -39,26 +37,26 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * base de datos
      */
     private void registrar() {
-        //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de realizar el registro del trasvaso?") == YES_OPTION) {
-
-            if (validarCampos()) {
-                if (validarDatos()) {
-
+        
+        if (validarCampos()) {
+            if (validarDatos()) {
+                
+                if (msjYesNo("¿Está seguro de realizar el registro del trasvaso?")) {
+                    
                     //Validar que el registro NO sea de números más grandes de 100
                     if (entregados > 100 || pagados > 100) {
 
                         //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
-                        String msj = "Está apunto de realizar un registro con una alta\n"
-                                + "cantidad de botellones, ¿Está seguro de realizar el registro?";
+                        String msj = "<html>Está apunto de realizar un registro con una <b>alta</b><br>"
+                                + "<b>cantidad de botellones</b>, ¿Está seguro de realizar el registro?</html>";
 
-                        if (msjYesNoWarning(msj) == YES_OPTION) {
+                        if (msjYesNoWarning(msj)) {
                             RegistrarDB.trasvaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
                         }
                     } else {
                         RegistrarDB.trasvaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
                     }
-                    
+
                     vaciarCampos();
                 }
             }
@@ -152,7 +150,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
             public void mouseReleased(MouseEvent e) {
                 //Mensaje de confirmación
                 String msj = "¿Está seguro de cancelar el trasvaso?\nSe vaciarán los campos y los datos.";
-                if (msjYesNo(msj) == JOptionPane.YES_OPTION) {
+                if (msjYesNo(msj)) {
 
                     vaciarCampos();
                 }
@@ -231,7 +229,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         informacion.actualizarDatos();
 
         precio = ReadDB.getPrecioTrasvaso();
-        
+
         //Reposicionar el panel de información, según el 
         //ancho del contenedor
         if (width < 600) {
@@ -285,11 +283,11 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     private void initComponents() {
 
         //Fuente de letra para el combo box
-        boxTipoPago.setFont(segoe(16, NORMAL));
+        boxTipoPago.setFont(segoe(16, PLANO));
 
         //Check button para las entregas a domicilio
         checkDelivery.setOpaque(false);
-        checkDelivery.setFont(segoe(18, NORMAL));
+        checkDelivery.setFont(segoe(18, PLANO));
 
         //Asignar los Tooltip text a los labels
         lblEntregados.setToolTipText(
@@ -357,7 +355,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
         //PANEL PEQUEÑO
         if (width < 600) {
-            
+
             //Cambiar el tamaño de la factura
             facHeight = 320;
             panelPequenio();
@@ -395,7 +393,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         //Tamaño del botón y factura
         int panelWidth = width - padding * 2;
         btnCliente.setSize(panelWidth, btnHeight);
-        
+
         factura.setSize(panelWidth, facHeight);
 
         //Altura de la factura, sumando la altura de la factura, su
@@ -606,13 +604,13 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
     private static final Label lblTitulo = new Label("Trasvaso de botellones", TITULO, 24);
 
-    private static final Label lblEntregados = new Label("botellones entregados", NORMAL, 18, true);
+    private static final Label lblEntregados = new Label("botellones entregados", PLANO, 18, true);
     private static final CampoTexto txtEntregados = new CampoTexto("Botellones entregados", NUMERO);
 
-    private static final Label lblPagados = new Label("botellones pagados", NORMAL, 18, true);
+    private static final Label lblPagados = new Label("botellones pagados", PLANO, 18, true);
     private static final CampoTexto txtPagados = new CampoTexto("Botellones pagados", NUMERO);
 
-    private static final Label lblTipoPago = new Label("Tipo de pago", NORMAL, 18, true);
+    private static final Label lblTipoPago = new Label("Tipo de pago", PLANO, 18, true);
     private static final String opciones[] = {"Seleccionar", "Efectivo", "Transferencia", "Dolar en efectivo"};
     private static final JComboBox boxTipoPago = new JComboBox(opciones);
 

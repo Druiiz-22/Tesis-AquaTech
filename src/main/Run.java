@@ -1,5 +1,7 @@
 package main;
 
+import tabs.NuevoProveedor;
+
 public class Run {
     
     /**
@@ -11,8 +13,8 @@ public class Run {
     public static void main(String[] args) {
         //Iniciar el login
         iniciarLogin();
+
 //        iniciarPrograma("DIEGO", 1);
-        //Comando de prueba
     }
     
     /**

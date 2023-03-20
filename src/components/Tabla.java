@@ -16,9 +16,6 @@ import tabs.compras.Compras;
 import tabs.compras.Recargas;
 import database.DeleteDB;
 import static java.awt.Font.PLAIN;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.RowFilter.regexFilter;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjError;
@@ -134,10 +131,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * saltará un mensaje de error.</p>
      */
     private void eliminar() {
-        //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de borrar el registro seleccionado?") == YES_OPTION) {
-
-            if (validarSelect()) {
+        
+        if (validarSelect()) {
+            
+            //Mensaje de confirmación
+            if (msjYesNo("¿Está seguro de borrar el registro seleccionado?")) {
                 try {
                     //Obtener la identificación del cliente o proveedor
                     Object dni = modelo.getValueAt(tabla.getSelectedRow(), 0);

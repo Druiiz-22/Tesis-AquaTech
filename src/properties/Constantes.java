@@ -169,7 +169,7 @@ public interface Constantes {
      * Constante para designar los <b>labels de tipo normal</b>, son aquellos
      * labels que cuentan con la fuente predeterminada del software.
      */
-    public static final int NORMAL = 31;
+    public static final int PLANO = 31;
     /**
      * Constante para designar los <b>labels de tipo negrita</b>, son aquellos
      * labels que cuentan con la fuente predeterminada del software, pero en su

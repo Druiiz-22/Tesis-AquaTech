@@ -199,7 +199,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
 
         //Instanciar la información
         this.lblDatos = new Label[1][1];
-        this.lblDatos[0][0] = new Label(info, NORMAL, FONT_SIZE);
+        this.lblDatos[0][0] = new Label(info, PLANO, FONT_SIZE);
         this.lblDatos[0][0].setVerticalAlignment(javax.swing.JLabel.TOP);
 
         //Obtener la cantidad de filas
@@ -221,21 +221,21 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
 
         //Instanciar los componentes
         this.lblDatos[0][0] = new Label("Precio del trasvaso:", TITULO, FONT_SIZE);
-        this.lblDatos[0][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[0][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[1][0] = new Label("Botellones llenos:", TITULO, FONT_SIZE);
-        this.lblDatos[1][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[1][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[2][0] = new Label("Botellones vacíos:", TITULO, FONT_SIZE);
-        this.lblDatos[2][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[2][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[3][0] = new Label("Botellones en el almacén:", TITULO, FONT_SIZE);
-        this.lblDatos[3][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[3][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[4][0] = new Label("<html><center>Clientes con pagos<br>pendientes:</center></html>", TITULO, FONT_SIZE);
         this.lblDatos[4][0].setSize(this.lblDatos[4][0].getPreferredSize());
         this.lblDatos[4][0].setHorizontalTextPosition(javax.swing.JLabel.CENTER);
-        this.lblDatos[4][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[4][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[5][0] = new Label("<html><center>Clientes con entregas<br>pendientes:</center></html>", TITULO, FONT_SIZE);
         this.lblDatos[5][0].setSize(this.lblDatos[5][0].getPreferredSize());
         this.lblDatos[5][0].setHorizontalTextPosition(javax.swing.JLabel.CENTER);
-        this.lblDatos[5][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[5][1] = new Label("", PLANO, FONT_SIZE);
 
         //Asignar los tooltip text
         this.lblDatos[0][0].setToolTipText("Precio del trasvaso de botellón a los clientes");
@@ -265,17 +265,17 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
 
         //Instanciar los componentes
         this.lblDatos[0][0] = new Label("Precio del botellón:", TITULO, FONT_SIZE);
-        this.lblDatos[0][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[0][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[1][0] = new Label("Botellones en el almacén:", TITULO, FONT_SIZE);
-        this.lblDatos[1][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[1][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[2][0] = new Label("<html><center>Clientes con pagos<br>pendientes:</center></html>", TITULO, FONT_SIZE);
         this.lblDatos[2][0].setSize(this.lblDatos[2][0].getPreferredSize());
         this.lblDatos[2][0].setHorizontalTextPosition(javax.swing.JLabel.CENTER);
-        this.lblDatos[2][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[2][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[3][0] = new Label("<html><center>Clientes con entregas<br>pendientes:</center></html>", TITULO, FONT_SIZE);
         this.lblDatos[3][0].setSize(this.lblDatos[3][0].getPreferredSize());
         this.lblDatos[3][0].setHorizontalTextPosition(javax.swing.JLabel.CENTER);
-        this.lblDatos[3][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[3][1] = new Label("", PLANO, FONT_SIZE);
 
         //Asignar los tooltip text
         this.lblDatos[0][0].setToolTipText("Precio de la venta de un botellón nuevo a los clientes");
@@ -303,11 +303,11 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
 
         //Instanciar los componentes
         this.lblDatos[0][0] = new Label("Precio del trasvaso:", TITULO, FONT_SIZE);
-        this.lblDatos[0][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[0][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[1][0] = new Label("Precio del botellón:", TITULO, FONT_SIZE);
-        this.lblDatos[1][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[1][1] = new Label("", PLANO, FONT_SIZE);
         this.lblDatos[2][0] = new Label("Botellón en el almacén:", TITULO, FONT_SIZE);
-        this.lblDatos[2][1] = new Label("", NORMAL, FONT_SIZE);
+        this.lblDatos[2][1] = new Label("", PLANO, FONT_SIZE);
 
         //Asignar los tooltip text
         this.lblDatos[0][0].setToolTipText("Precio del trasvaso de botellón a los clientes");

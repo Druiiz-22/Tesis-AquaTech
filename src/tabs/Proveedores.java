@@ -104,6 +104,10 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         tabla.actualizarDatos();
     }
     
+    protected static void addProveedor(String[] informacion){
+        tabla.agregar(informacion);
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);

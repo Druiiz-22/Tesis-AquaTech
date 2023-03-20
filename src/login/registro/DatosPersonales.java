@@ -246,16 +246,16 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", NORMAL, 16);
-    private static final Label lblNombre = new Label("Nombre", NORMAL, 16);
+    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblNombre = new Label("Nombre", PLANO, 16);
     private static final CampoTexto txtNombre = new CampoTexto("Ingrese su nombre", NOMBRE);
-    private static final Label lblApellido = new Label("Apellido", NORMAL, 16);
+    private static final Label lblApellido = new Label("Apellido", PLANO, 16);
     private static final CampoTexto txtApellido = new CampoTexto("Ingrese su apellido", NOMBRE);
-    private static final Label lblCedula = new Label("Cédula", NORMAL, 16);
+    private static final Label lblCedula = new Label("Cédula", PLANO, 16);
     private static final CampoTexto txtCedula = new CampoTexto("Ingrese su cédula", NUMERO);
-    private static final Label lblTelefono = new Label("Teléfono", NORMAL, 16);
+    private static final Label lblTelefono = new Label("Teléfono", PLANO, 16);
     private static final CampoTexto txtTelefono = new CampoTexto("Ingrese su teléfono", NUMERO);
     private static final Boton btnSiguiente = new Boton("Siguiente", CELESTE);
-    private static final Label lblIniciar = new Label("¿Ya tienes tu cuenta? ", NORMAL, 16);
+    private static final Label lblIniciar = new Label("¿Ya tienes tu cuenta? ", PLANO, 16);
     private static final Label btnIniciar = new Label("Inicia sesión", LINK, 16);
 }

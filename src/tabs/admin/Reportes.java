@@ -32,7 +32,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      */
     private void initComponents() {
         
-        boxTipoReporte.setFont(Fuentes.segoe(16, NORMAL));
+        boxTipoReporte.setFont(Fuentes.segoe(16, PLANO));
 
         //Asignar los tooltip texts
         lblTipoReporte.setToolTipText("Determinar el tipo de información e "
@@ -280,11 +280,11 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
     private static final Label lblTitulo = new Label("Generar Reportes", TITULO, 24);
 
-    private static final Label lblTipoReporte = new Label("Tipo de reporte", NORMAL, 18, true);
+    private static final Label lblTipoReporte = new Label("Tipo de reporte", PLANO, 18, true);
     private static final String[] opciones = {"Seleccionar", "Trasvasos", "Recargas", "Compras", "Ventas"};
     private static final JComboBox boxTipoReporte = new JComboBox(opciones);
 
-    private static final Label lblUbicacion = new Label("Ubicación del reporte", NORMAL, 18, true);
+    private static final Label lblUbicacion = new Label("Ubicación del reporte", PLANO, 18, true);
     private static final CampoTexto txtUbicación = new CampoTexto("Ubicación del reporte", CUALQUIER);
 
     private static final Boton btnAceptar = new Boton("Guardar", CELESTE);

@@ -242,8 +242,8 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         this.lblHeader = new Label[2][2];
         this.lblHeader[0][0] = new Label((this.type == COMPRAS) ? "RIF" : "Cédula", GRUESA, fontSize);
         this.lblHeader[0][1] = new Label((this.type == COMPRAS) ? "Nombre" : "Apellido", GRUESA, fontSize);
-        this.lblHeader[1][0] = new Label("", NORMAL, fontSize);
-        this.lblHeader[1][1] = new Label("", NORMAL, fontSize);
+        this.lblHeader[1][0] = new Label("", PLANO, fontSize);
+        this.lblHeader[1][1] = new Label("", PLANO, fontSize);
 
         //AGREGAR LOS COMPONENTES
         this.add(this.lblTitulo);
@@ -265,9 +265,9 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
     private void datosCompra() {
         //Instanciar los componentes
         this.lblDatos = new Label[2][2];
-        this.lblDatos[0][0] = new Label("Cantidad", NORMAL, fontSize, true);
+        this.lblDatos[0][0] = new Label("Cantidad", PLANO, fontSize, true);
         this.lblDatos[0][1] = new Label("0", GRUESA, fontSize);
-        this.lblDatos[1][0] = new Label("Precio c/u", NORMAL, fontSize, true);
+        this.lblDatos[1][0] = new Label("Precio c/u", PLANO, fontSize, true);
         this.lblDatos[1][1] = new Label("0,00 Bs", GRUESA, 14);
 
         //Asignar el tooltip según el tipo
@@ -298,11 +298,11 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
     private void datosVenta() {
         //Instanciar los componentes
         this.lblDatos = new Label[3][2];
-        this.lblDatos[0][0] = new Label("Botellones en total", NORMAL, fontSize, true);
+        this.lblDatos[0][0] = new Label("Botellones en total", PLANO, fontSize, true);
         this.lblDatos[0][1] = new Label("0", GRUESA, fontSize);
-        this.lblDatos[1][0] = new Label("Entrega a domicilio", NORMAL, fontSize, true);
+        this.lblDatos[1][0] = new Label("Entrega a domicilio", PLANO, fontSize, true);
         this.lblDatos[1][1] = new Label("NO", GRUESA, fontSize);
-        this.lblDatos[2][0] = new Label("Tipo de pago", NORMAL, fontSize, true);
+        this.lblDatos[2][0] = new Label("Tipo de pago", PLANO, fontSize, true);
         this.lblDatos[2][1] = new Label("", GRUESA, fontSize);
 
         //Asignar los tooltip text
@@ -334,13 +334,13 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
     private void datosTrasvaso() {
         //Instanciar los componentes
         this.lblDatos = new Label[4][2];
-        this.lblDatos[0][0] = new Label("Bot. Entregados", NORMAL, fontSize, true);
+        this.lblDatos[0][0] = new Label("Bot. Entregados", PLANO, fontSize, true);
         this.lblDatos[0][1] = new Label("0", GRUESA, fontSize);
-        this.lblDatos[1][0] = new Label("Bot. Pagados", NORMAL, fontSize, true);
+        this.lblDatos[1][0] = new Label("Bot. Pagados", PLANO, fontSize, true);
         this.lblDatos[1][1] = new Label("0", GRUESA, fontSize);
-        this.lblDatos[2][0] = new Label("Entrega a domicilio", NORMAL, fontSize, true);
+        this.lblDatos[2][0] = new Label("Entrega a domicilio", PLANO, fontSize, true);
         this.lblDatos[2][1] = new Label("NO", GRUESA, fontSize);
-        this.lblDatos[3][0] = new Label("Tipo de pago", NORMAL, fontSize, true);
+        this.lblDatos[3][0] = new Label("Tipo de pago", PLANO, fontSize, true);
         this.lblDatos[3][1] = new Label("", GRUESA, fontSize);
 
         //Asignar los tooltip text

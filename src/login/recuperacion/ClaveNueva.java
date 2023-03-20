@@ -6,7 +6,6 @@ import components.Label;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import static javax.swing.JOptionPane.YES_OPTION;
 import static login.Frame.replacePanel;
 import static login.Recuperacion.getContentSize;
 import static login.Recuperacion.replaceContainer;
@@ -183,7 +182,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
 
                 //Mostrar mensaje para afirmar que se quiere devolver al 
                 //inicio y borrar todo el progreso que ha realizado
-                if (msjYesNo(mensaje) == YES_OPTION) {
+                if (msjYesNo(mensaje)) {
                     replacePanel(INICIO);
                     replaceContainer(CORREO);
                 }
@@ -199,12 +198,12 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", NORMAL, 16);
-    private static final Label lblNueva = new Label("Contraseña nueva", NORMAL, 16);
+    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblNueva = new Label("Contraseña nueva", PLANO, 16);
     private static final CampoClave txtNueva = new CampoClave("Ingrese su contraseña");
-    private static final Label lblRepetida = new Label("Repita su contraseña", NORMAL, 16);
+    private static final Label lblRepetida = new Label("Repita su contraseña", PLANO, 16);
     private static final CampoClave txtRepetida = new CampoClave("Ingrese su contraseña");
     private static final Boton btnCambiar = new Boton("Cambiar Contraseña", CELESTE);
-    private static final Label lblIniciar = new Label("¿Ya recuperaste tu contraseña? ", NORMAL, 16);
+    private static final Label lblIniciar = new Label("¿Ya recuperaste tu contraseña? ", PLANO, 16);
     private static final Label btnIniciar = new Label("Inicia sesión", LINK, 16);
 }

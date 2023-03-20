@@ -21,9 +21,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
 import static javax.swing.BorderFactory.createLineBorder;
-import static javax.swing.JOptionPane.YES_OPTION;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
@@ -219,7 +217,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
     // ========== BACKEND ==========
     private void registrar() {
         //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de realizar el registro de la venta?") == YES_OPTION) {
+        if (msjYesNo("¿Está seguro de realizar el registro de la venta?")) {
 
             if (validarCampos()) {
                 if (validarDatos()) {
@@ -231,7 +229,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
                         String msj = "Está apunto de realizar un registro con una alta\n"
                                 + "cantidad de botellones, ¿Está seguro de realizar el registro?";
 
-                        if (msjYesNoWarning(msj) == YES_OPTION) {
+                        if (msjYesNoWarning(msj)) {
                             RegistrarDB.venta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
                         }
 
@@ -314,7 +312,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
             public void mouseReleased(MouseEvent e) {
                 //Mensaje de confirmación
                 String msj = "¿Está seguro de cancelar el trasvaso?\nSe vaciarán los campos y los datos.";
-                if (msjYesNo(msj) == JOptionPane.YES_OPTION) {
+                if (msjYesNo(msj)) {
                     vaciarCampos();
                 }
             }
@@ -441,10 +439,10 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
     private void initComponents() {
 
         boxTipoPago.setBackground(BLANCO);
-        boxTipoPago.setFont(segoe(16, NORMAL));
+        boxTipoPago.setFont(segoe(16, PLANO));
 
         checkDelivery.setOpaque(false);
-        checkDelivery.setFont(segoe(18, NORMAL));
+        checkDelivery.setFont(segoe(18, PLANO));
 
         lblCantidad.setToolTipText(
                 "<html>"
@@ -738,10 +736,10 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
     private static final Label lblTitulo = new Label("Venta de botellones", TITULO, 24);
 
-    private static final Label lblCantidad = new Label("Cantidad de botellones", NORMAL, 18, true);
+    private static final Label lblCantidad = new Label("Cantidad de botellones", PLANO, 18, true);
     private static final CampoTexto txtCantidad = new CampoTexto("Botellones a vender", NUMERO);
 
-    private static final Label lblTipoPago = new Label("Tipo de pago", NORMAL, 18, true);
+    private static final Label lblTipoPago = new Label("Tipo de pago", PLANO, 18, true);
     private static final String opciones[] = {"Seleccionar", "Efectivo", "Transferencia", "Dolar en efectivo"};
     private static final JComboBox boxTipoPago = new JComboBox(opciones);
 

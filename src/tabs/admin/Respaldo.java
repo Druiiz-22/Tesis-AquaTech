@@ -217,16 +217,16 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
     
     private static final JPanel panelExporte = new JPanel(null);
     private static final Label lblTituloExp = new Label("Exportar BDD", TITULO, 22);
-    private static final Label lblUbicacion = new Label("Ubicación", NORMAL, 16, true);
+    private static final Label lblUbicacion = new Label("Ubicación", PLANO, 16, true);
     private static final CampoTexto txtUbicacion = new CampoTexto("Seleccionar la ubicación", CUALQUIER);
-    private static final Label lblNombre = new Label("Nombre", NORMAL, 16, true);
+    private static final Label lblNombre = new Label("Nombre", PLANO, 16, true);
     private static final CampoTexto txtNombre = new CampoTexto("Nombre del archivo", CUALQUIER);
     private static final BotonDirectory btnUbicacionExp = new BotonDirectory();
     private static final Boton btnExportar = new Boton("Guardar respaldo", VERDE);
     
     private static final JPanel panelImporte = new JPanel(null);
     private static final Label lblTituloImp = new Label("Importar BDD", TITULO, 22);
-    private static final Label lblArchivo = new Label("Archivo Seleccionado", NORMAL, 16, true);
+    private static final Label lblArchivo = new Label("Archivo Seleccionado", PLANO, 16, true);
     private static final CampoTexto txtArchivo = new CampoTexto("Nombre del archivo", CLAVE);
     private static final BotonDirectory btnUbicacionImp = new BotonDirectory();
     private static final Boton btnImportar = new Boton("Importar respaldo", CELESTE);
@@ -266,5 +266,5 @@ class BotonDirectory extends JPanel implements properties.Constantes, properties
     }
     
     //COMPONENTES
-    private final Label lblPuntos = new Label(". . .", NORMAL, 14);
+    private final Label lblPuntos = new Label(". . .", PLANO, 14);
 }

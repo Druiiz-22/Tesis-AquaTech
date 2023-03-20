@@ -40,10 +40,11 @@ public class Mensaje extends JOptionPane {
      * @param msj Mensaje que será mostrado.
      * @return 
      */
-    public static int msjYesNo(String msj) {
+    public static boolean msjYesNo(String msj) {
+        
         return JOptionPane.showConfirmDialog(
                 null, msj, "Confirmar", YES_NO_OPTION, QUESTION_MESSAGE
-        );
+        ) == YES_OPTION;
     }
     
     /**
@@ -52,10 +53,10 @@ public class Mensaje extends JOptionPane {
      * @param msj Mensaje que será mostrado.
      * @return 
      */
-    public static int msjYesNoWarning(String msj) {
+    public static boolean msjYesNoWarning(String msj) {
         return JOptionPane.showConfirmDialog(
                 null, msj, "Confirmar", YES_NO_OPTION, WARNING_MESSAGE
-        );
+        ) == YES_OPTION;
     }
 
     /**

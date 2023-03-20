@@ -245,6 +245,6 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     private static final CampoClave txtClave = new CampoClave("Ingrese su contraseña");
     private static final Label lblRecuperar = new Label("¿Olvidaste tu contraseña?", LINK, 14);
     private static final Boton btnLogin = new Boton("Iniciar sesión", CELESTE);
-    private static final Label lblRegistro = new Label("¿No tienes tu cuenta? ", NORMAL, 16);
+    private static final Label lblRegistro = new Label("¿No tienes tu cuenta? ", PLANO, 16);
     private static final Label btnRegistro = new Label("Regístrate", LINK, 16);
 }

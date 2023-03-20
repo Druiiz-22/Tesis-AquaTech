@@ -281,6 +281,16 @@ public class ValidarTexto {
     }
 
     /**
+     * Función para validar un RIF según el siguiente formato:
+     * @param rif
+     * @return 
+     */
+    public static boolean formatoRIF(String rif){
+        String regex = "";
+        return true;
+    }
+    
+    /**
      * Función para comprobar que el texto ingresado es válido para ser
      * convertido en un número entero menor a 8.388.606. Esto se realiza dentro
      * de los campos de venta, compra, recarga y trasvasos,
