@@ -9,10 +9,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import static main.MenuSuperior.setTabTitle;
 import static main.Run.setFrameTitle;
-import tabs.Inicio;
 import tabs.clientes.Clientes;
 import tabs.compras.Compras;
-import tabs.historial.Historial;
 import tabs.ventas.Ventas;
 
 /**

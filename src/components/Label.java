@@ -9,11 +9,8 @@ import java.awt.event.MouseEvent;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import static java.awt.Cursor.HAND_CURSOR;
-import javax.swing.ImageIcon;
-import static properties.Constantes.ESCALA_SUAVE;
 import static properties.Fuentes.segoe;
 import static properties.Fuentes.segoeSemibold;
-import static properties.Mensaje.msjAdvertencia;
 
 /**
  * Clase para la creación de los labels que se usarán en el software

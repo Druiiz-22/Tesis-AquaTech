@@ -225,7 +225,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
     private void initComponents() {
         //MONTO TOTAL
         this.lblTotal = new Label[2];
-        this.lblTotal[0] = new Label("Total", GRUESA, fontSize);
+        this.lblTotal[0] = new Label("Total", GRUESA, fontSize, true);
         this.lblTotal[0].setToolTipText("Ganancias totales (Bs) de la cuenta");
         this.lblTotal[1] = new Label("0,00 Bs", GRUESA, 14);
 

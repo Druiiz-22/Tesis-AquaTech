@@ -13,33 +13,34 @@ import javax.swing.JPanel;
  * Clase para la creación del panel de registro de los proveedores en el sistema
  */
 public class Proveedores extends JPanel implements properties.Constantes, properties.Colores {
-    
+
     /**
      * Constructor del panel de proveedores
      */
-    public Proveedores(){
+    public Proveedores() {
         this.setLayout(null);
         this.setOpaque(false);
-        
+
         initComponents();
         listeners();
     }
-    
+
     /**
      * Función para iniciar los componentes
      */
-    private void initComponents(){
+    private void initComponents() {
         btnAgregar.setToolTipText("Ir a la ventana para el registro de un nuevo proveedor al sistema");
         txtBusqueda.setToolTipText("Ingrese cualquier nombre para buscar alguna coincidencia en la tabla");
-        
+
         this.add(txtBusqueda);
         this.add(btnAgregar);
         this.add(tabla);
     }
+
     /**
      * Función para asignar los listener a los componentes
      */
-    private void listeners(){
+    private void listeners() {
         //MOUSE LISTENER
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
@@ -47,7 +48,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
                 nuevoProv.agregar();
             }
         });
-        
+
         //KEY LISTENER
         txtBusqueda.addKeyListener(new KeyAdapter() {
             @Override
@@ -56,34 +57,35 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
             }
         });
     }
+
     /**
-     * Función para redimensionar los componentes y el panel
-     * a tiempo real, según una dimensión dada
+     * Función para redimensionar los componentes y el panel a tiempo real,
+     * según una dimensión dada
+     *
      * @param size Dimensión del parent contenedor
      */
-    public void relocateComponents(java.awt.Dimension size){
+    public void relocateComponents(java.awt.Dimension size) {
         this.setSize(size);
-        
+
         int padding = 20;
         int fieldHeight = 40;
-        
+
         //Posición y tamaño cuando el panel sea muy pequeño
-        if(size.width < 500){
+        if (size.width < 500) {
             int fieldWidth = this.getWidth() - padding * 2;
-            int txtY = padding*2 + fieldHeight;
-            
+            int txtY = padding * 2 + fieldHeight;
+
             btnAgregar.setBounds(padding, padding, fieldWidth, fieldHeight);
             txtBusqueda.setBounds(padding, txtY, fieldWidth, fieldHeight);
-            
-        } else{
-            
+
+        } else {
+
             //Posición y tamaño normal
             int btnWidth = btnAgregar.getPreferredSize().width + 20;;
             int btnX = this.getWidth() - padding - btnWidth;;
             btnAgregar.setBounds(btnX, padding, btnWidth, fieldHeight);
-            
 
-            int txtWidth = this.getWidth() - padding*3 - btnWidth;;
+            int txtWidth = this.getWidth() - padding * 3 - btnWidth;;
             txtBusqueda.setBounds(padding, padding, txtWidth, fieldHeight);
         }
         //Posicionar la tabla
@@ -92,24 +94,25 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         int tablaW = size.width - padding * 2;
         tabla.setBounds(padding, tablaY, tablaW, tablaH);
     }
-    
+
     /**
      * Función para vaciar todos los campos
-     */ 
-    public void vaciarCampos(){
+     */
+    public void vaciarCampos() {
         txtBusqueda.setText("");
         nuevoProv.vaciarCampos();
     }
-    
+
     /**
      * Función para actualizar los datos en la tabla de proveedores
      */
-    public void actualizarDatos(){
+    public void actualizarDatos() {
         tabla.actualizarDatos();
     }
-    
+
     /**
      * Función para agregar un proveedor a la tabla de proveedores
+     *
      * @param informacion Información del nuevo proveedor:
      * <ul>
      * <li>RIF</li>
@@ -118,14 +121,23 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      * <li>Direccion</li>
      * </ul>
      */
-    protected static void addProveedor(String[] informacion){
+    protected static void addProveedor(String[] informacion) {
         tabla.agregar(informacion);
     }
-    
-    public static void editProveedor(String rif, String nombre, String telefono, String direccion){
-       nuevoProv.editar(rif, nombre, telefono, direccion);
+
+    /**
+     * Función para acceder a la ventana de nuevo proveedor y enviar la
+     * información del proveedor seleccionado para su edición
+     *
+     * @param rif
+     * @param nombre
+     * @param telefono
+     * @param direccion
+     */
+    public static void editProveedor(String rif, String nombre, String telefono, String direccion) {
+        nuevoProv.editar(rif, nombre, telefono, direccion);
     }
-    
+
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);

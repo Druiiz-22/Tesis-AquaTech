@@ -30,8 +30,6 @@ public class Logo extends JLabel implements properties.Constantes{
             case LOGO_MENU:
                 logoMenu();
                 break;
-            default:
-                throw new AssertionError();
         }
 
     }

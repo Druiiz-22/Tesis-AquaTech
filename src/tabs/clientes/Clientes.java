@@ -50,6 +50,7 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         //PANEL CONTENEDOR
         //Asignar el CardLayout para navegar entre
         //los distintos paneles
+        contenedor.setOpaque(false);
         contenedor.setLayout(card);
         contenedor.add(panelClientes, "1");
         contenedor.add(panelDeudas, "2");

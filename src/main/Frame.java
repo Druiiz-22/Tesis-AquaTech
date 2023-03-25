@@ -1,12 +1,18 @@
 package main;
 
+import components.PanelNotificaciones;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import static javax.swing.JOptionPane.showOptionDialog;
@@ -43,22 +49,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Iniciar los componentes
         initComponents();
 
-        //Listener para la ventana, para cuando sea presionado
-        //el botón de cerrar
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                salir();
-            }
-        });
-
-        //Listener para cuando la ventana se redimensione su tamaño
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                relocateComponents();
-            }
-        });
+        listeners();
 
         //Presionar el botón de inicio
         clickButton(INICIO);
@@ -83,20 +74,87 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //Ocultar el menú lateral
         lateral.setVisible(false);
-        
+
+        //GlassPane de notificaciones
+        this.setGlassPane(new JComponent() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                //Pinter un fondo oscuro en el contenedor
+                g.setColor(new java.awt.Color(0, 0, 0, 0.2f));
+                int y = menu.getHeight();
+                int h = getWidth() - y;
+                g.fillRect(0, y, getWidth(), h);
+            }
+        });
+
+        glass = (Container) (this.getGlassPane());
+        glass.setLayout(null);
+        glass.add(notificaciones);
+
         //LISTA DE COSAS PENDIENTES
-        // - Agregar la función de validar que exista el registro cuando 
-        //   se borre un cliente y un proveedor.
+        //- Dar formulario a los RIF
         
-        //- Hacer el panel de notificaciones.
-        
+        //- Dar función a la busqueda de rutas y archivos en Reportes y Respaldos.
+        //- Crear el Date Chooser.
         //- Diseñar los ajustes.
-        //- Dar función a la busqueda de rutas y archivos en Reportes y Respaldos
+        
+        //- Realizar el envío de código al correo.
         
         //- Diseñar los pedidos.
         //- Ver el google maps.
+    }
+
+    private void listeners() {
+        //Listener para la ventana, para cuando sea presionado
+        //el botón de cerrar
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                salir();
+            }
+        });
+
+        //Listener para cuando la ventana se redimensione su tamaño
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                relocateComponents();
+            }
+        });
         
-        //- Realizar el envío de código al correo
+        //Listener para el GlassPane para cuando que se cierre
+        //cuando sea presionado fuera del panel de notificaciones
+        glass.addMouseListener(new MouseAdapter() {
+            
+            boolean cerrar = true;
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //Obtener la posición del mouse
+                int mouseX = e.getX();
+                int mouseY = e.getY();
+                
+                //Obtener la posición de notificaciones
+                int minX = notificaciones.getX();
+                int minY = notificaciones.getY();
+                
+                //Obtener el tamaño de las notificaciones
+                int maxX = minX + notificaciones.getWidth();
+                int maxY = minY + notificaciones.getHeight();
+                
+                //Validar que el mouse esté FUERA de las notificaciones
+                cerrar = (mouseX < minX || mouseX > maxX) || (mouseY < minY || mouseY > maxY);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //Validar si se va a cerrar o no el GlassPane
+                if(cerrar){
+                    glass.setVisible(false);
+                }
+            }
+            
+        });
     }
 
     /**
@@ -110,6 +168,10 @@ public class Frame extends JFrame implements properties.Constantes {
         int menuHeight = (int) (frameSize.height * 0.1);
         menu.setSize(frameSize.width, menuHeight);
 
+        //NOTIFICACIONES
+        int w = frameSize.width - notificaciones.getWidth() - 20;
+        notificaciones.setLocation(w, menuHeight);
+        
         //CONTENEDOR
         int contenedorHeight = frameSize.height - menuHeight;
         int contenedorWidth = frameSize.width - ((lateral.isVisible()) ? lateral.getWidth() : 0);
@@ -129,7 +191,14 @@ public class Frame extends JFrame implements properties.Constantes {
         this.revalidate();
         this.repaint();
 
-        Inicio.relocateButtons();
+        //Validar si el panel está en su tamaño mínimo
+        if (contenedor.getWidth() < 700) {
+            notificaciones.panelGrande(false);
+            Inicio.relocateButtons(false);
+        } else {
+            notificaciones.panelGrande(true);
+            Inicio.relocateButtons(true);
+        }
     }
 
     /**
@@ -169,9 +238,9 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //Validar si va a cerrar la sesión
         if (opcion == 0) {
-            
+
             contenedor.vaciarCampos();
-            
+
             Run.cerrarPrograma();
             Run.iniciarLogin();
 
@@ -247,9 +316,11 @@ public class Frame extends JFrame implements properties.Constantes {
                     contenedor.setSize(containerWidth, lateral.getHeight());
                     contenedor.relocateComponents();
 
-                    contenedor.revalidate();
-                    contenedor.repaint();
-                    Inicio.relocateButtons();
+                    if (contenedor.getWidth() < 700) {
+                        Inicio.relocateButtons(false);
+                    } else {
+                        Inicio.relocateButtons(true);
+                    }
 
                 } else {
                     //Si la posición es menor al límite en -x,
@@ -265,7 +336,15 @@ public class Frame extends JFrame implements properties.Constantes {
                     //menú superior y altura del menú lateral
                     contenedor.setSize(menu.getWidth(), lateral.getHeight());
                     contenedor.relocateComponents();
-                    Inicio.relocateButtons();
+
+                    //Repintar el frame
+                    Run.repaintFrame();
+                    //Reposicionar y redimensionar los botones
+                    if (contenedor.getWidth() < 700) {
+                        Inicio.relocateButtons(false);
+                    } else {
+                        Inicio.relocateButtons(true);
+                    }
 
                     //Ocultar el menú
                     lateral.setVisible(false);
@@ -323,7 +402,11 @@ public class Frame extends JFrame implements properties.Constantes {
                     contenedor.setSize(containerWidth, lateral.getHeight());
                     contenedor.relocateComponents();
 
-                    Inicio.relocateButtons();
+                    if (contenedor.getWidth() < 700) {
+                        Inicio.relocateButtons(false);
+                    } else {
+                        Inicio.relocateButtons(true);
+                    }
 
                 } else {
                     //Si la posición es mayor o igual a 0,
@@ -344,7 +427,14 @@ public class Frame extends JFrame implements properties.Constantes {
 
                     contenedor.relocateComponents();
 
-                    Inicio.relocateButtons();
+                    //Repintar el frame
+                    Run.repaintFrame();
+                    //Reposicionar y redimensionar los botones
+                    if (contenedor.getWidth() < 700) {
+                        Inicio.relocateButtons(false);
+                    } else {
+                        Inicio.relocateButtons(true);
+                    }
 
                     //Indicar que el botón se desactivó
                     press = false;
@@ -360,6 +450,9 @@ public class Frame extends JFrame implements properties.Constantes {
             press = true;
             //Iniciar el timer
             show.start();
+
+            Run.repaintFrame();
+
         }
     }
 
@@ -375,9 +468,24 @@ public class Frame extends JFrame implements properties.Constantes {
 
         if (type == INICIO) {
             Run.repaintFrame();
-            Inicio.relocateButtons();
+            if (contenedor.getWidth() < 700) {
+                Inicio.relocateButtons(false);
+            } else {
+                Inicio.relocateButtons(true);
+            }
         }
-        
+
+    }
+
+    /**
+     * Función para abrir el panel de notificaciones
+     * @param abrir TRUE en caso de que se vaya abrir
+     */
+    public static void openNotification(boolean abrir) {
+        //Validar que el componente de glass NO esté vacío
+        if (glass != null) {
+            glass.setVisible(abrir);
+        }
     }
     
     //ATRIBUTOS
@@ -391,4 +499,7 @@ public class Frame extends JFrame implements properties.Constantes {
     private static final MenuSuperior menu = new MenuSuperior();
     private static final MenuLateral lateral = new MenuLateral();
     protected static final Contenedor contenedor = new Contenedor();
+
+    private static Container glass;
+    private static final PanelNotificaciones notificaciones = new PanelNotificaciones();
 }

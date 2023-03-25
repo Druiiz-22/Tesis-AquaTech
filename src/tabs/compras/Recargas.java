@@ -5,7 +5,7 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelFactura;
 import components.PanelInfo;
-import database.RegistrarDB;
+import database.CreateDB;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -42,11 +42,11 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
                                 + "cantidad de botellones, ¿Está seguro de realizar el registro?";
 
                         if (msjYesNoWarning(msj)) {
-                            RegistrarDB.recarga(cantidad, precio, provRIF);
+                            CreateDB.createRecarga(cantidad, precio, provRIF);
                         }
 
                     } else {
-                        RegistrarDB.recarga(cantidad, precio, provRIF);
+                        CreateDB.createRecarga(cantidad, precio, provRIF);
                     }
                     
                     vaciarCampos();

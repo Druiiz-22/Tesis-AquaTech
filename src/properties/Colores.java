@@ -66,7 +66,6 @@ public interface Colores {
     /**
      * <b>Usos del color:</b>
      * <ul>
-     * <li>Color de letra en el inicio.</li>
      * <li>Circulo de notificación en las notificaciones</li>
      * </ul>
      */
@@ -151,5 +150,4 @@ public interface Colores {
      * </ul>
      */
     public final static Color GRIS_HOOVER = new Color(64, 64, 64);
-
 }

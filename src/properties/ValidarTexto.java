@@ -288,6 +288,7 @@ public class ValidarTexto {
     public static boolean formatoRIF(String rif){
         String regex = "";
         return true;
+        
     }
     
     /**

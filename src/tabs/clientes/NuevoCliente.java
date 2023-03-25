@@ -123,7 +123,8 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
 
                         //Agregar el nuevo cliente a la tabla en el panel de clientes
                         PanelClientes.addCliente(new String[]{cedula, nombre, apellido, telefono, direccion});
-
+                        
+                        vaciarCampos();
                     }
                 }
             }
@@ -147,7 +148,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
 
                             //Agregar el nuevo cliente a la tabla en el panel de clientes
                             PanelClientes.addCliente(new String[]{cedula, nombre, apellido, telefono, direccion});
-
+                            vaciarCampos();
                         }
                     }
                 }

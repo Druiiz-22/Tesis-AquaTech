@@ -4,8 +4,8 @@
  */
 package pruebas;
 
+import components.PanelNotificaciones;
 import components.Tabla;
-import java.awt.Color;
 import java.awt.Dimension;
 
 /**
@@ -14,36 +14,19 @@ import java.awt.Dimension;
  */
 public class Prue extends javax.swing.JFrame {
 
-    private Tabla prov;
-    
     /**
      * Creates new form Prue
      */
     public Prue() {
         initComponents();
         
-        Dimension min = new Dimension(500, 600);
+        Dimension min = new Dimension(800, 600);
         this.setSize(min);
-        this.getContentPane().setBackground(Color.GRAY);
+        this.setLocationRelativeTo(null);
         
-        prov = new Tabla(properties.Constantes.PROVEEDOR);
-        
-        //"RIF", "Nombre", "Telefono", "Direccion"
-        String[][] rows = {
-                {"J-516513", "Agua Rica", "04120268754", "Sur America"},
-                {"J-516510", "Agua Blanca", "04166484512", "Los Robles"},
-                {"J-516671", "Rica Agua", "04241349765", "Haticos"},
-                {"J-671164", "Manantial", "041231645077", "Sierra Maestra"},
-                {"J-944102", "La Catedral", "04129780213", "Coromoto"},
-                {"J-355177", "Agua Cristal", "04120641212", "Cumbres"},
-                {"J-300187", "Monarca", "04161345216", "Varillal"},
-                {"J-971230", "Agua vida", "04167980124", "Sabana Grande"},
-                {"J-813218", "AquaTech", "04260132485", "San Felipe"},
-        };
-        
-        prov.setBounds(10, 10, jPanel1.getWidth()-20, jPanel1.getHeight()-50);
-        
-        this.jPanel1.add(prov);
+        PanelNotificaciones noti = new PanelNotificaciones();
+        noti.setLocation(100, 50);
+        this.add(noti);
     }
 
     /**
@@ -55,77 +38,22 @@ public class Prue extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-
-        jPanel1.setBackground(new java.awt.Color(204, 255, 255));
-        jPanel1.setLayout(null);
-
-        jLabel1.setText("Filtrar:");
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(100, 380, 70, 16);
-
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField1KeyReleased(evt);
-            }
-        });
-        jPanel1.add(jTextField1);
-        jTextField1.setBounds(180, 380, 300, 22);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
-        jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(120, 30, 452, 310);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+            .addGap(0, 650, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+            .addGap(0, 448, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-        prov.buscar(jTextField1.getText());
-    }//GEN-LAST:event_jTextField1KeyReleased
 
     
     /**
@@ -252,10 +180,5 @@ public class Prue extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

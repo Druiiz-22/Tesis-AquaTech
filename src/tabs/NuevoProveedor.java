@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package tabs;
 
 import components.Boton;
@@ -11,7 +7,6 @@ import components.Logo;
 import database.CreateDB;
 import database.ReadDB;
 import database.UpdateDB;
-import static java.awt.Font.BOLD;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -21,8 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import static java.awt.Font.BOLD;
 import static javax.swing.SwingConstants.HORIZONTAL;
-import static properties.Constantes.ESCALA_SUAVE;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
@@ -123,7 +118,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
 
                         //Agregar el nuevo proveedor a la tabla en el panel de proveedores
                         Proveedores.addProveedor(new String[]{rif, nombre, telefono, direccion});
-
+                        vaciarCampos();
                     }
                 }
             }
@@ -134,7 +129,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * Función para actualizar un cliente en la base de datos
      */
     private void actualizar() {
-        //Validar la existencia del cliente
+        //Validar la existencia del proveedor
         if (validarProveedor()) {
             //Validar que los campos no estén vacíos
             if (validarCampos()) {
@@ -147,6 +142,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
 
                             //Agregar el nuevo proveedor a la tabla en el panel de proveedores
                             Proveedores.addProveedor(new String[]{rif, nombre, telefono, direccion});
+                            vaciarCampos();
 
                         }
                     }
@@ -208,7 +204,9 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
             if (formatoTelefono(telefono)) {
                 if (formatoRIF(rif)) {
                     if (direccion.length() >= 2 && direccion.length() <= 255) {
-
+                        
+                        return true;
+                        
                     } else {
                         msj = "La dirección debe tener un rango de 2 a 255 letras." + msj;
                     }

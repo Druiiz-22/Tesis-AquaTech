@@ -5,8 +5,8 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelFactura;
 import components.PanelInfo;
+import database.CreateDB;
 import database.ReadDB;
-import database.RegistrarDB;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -51,10 +51,10 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
                                 + "<b>cantidad de botellones</b>, ¿Está seguro de realizar el registro?</html>";
 
                         if (msjYesNoWarning(msj)) {
-                            RegistrarDB.trasvaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
+                            CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
                         }
                     } else {
-                        RegistrarDB.trasvaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
+                        CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
                     }
 
                     vaciarCampos();
@@ -247,7 +247,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     }
 
     /**
-     * Función para asignar el cliente seleccionado en la clase de trasvasos
+     * Función para asignar el cliente seleccionado en la factura de trasvasos
      *
      * @param ci Cédula del cliente seleccionado
      * @param apellido Apellido del cliente seleccionado
@@ -405,7 +405,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         //Altura de la información, sumando la altura del panel de
         //trasvaso, su alto y un padding
         int infoY = trasvY + trasvHeight + padding;
-        int infoHeight = 480;
+        int infoHeight = 456;
         //Asignar la posición y tamaño
         informacion.setBounds(padding, infoY, panelWidth, infoHeight);
 

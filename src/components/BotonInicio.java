@@ -13,65 +13,70 @@ import static main.MenuLateral.clickButton;
 import static main.MenuSuperior.abrirWeb;
 
 /**
- * Clase para la creación de los botones presentes en el inicio de
- * la ventana principal del programa
+ * Clase para la creación de los botones presentes en el inicio de la ventana
+ * principal del programa
  */
 public class BotonInicio extends JPanel implements properties.Constantes {
-    
+
     /**
      * Constructor del botón para el inicio del programa
+     *
      * @param type Tipo de botón
      */
     public BotonInicio(int type) {
         this.type = type;
-
+        
         //PROPIEDADES BÁSICAS DEL BOTÓN
-        btn.setFont(segoeSemibold(20));
+        btn.setFont(segoeSemibold(18));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setHorizontalAlignment(JLabel.CENTER);
         btn.setVerticalAlignment(JLabel.CENTER);
         btn.setHorizontalTextPosition(JLabel.CENTER);
         btn.setVerticalTextPosition(JLabel.BOTTOM);
-        btn.setForeground(properties.Colores.BLANCO);
+        btn.setForeground(properties.Colores.NEGRO);
 
         //PROPIEDADES ÚNICAS DEL BOTÓN
         setUniqueProperties();
 
         //LISTENERS PARA EL BOTÓN
         listener();
-        
+
         //IMAGENES DEL BOTÓN
         try {
             //Gurdar las imágenes escaladas
-            this.imgButtom = new ImageIcon(getButtomImage());
-            //this.imgPressBtn = new ImageIcon(getPressImage());
-            //this.imgEnterbtn = new ImageIcon(getEnterImage());
-            
+            this.imgSmallButton = new ImageIcon(getButtomImage(64));
+            this.imgSmallPress = new ImageIcon(getPressImage(64));
+            this.imgSmallEntered = new ImageIcon(getEnterImage(64));
+
+            this.imgLargeButton = new ImageIcon(getButtomImage(85));
+            this.imgLargePress = new ImageIcon(getPressImage(85));
+            this.imgLargeEntered = new ImageIcon(getEnterImage(85));
+
             //Colocar la imágen al botón
-            btn.setIcon(imgButtom);
+            btn.setIcon(imgLargeButton);
 
             btn.setIconTextGap(5);
-            
+
         } catch (Exception e) {
             msjAdvertencia(
                     "No se encontró el ícono del botón " + imgName + " del inicio.\n"
                     + "El software seguirá ejecutandose normalmente sin el logo."
             );
         }
-        
+
         //TAMAÑO DEL BOTÓN
-        btn.setSize(btn.getPreferredSize());
-        
+        btn.setSize(btn.getPreferredSize().width+5, btn.getPreferredSize().height+5);
+
         //PROPIEDADES DEL PANEL
         this.setLayout(null);
         this.setOpaque(false);
         this.add(btn);
-        
+
     }
-    
+
     /**
-     * Función para asignar las propiedades al botón, según su tipo,
-     * como el nombre del a imagen, texto y tooltiptext
+     * Función para asignar las propiedades al botón, según su tipo, como el
+     * nombre del a imagen, texto y tooltiptext
      */
     private void setUniqueProperties() {
         switch (type) {
@@ -127,116 +132,189 @@ public class BotonInicio extends JPanel implements properties.Constantes {
                 break;
         }
     }
-    
+
     /**
      * Función para posicionar el botón en el centro del panel
+     *
+     * @param largeSize TRUE si el botón debe ser de tamaño grande, FALSE en
+     * caso de que sea pequeño
      */
-    public void relocateComponents(){
-        int middleX = getWidth()/2 - btn.getWidth()/2;
-        int middleY = getHeight()/2 - btn.getHeight()/2;
+    public void relocateComponents(boolean largeSize) {
+        this.largeSize = largeSize;
 
+        if(largeSize){
+            setLargeImage();
+        } else {
+            setSmallImage();
+        }
+        
+        int middleX = getWidth() / 2 - btn.getWidth() / 2;
+        int middleY = getHeight() / 2 - btn.getHeight() / 2;
+        
         btn.setLocation(middleX, middleY);
     }
-    
+
     /**
      * Función para aplicar el mouse listener al botón creado
      */
-    private void listener(){
+    private void listener() {
         btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                //Comprobar que el botón NO está siendo presionado
-                //para colocar su imagen normal, cuando salga el mouse
-                //del botón
-                if(!btn.getIcon().equals(imgPressBtn)){
-                    btn.setIcon(imgButtom);
+                //Comprobar que el botón NO está siendo presionado para colocar
+                //la imagen del botón normal
+                if (!largeSize && !btn.getIcon().equals(imgSmallPress)) {
+                    btn.setIcon(imgSmallButton);
+
+                } else if (largeSize && !btn.getIcon().equals(imgLargePress)) {
+                    btn.setIcon(imgLargeButton);
                 }
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                //setIcon(imgEnterbtn);
+                //Comprobar que el botón NO esté siendo presionado para colocar
+                //la imagen del botón cuando entre el mouse
+                if (!btn.getIcon().equals(imgSmallPress) && !largeSize) {
+                    btn.setIcon(imgSmallEntered);
+
+                } else if (!btn.getIcon().equals(imgLargePress) && largeSize) {
+                    btn.setIcon(imgLargeEntered);
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                //Obtener el tamaño del botón
-                int maxX = getWidth();
-                int maxY = getHeight();
-                
-                //Obtener la posición X y Y del cursor con respecto al botón
-                int pointX = e.getPoint().x;
-                int pointY = e.getPoint().y;
-                
-                //Validar que el cursor esté DENTRO del botón
-                if(pointX >= 0 && pointX <= maxX && pointY >= 0 && pointY <= maxY){
-                    //Asignar la imagen de que está dentro del botón
-                    //setIcon(imgEnterbtn);
-                    
-                } else{
-                    //Asignar la imagen del botón normal
-                    btn.setIcon(imgButtom);
+                //Asignar el botón normal
+                if (largeSize) {
+                    btn.setIcon(imgLargeButton);
+                } else {
+                    btn.setIcon(imgSmallButton);
                 }
-                
+
                 //Cambiar a la pestaña del botón, en caso de
                 //que NO sea el botón del sitio web
-                if(type != WEB){
+                if (type != WEB) {
                     clickButton(type);
-                } else{
+                } else {
                     abrirWeb();
                 }
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                //setIcon(imgPressBtn);
+                if (largeSize) {
+                    btn.setIcon(imgLargePress);
+                } else {
+                    btn.setIcon(imgSmallPress);
+                }
             }
-            
+
         });
     }
-    
+
     /**
-     * Función para obtener la imagen normal del botón
-     * @return Imagen del botón
+     * Función para colocar, manualmente, el botón en su estado normal, sin ser
+     * seleccionado o con el mouse dentro de él
      */
-    private Image getButtomImage() {
-        //Obtener la imagen
-        ImageIcon img = new ImageIcon(getClass().getResource("/icons/inicio/"+imgName.toLowerCase()+".png"));
-        
-        //Escalar la imagen
-        return img.getImage().getScaledInstance(64, 64, ESCALA_SUAVE);
-    } 
-    
-    /**
-     * Función para obtener la imagen del botón presionado
-     * @return Imagen del botón 
-     */
-    private Image getPressImage() {
-        //Obtener la imagen
-        ImageIcon img = new ImageIcon(getClass().getResource("/icons/inicio/"+imgName.toLowerCase()+"_press.png"));
-        
-        //Escalar la imagen
-        return img.getImage().getScaledInstance(56, 56, ESCALA_SUAVE);
-    } 
-    
-    /**
-     * Función para obtener la imagen del botón cuando el
-     * mouse esté dentro de él
-     * @return Imagen del botón
-     */
-    private Image getEnterImage() {
-        //Obtener la imagen
-        ImageIcon img = new ImageIcon(getClass().getResource("/icons/inicio/"+imgName.toLowerCase()+"_enter.png"));
-        
-        //Escalar la imagen
-        return img.getImage().getScaledInstance(64, 64, ESCALA_SUAVE);
+    public void setUnselectedStated() {
+        //Asignar la imagen normal, según el tamaño del panel
+        if (largeSize) {
+            btn.setIcon(imgLargeButton);
+        } else {
+            btn.setIcon(imgSmallButton);
+        }
     }
 
+    /**
+     * Función para obtener la imagen normal del botón
+     *
+     * @return Imagen del botón
+     */
+    private Image getButtomImage(int size) {
+        //Obtener la imagen
+        ImageIcon img = new ImageIcon(getClass().getResource("/icons/inicio/" + imgName.toLowerCase() + ".png"));
+
+        //Escalar la imagen
+        return img.getImage().getScaledInstance(size, size, ESCALA_SUAVE);
+    }
+
+    /**
+     * Función para obtener la imagen del botón presionado
+     *
+     * @return Imagen del botón
+     */
+    private Image getPressImage(int size) {
+        //Obtener la imagen
+        ImageIcon img = new ImageIcon(getClass().getResource("/icons/inicio/" + imgName.toLowerCase() + "_pres.png"));
+
+        //Escalar la imagen
+        return img.getImage().getScaledInstance(size, size, ESCALA_SUAVE);
+    }
+
+    /**
+     * Función para obtener la imagen del botón cuando el mouse esté dentro de
+     * él
+     *
+     * @return Imagen del botón
+     */
+    private Image getEnterImage(int size) {
+        //Obtener la imagen
+        ImageIcon img = new ImageIcon(getClass().getResource("/icons/inicio/" + imgName.toLowerCase() + "_ent.png"));
+
+        //Escalar la imagen
+        return img.getImage().getScaledInstance(size, size, ESCALA_SUAVE);
+    }
+
+    /**
+     * Función para cargar las imágenes pequeñas
+     */
+    private void setSmallImage(){
+        //Comprobar que el botón tenga la imagen grande
+        if(btn.getIcon().equals(imgLargeButton)){
+            btn.setIcon(imgSmallButton);
+        }
+        //Comprobar que el botón tenga la imagen grande 
+        //cuando el mouse esté dentro
+        if(btn.getIcon().equals(imgLargeEntered)){
+            btn.setIcon(imgSmallEntered);
+        }
+        //Comprobar que el botón tenga la imagen grande
+        //cuando el mouse lo presione
+        if(btn.getIcon().equals(imgLargePress)){
+            btn.setIcon(imgSmallPress);
+        }
+    }
+    
+    /**
+     * Función para cargar las imágenes grandes
+     */
+    private void setLargeImage(){
+        //Comprobar que el botón tenga la imagen grande
+        if(btn.getIcon().equals(imgSmallButton)){
+            btn.setIcon(imgLargeButton);
+        }
+        //Comprobar que el botón tenga la imagen grande 
+        //cuando el mouse esté dentro
+        if(btn.getIcon().equals(imgSmallEntered)){
+            btn.setIcon(imgLargeEntered);
+        }
+        //Comprobar que el botón tenga la imagen grande
+        //cuando el mouse lo presione
+        if(btn.getIcon().equals(imgSmallPress)){
+            btn.setIcon(imgLargePress);
+        }
+    }
+    
     //ATRIBUTOS
     private final int type;
     private String imgName;
-    private ImageIcon imgButtom;
-    private ImageIcon imgEnterbtn;
-    private ImageIcon imgPressBtn;
+    private boolean largeSize = true;
+    private ImageIcon imgSmallButton;
+    private ImageIcon imgSmallEntered;
+    private ImageIcon imgSmallPress;
+    private ImageIcon imgLargeButton;
+    private ImageIcon imgLargeEntered;
+    private ImageIcon imgLargePress;
     private JLabel btn = new JLabel();
 }

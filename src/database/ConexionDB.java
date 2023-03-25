@@ -3,6 +3,9 @@ package database;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Clase para realizar la conexión con la base de datos
+ */
 public class ConexionDB {
     private static String bd = "aquatech";
     private static String url = "jdbc:mysql://localhost/";

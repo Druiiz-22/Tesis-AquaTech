@@ -371,7 +371,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
 
         //PRIMER TÍTULO DEL DATO
         int middleX = this.getWidth() / 2;
-        int datoY = PADDING * 2 + lblTitulo.getHeight();
+        int datoY = PADDING * 4 + lblTitulo.getHeight();
         int datoX = middleX - lblDatos[0][0].getWidth() / 2;
         lblDatos[0][0].setLocation(datoX, datoY);
         //PRIMER DATO
@@ -459,7 +459,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
         int firstColumn = this.getWidth() * 1 / 3;
         int secondColumn = this.getWidth() * 2 / 3;
 
-        int firstRow = tituloH + PADDING * 2;
+        int firstRow = tituloH + PADDING * 4;
 
         int datoY;
         int datoX;
@@ -607,7 +607,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
     }
 
     //ATRIBUTOS FRONTEND
-    private static final int FONT_SIZE = 18;
+    private static final int FONT_SIZE = 16;
     private static final int PADDING = 10;
 
     //COMPONENTES

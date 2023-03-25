@@ -124,10 +124,20 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
         tabla.agregar(informacion);
     }
 
-    public static void editCliente(String cedula, String nombre, String apellido, String telefono, String direccion){
-       nuevoCliente.editar(cedula, nombre, apellido, telefono, direccion);
+    /**
+     * Función para acceder a la tabla de la clase y enviar los datos para
+     * editar el cliente seleccionado
+     *
+     * @param cedula
+     * @param nombre
+     * @param apellido
+     * @param telefono
+     * @param direccion
+     */
+    public static void editCliente(String cedula, String nombre, String apellido, String telefono, String direccion) {
+        nuevoCliente.editar(cedula, nombre, apellido, telefono, direccion);
     }
-    
+
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Cliente", VERDE);

@@ -11,7 +11,8 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
      * Constructor del panel para los pedidos a domicilio
      */
     public Pedidos(){
-        
+        this.setLayout(null);
+        this.setOpaque(false);
     }
     
     protected void vaciarCampos(){

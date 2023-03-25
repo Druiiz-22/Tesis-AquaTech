@@ -142,17 +142,26 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     //Obtener la identificación del cliente o proveedor
                     Object dni = modelo.getValueAt(tabla.getSelectedRow(), 0);
 
-                    //Eliminarlo de la base de datos
+                    //Comprobar el tipo de la tabla
                     if (type == CLIENTES) {
-                        DeleteDB.removeCliente(dni);
+
+                        //Intentar eliminarlo de la base de datos
+                        if (DeleteDB.removeCliente(dni)) {
+
+                            //Eliminarlo de la tabla
+                            modelo.removeRow(tabla.getSelectedRow());
+                        }
 
                     } else if (type == PROVEEDOR) {
-                        DeleteDB.removeProveedor(dni);
+
+                        //Intentar eliminarlo de la base de datos
+                        if (DeleteDB.removeProveedor(dni)) {
+
+                            //Eliminarlo de la tabla
+                            modelo.removeRow(tabla.getSelectedRow());
+                        }
+
                     }
-
-                    //Eliminarlo de la tabla
-                    modelo.removeRow(tabla.getSelectedRow());
-
                 } catch (Exception e) {
                     msjError("No se pudo eliminar el cliente.\nError: " + e);
                 }
@@ -288,6 +297,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     }
 
     // ========== FRONTEND ==========
+    /**
+     * Constructor de las tablas que se usarán durante el software
+     *
+     * @param type
+     */
     public Tabla(int type) {
         //Guardar el tipo
         this.type = type;

@@ -5,7 +5,7 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelFactura;
 import components.PanelInfo;
-import database.RegistrarDB;
+import database.CreateDB;
 import java.awt.Cursor;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -70,9 +70,10 @@ public class Compras extends JPanel implements properties.Constantes, properties
         card.show(contenedor, "1");
 
         //Scroll para el panel contenedor
-        scroll.setViewportView(contenedor);
-        scroll.setBorder(null);
         scroll.setOpaque(false);
+        scroll.setBorder(null);
+        scroll.getViewport().setOpaque(false);
+        scroll.setViewportView(contenedor);
 
         this.add(menu);
         this.add(scroll);
@@ -161,10 +162,17 @@ public class Compras extends JPanel implements properties.Constantes, properties
         panelRecargas.vaciarCampos();
     }
 
-    public static void setProveedor(String rif, String nombre){
+    /**
+     * Función para acceder a la factura de compras y enviar los datos del
+     * proveedor seleccionado
+     *
+     * @param rif
+     * @param nombre
+     */
+    public static void setProveedor(String rif, String nombre) {
         panelCompras.setProveedor(rif, nombre);
     }
-    
+
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
@@ -197,12 +205,12 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
                                 + "cantidad de botellones, ¿Está seguro de realizar el registro?";
 
                         if (msjYesNoWarning(msj)) {
-                            RegistrarDB.compra(cantidad, precio, provRIF);
+                            CreateDB.createCompra(cantidad, precio, provRIF);
                         }
                     } else {
-                        RegistrarDB.compra(cantidad, precio, provRIF);
+                        CreateDB.createCompra(cantidad, precio, provRIF);
                     }
-                    
+
                     vaciarCampos();
                 }
             }
@@ -311,7 +319,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
 
                 //Actualizar la cantidad en la factura
                 factura.setBotellonesTotal(cantidad);
-                
+
                 //Actualizar el monto total en la factura
                 factura.setMontoTotal(precio * cantidad);
             }
@@ -325,7 +333,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
 
                 //Actualizar el precio en la factura
                 factura.setPrecioCadaUno(precio);
-                
+
                 //Actualizar el monto total en la factura
                 factura.setMontoTotal(precio * cantidad);
             }
@@ -356,7 +364,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
     }
 
     /**
-     * Función para asignar el proveedor seleccionado en la clase de recargas
+     * Función para asignar el proveedor seleccionado en la factura de compras
      *
      * @param rif RIF del proveedor
      * @param nombre Nombre del proveedor
@@ -446,7 +454,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
 
         //PANEL PEQUEÑO
         if (width < 600) {
-            
+
             //Cambiar el tamaño de la factura
             facHeight = 280;
             //Cambiar el tamaño de la compra

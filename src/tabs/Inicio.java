@@ -84,12 +84,7 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
         //Determinar cuantas filas y columnas tendrá el layour
         //según el ancho del contenedor
         //TAMAÑO MUY PEQUEÑO
-        if (width < 500) {
-            grid.setRows(5);
-            grid.setColumns(2);
-
-            //TAMAÑO PEQUEÑO
-        } else if (width < 700) {
+        if (width < 700) {
             grid.setRows(4);
             grid.setColumns(3);
 
@@ -110,20 +105,39 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
 
     /**
      * Función reposicionar los botones, esta función debe ser llamada LUEGO de
-     * repintar el panel contenedor DEL FRAME. También, durante la transición
-     * del menú lateral, LUEGO de repintar el panel contenedor
+     * repintar el panel contenedor DEL FRAME.También, durante la transición del
+     * menú lateral, LUEGO de repintar el panel contenedor
+     *
+     * @param largeSize TRUE si el botón debe ser de tamaño grande, FALSE en
+     * caso de que sea pequeño
      */
-    public static void relocateButtons() {
-        btnTrasvasos.relocateComponents();
-        btnRecargas.relocateComponents();
-        btnDelivery.relocateComponents();
-        btnDeudas.relocateComponents();
-        btnClientes.relocateComponents();
-        btnVentas.relocateComponents();
-        btnCompras.relocateComponents();
-        btnHistorial.relocateComponents();
-        btnProveedor.relocateComponents();
-        btnWeb.relocateComponents();
+    public static void relocateButtons(boolean largeSize) {
+        btnTrasvasos.relocateComponents(largeSize);
+        btnRecargas.relocateComponents(largeSize);
+        btnDelivery.relocateComponents(largeSize);
+        btnDeudas.relocateComponents(largeSize);
+        btnClientes.relocateComponents(largeSize);
+        btnVentas.relocateComponents(largeSize);
+        btnCompras.relocateComponents(largeSize);
+        btnHistorial.relocateComponents(largeSize);
+        btnProveedor.relocateComponents(largeSize);
+        btnWeb.relocateComponents(largeSize);
+    }
+
+    /**
+     * Función para colocar todos los botones en sus estados normales
+     */
+    public void setButtonsUnselected() {
+        btnTrasvasos.setUnselectedStated();
+        btnRecargas.setUnselectedStated();
+        btnDelivery.setUnselectedStated();
+        btnDeudas.setUnselectedStated();
+        btnClientes.setUnselectedStated();
+        btnVentas.setUnselectedStated();
+        btnCompras.setUnselectedStated();
+        btnHistorial.setUnselectedStated();
+        btnProveedor.setUnselectedStated();
+        btnWeb.setUnselectedStated();
     }
 
     /**
@@ -138,7 +152,7 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
 
     //COMPONENTES
     private static final JPanel saludo = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-    private static final Label lblSaludo = new Label("Bienvenido, usuario", TITULO, 22);
+    private static final Label lblSaludo = new Label("Bienvenido, usuario", TITULO, 24);
     private static final JPanel inicio = new JPanel();
     private static final GridLayout grid = new GridLayout(2, 5);
     private static final BotonInicio btnTrasvasos = new BotonInicio(VENTAS_TRASVASO);

@@ -87,6 +87,8 @@ public class Contenedor extends JPanel implements properties.Constantes {
             case INICIO:
                 this.add(panelInicio, BorderLayout.CENTER);
                 panelInicio.relocateComponents(this.getSize());
+                panelInicio.setButtonsUnselected();
+                
                 break;
             case CLIENTES:
                 this.add(panelClientes, BorderLayout.CENTER);

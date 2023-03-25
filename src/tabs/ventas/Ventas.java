@@ -5,8 +5,8 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelFactura;
 import components.PanelInfo;
+import database.CreateDB;
 import database.ReadDB;
-import database.RegistrarDB;
 import java.awt.Cursor;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -80,9 +80,10 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
         card.show(contenedor, "1");
 
         //Scroll para el panel contenedor
-        scroll.setViewportView(contenedor);
         scroll.setBorder(null);
         scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setViewportView(contenedor);
 
         this.add(menu);
         this.add(scroll);
@@ -191,10 +192,16 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
         panelPedidos.vaciarCampos();
     }
 
-    public static void setCliente(String ci, String apellido){
+    /**
+     * Función para establecer el cliente seleccionado en la factura de ventas
+     *
+     * @param ci
+     * @param apellido
+     */
+    public static void setCliente(String ci, String apellido) {
         panelVentas.setCliente(ci, apellido);
     }
-    
+
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 5));
@@ -230,13 +237,13 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
                                 + "cantidad de botellones, ¿Está seguro de realizar el registro?";
 
                         if (msjYesNoWarning(msj)) {
-                            RegistrarDB.venta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
+                            CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
                         }
 
                     } else {
-                        RegistrarDB.venta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
+                        CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
                     }
-                    
+
                     vaciarCampos();
                 }
             }
@@ -334,7 +341,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
                 //Actualizar la cantidad en la factura
                 factura.setBotellonesTotal(cantidad);
-                
+
                 //Actualizar el monto total
                 factura.setMontoTotal(precio * cantidad);
             }
@@ -379,10 +386,10 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
      * se visualice el panel de trasvasos
      */
     protected void actualizarDatos() {
-        
+
         //Actualizar el panel de información
         informacion.actualizarDatos();
-        
+
         //Obtener el precio
         precio = ReadDB.getPrecioVenta();
 
@@ -496,7 +503,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
         //PANEL PEQUEÑO
         if (width < 600) {
-            
+
             //Cambiar el tamaño de la factura
             facHeight = 300;
             //Cambiar el tamaño de la venta
@@ -549,7 +556,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         //Altura de la información, sumando la altura del panel de
         //trasvaso, su alto y un padding
         int infoY = trasvY + ventaHeight + padding;
-        int infoHeight = 360;
+        int infoHeight = 348;
         //Asignar la posición y tamaño
         informacion.setBounds(padding, infoY, panelWidth, infoHeight);
 
@@ -591,7 +598,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         //Asignarle todo el ancho del panel
         int infoWidth = width - padding * 2;
         //Asignarle la altura estática
-        int infoHeight = 220;
+        int infoHeight = 226;
         //Asignar la posición y el tamaño
         informacion.setBounds(padding, infoY, infoWidth, infoHeight);
 
