@@ -92,16 +92,15 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(notificaciones);
 
         //LISTA DE COSAS PENDIENTES
-        //- Dar formulario a los RIF
+        //- Realizar la generación de reportes
         
-        //- Dar función a la busqueda de rutas y archivos en Reportes y Respaldos.
-        //- Crear el Date Chooser.
         //- Diseñar los ajustes.
+        //- Diseñar los pedidos.
         
         //- Realizar el envío de código al correo.
-        
-        //- Diseñar los pedidos.
         //- Ver el google maps.
+        //- Dar formulario a los RIF
+        
     }
 
     private void listeners() {
@@ -121,27 +120,27 @@ public class Frame extends JFrame implements properties.Constantes {
                 relocateComponents();
             }
         });
-        
+
         //Listener para el GlassPane para cuando que se cierre
         //cuando sea presionado fuera del panel de notificaciones
         glass.addMouseListener(new MouseAdapter() {
-            
+
             boolean cerrar = true;
-            
+
             @Override
             public void mousePressed(MouseEvent e) {
                 //Obtener la posición del mouse
                 int mouseX = e.getX();
                 int mouseY = e.getY();
-                
+
                 //Obtener la posición de notificaciones
                 int minX = notificaciones.getX();
                 int minY = notificaciones.getY();
-                
+
                 //Obtener el tamaño de las notificaciones
                 int maxX = minX + notificaciones.getWidth();
                 int maxY = minY + notificaciones.getHeight();
-                
+
                 //Validar que el mouse esté FUERA de las notificaciones
                 cerrar = (mouseX < minX || mouseX > maxX) || (mouseY < minY || mouseY > maxY);
             }
@@ -149,11 +148,11 @@ public class Frame extends JFrame implements properties.Constantes {
             @Override
             public void mouseReleased(MouseEvent e) {
                 //Validar si se va a cerrar o no el GlassPane
-                if(cerrar){
+                if (cerrar) {
                     glass.setVisible(false);
                 }
             }
-            
+
         });
     }
 
@@ -171,7 +170,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //NOTIFICACIONES
         int w = frameSize.width - notificaciones.getWidth() - 20;
         notificaciones.setLocation(w, menuHeight);
-        
+
         //CONTENEDOR
         int contenedorHeight = frameSize.height - menuHeight;
         int contenedorWidth = frameSize.width - ((lateral.isVisible()) ? lateral.getWidth() : 0);
@@ -239,7 +238,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Validar si va a cerrar la sesión
         if (opcion == 0) {
 
-            contenedor.vaciarCampos();
+            vaciarFrame();
 
             Run.cerrarPrograma();
             Run.iniciarLogin();
@@ -479,6 +478,7 @@ public class Frame extends JFrame implements properties.Constantes {
 
     /**
      * Función para abrir el panel de notificaciones
+     *
      * @param abrir TRUE en caso de que se vaya abrir
      */
     public static void openNotification(boolean abrir) {
@@ -487,7 +487,20 @@ public class Frame extends JFrame implements properties.Constantes {
             glass.setVisible(abrir);
         }
     }
-    
+
+    /**
+     * Función para vaciar los datos del usuario y todos los componentes, antes
+     * de cerrar el programa
+     */
+    public static void vaciarFrame() {
+        //Vaciar todos los campos
+        contenedor.vaciarCampos();
+
+        //Vaciar los datos del usuario
+        nombreUsuario = null;
+        rolUsuario = 0;
+    }
+
     //ATRIBUTOS
     private static String nombreUsuario;
     private static int rolUsuario;

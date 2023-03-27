@@ -1,6 +1,5 @@
 package properties;
 
-import java.util.Calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -159,7 +158,7 @@ public class ValidarTexto {
 
     //VALIDAR TEXTOS SEGÚN UN FORMATO
     /**
-     * Función para validar la cronología entre dos fechas, para ello, se valida
+     * Función para validar la cronologia entre dos fechas, para ello, se valida
      * que la fecha final NO sea menor que la fecha inicial.
      *
      * @param inicio fecha inicial
@@ -169,8 +168,43 @@ public class ValidarTexto {
      * <b>FALSE</b> en el caso de que la fecha final sea menor a la fecha de
      * inicio.
      */
-    public static boolean cronología(Calendar inicio, Calendar fin) {
+    public static boolean cronologia(String inicio, String fin) {
+
         return fin.compareTo(inicio) >= 0;
+    }
+
+    /**
+     * <p>
+     * Función para validar que una fecha esté dentro del rango correcto</p>
+     * <ul>
+     * <li>Mayor o igual que 01-01-1900.</li>
+     * <li>Menor que 01-01-2100.</li>
+     * </ul>
+     *
+     * @param fecha Fecha que será validada
+     * @return TRUE si la fecha está dentro del rango correcto
+     */
+    public static boolean rangoFecha(String fecha) {
+        try {
+            //Formato de las fechas
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+            //Hacer la conversión de String a fecha, de forma estricta.
+            formatoFecha.setLenient(false);
+
+            //Intentar convertir el String a fecha
+            java.util.Date date = formatoFecha.parse(fecha);
+
+            //Rango de fechas mínima y máxima
+            java.util.Date min = formatoFecha.parse("01-01-1900");
+            java.util.Date max = formatoFecha.parse("01-01-2100");
+
+            //Retornar el rango de la fecha
+            return date.compareTo(min) >= 0 && date.compareTo(max) < 0;
+
+        } catch (ParseException e) {
+            System.out.println("\n"+e);
+            return false;
+        }
     }
 
     /**
@@ -253,13 +287,19 @@ public class ValidarTexto {
      */
     public static boolean formatoFecha(String fecha) {
         try {
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-mm-yyyy");
+            //Formato de las fechas
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+            //Hacer la conversión de String a fecha, de forma estricta.
             formatoFecha.setLenient(false);
+            
+            //Intentar convertir el String a Date
             formatoFecha.parse(fecha);
+            
+            return true;
+            
         } catch (ParseException e) {
             return false;
         }
-        return true;
     }
 
     /**
@@ -282,15 +322,16 @@ public class ValidarTexto {
 
     /**
      * Función para validar un RIF según el siguiente formato:
+     *
      * @param rif
-     * @return 
+     * @return
      */
-    public static boolean formatoRIF(String rif){
+    public static boolean formatoRIF(String rif) {
         String regex = "";
         return true;
-        
+
     }
-    
+
     /**
      * Función para comprobar que el texto ingresado es válido para ser
      * convertido en un número entero menor a 8.388.606. Esto se realiza dentro
@@ -324,18 +365,18 @@ public class ValidarTexto {
             return 0;
         }
     }
-    
-    public static double teclaSueltaDoble(String txt){
+
+    public static double teclaSueltaDoble(String txt) {
         //Validar que el texto NO sea null
         if (!txt.isEmpty()) {
             try {
 
                 //Intentar convertir el campo en entero
                 double cantidad = Double.valueOf(txt);
-                
+
                 //Obtener el número límite
                 double limit = Double.valueOf("10000000000");
-                
+
                 //Validar que el número esté dentro del rango correcto
                 if (cantidad <= limit) {
                     return cantidad;

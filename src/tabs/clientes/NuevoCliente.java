@@ -99,7 +99,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                 }
             }
         });
-        
+
         //WINDOW LISTENER
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -121,9 +121,12 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                     //Intentar crear el cliente en la base de datos
                     if (CreateDB.createCliente(cedula, nombre, apellido, telefono, direccion)) {
 
-                        //Agregar el nuevo cliente a la tabla en el panel de clientes
-                        PanelClientes.addCliente(new String[]{cedula, nombre, apellido, telefono, direccion});
-                        
+                        //Ya que puede dar muchos problemas el alterar o agregar
+                        //un dato a una tabla (y no a su Model), la forma de 
+                        //visualizar los cambios será actualizando los datos 
+                        //de la tabla con la base de datos
+                        PanelClientes.actualizarDatos();
+
                         vaciarCampos();
                     }
                 }
@@ -146,9 +149,14 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                         //Intentar editar el cliente en la base de datos
                         if (UpdateDB.editCliente(String.valueOf(id), cedula, nombre, apellido, telefono, direccion)) {
 
-                            //Agregar el nuevo cliente a la tabla en el panel de clientes
-                            PanelClientes.addCliente(new String[]{cedula, nombre, apellido, telefono, direccion});
+                            //Ya que puede dar muchos problemas el alterar o agregar
+                            //un dato a una tabla (y no a su Model), la forma de 
+                            //visualizar los cambios será actualizando los datos 
+                            //de la tabla con la base de datos
+                            PanelClientes.actualizarDatos();
+                            
                             vaciarCampos();
+                            dispose();
                         }
                     }
                 }
@@ -256,25 +264,25 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * @return
      */
     private boolean validarCliente() {
-        
+
         id = ReadDB.getClienteID(cedulaVieja);
-        
+
         //Validar que el ID sea mayor a 0
-        if(id > 0){
-            
+        if (id > 0) {
+
             return true;
-        
+
         } else {
             msjError("No se encontró registro del cliente a editar en la base de datos.\n"
                     + "Por favor, actualice la tabla de los clientes registrados\n"
                     + "y verifique su registro en la tabla.");
         }
-        
+
         return false;
     }
 
     //ATRIBUTOS BACKEND
-    private static int id;
+    private static int id, index;
     private static String cedulaVieja;
     private static Boolean crearCliente;
     private static String nombre, apellido, cedula, telefono, direccion;
@@ -299,13 +307,12 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * Función para iniciar los componentes de la ventana
      */
     private void initComponents() {
-        
-        
+
         logo.setForeground(CELESTE);
         logo.setSize(logo.getPreferredSize());
 
         lblTitulo.setVerticalAlignment(javax.swing.JLabel.TOP);
-        
+
         this.add(logo);
         this.add(lblTitulo);
         this.add(lblNombre);
@@ -395,7 +402,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
             );
         }
     }
-    
+
     /**
      * Función para agregar un nuevo cliente
      */
@@ -417,19 +424,21 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     /**
      * Función para editar un cliente registrado
      *
+     * @param index
      * @param nombre
      * @param apellido
      * @param cedula
      * @param telefono
      * @param direc
      */
-    protected void editar(String cedula, String nombre, String apellido, String telefono, String direc) {
+    protected void editar(int index, String cedula, String nombre, String apellido, String telefono, String direc) {
+        NuevoCliente.index = index;
         this.setTitle("Editar un cliente - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
 
         cedulaVieja = cedula;
-        
+
         crearCliente = false;
         lblTitulo.setText("<html>Ingrese los nuevos datos del cliente "
                 + "seleccionado que desea actualizar.</html>");
@@ -456,7 +465,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         txtCedula.setText("");
         txtTelefono.setText("");
         txtDireccion.setText("");
-        
+
         //Vaciar los atributos
         id = 0;
         cedulaVieja = null;
@@ -477,7 +486,6 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         }
     }
 
-    
     //COMPONENTES
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final Label lblTitulo = new Label("", PLANO, 16);

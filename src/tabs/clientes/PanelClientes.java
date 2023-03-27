@@ -104,38 +104,23 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
     /**
      * Función para actualizar los datos de la tabla de clientes
      */
-    protected void actualizarDatos() {
+    public static void actualizarDatos() {
         tabla.actualizarDatos();
-    }
-
-    /**
-     * Función para agregar un nuevo cliente a la tabla de clientes
-     *
-     * @param informacion Información del nuevo cliente:
-     * <ul>
-     * <li>Cedula</li>
-     * <li>Nombre</li>
-     * <li>Apellido</li>
-     * <li>Telefono</li>
-     * <li>Direccion</li>
-     * </ul>
-     */
-    protected static void addCliente(String[] informacion) {
-        tabla.agregar(informacion);
     }
 
     /**
      * Función para acceder a la tabla de la clase y enviar los datos para
      * editar el cliente seleccionado
      *
+     * @param index
      * @param cedula
      * @param nombre
      * @param apellido
      * @param telefono
      * @param direccion
      */
-    public static void editCliente(String cedula, String nombre, String apellido, String telefono, String direccion) {
-        nuevoCliente.editar(cedula, nombre, apellido, telefono, direccion);
+    public static void editCliente(int index, String cedula, String nombre, String apellido, String telefono, String direccion) {
+        nuevoCliente.editar(index, cedula, nombre, apellido, telefono, direccion);
     }
 
     //COMPONENTES

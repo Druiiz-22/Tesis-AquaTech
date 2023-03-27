@@ -4,6 +4,7 @@ import components.Label;
 import java.awt.CardLayout;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
@@ -23,6 +24,7 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
 
         initComponents();
         mouseListeners();
+        
     }
 
     /**
@@ -61,9 +63,11 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         contenedor.add(panelRespaldo, "4");
         card.show(contenedor, "1");
         
-        scroll.setViewportView(contenedor);
-        scroll.setBorder(null);
         scroll.setOpaque(false);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(8);
+        scroll.getViewport().setOpaque(false);
+        scroll.setViewportView(contenedor);
 
         //Agregar el menú y el contenedor al panel admin
         this.add(menu);
@@ -194,6 +198,12 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         panelUsuarios.vaciarCampos();
         panelReportes.vaciarCampos();
         panelRespaldo.vaciarCampos();
+        
+        replacePanel(ADMIN_AJUSTES);
+    }
+    
+    public void actualizarDatos(){
+        panelUsuarios.actualizarTabla();
     }
     
     //COMPONENTES

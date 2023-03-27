@@ -1,14 +1,26 @@
 package tabs.admin;
 
+import com.toedter.calendar.JCalendar;
 import components.Boton;
 import components.CampoTexto;
 import components.Label;
 import components.PanelInfo;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.io.File;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import properties.Fuentes;
+import javax.swing.JFileChooser;
 import static javax.swing.BorderFactory.createLineBorder;
+import static properties.Mensaje.msjError;
+import static properties.Mensaje.msjYesNo;
+import static properties.ValidarTexto.formatoFecha;
+import static properties.ValidarTexto.rangoFecha;
+import static properties.ValidarTexto.cronologia;
+import static tabs.admin.CreateReport.crearReporte;
 
 /**
  * Clase para la creación del panel de generación de reportes, en el
@@ -16,6 +28,253 @@ import static javax.swing.BorderFactory.createLineBorder;
  */
 public class Reportes extends JPanel implements properties.Constantes, properties.Colores {
 
+    // ========== BACKEND ==========
+    /**
+     *
+     */
+    private void generarReporte() {
+        
+        if (validarCampos()) {
+            if (validarFechas()) {
+                if(msjYesNo("¿Está seguro de realizar el reporte?")){
+                    
+                    int type = boxTipoReporte.getSelectedIndex();
+                    String initialDate = fechaInicio.getSelectedDate();
+                    String finalDate = fechaFin.getSelectedDate();
+                    String path = txtUbicacion.getText();
+                    
+                    //Validar si la ubicación es predeterminada o personalizada
+                    path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
+                    
+                    //Crear el reporte con los datos ingresados
+                    crearReporte(type, path, initialDate, finalDate);
+                    
+                }
+            }
+        }
+    }
+
+    /**
+     * Función para seleccionar la carpeta donde se generará el reporte
+     */
+    private void buscarCarpeta() {
+        //Crear el componentes FileChooser
+        JFileChooser chooser = new JFileChooser();
+        //Asignar el título
+        chooser.setDialogTitle("Selecciona el directorio");
+
+        //Asignar que sea de SOLO se seleccionen carpetas
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        //Abrir el FileChooser y obtener la opción seleccionadda
+        int opcion = chooser.showOpenDialog(this);
+
+        //Validar que se seleccionó una carpeta
+        if (opcion == JFileChooser.APPROVE_OPTION) {
+
+            //Obtener la ruta de la carpeta seleccionada
+            String path = chooser.getSelectedFile().getAbsolutePath();
+
+            //Validar que la ruta NO esté vacía
+            if (!path.trim().isEmpty()) {
+
+                //Validar la existencia de la ruta
+                if (validateFile(path)) {
+                    this.txtUbicacion.setText(path);
+
+                } else {
+                    //Si la ruta no es válida, asignar la ruta por defecto
+                    this.txtUbicacion.setText("Predeterminado");
+                }
+
+            } else {
+                //Si la ruta está vacía, asignar la ruta predeterminada
+                this.txtUbicacion.setText("Predeterminado");
+            }
+        } else {
+            //Si no se seleccionó una carpeta, asignar la ruta predeterminada
+            this.txtUbicacion.setText("Predeterminado");
+        }
+    }
+
+    /**
+     * Función para validar que un archivo o ruta sea válido
+     *
+     * @param path Ruta personalizada
+     * @return
+     */
+    private boolean validateFile(String path) {
+        //Crear un archivo con la ruta seleccionada
+        File filePath = new File(path);
+
+        //Validar que la ruta sea un archivo o carpeta existente        
+        return filePath.exists();
+    }
+
+    /**
+     * Función para validar que los campos NO estén vacíos
+     *
+     * @return TRUE en caso de que ningún campo esté vacío
+     */
+    private boolean validarCampos() {
+        //Validar que haya seleccionado algún tipo de reporte
+        if (boxTipoReporte.getSelectedIndex() > 0) {
+
+            //Comprobar que las fechas NO estén vacías
+            if (!fechaInicio.getSelectedDate().trim().isEmpty()) {
+                if (!fechaFin.getSelectedDate().trim().isEmpty()) {
+
+                    return true;
+
+                } else {
+                    msjError("La fecha final final no puede estar vacía");
+                }
+            } else {
+                msjError("La fecha inicial no puede estar vacía");
+            }
+        } else {
+            msjError("Debe seleccionar el tipo de reporte.");
+        }
+
+        return false;
+    }
+
+    /**
+     * Función para validar que las fechas sean correctas
+     *
+     * @return TRUE si las fechas son correctas
+     */
+    private boolean validarFechas() {
+
+        //Obtener las fechas seleccionadas
+        String fin = fechaFin.getSelectedDate();
+        String inicio = fechaInicio.getSelectedDate();
+
+        //Validar que las fechas ingresadas cumplan con los formatos de una
+        //fecha correcta: dd-MM-yyyy
+        if (formatoFecha(inicio)) {
+            if (formatoFecha(fin)) {
+                //Validar que las reglas estén dentro del rango correcto
+                if (rangoFecha(inicio)) {
+                    if (rangoFecha(fin)) {
+                        //Validar que la fecha de fin NO sea menor a la del final
+                        if (cronologia(inicio, fin)) {
+
+                            return true;
+
+                        } else {
+                            msjError("La fecha final no puede ser inferior a la fecha "
+                                    + "inicial.\nPor favor, vuelva a ingresar las fechas.");
+                        }
+                    } else {
+                        msjError("La fecha final no está dentro del rango correcto"
+                                + " de las fechas.\nRango: mayor que 1/1/1900, menor"
+                                + " que 1/1/2100.\n\nPor favor, vuelva a ingresar "
+                                + "la fecha inicial..");
+                    }
+                } else {
+                    msjError("La fecha inicial no está dentro del rango correcto"
+                            + " de las fechas.\nRango: mayor que 1/1/1900, menor"
+                            + " que 1/1/2100.\n\nPor favor, vuelva a ingresar "
+                            + "la fecha inicial..");
+                }
+            } else {
+                msjError("La fecha final ingresada es inválida.\nPor favor, "
+                        + "vuelva a ingresar la fecha final.");
+            }
+        } else {
+            msjError("La fecha inicial ingresada es inválida.\nPor favor, "
+                    + "vuelva a ingresar la fecha de inicio.");
+        }
+
+        return false;
+    }
+
+    /**
+     * Función para obtener la ruta de la carpeta predeterminada para los
+     * reportes generados
+     *
+     * @return ruta de la carpeta por defecto, según el tipo de reporte
+     */
+    private String getDefaultFolder() {
+
+        //Ubicar la carpeta principal "Documents"
+        String documentsPath = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
+
+        //Nombre de la carpeta "Aquatech" donde se almacenan los archivos 
+        //del programa
+        String mainPath = "\\AquaTech";
+
+        //Crear un archivo con la ruta de Documentos + la carpeta principal
+        File mainFolder = new File(documentsPath + mainPath);
+
+        //Validar que NO exista la carpeta principal AquaTech
+        if (!mainFolder.exists()) {
+            //Si no existe, crea la carpeta en "/Documents"
+            mainFolder.mkdir();
+        }
+
+        //Nombre de la carpeta principal donde se almacenan los reportes
+        mainPath += "\\Reportes generados";
+
+        //Crear un archivo en la ruta de Documentos + La carpeta de respaldos
+        File backupFolder = new File(documentsPath + mainPath);
+
+        //Validar que NO exista la carpeta principal de respaldos
+        if (!backupFolder.exists()) {
+            //Si no existe, crea la carpeta en "/Documents/AquaTech"
+            backupFolder.mkdir();
+        }
+
+        //Validar el tipo de reporte
+        switch (boxTipoReporte.getSelectedIndex()) {
+            case REP_TRASVASOS:
+                mainPath += "\\Reportes de los Trasvasos";
+                break;
+            case REP_DEUDAS:
+                mainPath += "\\Reportes de las Deudas";
+                break;
+            case REP_RECARGAS:
+                mainPath += "\\Reportes de las Recargas";
+                break;
+            case REP_COMPRAS:
+                mainPath += "\\Reportes de las Compras";
+                break;
+            case REP_VENTAS:
+                mainPath += "\\Reportes de las Ventas";
+                break;
+            case REP_CLIENTES:
+                mainPath += "\\Reportes de los clientes";
+                break;
+            case REP_PROVEEDORES:
+                mainPath += "\\Reportes de los proveedores";
+                break;
+        }
+
+        //Crear un archivo con la ruta de la carpeta donde se almacenarán los
+        //reportes, según el tipo de reporte seleccionado
+        File reportFolder = new File(documentsPath + mainPath);
+
+        //Validar que NO exista la carpeta para los reportes
+        if (!reportFolder.exists()) {
+            //Si no existe, se crea la carpeta del respectivo reporte
+            reportFolder.mkdir();
+        }
+
+        //Retornar la ruta predeterminada
+        return reportFolder.getAbsolutePath();
+    }
+
+    //CONSTANTES BACKEND
+    private static final int REP_TRASVASOS = 1;
+    private static final int REP_DEUDAS = 2;
+    private static final int REP_RECARGAS = 3;
+    private static final int REP_COMPRAS = 4;
+    private static final int REP_VENTAS = 5;
+    private static final int REP_CLIENTES = 6;
+    private static final int REP_PROVEEDORES = 7;
+
+    // ========== FRONTEND ==========
     /**
      * Constructor del panel de los ajustes
      */
@@ -31,24 +290,38 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      * Función para iniciar los componentes
      */
     private void initComponents() {
-        
+
+        //Asignar la ruta predeterminada y hacer ineditable el campo
+        txtUbicacion.setText("Predeterminado");
+        txtUbicacion.setEditable(false);
+
+        //Asignar la fuente al comboBox
         boxTipoReporte.setFont(Fuentes.segoe(16, PLANO));
 
         //Asignar los tooltip texts
         lblTipoReporte.setToolTipText("Determinar el tipo de información e "
                 + "historial que mostrará el reporte generado");
-        lblUbicacion.setToolTipText("Determinar la ubicación del archivo del "
-                + "reporte (PDF)\nEn caso de dejar el campo vacío, se creará "
-                + "en la ruta por defecto");
+        lblUbicacion.setToolTipText(
+                "<html>"
+                + "<p>"
+                + "Determinar la ubicación del archivo del reporte (PDF)."
+                + "</p>"
+                + "<p>"
+                + "En caso de dejar el campo vacío, se creará en la ruta por defecto"
+                + "</p>"
+                + "</html>"
+        );
 
+        //Asignar las propiedades al panel de reportes
         panelReportes.setBackground(BLANCO);
         panelReportes.setBorder(createLineBorder(GRIS));
-        
+
+        //Asignar los componentes al panel de reportes
         panelReportes.add(lblTitulo);
         panelReportes.add(lblTipoReporte);
         panelReportes.add(boxTipoReporte);
         panelReportes.add(lblUbicacion);
-        panelReportes.add(txtUbicación);
+        panelReportes.add(txtUbicacion);
         panelReportes.add(btnUbicacion);
         panelReportes.add(btnAceptar);
         panelReportes.add(btnCancelar);
@@ -63,34 +336,54 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      * Función para aplicar los listener a los componentes
      */
     private void listeners() {
+        btnCancelar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                vaciarCampos();
+            }
+        });
+
+        btnAceptar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                generarReporte();
+            }
+        });
+
+        btnUbicacion.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                buscarCarpeta();
+            }
+        });
     }
 
     /**
      * Función para reposicionar y redimensionar los componentes
+     *
      * @param width Ancho del parent contenedor
      * @param height Alto del parent contenedor
      */
     protected void relocateComponents(int width, int height) {
         //Variables recurrentes
         this.width = width;
-        this.panelHeight = height - padding*2;
-        this.fechaHeight = height/2 - padding; 
-        
+        this.panelHeight = height - padding * 2;
+
         //Posicionar la información al comienzo
         informacion.setLocation(padding, padding);
 
         //Validar el tamaño del ancho del contenedor
         if (this.width < 600) {
             panelPequenio();
-            
+
         } else if (this.width < 900) {
             panelMediano();
-            
+
         } else if (this.width >= 900) {
             this.setPreferredSize(new Dimension(width, height));
             panelGrande();
         }
-        
+
         //Reposicionar el reporte
         relocateReporte();
         //Reposicionar la información
@@ -99,106 +392,110 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         fechaInicio.relocateComponents();
         fechaFin.relocateComponents();
     }
-    
+
     /**
      * Función para reposicionar y redimensionar los componentes de la clase
      * cuando el panel contenedor tenga un tamaño menor a 600 px
      */
-    private void panelPequenio(){
+    private void panelPequenio() {
         //Ancho de los paneles
-        int w = this.width - padding*2;
-        
+        int w = this.width - padding * 2;
+
         //Tamaño del panel de información
-        informacion.setSize(w, 300);
-        
+        informacion.setSize(w, 260);
+
         //Posición del panel de reportes
-        int y = informacion.getHeight() + padding*2;
+        int y = informacion.getHeight() + padding * 2;
         panelReportes.setBounds(padding, y, w, panelHeight);
-        
+
+        //Altura de las fechas
+        int h = 320;
         //Posición de la primera fecha
         y += panelHeight + padding;
-        fechaInicio.setBounds(padding, y, w, fechaHeight);
-        
+        fechaInicio.setBounds(padding, y, w, h);
+
         //Posición de la segunda fecha
-        y += fechaHeight + padding;
-        fechaFin.setBounds(padding, y, w, fechaHeight);
-        
+        y += h + padding;
+        fechaFin.setBounds(padding, y, w, h);
+
         //Tamaño del panel
-        int absoluteHeight = padding*5 + panelHeight + informacion.getHeight() + fechaHeight*2 ;
+        int absoluteHeight = padding * 5 + panelHeight + informacion.getHeight() + h * 2;
         this.setPreferredSize(new Dimension(width, absoluteHeight));
     }
-    
+
     /**
      * Función para reposicionar y redimensionar los componentes de la clase
      * cuando el panel contenedor tenga un tamaño mayor a 600px, pero menor a
      * 900 px
      */
-    private void panelMediano(){
+    private void panelMediano() {
         //Obtener el tercio del panel contenedor
-        int halfWidth = width/2 - padding *2;
-        int infoWidth = (halfWidth < infoMaxWidth) ? halfWidth : infoMaxWidth; 
+        int halfWidth = width / 2 - padding * 2;
+        int infoWidth = (halfWidth < infoMaxWidth) ? halfWidth : infoMaxWidth;
         informacion.setSize(infoWidth, panelHeight);
-        
+
         //Posicionar el panel de reportes al lado de la información
-        int x = padding*2 + infoWidth;
+        int x = padding * 2 + infoWidth;
         //Asignar el ancho como el resto del espacio
         int w = width - x - padding;
         panelReportes.setBounds(x, padding, w, panelHeight);
-        
+
+        //Altura de las fechas
+        int h = 320;
         //Posición vertical de las fechas
-        int y = padding*2 + panelHeight;
+        int y = padding * 2 + panelHeight;
         //Ancho de las fechas
-        w = width/2 - padding*3/2;
-        fechaInicio.setBounds(padding, y, w, fechaHeight);
-        
+        w = width / 2 - padding * 3 / 2;
+        fechaInicio.setBounds(padding, y, w, h);
+
         //Posición de la segunda fecha, al lado de la primera fecha
-        x = padding*2 + w;
-        fechaFin.setBounds(x, y, w, fechaHeight);
-        
-        int absoluteHeight = padding*3 + fechaHeight + panelHeight;
+        x = padding * 2 + w;
+        fechaFin.setBounds(x, y, w, h);
+
+        int absoluteHeight = padding * 3 + h + panelHeight;
         this.setPreferredSize(new Dimension(width, absoluteHeight));
     }
-    
+
     /**
      * Función para reposicionar y redimensionar los componentes de la clase
      * cuando el panel contenedor tenga un tamaño mayor a 900 px
      */
-    private void panelGrande(){
-        
+    private void panelGrande() {
         //Aumentar el ancho y el alto en 15 px
         this.width += 15;
         this.panelHeight += 15;
-        this.fechaHeight = panelHeight/2 - padding/2;
-        
+
         //Obtener el tercio del panel contenedor
-        int thirdWidth = width/3 - padding *2;
+        int thirdWidth = width / 3 - padding * 2;
         //Obtener el ancho del panel del info SIN superar el límite máximo
-        int infoWidth = (thirdWidth < infoMaxWidth) ? thirdWidth : infoMaxWidth; 
+        int infoWidth = (thirdWidth < infoMaxWidth) ? thirdWidth : infoMaxWidth;
         //Asignar el tamaño
         informacion.setSize(infoWidth, panelHeight);
-        
+
+        //Altura de las fechas
+        int h = panelHeight / 2 - padding / 2;
         //Posición en X de las fechas
         int x = width - infoWidth - padding;
         //Asignar la posición y tamaño de la primera fecha
-        fechaInicio.setBounds(x, padding, infoWidth, fechaHeight);
-        
+        fechaInicio.setBounds(x, padding, infoWidth, h);
+
         //La altura será un padding debajo de la mitad
-        int y = fechaHeight + padding*2;
+        int y = h + padding * 2 + 1;
         //Asignar la posición y tamaño de la segunda fecha
-        fechaFin.setBounds(x, y, infoWidth, fechaHeight);
-        
+        fechaFin.setBounds(x, y, infoWidth, h);
+
         //La posición en x será al lado del panel del info
-        x = padding*2 + infoWidth;
+        x = padding * 2 + infoWidth;
         //Ancho del reporte, siendo este lo restante entre 
         //el panel de info y el ancho de las fechas
-        int w = width - padding *4 - infoWidth*2;
+        int w = width - padding * 4 - infoWidth * 2;
         panelReportes.setBounds(x, padding, w, panelHeight);
     }
 
     /**
      * Función para reposicionar los componentes dentro del panel de reportes
      */
-    private void relocateReporte(){
+    private void relocateReporte() {
         int txtHeight = 40;
         int gapV = 5;
         int repW = panelReportes.getWidth();
@@ -208,7 +505,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         //declarar sus tamaños
         boxTipoReporte.setSize(txtWidth, txtHeight);
         btnUbicacion.setSize(txtHeight, txtHeight);
-        txtUbicación.setSize(txtWidth - txtHeight - gapV*2, txtHeight);
+        txtUbicacion.setSize(txtWidth - txtHeight - gapV * 2, txtHeight);
 
         //Posición del título del panel para los datos
         lblTitulo.setLocation(padding, padding);
@@ -234,7 +531,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         positionY = positionY + lblUbicacion.getHeight() + gapV;
         int positionX = repW - padding - txtHeight;
         btnUbicacion.setLocation(positionX, positionY);
-        txtUbicación.setLocation(padding, positionY);
+        txtUbicacion.setLocation(padding, positionY);
 
         //Posición vertical de los dos botones inferiores
         positionY = panelReportes.getHeight() - txtHeight - padding;
@@ -250,25 +547,19 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         btnAceptar.setSize(btnW, txtHeight);
         btnAceptar.setLocation(positionX, positionY);
     }
-    /**
-     * Función para obtener la ubicación de generación del reporte
-     */
-    private void getDirectoryPath(){
-        
-    }
-    
+
     /**
      * Función para vaciar todos los campos
-     */ 
-    protected void vaciarCampos(){
+     */
+    protected void vaciarCampos() {
         fechaInicio.vaciarCampos();
         fechaFin.vaciarCampos();
         boxTipoReporte.setSelectedIndex(0);
-        txtUbicación.setText("");
+        txtUbicacion.setText("");
     }
-    
+
     //ATRIBUTOS
-    private static int width, panelHeight, fechaHeight;
+    private static int width, panelHeight;
     private static final int padding = 20;
     private static final int infoMaxWidth = 300;
 
@@ -281,72 +572,117 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private static final Label lblTitulo = new Label("Generar Reportes", TITULO, 24);
 
     private static final Label lblTipoReporte = new Label("Tipo de reporte", PLANO, 18, true);
-    private static final String[] opciones = {"Seleccionar", "Trasvasos", "Recargas", "Compras", "Ventas"};
+    private static final String[] opciones = {"Seleccionar", "Trasvasos", "Deudas", "Recargas", "Compras", "Ventas", "Clientes", "Proveedores"};
     private static final JComboBox boxTipoReporte = new JComboBox(opciones);
 
     private static final Label lblUbicacion = new Label("Ubicación del reporte", PLANO, 18, true);
-    private static final CampoTexto txtUbicación = new CampoTexto("Ubicación del reporte", CUALQUIER);
+    private static final CampoTexto txtUbicacion = new CampoTexto("Ubicación del reporte", CUALQUIER);
 
     private static final Boton btnAceptar = new Boton("Guardar", CELESTE);
     private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
-    
+
     private static final BotonDirectory btnUbicacion = new BotonDirectory();
-}
-
-/**
- * Clase para los paneles con las fechas
- */
-class PanelFecha extends JPanel implements properties.Constantes {
 
     /**
-     * Constructor de los paneles de fechas
-     * @param tipoFecha Titulo del panel
+     * Clase para los paneles con las fechas
      */
-    public PanelFecha(String tipoFecha) {
-        this.setLayout(null);
-        this.setBackground(properties.Colores.BLANCO);
-        this.setBorder(createLineBorder(properties.Colores.GRIS));
+    private static class PanelFecha extends JPanel {
 
-        initComponets(tipoFecha);
+        /**
+         * Constructor de los paneles de fechas
+         *
+         * @param tipoFecha Titulo del panel
+         */
+        public PanelFecha(String tipoFecha) {
+            this.setLayout(null);
+            this.setBackground(BLANCO);
+            this.setBorder(createLineBorder(GRIS));
+
+            initComponets(tipoFecha);
+
+            listener();
+        }
+
+        /**
+         * Función para iniciar los componentes
+         *
+         * @param tipoFecha Título del panel
+         */
+        private void initComponets(String tipoFecha) {
+            //Propiedades del título
+            lblTitulo.setText(tipoFecha);
+            lblTitulo.setSize(lblTitulo.getPreferredSize());
+
+            //Asignar bordes grises
+            dateChooser.setBorder(createLineBorder(GRIS));
+            
+            //Obtener la fecha del día, con su formato, y colocarlo
+            //en el campo de texto
+            txtFecha.setText(dateFormat.format(dateChooser.getCalendar().getTime()));
+            
+            this.add(lblTitulo);
+            this.add(txtFecha);
+            this.add(dateChooser);
+        }
+
+        /**
+         * Función para asignar los listener a los componentes
+         */
+        private void listener() {
+            dateChooser.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+                //Validar que el dato NO sea nulo
+                if (evt.getOldValue() != null) {
+                    //Obtener la fecha seleccionada, con el formato, y asignarlo
+                    //al campo de texto
+                    txtFecha.setText(
+                            dateFormat.format(dateChooser.getCalendar().getTime())
+                    );
+                }
+            });
+        }
+
+        /**
+         * Función para reposicionar y redimensionar los elementos de las fechas
+         */
+        protected void relocateComponents() {
+            int middleX = this.getWidth() / 2;
+            int padding = 10;
+
+            int x = middleX - lblTitulo.getWidth() / 2;
+            lblTitulo.setLocation(x, padding);
+
+            int w = this.getWidth() - padding * 4;
+            int h = 30;
+            int y = padding * 2 + lblTitulo.getHeight();
+            txtFecha.setBounds(padding * 2, y, w, h);
+
+            y += h + padding;
+            w = this.getWidth() - padding * 4;
+            h = this.getHeight() - y - padding * 2;
+            dateChooser.setBounds(padding * 2, y, w, h);
+        }
+
+        /**
+         * Función para vaciar los campos
+         */
+        protected void vaciarCampos() {
+            txtFecha.setText("");
+        }
+
+        /**
+         * Función para obtener la fecha seleccionada en el formato dd-MM-YYYY
+         *
+         * @return String de la fecha
+         */
+        protected String getSelectedDate() {
+            return txtFecha.getText();
+        }
+
+        //ATRIBUTOS
+        private static final java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd-MM-yyyy");
+        //COMPONENTES
+        private final Label lblTitulo = new Label("", TITULO, 22);
+        private final CampoTexto txtFecha = new CampoTexto("99-99-9999", FECHA);
+        private final JCalendar dateChooser = new JCalendar();
     }
-
-    /**
-     * Función para iniciar los componentes
-     * @param tipoFecha Título del panel
-     */
-    private void initComponets(String tipoFecha) {
-        lblTitulo.setText(tipoFecha);
-        lblTitulo.setSize(lblTitulo.getPreferredSize());
-
-        this.add(lblTitulo);
-        this.add(txtFecha);
-    }
-
-    /**
-     * Función para reposicionar y redimensionar los elementos de las fechas
-     */
-    protected void relocateComponents() {
-        int middleX = this.getWidth() / 2;
-        int padding = 10;
-
-        int x = middleX - lblTitulo.getWidth() / 2;
-        lblTitulo.setLocation(x, padding);
-
-        int w = this.getWidth() - padding * 4;
-        int h = 25;
-        int y = padding*2 + lblTitulo.getHeight();
-        txtFecha.setBounds(padding*2, y, w, h);
-    }
-
-    /**
-     * Función para vaciar los campos
-     */
-    protected void vaciarCampos(){
-        txtFecha.setText("");
-    }
-    
-    //Componentes
-    private final Label lblTitulo = new Label("", TITULO, 22);
-    private final CampoTexto txtFecha = new CampoTexto("99-99-9999", FECHA);
-
 }

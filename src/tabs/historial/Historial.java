@@ -103,6 +103,7 @@ public class Historial extends JPanel implements properties.Constantes, properti
             }
         });
     }
+    
     /**
      * Función para reposicionar y redimensionar los componentes
      * @param size Tamaño del parent contenedor
@@ -162,6 +163,8 @@ public class Historial extends JPanel implements properties.Constantes, properti
         panelRecargas.vaciarCampos();
         panelVentas.vaciarCampos();
         panelCompras.vaciarCampos();
+        
+        replacePanel(HISTORIAL_TRASVASO);
     }
     
     public void actualizarDatos(){

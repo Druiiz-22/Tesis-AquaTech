@@ -15,6 +15,8 @@ import tabs.ventas.Ventas;
 import tabs.compras.Compras;
 import tabs.compras.Recargas;
 import database.DeleteDB;
+import tabs.Proveedores;
+import tabs.clientes.PanelClientes;
 import static java.awt.Font.PLAIN;
 import static javax.swing.RowFilter.regexFilter;
 import static properties.Mensaje.msjYesNo;
@@ -22,8 +24,6 @@ import static properties.Mensaje.msjError;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
-import tabs.Proveedores;
-import tabs.clientes.PanelClientes;
 
 public class Tabla extends JScrollPane implements properties.Constantes {
 
@@ -46,10 +46,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         if (type == CLIENTES) {
 
             itemTrasv.addActionListener((ActionEvent e) -> {
-                if (validarSelect()) {
+                //Obtener el index de la fila seleccionada en la tabla
+                int index = tabla.getSelectedRow();
+                if (validarSelect(index)) {
 
-                    Object cedula = modelo.getValueAt(tabla.getSelectedRow(), 0);
-                    Object apellido = modelo.getValueAt(tabla.getSelectedRow(), 2);
+                    Object cedula = tabla.getValueAt(index, 0);
+                    Object apellido = tabla.getValueAt(index, 2);
 
                     //Validar que los campos NO estén vacíos
                     if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
@@ -66,9 +68,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             });
 
             itemVend.addActionListener((ActionEvent e) -> {
-                if (validarSelect()) {
-                    Object cedula = modelo.getValueAt(tabla.getSelectedRow(), 0);
-                    Object apellido = modelo.getValueAt(tabla.getSelectedRow(), 2);
+                //Obtener el index de la fila seleccionada en la tabla
+                int index = tabla.getSelectedRow();
+                if (validarSelect(index)) {
+                    Object cedula = tabla.getValueAt(index, 0);
+                    Object apellido = tabla.getValueAt(index, 2);
 
                     //Validar que los campos NO estén vacíos
                     if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
@@ -86,9 +90,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         } else if (type == PROVEEDOR) {
             itemRecar.addActionListener((ActionEvent e) -> {
-                if (validarSelect()) {
-                    Object rif = modelo.getValueAt(tabla.getSelectedRow(), 0);
-                    Object nombre = modelo.getValueAt(tabla.getSelectedRow(), 1);
+                //Obtener el index de la fila seleccionada en la tabla
+                int index = tabla.getSelectedRow();
+                if (validarSelect(index)) {
+                    Object rif = tabla.getValueAt(index, 0);
+                    Object nombre = tabla.getValueAt(index, 1);
 
                     //Validar que los campos NO estén vacíos
                     if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
@@ -105,9 +111,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             });
 
             itemCompr.addActionListener((ActionEvent e) -> {
-                if (validarSelect()) {
-                    Object rif = modelo.getValueAt(tabla.getSelectedRow(), 0);
-                    Object nombre = modelo.getValueAt(tabla.getSelectedRow(), 1);
+                //Obtener el index de la fila seleccionada en la tabla
+                int index = tabla.getSelectedRow();
+                if (validarSelect(index)) {
+                    Object rif = tabla.getValueAt(index, 0);
+                    Object nombre = tabla.getValueAt(index, 1);
 
                     //Validar que los campos NO estén vacíos
                     if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
@@ -134,13 +142,14 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     private void eliminar() {
 
-        if (validarSelect()) {
+        int index = tabla.getSelectedRow();
+        if (validarSelect(index)) {
 
             //Mensaje de confirmación
             if (msjYesNo("¿Está seguro de borrar el registro seleccionado?")) {
                 try {
                     //Obtener la identificación del cliente o proveedor
-                    Object dni = modelo.getValueAt(tabla.getSelectedRow(), 0);
+                    Object dni = tabla.getValueAt(index, 0);
 
                     //Comprobar el tipo de la tabla
                     if (type == CLIENTES) {
@@ -148,8 +157,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                         //Intentar eliminarlo de la base de datos
                         if (DeleteDB.removeCliente(dni)) {
 
-                            //Eliminarlo de la tabla
-                            modelo.removeRow(tabla.getSelectedRow());
+                            //Ya que no es posible eliminar una fila de una tabla
+                            //sin acceder a su Model, al eliminar la final en la
+                            //base de datos, se actualizará la tabla
+                            actualizarDatos();
+
                         }
 
                     } else if (type == PROVEEDOR) {
@@ -157,8 +169,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                         //Intentar eliminarlo de la base de datos
                         if (DeleteDB.removeProveedor(dni)) {
 
-                            //Eliminarlo de la tabla
-                            modelo.removeRow(tabla.getSelectedRow());
+                            //Ya que no es posible eliminar una fila de una tabla
+                            //sin acceder a su Model, al eliminar la final en la
+                            //base de datos, se actualizará la tabla
+                            actualizarDatos();
                         }
 
                     }
@@ -172,17 +186,19 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     /**
      * Función para editar una fila
      */
-    public void editar() {
-        if (validarSelect()) {
+    private void editar() {
+        int index = tabla.getSelectedRow();
+        if (validarSelect(index)) {
             if (type == CLIENTES) {
 
-                Object cedula = modelo.getValueAt(tabla.getSelectedRow(), 0);
-                Object nombre = modelo.getValueAt(tabla.getSelectedRow(), 1);
-                Object apellido = modelo.getValueAt(tabla.getSelectedRow(), 2);
-                Object telefono = modelo.getValueAt(tabla.getSelectedRow(), 3);
-                Object direccion = modelo.getValueAt(tabla.getSelectedRow(), 4);
+                Object cedula = tabla.getValueAt(index, 0);
+                Object nombre = tabla.getValueAt(index, 1);
+                Object apellido = tabla.getValueAt(index, 2);
+                Object telefono = tabla.getValueAt(index, 3);
+                Object direccion = tabla.getValueAt(index, 4);
 
                 PanelClientes.editCliente(
+                        index,
                         cedula.toString(),
                         nombre.toString(),
                         apellido.toString(),
@@ -192,12 +208,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
             } else if (type == PROVEEDOR) {
 
-                Object rif = modelo.getValueAt(tabla.getSelectedRow(), 0);
-                Object nombre = modelo.getValueAt(tabla.getSelectedRow(), 1);
-                Object telefono = modelo.getValueAt(tabla.getSelectedRow(), 2);
-                Object direccion = modelo.getValueAt(tabla.getSelectedRow(), 3);
+                Object rif = tabla.getValueAt(index, 0);
+                Object nombre = tabla.getValueAt(index, 1);
+                Object telefono = tabla.getValueAt(index, 2);
+                Object direccion = tabla.getValueAt(index, 3);
 
                 Proveedores.editProveedor(
+                        index,
                         rif.toString(),
                         nombre.toString(),
                         telefono.toString(),
@@ -213,9 +230,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      *
      * @return
      */
-    private boolean validarSelect() {
+    private boolean validarSelect(int index) {
         //Obtener el indice del item seleccionado
-        int index = tabla.getSelectedRow();
         int count = tabla.getSelectedRowCount();
 
         //Validar que SÍ haya un item seleccionado y que SOLO se haya
@@ -237,7 +253,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     public void actualizarDatos() {
         //Matriz para guardar los datos retornados de la base de datos
-        Object[][] datos;
+        Object[][] datos = new Object[][]{{""}};
 
         //Determinar el tipo de la tabla y buscar sus registros en la base de datos
         switch (type) {
@@ -266,11 +282,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case ADMIN_USUARIOS:
-                datos = ReadDB.getCompras();
+                datos = ReadDB.getUsers();
                 break;
-
-            default:
-                datos = new Object[][]{{""}};
         }
 
         //Eliminar todos los componentes de la tabla
@@ -305,6 +318,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     public Tabla(int type) {
         //Guardar el tipo
         this.type = type;
+        this.getVerticalScrollBar().setUnitIncrement(8);
 
         //Determinar la cabecera
         header();
@@ -482,26 +496,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         //Retornar la imagen escalada
         return new ImageIcon(img.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
-    }
-
-    /**
-     * <h2>Función para agregar una fila a la tabla</h2>
-     * <p>
-     * El arreglo con los datos, deberá tener un tamaño determinado según la
-     * cantidad de columnas de la tabla.</p>
-     * <ul>
-     * <li>Clientes: 5 columnas</li>
-     * <li>Proveedor: 4 columnas</li>
-     * <li>Historial Trasvaso: 8 columnas</li>
-     * <li>Historial Recarga: 7 columnas</li>
-     * <li>Historial Venta: 6 columnas</li>
-     * <li>Historial Compra: 7 columnas</li>
-     * </ul>
-     *
-     * @param row Fila con los datos
-     */
-    public void agregar(String[] row) {
-        modelo.addRow(row);
     }
 
     /**

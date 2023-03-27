@@ -115,6 +115,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
             case ADMIN:
                 this.add(panelAdmin, BorderLayout.CENTER);
                 panelAdmin.relocateComponents(this.getSize());
+                panelAdmin.actualizarDatos();
                 break;
 
         }

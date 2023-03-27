@@ -100,7 +100,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     //ATRIBUTOS
     private static String userField, passField;
     private static String userDB = "DIEGO RUIZ";
-    private static int rolDB = EMPLEADO;
+    private static int rolDB = ADMINISTRADOR;
 
     // ========== FRONTEND ==========
     /**

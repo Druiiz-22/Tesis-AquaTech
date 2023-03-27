@@ -26,7 +26,7 @@ public class Mensaje extends JOptionPane {
     }
 
     /**
-     * <h2>Función para mostrar un mensaje de advertencia.</h2>
+     * <h2>Función para mostrar un mensaje informativo.</h2>
      *
      * @param msj Mensaje que será mostrado.
      */

@@ -82,11 +82,15 @@ public class ReadDB {
         Object[][] clientes = {
             {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
             {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
+            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
+            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
+            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
+            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
+            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"}
         };
 
@@ -177,6 +181,18 @@ public class ReadDB {
         return historial;
     }
 
+    public static Object[][] getUsers(){
+        //ID, Cedula, Rol, Correo
+        
+        Object[][] usuarios = {
+            {1, "25467109", "ADMIN", "administrador@aquatech.com"},
+            {2, "21545987", "EMPLEADO", "segundo_correo@aquatech.com"},
+            {3, "12445781", "ADMIN", "kevinduarte59@gmail.com"},
+        };
+        
+        return usuarios;
+    }
+    
     /**
      * Función para validar la existencia de un cliente en la base de datos,
      * mediante el uso de su cédula.
@@ -198,4 +214,6 @@ public class ReadDB {
     public static int getProveedorID(String rif) {
         return 1;
     }
+    
+    
 }

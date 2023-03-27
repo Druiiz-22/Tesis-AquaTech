@@ -116,8 +116,12 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                     //Intentar crear el cliente en la base de datos
                     if (CreateDB.createProveedor(rif, nombre, telefono, direccion)) {
 
-                        //Agregar el nuevo proveedor a la tabla en el panel de proveedores
-                        Proveedores.addProveedor(new String[]{rif, nombre, telefono, direccion});
+                        //Ya que puede dar muchos problemas el alterar o agregar
+                        //un dato a una tabla (y no a su Model), la forma de 
+                        //visualizar los cambios será actualizando los datos 
+                        //de la tabla con la base de datos
+                        Proveedores.actualizarDatos();
+
                         vaciarCampos();
                     }
                 }
@@ -140,10 +144,14 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                         //Intentar editar el proveedor en la base de datos
                         if (UpdateDB.editProveedor(String.valueOf(id), rif, nombre, telefono, direccion)) {
 
-                            //Agregar el nuevo proveedor a la tabla en el panel de proveedores
-                            Proveedores.addProveedor(new String[]{rif, nombre, telefono, direccion});
-                            vaciarCampos();
+                            //Ya que puede dar muchos problemas el alterar o agregar
+                            //un dato a una tabla (y no a su Model), la forma de 
+                            //visualizar los cambios será actualizando los datos 
+                            //de la tabla con la base de datos
+                            Proveedores.actualizarDatos();
 
+                            vaciarCampos();
+                            dispose();
                         }
                     }
                 }
@@ -204,9 +212,9 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
             if (formatoTelefono(telefono)) {
                 if (formatoRIF(rif)) {
                     if (direccion.length() >= 2 && direccion.length() <= 255) {
-                        
+
                         return true;
-                        
+
                     } else {
                         msj = "La dirección debe tener un rango de 2 a 255 letras." + msj;
                     }
@@ -252,7 +260,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     }
 
     //ATRIBUTOS BACKEND
-    private static int id;
+    private static int id, index;
     private static String rifViejo;
     private static Boolean crearProveedor;
     private static String nombre, rif, telefono, direccion;
@@ -268,7 +276,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         this.getContentPane().setBackground(BLANCO);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
-        
+
         initComponents();
         listeners();
     }
@@ -277,13 +285,13 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * Función para iniciar los componentes de la ventana
      */
     private void initComponents() {
-        
+
         logo.setForeground(CELESTE);
         logo.setSize(logo.getPreferredSize());
         logo.setFont(segoe(32, BOLD));
 
         lblTitulo.setVerticalAlignment(javax.swing.JLabel.TOP);
-        
+
         this.add(logo);
         this.add(lblTitulo);
         this.add(lblNombre);
@@ -366,7 +374,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
             );
         }
     }
-    
+
     /**
      * Función para agregar un nuevo proveedor
      */
@@ -388,12 +396,14 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     /**
      * Función para editar un proveedor registrado
      *
+     * @param index
      * @param nombre
      * @param rif
      * @param telefono
      * @param direc
      */
-    protected void editar(String rif, String nombre, String telefono, String direc) {
+    protected void editar(int index, String rif, String nombre, String telefono, String direc) {
+        NuevoProveedor.index = index;
         this.setTitle("Editar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);

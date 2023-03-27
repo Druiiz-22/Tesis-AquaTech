@@ -4,9 +4,8 @@
  */
 package pruebas;
 
-import components.PanelNotificaciones;
-import components.Tabla;
 import java.awt.Dimension;
+import static javax.swing.BorderFactory.createLineBorder;
 
 /**
  *
@@ -24,9 +23,11 @@ public class Prue extends javax.swing.JFrame {
         this.setSize(min);
         this.setLocationRelativeTo(null);
         
-        PanelNotificaciones noti = new PanelNotificaciones();
-        noti.setLocation(100, 50);
-        this.add(noti);
+        jCalendar1.setBorder(createLineBorder(java.awt.Color.BLUE));
+        
+//        PanelNotificaciones noti = new PanelNotificaciones();
+//        noti.setLocation(100, 50);
+//        this.add(noti);
     }
 
     /**
@@ -38,22 +39,68 @@ public class Prue extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jPanel1 = new javax.swing.JPanel();
+        jCalendar1 = new com.toedter.calendar.JCalendar();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
+
+        jCalendar1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jCalendar1PropertyChange(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(89, Short.MAX_VALUE)
+                .addComponent(jCalendar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(74, 74, 74))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(91, Short.MAX_VALUE)
+                .addComponent(jCalendar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(88, 88, 88))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 650, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jCalendar1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jCalendar1PropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCalendar1PropertyChange
 
     
     /**
@@ -67,7 +114,7 @@ public class Prue extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -90,95 +137,11 @@ public class Prue extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void notas(){
-        //        PanelFactura fac = new PanelFactura(properties.Constantes.COMPRAS);
-//        fac.setSize(300, 400);
-//        fac.relocateComponents();
-//        
-//        PanelFactura fac2 = new PanelFactura(properties.Constantes.VENTAS_BOTELLON);
-//        fac2.setLocation(fac.getX()+fac.getWidth(), 0);
-//        fac2.setSize(300, 450);
-//        fac2.relocateComponents();
-//        
-//        PanelFactura fac3 = new PanelFactura(properties.Constantes.VENTAS_TRASVASO);
-//        fac3.setLocation(150, fac2.getY()+fac2.getHeight());
-//        fac3.setSize(300, 400);
-//        fac3.relocateComponents();
-//        
-//        JPanel contenedor = new JPanel(null);
-//        contenedor.setPreferredSize(new Dimension(1000, 1000));
-//        
-//        contenedor.add(fac);
-//        contenedor.add(fac2);
-//        contenedor.add(fac3);
-//        
-//        
-//        JScrollPane scroll = new JScrollPane();
-//        scroll.setLocation(0, 0);
-//        scroll.setSize(min);
-//        scroll.setViewportView(contenedor);
-//        
-//        this.add(scroll);
-        
-//        GridLayout grid = new GridLayout(2, 5);
-//        grid.setHgap(10);
-//        grid.setVgap(10);
-//        this.setLayout(grid);
-//        
-//        this.addComponentListener(new ComponentAdapter() {
-//            @Override
-//            public void componentResized(ComponentEvent e) {
-//                int width = getWidth();
-//                
-//                System.out.println(width);
-//                
-//                if(width < 500){
-//                    grid.setColumns(2);
-//                    grid.setRows(5);
-//                } else if(width < 700){
-//                    grid.setColumns(3);
-//                    grid.setRows(4);
-//                    
-//                } else if(width < 900){
-//                    grid.setColumns(4);
-//                    grid.setRows(3);
-//                } else {
-//                    grid.setColumns(5);
-//                    grid.setRows(2);
-//                }
-//                
-//                System.out.println("row = "+grid.getRows()+" col = "+grid.getColumns());
-//                setLayout(grid);
-//                
-//                revalidate();
-//                repaint();
-//            }
-//        });
-//        
-//        JButton btn1 = new JButton("boton 1");
-//        JButton btn2 = new JButton("boton 2");
-//        JButton btn3 = new JButton("boton 3");
-//        JButton btn4 = new JButton("boton 4");
-//        JButton btn5 = new JButton("boton 5");
-//        JButton btn6 = new JButton("boton 6");
-//        JButton btn7 = new JButton("boton 7");
-//        JButton btn8 = new JButton("boton 8");
-//        JButton btn9 = new JButton("boton 9");
-//        JButton btn10 = new JButton("boton 10");
-//        
-//        this.add(btn1);
-//        this.add(btn2);
-//        this.add(btn3);
-//        this.add(btn4);
-//        this.add(btn5);
-//        this.add(btn6);
-//        this.add(btn7);
-//        this.add(btn8);
-//        this.add(btn9);
-//        this.add(btn10);
-    }
+   
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JCalendar jCalendar1;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

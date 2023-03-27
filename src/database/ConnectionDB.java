@@ -6,7 +6,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 /**
  * Clase para realizar la conexión con la base de datos
  */
-public class ConexionDB {
+public class ConnectionDB {
     private static String bd = "aquatech";
     private static String url = "jdbc:mysql://localhost/";
     private static String driver = "com.mysql.cj.jdbc.Driver";
@@ -14,7 +14,7 @@ public class ConexionDB {
     private static String password;
     private static java.sql.Connection cx;
 
-    public ConexionDB(String user, String password) {
+    public ConnectionDB(String user, String password) {
         this.user = user;
         this.password = password;
     }

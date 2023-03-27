@@ -24,6 +24,8 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
 
         initComponents();
         mouseListeners();
+        
+        
     }
 
     /**

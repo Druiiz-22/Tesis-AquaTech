@@ -106,36 +106,22 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
     /**
      * Función para actualizar los datos en la tabla de proveedores
      */
-    public void actualizarDatos() {
+    public static void actualizarDatos() {
         tabla.actualizarDatos();
-    }
-
-    /**
-     * Función para agregar un proveedor a la tabla de proveedores
-     *
-     * @param informacion Información del nuevo proveedor:
-     * <ul>
-     * <li>RIF</li>
-     * <li>Nombre</li>
-     * <li>Telefono</li>
-     * <li>Direccion</li>
-     * </ul>
-     */
-    protected static void addProveedor(String[] informacion) {
-        tabla.agregar(informacion);
     }
 
     /**
      * Función para acceder a la ventana de nuevo proveedor y enviar la
      * información del proveedor seleccionado para su edición
      *
+     * @param index
      * @param rif
      * @param nombre
      * @param telefono
      * @param direccion
      */
-    public static void editProveedor(String rif, String nombre, String telefono, String direccion) {
-        nuevoProv.editar(rif, nombre, telefono, direccion);
+    public static void editProveedor(int index, String rif, String nombre, String telefono, String direccion) {
+        nuevoProv.editar(index, rif, nombre, telefono, direccion);
     }
 
     //COMPONENTES

@@ -80,8 +80,9 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
         card.show(contenedor, "1");
 
         //Scroll para el panel contenedor
-        scroll.setBorder(null);
         scroll.setOpaque(false);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(8);
         scroll.getViewport().setOpaque(false);
         scroll.setViewportView(contenedor);
 

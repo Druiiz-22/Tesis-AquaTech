@@ -72,6 +72,7 @@ public class Compras extends JPanel implements properties.Constantes, properties
         //Scroll para el panel contenedor
         scroll.setOpaque(false);
         scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(8);
         scroll.getViewport().setOpaque(false);
         scroll.setViewportView(contenedor);
 
