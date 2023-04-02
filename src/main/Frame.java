@@ -92,7 +92,8 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(notificaciones);
 
         //LISTA DE COSAS PENDIENTES
-        //- Realizar la generación de reportes
+        //- Arreglar la selección de reportes sin fechas (clientes-proveedores)
+        //- Realizar la generación de reportes de deudas
         
         //- Diseñar los ajustes.
         //- Diseñar los pedidos.

@@ -20,7 +20,7 @@ import static properties.Mensaje.msjYesNo;
 import static properties.ValidarTexto.formatoFecha;
 import static properties.ValidarTexto.rangoFecha;
 import static properties.ValidarTexto.cronologia;
-import static tabs.admin.CreateReport.crearReporte;
+import tabs.admin.CrearReporte;
 
 /**
  * Clase para la creación del panel de generación de reportes, en el
@@ -47,7 +47,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                     path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
                     
                     //Crear el reporte con los datos ingresados
-                    crearReporte(type, path, initialDate, finalDate);
+                    CrearReporte.crear(type, path, initialDate, finalDate);
                     
                 }
             }
@@ -229,25 +229,25 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         //Validar el tipo de reporte
         switch (boxTipoReporte.getSelectedIndex()) {
             case REP_TRASVASOS:
-                mainPath += "\\Reportes de los Trasvasos";
+                mainPath += "\\Trasvasos";
                 break;
             case REP_DEUDAS:
-                mainPath += "\\Reportes de las Deudas";
+                mainPath += "\\Deudas";
                 break;
             case REP_RECARGAS:
-                mainPath += "\\Reportes de las Recargas";
+                mainPath += "\\Recargas";
                 break;
             case REP_COMPRAS:
-                mainPath += "\\Reportes de las Compras";
+                mainPath += "\\Compras";
                 break;
             case REP_VENTAS:
-                mainPath += "\\Reportes de las Ventas";
+                mainPath += "\\Ventas";
                 break;
             case REP_CLIENTES:
-                mainPath += "\\Reportes de los clientes";
+                mainPath += "\\Clientes";
                 break;
             case REP_PROVEEDORES:
-                mainPath += "\\Reportes de los proveedores";
+                mainPath += "\\Proveedores";
                 break;
         }
 
