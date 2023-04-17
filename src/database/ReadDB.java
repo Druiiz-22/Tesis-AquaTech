@@ -171,12 +171,6 @@ public class ReadDB {
             {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
@@ -194,12 +188,6 @@ public class ReadDB {
             {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
@@ -217,12 +205,6 @@ public class ReadDB {
             {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
@@ -239,32 +221,7 @@ public class ReadDB {
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
             {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
-            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"25451987", "PEDRO", "ALVAREZ", "04142601212", "SIERRA MAESTRA"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"},
-            {"27909011", "DIEGO", "RUIZ", "04120268484", "SUR AMÉRICA"},
-            {"30445134", "JESUS", "GONZALES", "04246451278", "SAN FELIPE"},
             {"20154005", "HECTOR", "LOPEZ", "04160884512", "SABANA GRANDE"}
         };
 
@@ -509,7 +466,7 @@ public class ReadDB {
         //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, MontoPago, MontoEntr, Fecha
         String[] header = new String[]{"#", "ID", "Cedula", "Pagos", "Entregados", "Tipo pago", "Delivery", "Monto pago", "Monto entre", "Fecha"};
 
-        int rows = 90;
+        int rows = 140;
         //numero del id
         int id = 5403;
 

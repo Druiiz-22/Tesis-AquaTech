@@ -6,6 +6,7 @@ import components.CampoTexto;
 import components.Label;
 import components.PanelInfo;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -34,21 +35,32 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      */
     private void generarReporte() {
         
+        int index = boxTipoReporte.getSelectedIndex();
+        
         if (validarCampos()) {
-            if (validarFechas()) {
-                if(msjYesNo("¿Está seguro de realizar el reporte?")){
-                    
+            
+            //Validar de fechas en caso de que el tipo de reporte seleccionado
+            //sea DISTINTO al de clientes o proveedores
+            if ((index == REP_CLIENTES || index  == REP_PROVEEDORES) ?  true : validarFechas()) {
+                
+                if (msjYesNo("¿Está seguro de realizar el reporte?")) {
+
                     int type = boxTipoReporte.getSelectedIndex();
-                    String initialDate = fechaInicio.getSelectedDate();
-                    String finalDate = fechaFin.getSelectedDate();
                     String path = txtUbicacion.getText();
-                    
+
                     //Validar si la ubicación es predeterminada o personalizada
                     path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
-                    
-                    //Crear el reporte con los datos ingresados
-                    CrearReporte.crear(type, path, initialDate, finalDate);
-                    
+
+                    if (index == REP_CLIENTES || index  == REP_PROVEEDORES) {
+                        CrearReporte.crear(type, path);
+                        
+                    } else{
+                        String initialDate = fechaInicio.getSelectedDate();
+                        String finalDate = fechaFin.getSelectedDate();
+
+                        //Crear el reporte con los datos ingresados
+                        CrearReporte.crear(type, path, initialDate, finalDate);
+                    }
                 }
             }
         }
@@ -356,6 +368,24 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                 buscarCarpeta();
             }
         });
+
+        boxTipoReporte.addItemListener((ItemEvent e) -> {
+            //Obtener el index del item seleccionado
+            int index = boxTipoReporte.getSelectedIndex();
+
+            //Validar si se selecionó clientes o proveedor para deshabilitar
+            //las fechas o activarlas en caso contrario
+            switch (index) {
+                case REP_CLIENTES:
+                case REP_PROVEEDORES:
+                    fechaInicio.habilitar(false);
+                    fechaFin.habilitar(false);
+                    break;
+                default:
+                    fechaInicio.habilitar(true);
+                    fechaFin.habilitar(true);
+            }
+        });
     }
 
     /**
@@ -615,11 +645,11 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
             //Asignar bordes grises
             dateChooser.setBorder(createLineBorder(GRIS));
-            
+
             //Obtener la fecha del día, con su formato, y colocarlo
             //en el campo de texto
             txtFecha.setText(dateFormat.format(dateChooser.getCalendar().getTime()));
-            
+
             this.add(lblTitulo);
             this.add(txtFecha);
             this.add(dateChooser);
@@ -676,6 +706,15 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
          */
         protected String getSelectedDate() {
             return txtFecha.getText();
+        }
+
+        /**
+         * Función para habilitar o deshabilitar los componentes del panel
+         * @param estado Booleano para el estado de los componentes
+         */
+        protected void habilitar(boolean estado) {
+            this.txtFecha.setEnabled(estado);
+            this.dateChooser.setEnabled(estado);
         }
 
         //ATRIBUTOS
