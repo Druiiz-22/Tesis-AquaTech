@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static properties.Mensaje.msjYesNo;
 import static login.Frame.replacePanel;
+import login.Registro;
 import static login.Registro.getContentSize;
 import static login.Registro.replaceContainer;
 import static properties.Mensaje.msjInformativo;
@@ -24,15 +25,15 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
     /**
      * Función para guardar la clave nueva
      */
-    private void cambiarClave() {
+    private void crearUsuario() {
+        //Validar que los campos sean válidos
         if (validarCampos()) {
-
-            //Mensaje de éxito
-            msjInformativo("El usuario se ha creado exitosamente.");
-
-            //Volver al inicio
-            replacePanel(INICIO);
-            replaceContainer(DATOS);
+            
+            //Guardar la contraseña del usuario
+            Registro.setClave(String.valueOf(claveRepetida));
+            
+            //Crear el usuario
+            Registro.crearCuenta();
         }
     }
 
@@ -47,9 +48,9 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
         char nueva[] = txtNueva.getPassword();
         char repetida[] = txtRepetida.getPassword();
 
-        //Validar que ningún campo esté vacío
-        if (nueva.length > 0) {
-            if (repetida.length > 0) {
+        //Validar que ningún campo tenga menos de 8 carácteres
+        if (nueva.length > 8) {
+            if (repetida.length > 8) {
 
                 //Convertir la contraseña en hashCode
                 int claveNueva = String.valueOf(nueva).hashCode();
@@ -70,14 +71,14 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
                 }
             } else {
                 msjError(
-                        "La clave repetida no puede estár vacío.\n"
+                        "La clave repetida debe tener mínimo 8 carácteres.\n"
                         + "Por favor, revise sus datos."
                 );
                 txtRepetida.requestFocus();
             }
         } else {
             msjError(
-                    "La clave nueva no puede estár vacío.\n"
+                    "La clave nueva debe tener mínimo 8 carácteres.\n"
                     + "Por favor, revise sus datos."
             );
             txtNueva.requestFocus();
@@ -193,7 +194,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
         btnCrear.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                cambiarClave();
+                crearUsuario();
             }
         });
     }

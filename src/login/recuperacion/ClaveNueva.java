@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static login.Frame.replacePanel;
+import login.Recuperacion;
 import static login.Recuperacion.getContentSize;
 import static login.Recuperacion.replaceContainer;
 import static properties.Mensaje.msjError;
@@ -26,12 +27,11 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
     private void cambiarClave() {
         if (validarCampos()) {
 
-            //Mensaje de éxito
-            msjInformativo("La contraseña ha sido cambiada exitosamente.");
-
-            //Volver al inicio
-            replacePanel(INICIO);
-            replaceContainer(CORREO);
+            //Guardar la contraseña del usuario
+            Recuperacion.setClaveNueva(String.valueOf(claveRepetida));
+            
+            //Crear el usuario
+            Recuperacion.cambiarClave();
         }
     }
 
@@ -46,10 +46,9 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
         char nueva[] = txtNueva.getPassword();
         char repetida[] = txtRepetida.getPassword();
 
-        //Validar que ningún campo esté vacío
-        if (nueva.length > 0) {
-
-            if (repetida.length > 0) {
+        //Validar que ningún campo tenga menos de 8 carácteres
+        if (nueva.length >= 8) {
+            if (repetida.length >= 8) {
 
                 //Convertir la contraseña en hashCode
                 int claveNueva = String.valueOf(nueva).hashCode();
@@ -70,14 +69,14 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
                 }
             } else {
                 msjError(
-                        "La clave repetida no puede estár vacío.\n"
+                        "La clave repetida debe tener mínimo 8 carácteres.\n"
                         + "Por favor, revise sus datos."
                 );
                 txtRepetida.requestFocus();
             }
         } else {
             msjError(
-                    "La clave nueva no puede estár vacío.\n"
+                    "La clave nueva debe tener mínimo 8 carácteres.\n"
                     + "Por favor, revise sus datos."
             );
             txtNueva.requestFocus();

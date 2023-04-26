@@ -396,10 +396,10 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
 
         String msj
                 = "<html>"
-                + "<p>¡La base de datos se ha exportado con éxito!</p><br>"
-                + "<p><b>Nombre:</b> " + fileName + "</p>"
-                + "<p><b>Ruta:</b> " + filePath + "</p><br>"
-                + "<p>¿Desea abrir su ubicación?</p><br>"
+                + "<p><b>¡La base de datos se ha exportado con éxito!</b></p>"
+                + "<p>Nombre: " + fileName + "</p>"
+                + "<p>Ruta: " + filePath + "</p><br>"
+                + "<p><b>¿Desea abrir su ubicación?</b></p>"
                 + "</html>";
 
         String[] botones = {"Abrir ubicación", "Finalizar"};

@@ -1,7 +1,5 @@
 package main;
 
-import tabs.admin.CrearReporte;
-
 public class Run {
 
     /**
@@ -11,18 +9,9 @@ public class Run {
     private static main.Frame mainFrame;
 
     public static void main(String[] args) {
-        //Iniciar el login
         iniciarLogin();
-        
-        //iniciarPrograma("DIEGO", 1);
-        
-//        CrearReporte.crear(1, "F:\\Main Files\\Escritorio\\Reportes", "05-03-2023", "31-03-2023");
-//        CrearReporte.crear(2, "F:\\Main Files\\Escritorio\\Reportes", "05-03-2023", "31-03-2023");
-//        CrearReporte.crear(3, "F:\\Main Files\\Escritorio\\Reportes", "05-03-2023", "31-03-2023");
-//        CrearReporte.crear(4, "F:\\Main Files\\Escritorio\\Reportes", "05-03-2023", "31-03-2023");
-//        CrearReporte.crear(5, "F:\\Main Files\\Escritorio\\Reportes", "05-03-2023", "31-03-2023");
-//        CrearReporte.crear(6, "F:\\Main Files\\Escritorio\\Reportes");
-//        CrearReporte.crear(7, "F:\\Main Files\\Escritorio\\Reportes");
+//        iniciarPrograma("DIEGO", 1);
+
     }
 
     /**

@@ -71,6 +71,23 @@ public class ReadDB {
         return 5;
     }
 
+    /**
+     * Función para comprobar la existencia de un correo en la base de datos
+     *
+     * @param correo Correo que será validado
+     * 
+     * @return
+     */
+    public static boolean emailExists(String correo) {
+
+        return true;
+    }
+
+    public static boolean getUser(String user, int pass) {
+
+        return !(user.isEmpty() || pass == 0);
+    }
+
     //========== HISTORIAL ==========
     /**
      * Función para obtener todos los clientes registrados en el sistema
@@ -435,6 +452,10 @@ public class ReadDB {
         return usuarios;
     }
 
+    public static int getUserID(String cedula) {
+        return 1;
+    }
+
     // ========== REPORTES ==========
     /**
      * Función para obtener el historial de las deudas, en una fecha determinada
@@ -476,11 +497,11 @@ public class ReadDB {
         int minuto = 0;
         int mes = 3;
         int anio = 2023;
-        
+
         //Cédula minima y máxima
         int min = 5000000;
         int max = 35000000;
-        
+
         //Lista de trasvasos que será retornado
         Object[][] trasvasos = new Object[rows + 1][header.length];
 
@@ -491,9 +512,9 @@ public class ReadDB {
 
         //Ciclo del tamaño de la lista de trasvasos
         for (int i = 1; i < trasvasos.length; i++) {
-            
+
             //Obtener numeros aleatorios
-            int cedula = (int)(Math.random()*(max-min+1)+min);
+            int cedula = (int) (Math.random() * (max - min + 1) + min);
             int tipoPago = (int) (Math.random() * 3 + 1);
             int delivery = (int) (Math.random() * 2 + 1);
 
@@ -534,26 +555,24 @@ public class ReadDB {
             }
             //Obtener la feha
             String fecha = dia + "-" + mes + "-" + anio + " " + hora + ":" + minuto;
-            
-            
+
             int entregados = (int) (Math.random() * 12 + 1);
             int montoEntregados = entregados * 7;
             int pagos;
             int montoPago;
-            
+
             //Un cliente hará un pago distinto al monto entregado con una
             //probabilidad de 1/10
-            if(((int)(Math.random() * 10 + 1)) == 10){
-                
+            if (((int) (Math.random() * 10 + 1)) == 10) {
+
                 pagos = (int) (Math.random() * 20 + 1);
                 montoPago = pagos * 7;
-                
-            } else{
+
+            } else {
                 pagos = entregados;
                 montoPago = montoEntregados;
             }
-            
-            
+
             //Guardar el trasvaso
             //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, MontoPago, MontoEntr, Fecha
             row = new Object[]{
@@ -568,14 +587,14 @@ public class ReadDB {
                 montoEntregados,
                 fecha
             };
-            
+
             //Agregar el trasvaso
             trasvasos[i] = row;
-            
+
             //Aumentar el ID
             id++;
         }
-        
+
         //Retornar la lista
         return trasvasos;
     }

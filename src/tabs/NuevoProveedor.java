@@ -22,9 +22,11 @@ import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
+import static properties.Mensaje.msjInformativo;
 import static properties.ValidarTexto.formatoNombre;
 import static properties.ValidarTexto.formatoRIF;
 import static properties.ValidarTexto.formatoTelefono;
+import tabs.compras.Compras;
 
 /**
  *
@@ -111,7 +113,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         if (validarCampos()) {
             if (validarDatos()) {
                 //Mensaje de confirmación
-                if (msjYesNo("¿Está seguro de realizar el registro del nuevo cliente?")) {
+                if (msjYesNo("¿Está seguro de realizar el registro del nuevo proveedor?")) {
 
                     //Intentar crear el cliente en la base de datos
                     if (CreateDB.createProveedor(rif, nombre, telefono, direccion)) {
@@ -122,7 +124,12 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                         //de la tabla con la base de datos
                         Proveedores.actualizarDatos();
 
+                        msjInformativo("Se creó el nuevo proveedor con éxito.");
+
+                        dispose();
                         vaciarCampos();
+
+                        Compras.vaciarCampos();
                     }
                 }
             }
@@ -140,9 +147,9 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                 //Validar que los datos estén correctos
                 if (validarDatos()) {
                     //Mensaje de confirmación
-                    if (msjYesNo("¿Está seguro de realizar el registro del nuevo cliente?")) {
+                    if (msjYesNo("¿Está seguro de actualizar los datos del proveedor?")) {
                         //Intentar editar el proveedor en la base de datos
-                        if (UpdateDB.editProveedor(String.valueOf(id), rif, nombre, telefono, direccion)) {
+                        if (UpdateDB.updateProveedor(String.valueOf(id), rif, nombre, telefono, direccion)) {
 
                             //Ya que puede dar muchos problemas el alterar o agregar
                             //un dato a una tabla (y no a su Model), la forma de 
@@ -150,8 +157,12 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                             //de la tabla con la base de datos
                             Proveedores.actualizarDatos();
 
-                            vaciarCampos();
+                            msjInformativo("Se actualizaron los datos del proveedor con éxito.");
+
                             dispose();
+                            vaciarCampos();
+                            
+                            Compras.vaciarCampos();
                         }
                     }
                 }
@@ -236,8 +247,8 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     }
 
     /**
-     * Función para validar la existencia del cliente en la base de datos
-     * mediante el uso de la cédula del cliente seleccionado para su edición.
+     * Función para validar la existencia del proveedor en la base de datos
+     * mediante el uso del RIF del proveedor seleccionado para su edición.
      *
      * @return
      */
@@ -260,14 +271,14 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     }
 
     //ATRIBUTOS BACKEND
-    private static int id, index;
-    private static String rifViejo;
     private static Boolean crearProveedor;
+    private static int id;
+    private static String rifViejo;
     private static String nombre, rif, telefono, direccion;
 
     // ========== FRONTEND ==========
     /**
-     * Constructor de la ventana para agregar o editar un cliente
+     * Constructor de la ventana para agregar o editar un proveedor
      */
     public NuevoProveedor() {
         this.setLayout(null);
@@ -329,23 +340,24 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         lblTitulo.setLocation(paddingH, y);
         lblTitulo.setSize(w, paddingV * 5 / 2);
 
-        //Labels y campo de texto del nombre
+        //Labels y campo de texto del rif
         int lblY = y + lblTitulo.getHeight() + paddingV;
         int txtY = lblY + lblNombre.getHeight() + gapV;
         lblRif.setLocation(paddingH, lblY);
         txtRif.setBounds(paddingH, txtY, fieldW, fieldH);
 
-        //Labels y campo de texto del apellido
+        //Labels y campo de texto del teléfono
         x = width - paddingH - fieldW;
         lblTelefono.setLocation(x, lblY);
         txtTelefono.setBounds(x, txtY, fieldW, fieldH);
 
-        //Labels y campo de texto de la dirección
+        //Labels y campo de texto del nombre de la empresa
         lblY = txtY + fieldH + paddingV / 2;
         txtY = lblY + lblNombre.getHeight() + gapV;
         lblNombre.setLocation(paddingH, lblY);
         txtNombre.setBounds(paddingH, txtY, w, fieldH);
 
+        //Labels y campo de texto de la dirección
         lblY = txtY + fieldH + paddingV / 2;
         txtY = lblY + lblDireccion.getHeight() + gapV;
         lblDireccion.setLocation(paddingH, lblY);
@@ -379,49 +391,58 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * Función para agregar un nuevo proveedor
      */
     protected void agregar() {
+        //Propiedades de la ventana 
         this.setTitle("Agregar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-
+        
+        //Atributo
         crearProveedor = true;
+        
+        //Titulo para la ventana
         lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
                 + "nuevo proveedor al sistema.</html>");
-
+        
+        //Logo para la ventana
         logo.setText("Agregar Proveedor");
         logo.setSize(logo.getPreferredSize());
-
+        
+        //Redimensionar los componentes
         relocateComponents();
     }
 
     /**
      * Función para editar un proveedor registrado
      *
-     * @param index
      * @param nombre
      * @param rif
      * @param telefono
      * @param direc
      */
-    protected void editar(int index, String rif, String nombre, String telefono, String direc) {
-        NuevoProveedor.index = index;
+    protected void editar(String rif, String nombre, String telefono, String direc) {
+        //Propiedades de la ventana
         this.setTitle("Editar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-
+        
+        //Atributos
         rifViejo = rif;
-
         crearProveedor = false;
+        
+        //Titulo para la ventana
         lblTitulo.setText("<html>Ingrese los nuevos datos del proveedor "
                 + "que desea actualizar.</html>");
-
+        //Logo para la ventana
         logo.setText("Editar Proveedor");
         logo.setSize(logo.getPreferredSize());
-
+        
+        //Sobreescribir los campos
         txtRif.setText(rif);
         txtNombre.setText(nombre);
         txtTelefono.setText(telefono);
         txtDireccion.setText(direc);
-
+        
+        //Redimensionar los componentes
         relocateComponents();
     }
 
@@ -437,9 +458,9 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
 
         //Vaciar los atributos
         id = 0;
+        rif = null;
         rifViejo = null;
         nombre = null;
-        rif = null;
         telefono = null;
         direccion = null;
     }

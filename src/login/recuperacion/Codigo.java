@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import static login.Recuperacion.getContentSize;
 import static login.Recuperacion.replaceContainer;
 import static properties.Mensaje.msjError;
+import static properties.Mensaje.msjInformativo;
 
 /**
  * Clase para el panel de ingreso del código del usuario
@@ -25,6 +26,8 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
         //la coincidencia del código de seguridad
         if (validarCampo()) {
 
+            msjInformativo("El código se verificó con éxito.");
+            
             //Avanzar a la pestaña del cambio de contraseña
             replaceContainer(CLAVE);
         }
@@ -37,27 +40,33 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
      */
     private boolean validarCampo() {
 
-        codeField = txtCodigo.getText().trim();
+        codigoUsuario = txtCodigo.getText().trim();
 
         //Validar que el campo NO esté vacío
-        if (!codeField.isEmpty()) {
+        if (!codigoUsuario.isEmpty()) {
 
-            return true;
-
+            //Validar la coincidencia con el código de seguridad generado
+            if(codigoUsuario.equals(String.valueOf(codigoSeguridad))){
+                
+                return true;
+                
+            } else {
+                msjError("El código ingresado es inválido."
+                        + "\nPor favor, revise sus datos.");
+            }
         } else {
-            msjError(
-                    "El código no puede estár vacío.\n"
-                    + "Por favor, ingrese el código."
-            );
-            txtCodigo.requestFocus();
+            msjError("El código no puede estár vacío.\n"
+                    + "Por favor, ingrese el código.");
         }
 
+        txtCodigo.requestFocus();
         //Retornar falso, en caso de no retornar true antes.
         return false;
     }
 
     //ATRIBUTO
-    private static String codeField;
+    private static String codigoUsuario;
+    private static int codigoSeguridad;
 
     // ========== FRONTEND ==========
     
@@ -167,25 +176,25 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
     }
 
     /**
-     * Función para mostrar el correo en pantalla.
+     * Función para asignar el correo ingresado por el usuario y el código de 
+     * seguridad enviado al correo.
      *
      * @param correo Correo electrónico.
+     * @param codigoSeguridad Código de seguridad enviado.
      */
-    public static void setCorreo(String correo) {
+    public static void setCorreo(String correo, int codigoSeguridad) {
+        Codigo.codigoSeguridad = codigoSeguridad;
+        
         String info
                 = "<html>"
-                + "<p>"
-                + "<b>Se envió un código al correo:</b>"
-                + "<br><i>" + correo + "</i><br>"
-                + "</p>"
-                + "<p>"
+                + "<p><b>Se envió un código al correo:</b></p>"
+                + "<p><i>" + correo + "</i></p>"
+                + "<p style='margin-top:5px;'>"
                 + "Ingrese el código enviado para confirmar su<br>correo. Si no "
                 + "encuentra el correo, revise en su<br>bandeja de spam o no deseado."
                 + "</p>"
                 + "</html>";
-        
-        lblInfo.setText(info);
-        
+        lblInfo.setText(info);        
     }
 
     //COMPONENTES

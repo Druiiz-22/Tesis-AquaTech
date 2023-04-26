@@ -16,6 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import properties.Mensaje;
+import tabs.ventas.Ventas;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static properties.Constantes.ESCALA_SUAVE;
 import static properties.Mensaje.msjAdvertencia;
@@ -127,7 +129,12 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                         //de la tabla con la base de datos
                         PanelClientes.actualizarDatos();
 
+                        Mensaje.msjInformativo("Se creó el nuevo cliente con éxito.");
+                        
+                        dispose();
                         vaciarCampos();
+                        
+                        Ventas.vaciarCampos();
                     }
                 }
             }
@@ -145,9 +152,9 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                 //Validar que los datos estén correctos
                 if (validarDatos()) {
                     //Mensaje de confirmación
-                    if (msjYesNo("¿Está seguro de realizar el registro del nuevo cliente?")) {
+                    if (msjYesNo("¿Está seguro de actualizar los datos del cliente?")) {
                         //Intentar editar el cliente en la base de datos
-                        if (UpdateDB.editCliente(String.valueOf(id), cedula, nombre, apellido, telefono, direccion)) {
+                        if (UpdateDB.updateCliente(String.valueOf(id), cedula, nombre, apellido, telefono, direccion)) {
 
                             //Ya que puede dar muchos problemas el alterar o agregar
                             //un dato a una tabla (y no a su Model), la forma de 
@@ -155,8 +162,12 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                             //de la tabla con la base de datos
                             PanelClientes.actualizarDatos();
                             
-                            vaciarCampos();
+                            Mensaje.msjInformativo("Se actualizaron los datos del cliente con éxito.");
+                            
                             dispose();
+                            vaciarCampos();
+                            
+                            Ventas.vaciarCampos();
                         }
                     }
                 }
@@ -282,7 +293,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     }
 
     //ATRIBUTOS BACKEND
-    private static int id, index;
+    private static int id;
     private static String cedulaVieja;
     private static Boolean crearCliente;
     private static String nombre, apellido, cedula, telefono, direccion;
@@ -424,15 +435,13 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     /**
      * Función para editar un cliente registrado
      *
-     * @param index
      * @param nombre
      * @param apellido
      * @param cedula
      * @param telefono
      * @param direc
      */
-    protected void editar(int index, String cedula, String nombre, String apellido, String telefono, String direc) {
-        NuevoCliente.index = index;
+    protected void editar(String cedula, String nombre, String apellido, String telefono, String direc) {
         this.setTitle("Editar un cliente - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);

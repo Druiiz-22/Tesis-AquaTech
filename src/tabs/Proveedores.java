@@ -98,7 +98,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
     /**
      * Función para vaciar todos los campos
      */
-    public void vaciarCampos() {
+    public static void vaciarCampos() {
         txtBusqueda.setText("");
         nuevoProv.vaciarCampos();
     }
@@ -107,6 +107,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      * Función para actualizar los datos en la tabla de proveedores
      */
     public static void actualizarDatos() {
+        txtBusqueda.setText("");
         tabla.actualizarDatos();
     }
 
@@ -114,14 +115,13 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      * Función para acceder a la ventana de nuevo proveedor y enviar la
      * información del proveedor seleccionado para su edición
      *
-     * @param index
      * @param rif
      * @param nombre
      * @param telefono
      * @param direccion
      */
-    public static void editProveedor(int index, String rif, String nombre, String telefono, String direccion) {
-        nuevoProv.editar(index, rif, nombre, telefono, direccion);
+    public static void editProveedor(String rif, String nombre, String telefono, String direccion) {
+        nuevoProv.editar(rif, nombre, telefono, direccion);
     }
 
     //COMPONENTES

@@ -130,10 +130,10 @@ public class Contenedor extends JPanel implements properties.Constantes {
      */
     protected void vaciarCampos(){
         panelClientes.vaciarCampos();
-        panelVentas.vaciarCampos();
         panelHistorial.vaciarCampos();
-        panelCompras.vaciarCampos();
-        panelProv.vaciarCampos();
+        Proveedores.vaciarCampos();
+        Ventas.vaciarCampos();
+        Compras.vaciarCampos();
         panelAdmin.vaciarCampos(); 
     }
     

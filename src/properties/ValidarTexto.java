@@ -202,7 +202,7 @@ public class ValidarTexto {
             return date.compareTo(min) >= 0 && date.compareTo(max) < 0;
 
         } catch (ParseException e) {
-            System.out.println("\n"+e);
+            System.out.println("\n" + e);
             return false;
         }
     }
@@ -291,12 +291,12 @@ public class ValidarTexto {
             SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
             //Hacer la conversión de String a fecha, de forma estricta.
             formatoFecha.setLenient(false);
-            
+
             //Intentar convertir el String a Date
             formatoFecha.parse(fecha);
-            
+
             return true;
-            
+
         } catch (ParseException e) {
             return false;
         }
@@ -336,7 +336,7 @@ public class ValidarTexto {
      * Función para comprobar que el texto ingresado es válido para ser
      * convertido en un número entero menor a 8.388.606. Esto se realiza dentro
      * de los campos de venta, compra, recarga y trasvasos,
-     * <b>cuando de que una tecla sea suelta</b>.
+     * <b>cuando una tecla sea suelta</b>.
      *
      * @param txt Texto del campo
      * @return Texto convertido en entero
@@ -366,6 +366,15 @@ public class ValidarTexto {
         }
     }
 
+    /**
+     * Función para comprobar que el texto ingresado es válido para ser
+     * convertido en un número doble menor a 10.000.000.000. Esto se realiza
+     * dentro de los campos de venta, compra, recarga y trasvasos,
+     * <b>cuando una tecla sea suelta</b>.
+     *
+     * @param txt Texto del campo
+     * @return Texto convertido en entero
+     */
     public static double teclaSueltaDoble(String txt) {
         //Validar que el texto NO sea null
         if (!txt.isEmpty()) {

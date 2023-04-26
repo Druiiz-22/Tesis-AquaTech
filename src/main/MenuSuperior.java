@@ -19,8 +19,8 @@ import static java.awt.Cursor.HAND_CURSOR;
 import java.awt.Dimension;
 import static java.awt.Font.PLAIN;
 import static properties.Mensaje.msjError;
-import static main.Frame.showMenuLateral;
 import static properties.Fuentes.segoe;
+import static main.Frame.openGlass;
 
 /**
  * Clase para la creación del menú superior del programa principal
@@ -211,14 +211,14 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         btnMenu.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                showMenuLateral();
+                Frame.openGlass(true);
             }
         });
         //NOTIFICACIONES
         btnNotificacion.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                Frame.openNotification(true);
+                Frame.openGlass(false);
             }
         });
         //SITIO WEB
@@ -245,7 +245,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         });
         //ITEMS DEL POPUP MENÚ
         itemNotif.addActionListener((ActionEvent e) -> {
-            Frame.openNotification(true);
+            Frame.openGlass(false);
         });
         itemWeb.addActionListener((ActionEvent e) -> {
             abrirWeb();

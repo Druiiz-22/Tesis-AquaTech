@@ -1,6 +1,7 @@
 package login;
 
 import components.Logo;
+import database.CreateDB;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import static javax.swing.SwingConstants.HORIZONTAL;
@@ -9,6 +10,8 @@ import login.registro.ClaveNueva;
 import login.registro.Codigo;
 import login.registro.Correo;
 import static login.Frame.getParentSize;
+import static properties.Mensaje.msjError;
+import static properties.Mensaje.msjInformativo;
         
 /**
  * Clase para el panel del registro de usuario.
@@ -171,7 +174,33 @@ public class Registro extends JPanel implements properties.Colores, properties.C
      * Función para crear la cuenta nueva, según los datos ingresados.
      */
     public static void crearCuenta(){
+        String error = "\nPor favor, vuelva a intentarlo.";
         
+        //Validar que ninguno de los datos personales esté vacío
+        if(!nombre.isEmpty() && !apellido.isEmpty() && !telefono.isEmpty() && cedula > 0){
+            //Validar que el correo y clave no estén vacíos
+            if(!correo.isEmpty()){
+                if(!clave.isEmpty()){
+                    
+                    //Intentar crear el usuario
+                    if(CreateDB.createUsuarioNuevo(cedula, nombre, apellido, telefono, correo, clave)){
+                        //Mensaje de éxito
+                        msjInformativo("El usuario se ha creado exitosamente.");
+
+                        //Volver al inicio
+                        login.Frame.replacePanel(INICIO);
+                        replaceContainer(DATOS);
+                    }
+                    
+                } else {
+                    msjError("El usuario no tiene una clave asignada." + error);
+                }
+            }else{
+                msjError("El usuario no tiene un correo asignado." + error);
+            }
+        } else{
+            msjError("El usuario no tiene alguno de sus datos personales asignado." + error);
+        }
     }
     
     //COMPONENTES

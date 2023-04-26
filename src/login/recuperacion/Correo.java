@@ -3,9 +3,12 @@ package login.recuperacion;
 import components.Boton;
 import components.CampoTexto;
 import components.Label;
+import database.EmailCode;
+import database.ReadDB;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Random;
 import login.Recuperacion;
 import static login.Frame.replacePanel;
 import static login.Recuperacion.getContentSize;
@@ -19,7 +22,6 @@ import static properties.ValidarTexto.formatoCorreo;
 public class Correo extends javax.swing.JPanel implements properties.Colores, properties.Constantes {
 
     // ========== BACKEND ==========
-    
     /**
      * Función para enviar el código al correo y cambiar el panel
      */
@@ -27,43 +29,45 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
 
         //Validar el campo de texto
         if (validarCampo()) {
-            
-            //Validar el correo en la base de datos
-            if(validarEmail()){
-                
-                //Guardar el correo en la clase de registro
-                Recuperacion.setCorreo(emailField);
 
-                //Mostrar el código en la pestaña del código
-                Codigo.setCorreo(emailField);
+            //Validar que el correo SÍ exista en la base de datos
+            if (ReadDB.emailExists(correoUsuario)) {
 
-                //Avanzar a la pestaña de validación de código
-                replaceContainer(CODIGO);
+                //Objeto para generar un número aleatorio
+                Random aleatorio = new Random();
+                int codigoSeguridad = aleatorio.nextInt(999999);
+
+                //Validar si se pudo enviar el correo o no
+                if (EmailCode.recuperarCuenta(correoUsuario, codigoSeguridad)) {
+                    //Guardar el correo en la clase de registro
+                    Recuperacion.setCorreo(correoUsuario);
+
+                    //Mostrar el código en la pestaña del código
+                    Codigo.setCorreo(correoUsuario, codigoSeguridad);
+
+                    //Avanzar a la pestaña de validación de código
+                    replaceContainer(CODIGO);
+                }
+            } else {
+                msjError("El correo no se encuentra registrado."
+                        + "\nPor favor, revise sus datos.");
             }
         }
     }
 
-    /**
-     * Función para validar la existencia del correo en la base de datos
-     * @return TRUE en caso de que el correo esté registrado
-     */
-    private boolean validarEmail(){
-        return true;
-    }
-    
     /**
      * Función para validar el campo y el correo
      *
      * @return TRUE en caso de que el correo sea válido.
      */
     private boolean validarCampo() {
-        emailField = txtCorreo.getText().trim();
+        correoUsuario = txtCorreo.getText().trim();
 
         //Validar que el campo no esté vacío
-        if (!emailField.isEmpty()) {
+        if (!correoUsuario.isEmpty()) {
 
             //Validar que el correo cumpla con el formato correcto
-            if (formatoCorreo(emailField)) {
+            if (formatoCorreo(correoUsuario)) {
 
                 return true;
 
@@ -88,10 +92,9 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
     }
 
     //Atributos
-    private static String emailField;
-    
+    private static String correoUsuario;
+
     // ========== FRONTEND ==========
-    
     /**
      * Constructor para la creación del panel para registrar el correo.
      */

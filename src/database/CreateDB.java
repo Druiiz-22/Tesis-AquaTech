@@ -2,7 +2,6 @@ package database;
 
 import static database.ReadDB.getPrecioVenta;
 import static properties.Mensaje.msjInformativo;
-import static properties.Mensaje.msjError;
 
 /**
  * Clase contenedora de los métodos para intentar insertar datos nuevos a la
@@ -48,11 +47,20 @@ public class CreateDB {
     }
 
     /**
-     * Función para la creación de un nuevo usuario en el sistema
-     *
-     * @return
+     * Función para la creación de un nuevo usuario en el sistema.
+     * 
+     * @param cedula
+     * @param correo
+     * @param rol
+     * @param clave
+     * @return 
      */
-    public static boolean createUsuario() {
+    public static boolean createUsuarioAdministracion(String cedula, String correo, int rol, String clave) {
+        return true;
+    }
+    
+    public static boolean createUsuarioNuevo(int cedula, String nombre, String apellido, String telefono, String correo, String clave){
+     
         return true;
     }
 

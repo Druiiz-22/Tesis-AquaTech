@@ -6,6 +6,7 @@ import components.CampoClave;
 import components.CampoTexto;
 import components.Label;
 import components.Logo;
+import database.ReadDB;
 import javax.swing.JPanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -29,7 +30,52 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      * @return TRUE en caso de que exista coincidencia.
      */
     private boolean validarUsuario() {
-        return true;
+        //Obtener los datos ingresados
+        String userField = txtUsuario.getText().trim().toUpperCase();
+
+        //Obtener la contraseña en HashCode
+        int passField = String.valueOf(txtClave.getPassword()).hashCode();
+
+        //Validar la existencia del usuario
+        boolean existe = ReadDB.getUser(userField, passField);
+
+        //Comprobar la existencia del usuario
+        if (existe) {
+
+            //Reiniciar los intentos
+            intentos = 0;
+            return true;
+
+        } else {
+
+            //Sumar un intento fallido
+            intentos++;
+
+            if (intentos < 3) {
+                //Mostrar un mensaje de error si NO ha superado el límite 
+                //de intentos permitidos para iniciar sesión
+                msjError(
+                        "El usuario ingresado no existe.\n"
+                        + "Por favor, revise sus datos."
+                );
+
+            } else {
+                //Mostrar un mensaje de error
+                msjError(
+                        "El usuario ingresado no existe.\n"
+                        + "Ha superado el límite de intentos de inicio.\n"
+                        + "El programa se cerrará."
+                );
+
+                //Cerrar la ventana del login
+                Run.cerrarLogin();
+
+                //Terminar de ejecutar el programa
+                System.exit(0);
+            }
+
+            return false;
+        }
     }
 
     /**
@@ -45,7 +91,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
                 //Iniciar el programa con el nombre del usuario y
                 //su nivel de rol
-                Run.iniciarPrograma(userDB, rolDB);
+                Run.iniciarPrograma("DIEGO RUIZ", ADMINISTRADOR);
 
                 //Vaciar los campos del inicio
                 vaciarCampos();
@@ -63,10 +109,10 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      */
     private boolean validarCampos() {
         //Obtener el usuario
-        userField = txtUsuario.getText().trim();
+        String userField = txtUsuario.getText().trim();
 
         //Obtener la contraseña
-        passField = String.valueOf(txtClave.getPassword()).trim();
+        String passField = String.valueOf(txtClave.getPassword()).trim();
 
         //Validar que el usuario NO esté vacío
         if (!userField.isEmpty()) {
@@ -98,9 +144,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     }
 
     //ATRIBUTOS
-    private static String userField, passField;
-    private static String userDB = "DIEGO RUIZ";
-    private static int rolDB = ADMINISTRADOR;
+    private static int intentos = 0;
 
     // ========== FRONTEND ==========
     /**
@@ -236,6 +280,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     public void vaciarCampos() {
         txtUsuario.setText("");
         txtClave.setText("");
+        txtClave.hidePassword();
     }
 
     //COMPONENTES

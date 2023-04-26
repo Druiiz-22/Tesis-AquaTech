@@ -6,6 +6,8 @@ import components.Label;
 import components.PanelInfo;
 import components.Tabla;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import static javax.swing.BorderFactory.createLineBorder;
 
@@ -49,7 +51,12 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      * Función para aplicar los listener a los componentes
      */
     private void listeners(){
-        
+        btnAgregar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                nuevoUsuario.agregar();
+            }
+        });
     }
     
     /**
@@ -154,12 +161,27 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     /**
      * Función para vaciar todos los campos
      */ 
-    protected void vaciarCampos(){
+    public static void vaciarCampos(){
         txtBuscar.setText("");
+        nuevoUsuario.vaciarCampos();
     }
     
-    protected void actualizarTabla(){
+    /**
+     * Función para actualizar el panel de usuarios y la ventana
+     */
+    public static void actualizarDatos(){
+        txtBuscar.setText("");
         tabla.actualizarDatos();
+    }
+    /**
+     * Función para editar un usuario seleccionado
+     * 
+     * @param cedula Cédula del usuario
+     * @param rol Rol del usuario (EMPLEADO o ADMIN)
+     * @param correo Correo del usuario
+     */
+    public static void editUsuario(String cedula, String rol, String correo){
+        nuevoUsuario.editar(cedula, rol, correo);
     }
     
     //ATRIBUTOS
@@ -174,4 +196,5 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     private static final Label lblTitulo = new Label("Usuarios", TITULO, 24);
     private static final CampoTexto txtBuscar = new CampoTexto("Buscar usuario", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar", VERDE);
+    private static final NuevoUsuario nuevoUsuario = new NuevoUsuario();
 }

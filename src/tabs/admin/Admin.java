@@ -195,15 +195,15 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
      */ 
     public void vaciarCampos(){
         panelAjustes.vaciarCampos();
-        panelUsuarios.vaciarCampos();
         panelReportes.vaciarCampos();
         panelRespaldo.vaciarCampos();
+        Usuarios.vaciarCampos();
         
         replacePanel(ADMIN_AJUSTES);
     }
     
     public void actualizarDatos(){
-        panelUsuarios.actualizarTabla();
+        Usuarios.actualizarDatos();
     }
     
     //COMPONENTES

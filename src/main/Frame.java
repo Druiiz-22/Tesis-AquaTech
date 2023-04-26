@@ -90,20 +90,23 @@ public class Frame extends JFrame implements properties.Constantes {
         glass = (Container) (this.getGlassPane());
         glass.setLayout(null);
         glass.add(notificaciones);
+        glass.add(lateral);
 
         //LISTA DE COSAS PENDIENTES
-        //- Asignar límite de intentos de login
-        //- Realizar la generación de reportes de deudas
-        
         //- Diseñar los ajustes.
         //- Diseñar los pedidos.
+        //- Diseñar la tabla de deudas.
         
         //- Realizar el envío de código al correo.
         //- Ver el google maps.
-        //- Dar formulario a los RIF
         
+        //- Realizar la generación de reportes de deudas
+        //- Dar formulario a los RIF
     }
-
+    
+    /**
+     * Función para asignar los listener a los componentes de la clase
+     */
     private void listeners() {
         //Listener para la ventana, para cuando sea presionado
         //el botón de cerrar
@@ -125,7 +128,9 @@ public class Frame extends JFrame implements properties.Constantes {
         //Listener para el GlassPane para cuando que se cierre
         //cuando sea presionado fuera del panel de notificaciones
         glass.addMouseListener(new MouseAdapter() {
-
+            
+            //Variable para determinar si se cerrará el GlassPane,
+            //ANTES de soltar el mouse
             boolean cerrar = true;
 
             @Override
@@ -134,24 +139,35 @@ public class Frame extends JFrame implements properties.Constantes {
                 int mouseX = e.getX();
                 int mouseY = e.getY();
 
-                //Obtener la posición de notificaciones
-                int minX = notificaciones.getX();
-                int minY = notificaciones.getY();
+                //Variables para la osicion y tamaño del panel que esté visible
+                int panelX = 0, panelY = 0, panelW = 0, panelH = 0;
+                
+                //Comprobar si el menú lateral está siendo visible
+                if(lateral.isVisible()){
+                    //Posición y tamaño del menú lateral
+                    panelX = lateral.getX();
+                    panelY = lateral.getY();
+                    panelW = panelX + lateral.getWidth();
+                    panelH = panelY + lateral.getHeight();
+                    
+                } else {
+                    //En caso contrario, se estará viendo las notificaciones
+                    //Posición y tamaño del panel de notificaciones
+                    panelX = notificaciones.getX();
+                    panelY = notificaciones.getY();
+                    panelW = panelX + notificaciones.getWidth();
+                    panelH = panelY + notificaciones.getHeight();
+                }
 
-                //Obtener el tamaño de las notificaciones
-                int maxX = minX + notificaciones.getWidth();
-                int maxY = minY + notificaciones.getHeight();
-
-                //Validar que el mouse esté FUERA de las notificaciones
-                cerrar = (mouseX < minX || mouseX > maxX) || (mouseY < minY || mouseY > maxY);
+                //Validar que el mouse esté FUERA del panel visible
+                cerrar = (mouseX < panelX || mouseX > panelW) || (mouseY < panelY || mouseY > panelH);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                //Validar si se va a cerrar o no el GlassPane
-                if (cerrar) {
-                    glass.setVisible(false);
-                }
+                //Si se va a cerrar (true), el glass no será visible (false).
+                //Si NO se va a cerrar (false), el glass sigue visible (true).
+                glass.setVisible(!cerrar);
             }
 
         });
@@ -174,10 +190,8 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //CONTENEDOR
         int contenedorHeight = frameSize.height - menuHeight;
-        int contenedorWidth = frameSize.width - ((lateral.isVisible()) ? lateral.getWidth() : 0);
-        int contenedorX = (lateral.isVisible()) ? contenedor.getX() : 0;
-        contenedor.setLocation(contenedorX, menuHeight);
-        contenedor.setSize(contenedorWidth, contenedorHeight);
+        contenedor.setLocation(0, menuHeight);
+        contenedor.setSize(frameSize.width, contenedorHeight);
 
         //MENU LATERAL
         lateral.setSize(220, contenedorHeight);
@@ -273,190 +287,6 @@ public class Frame extends JFrame implements properties.Constantes {
     }
 
     /**
-     * Función para mostrar u ocultar el menú lateral
-     */
-    protected static void showMenuLateral() {
-
-        //Posición en Y del menú lateral
-        //Ancho del menú lateral
-        int lateralWidth = lateral.getWidth();
-
-        //comprobar que el menú esté visible y que el
-        //botón del menú lateral NO esté activado
-        if (lateral.isVisible() && !press) {
-
-            //si está visible, OCULTAR el menú
-            //Action que realizará la tarea de ocultar el menú
-            action = (ActionEvent e) -> {
-
-                //Obtener la altura del menú superior
-                int menuHeight = menu.getHeight();
-
-                //Obtener la posición actual del menú lateral
-                int lateralX = lateral.getX();
-
-                //restarle 15 px
-                lateralX -= 20;
-
-                //Posición del panel contenedor
-                int containerX = lateralX + lateralWidth;
-                //Ancho del panel contenedor, en base al menú superior
-                int containerWidth = menu.getWidth() - containerX;
-
-                //Validar que la posición sea MAYOR al límite -x
-                if (lateralX > -lateralWidth) {
-
-                    //Nueva posición del menú lateral
-                    lateral.setLocation(lateralX, menuHeight);
-
-                    //Nueva posición del contenedor
-                    contenedor.setLocation(containerX, menuHeight);
-                    //Nuevo tamaño del contenedor, en base al ancho
-                    //del menú superior y la altura del menú lateral
-                    contenedor.setSize(containerWidth, lateral.getHeight());
-                    contenedor.relocateComponents();
-
-                    if (contenedor.getWidth() < 700) {
-                        Inicio.relocateButtons(false);
-                    } else {
-                        Inicio.relocateButtons(true);
-                    }
-
-                } else {
-                    //Si la posición es menor al límite en -x,
-                    //el menú se ocultó por completo y se coloca, el
-                    //menú, en su posición límite -x
-                    lateral.setLocation(-lateralWidth, menuHeight);
-
-                    //Localización del contenedor, al comienzo del frame
-                    //y debajo del menú superior
-                    contenedor.setLocation(0, menuHeight);
-
-                    //Tamaño final del contenedor, con el mismo ancho del
-                    //menú superior y altura del menú lateral
-                    contenedor.setSize(menu.getWidth(), lateral.getHeight());
-                    contenedor.relocateComponents();
-
-                    //Repintar el frame
-                    Run.repaintFrame();
-                    //Reposicionar y redimensionar los botones
-                    if (contenedor.getWidth() < 700) {
-                        Inicio.relocateButtons(false);
-                    } else {
-                        Inicio.relocateButtons(true);
-                    }
-
-                    //Ocultar el menú
-                    lateral.setVisible(false);
-
-                    //Indicar que el botón se desactivó
-                    press = false;
-
-                    //Terminar el ciclo
-                    show.stop();
-                }
-            };
-            //Asignar la acción al timer
-            show = new Timer(1, action);
-            //Indicar que el botón está activo
-            press = true;
-            //Iniciar el timer
-            show.start();
-
-            //Validar que el menú NO esté visible y que el
-            //botón del menú lateral NO esté activo
-        } else if (!lateral.isVisible() && !press) {
-
-            //Si no está visible, MOSTRAR el menú
-            lateral.setVisible(true);
-            //Iniciarlizarlo en el límite -x
-            lateral.setLocation(-lateralWidth, menu.getHeight());
-
-            //Action que realizará la tarea de mostrar el menú
-            action = (ActionEvent e) -> {
-
-                //Obtener la altura del menú superior
-                int menuHeight = menu.getHeight();
-
-                //Obtener la posición actual
-                int lateralX = lateral.getX();
-
-                //Sumarle 15 px
-                lateralX += 20;
-
-                //Posición del panel contenedor
-                int containerX = lateralX + lateralWidth;
-                //Ancho del panel contenedor, en base al menú superior
-                int containerWidth = menu.getWidth() - containerX;
-
-                //Validar que la posición sea menor a 0
-                if (lateralX < 0) {
-
-                    //Nueva posición del menú lateral
-                    lateral.setLocation(lateralX, menuHeight);
-
-                    //Nueva posición del contenedor
-                    contenedor.setLocation(containerX, menuHeight);
-                    //Nuevo tamaño del contenedor, en base al ancho
-                    //del menú superior y la altura del menú lateral
-                    contenedor.setSize(containerWidth, lateral.getHeight());
-                    contenedor.relocateComponents();
-
-                    if (contenedor.getWidth() < 700) {
-                        Inicio.relocateButtons(false);
-                    } else {
-                        Inicio.relocateButtons(true);
-                    }
-
-                } else {
-                    //Si la posición es mayor o igual a 0,
-                    //el menú se mostró por completo y se 
-                    //coloca, el menú, en x = 0
-                    lateral.setLocation(0, menuHeight);
-
-                    //Localización del contenedor, después del menú
-                    //lateral y abajo del menú superior
-                    contenedor.setLocation(lateralWidth, menuHeight);
-
-                    //Ancho final del contenedor, en base al ancho del
-                    //menú superior menos el ancho del menú lateral
-                    int finalWidth = menu.getWidth() - lateralWidth;
-                    //Tamaño final del contenedor, con la misma altura
-                    //del menú lateral
-                    contenedor.setSize(finalWidth, lateral.getHeight());
-
-                    contenedor.relocateComponents();
-
-                    //Repintar el frame
-                    Run.repaintFrame();
-                    //Reposicionar y redimensionar los botones
-                    if (contenedor.getWidth() < 700) {
-                        Inicio.relocateButtons(false);
-                    } else {
-                        Inicio.relocateButtons(true);
-                    }
-
-                    //Indicar que el botón se desactivó
-                    press = false;
-
-                    //Terminar el ciclo
-                    show.stop();
-                }
-            };
-
-            //Asignar la acción al timer
-            show = new Timer(1, action);
-            //Indicar que el botón se activó
-            press = true;
-            //Iniciar el timer
-            show.start();
-
-            Run.repaintFrame();
-
-        }
-    }
-
-    /**
      * Función para reemplazar el panel del contenedor
      *
      * @param type Panel que será mostrado
@@ -478,14 +308,25 @@ public class Frame extends JFrame implements properties.Constantes {
     }
 
     /**
-     * Función para abrir el panel de notificaciones
+     * Función para abrir el panel de cristal por encima del contentPane
      *
-     * @param abrir TRUE en caso de que se vaya abrir
+     * @param menu TRUE en caso de abrir el menú lateral, FALSE en caso de
+     * abrir las notificaciones
      */
-    public static void openNotification(boolean abrir) {
+    public static void openGlass(boolean menu) {
         //Validar que el componente de glass NO esté vacío
         if (glass != null) {
-            glass.setVisible(abrir);
+            
+            //Validar si se abrirá el menú o las notificaciones
+            if(menu){
+                lateral.setVisible(true);
+                notificaciones.setVisible(false);
+            } else {
+                lateral.setVisible(false);
+                notificaciones.setVisible(true);
+            }
+            
+            glass.setVisible(true);
         }
     }
 
@@ -502,6 +343,10 @@ public class Frame extends JFrame implements properties.Constantes {
         rolUsuario = 0;
     }
 
+    public static String getUserName() {
+        return nombreUsuario;
+    }
+
     //ATRIBUTOS
     private static String nombreUsuario;
     private static int rolUsuario;
@@ -511,9 +356,9 @@ public class Frame extends JFrame implements properties.Constantes {
 
     //COMPONENTES
     private static final MenuSuperior menu = new MenuSuperior();
-    private static final MenuLateral lateral = new MenuLateral();
     protected static final Contenedor contenedor = new Contenedor();
 
     private static Container glass;
+    private static final MenuLateral lateral = new MenuLateral();
     private static final PanelNotificaciones notificaciones = new PanelNotificaciones();
 }

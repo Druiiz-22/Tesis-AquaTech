@@ -24,6 +24,7 @@ import static properties.Mensaje.msjError;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
+import tabs.admin.Usuarios;
 
 public class Tabla extends JScrollPane implements properties.Constantes {
 
@@ -152,29 +153,41 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     Object dni = tabla.getValueAt(index, 0);
 
                     //Comprobar el tipo de la tabla
-                    if (type == CLIENTES) {
+                    switch (type) {
+                        case CLIENTES:
+                            //Intentar eliminarlo de la base de datos
+                            if (DeleteDB.removeCliente(dni)) {
+                                //Ya que no es posible eliminar una fila de una tabla
+                                //sin acceder a su Model, al eliminar la final en la
+                                //base de datos, se actualizará la tabla
+                                actualizarDatos();
 
-                        //Intentar eliminarlo de la base de datos
-                        if (DeleteDB.removeCliente(dni)) {
+                                Ventas.vaciarCampos();
+                            }
+                            break;
 
-                            //Ya que no es posible eliminar una fila de una tabla
-                            //sin acceder a su Model, al eliminar la final en la
-                            //base de datos, se actualizará la tabla
-                            actualizarDatos();
+                        case PROVEEDOR:
+                            //Intentar eliminarlo de la base de datos
+                            if (DeleteDB.removeProveedor(dni)) {
+                                //Ya que no es posible eliminar una fila de una tabla
+                                //sin acceder a su Model, al eliminar la final en la
+                                //base de datos, se actualizará la tabla
+                                actualizarDatos();
 
-                        }
+                                Compras.vaciarCampos();
+                            }
+                            break;
 
-                    } else if (type == PROVEEDOR) {
+                        case ADMIN_USUARIOS:
+                            if (DeleteDB.removeUsuario(dni)) {
+                                //Ya que no es posible eliminar una fila de una tabla
+                                //sin acceder a su Model, al eliminar la final en la
+                                //base de datos, se actualizará la tabla
+                                actualizarDatos();
 
-                        //Intentar eliminarlo de la base de datos
-                        if (DeleteDB.removeProveedor(dni)) {
-
-                            //Ya que no es posible eliminar una fila de una tabla
-                            //sin acceder a su Model, al eliminar la final en la
-                            //base de datos, se actualizará la tabla
-                            actualizarDatos();
-                        }
-
+                                Usuarios.vaciarCampos();
+                            }
+                            break;
                     }
                 } catch (Exception e) {
                     msjError("No se pudo eliminar el cliente.\nError: " + e);
@@ -187,40 +200,61 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * Función para editar una fila
      */
     private void editar() {
+        //Obtener le índice de la fila seleccionada
         int index = tabla.getSelectedRow();
+        
+        //Validar que el índice sea correcto
         if (validarSelect(index)) {
-            if (type == CLIENTES) {
-
-                Object cedula = tabla.getValueAt(index, 0);
-                Object nombre = tabla.getValueAt(index, 1);
-                Object apellido = tabla.getValueAt(index, 2);
-                Object telefono = tabla.getValueAt(index, 3);
-                Object direccion = tabla.getValueAt(index, 4);
-
-                PanelClientes.editCliente(
-                        index,
-                        cedula.toString(),
-                        nombre.toString(),
-                        apellido.toString(),
-                        telefono.toString(),
-                        direccion.toString()
-                );
-
-            } else if (type == PROVEEDOR) {
-
-                Object rif = tabla.getValueAt(index, 0);
-                Object nombre = tabla.getValueAt(index, 1);
-                Object telefono = tabla.getValueAt(index, 2);
-                Object direccion = tabla.getValueAt(index, 3);
-
-                Proveedores.editProveedor(
-                        index,
-                        rif.toString(),
-                        nombre.toString(),
-                        telefono.toString(),
-                        direccion.toString()
-                );
-
+            //Determinar el tipo de tabla
+            switch (type) {
+                case CLIENTES: {
+                    //Obtener los datos del cliente seleccionado
+                    Object cedula = tabla.getValueAt(index, 0);
+                    Object nombre = tabla.getValueAt(index, 1);
+                    Object apellido = tabla.getValueAt(index, 2);
+                    Object telefono = tabla.getValueAt(index, 3);
+                    Object direccion = tabla.getValueAt(index, 4);
+                    //Enviar el cliente a la pestaña de clientes, que será 
+                    //enviado a la ventana de nuevos clientes para su edición
+                    PanelClientes.editCliente(
+                            cedula.toString(),
+                            nombre.toString(),
+                            apellido.toString(),
+                            telefono.toString(),
+                            direccion.toString()
+                    );
+                    break;
+                }
+                case PROVEEDOR: {
+                    //Obtener los datos del proveedor seleccionado
+                    Object rif = tabla.getValueAt(index, 0);
+                    Object nombre = tabla.getValueAt(index, 1);
+                    Object telefono = tabla.getValueAt(index, 2);
+                    Object direccion = tabla.getValueAt(index, 3);
+                    //Enviar el proveedor a la pestaña de proveedores, que será 
+                    //enviado a la ventana de nuevos proveedores para su edición
+                    Proveedores.editProveedor(
+                            rif.toString(),
+                            nombre.toString(),
+                            telefono.toString(),
+                            direccion.toString()
+                    );
+                    break;
+                }
+                case ADMIN_USUARIOS: {
+                    //Obtener los datos del usuario seleccionado
+                    Object cedula = tabla.getValueAt(index, 1);
+                    Object rol = tabla.getValueAt(index, 2);
+                    Object correo = tabla.getValueAt(index, 3);
+                    //Enviar el usuario a la pestaña de usuarios, que será 
+                    //enviado a la ventana de nuevos usuarios para su edición
+                    Usuarios.editUsuario(
+                            cedula.toString(),
+                            rol.toString(),
+                            correo.toString()
+                    );
+                    break;
+                }
             }
         }
     }
@@ -383,13 +417,21 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         this.setViewportView(tabla);
 
         //Crear el menú según el tipo de tabla
-        if (type == CLIENTES) {
-            initClienteMenu();
-            listeners();
+        switch (type) {
+            case CLIENTES:
+                initClienteMenu();
+                listeners();
+                break;
 
-        } else if (type == PROVEEDOR) {
-            initProvMenu();
-            listeners();
+            case PROVEEDOR:
+                initProvMenu();
+                listeners();
+                break;
+
+            case ADMIN_USUARIOS:
+                initUsuariosMenu();
+                listeners();
+                break;
         }
     }
 
@@ -482,6 +524,36 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     }
 
     /**
+     * Función para iniciar el menú para usuarios en administración
+     */
+    private void initUsuariosMenu() {
+        //Propiedades de los items del menú
+        itemEditar.setFont(segoe(18, PLAIN));
+        itemEditar.setForeground(NEGRO);
+
+        itemBorrar.setFont(segoe(18, PLAIN));
+        itemBorrar.setForeground(NEGRO);
+
+        try {
+            //Buscar la imagen de cada item
+            itemEditar.setIcon(getImageIcon("editar"));
+            itemBorrar.setIcon(getImageIcon("borrar"));
+
+        } catch (Exception e) {
+            msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
+                    + "El software seguirá funcionando sin los íconos.");
+
+        } finally {
+
+            //Añadir los items al menú
+            menuPopup.add(itemEditar);
+            menuPopup.add(itemBorrar);
+
+            tabla.setComponentPopupMenu(menuPopup);
+        }
+    }
+
+    /**
      * Función para buscar los íconos de los items
      *
      * @param name Nombre del ícon
@@ -508,8 +580,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         //Poner en mayuscula el texto
         txt = txt.toUpperCase();
 
-        //Asignar el modelo de tabla (cada vez que se llame la función)
-        //al filtro
+        //Asignar el modelo de tabla al filtro, cada vez que se llame la función
         sorter = new TableRowSorter(modelo);
 
         //Validar el tipo de tabla

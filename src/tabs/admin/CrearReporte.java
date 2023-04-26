@@ -21,6 +21,8 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import database.ReadDB;
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -193,7 +195,7 @@ public class CrearReporte {
             if (ultimasFilas > 0) {
                 //ÚLTIMA HOJA
                 listaDatos = new Object[ultimasFilas][columnas];
-                
+
                 System.arraycopy(datosSinHeader, filaActual, listaDatos, 0, ultimasFilas);
                 tabla = getTable(listaDatos);
 
@@ -750,8 +752,11 @@ public class CrearReporte {
 
                 //Añadir las ganancias al parrafo, mostrando la cantidad de 
                 //recargas o compras realizadas y, debajo, las ganancias en Bs
+                String msj = cantidad
+                        + (((type == REP_COMPRAS) ? " Compras" : " Recargas"))
+                        + "\n(" + ganancias + " Bs)";
                 parrafo.add(
-                        new Text(cantidad + "\n" + ganancias + " Bs")
+                        new Text(msj)
                                 .addStyle(plainStyle)
                                 .setFontColor(rojo)
                 );
@@ -775,7 +780,7 @@ public class CrearReporte {
                 //Añadir las ganancias al párrafo, mostrando la cantidad de
                 //ventas realizados y, debajo, las ganancias en Bs
                 parrafo.add(
-                        new Text(cantidad + "\n" + ganancias + " Bs")
+                        new Text(cantidad + " Ventas\n(" + ganancias + " Bs)")
                                 .addStyle(plainStyle)
                                 .setFontColor(verde)
                 );
@@ -924,13 +929,13 @@ public class CrearReporte {
                         + "fecha determinada";
             case REP_VENTAS:
                 return "Reporte para visualizar el registro de las ventas de "
-                        + "botellones realizadas a los clientes, en una fecha"
-                        + " determinada";
+                        + "botellones realizadas a los clientes, en una fecha "
+                        + "determinada";
             case REP_CLIENTES:
-                return "Reporte para visualizar a todos los clientes registrados"
+                return "Reporte para visualizar a todos los clientes registrados "
                         + "en el sistema";
             case REP_PROVEEDORES:
-                return "Reporte para visualizar a todos los proveedores"
+                return "Reporte para visualizar a todos los proveedores "
                         + "registrados en el sistema";
             default:
                 return "";
@@ -1032,7 +1037,7 @@ public class CrearReporte {
         String segundo = (second < 10) ? ("0" + second) : String.valueOf(second);
 
         //Nombre predeterminado de las base de datos
-        String name = "\\" + getReportName() + "_";
+        String name = getReportName() + "_";
         //Fecha cuando se realizó el respaldo
         String fecha = year + "_" + mes + "_" + dia + "_" + hora + "_" + minuto + "_" + segundo + ".pdf";
 
@@ -1046,7 +1051,7 @@ public class CrearReporte {
     private static void crearPDF() {
         try {
             //PdfWriter permite crear un fichero PDF real en una ruta determinada
-            pdfWriter = new PdfWriter(path);
+            pdfWriter = new PdfWriter(absolutePath);
 
             //PdfDocument representa un documento PDF para iText, este no
             //representa un PDF real terminado, sino que es el medio de iText
@@ -1099,6 +1104,9 @@ public class CrearReporte {
             pdfDoc.close();
             pdfWriter.close();
 
+            //Abrir la carpeta contenedora
+            abrir();
+
         } catch (IOException e) {
             Mensaje.msjError("No se pudo generar el reporte.\nError: " + e);
         }
@@ -1112,7 +1120,9 @@ public class CrearReporte {
      */
     public static void crear(int type, String path) {
         CrearReporte.type = type;
-        CrearReporte.path = path + getDefaultName();
+        CrearReporte.path = path;
+        CrearReporte.fileName = getDefaultName();
+        CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
 
         if (getDatos()) {
             crearPDF();
@@ -1139,7 +1149,9 @@ public class CrearReporte {
 
         //Almacenar los datos enviados a los atributos de la clase
         CrearReporte.type = type;
-        CrearReporte.path = path + getDefaultName();
+        CrearReporte.path = path;
+        CrearReporte.fileName = getDefaultName();
+        CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
         CrearReporte.initialDate = initialDate;
         CrearReporte.finalDate = finalDate;
 
@@ -1164,15 +1176,70 @@ public class CrearReporte {
      */
     private static void vaciarDatos() {
         type = 0;
-        path = null;
+        absolutePath = null;
         initialDate = null;
         finalDate = null;
         datos = null;
     }
 
+    /**
+     * Función para mostrar un mensaje de éxito y preguntar si se abrirá la
+     * carpeta contenedora del reporte generado.
+     */
+    private static void abrir() {
+        String msj
+                = "<html>"
+                + "<p><b>¡Se ha creado el reporte con éxito!</b></p>"
+                + "<p>Nombre del archivo: " + fileName + "</p><br>"
+                + "<p><b>¿Desea abrir la carpeta donde se generó?</b></p>"
+                + "</html>";
+
+        String[] botones = {"Abrir carpeta", "Finalizar"};
+
+        int opcion = javax.swing.JOptionPane.showOptionDialog(
+                null,
+                msj,
+                "Reporte PDF generado",
+                0,
+                javax.swing.JOptionPane.INFORMATION_MESSAGE,
+                null,
+                botones,
+                botones[1]
+        );
+
+        //Validar si se va abrir o no la carpeta
+        if (opcion == 0) {
+
+            //Archivo que contiene la ruta del documento creado
+            File folder = new File(path);
+
+            //Comprobar si el dispositivo donde se ejecuta el programa, es 
+            //compatible con la clase "Desktop" para poder abrir una carpeta
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    //Intentar abrir la carpeta
+                    Desktop desktop = Desktop.getDesktop();
+                    desktop.open(folder);
+
+                } catch (IOException e) {
+                    Mensaje.msjError("No se pudo abrir la ruta:\n"
+                            + folder.getAbsolutePath() + "\nPor favor, verifique"
+                            + "la existencia de la carpeta y el respaldo."
+                    );
+                }
+            } else {
+                Mensaje.msjError("La clase 'Desktop' no es compatible con la "
+                        + "plataforma actual.\nNo se podrá abrir la carpeta"
+                        + "contenedora del respaldo");
+            }
+        }
+    }
+
     //ATRIBUTOS FRONTEND
     private static int type;
     private static String path;
+    private static String fileName;
+    private static String absolutePath;
     private static String initialDate;
     private static String finalDate;
     private static PageSize defaultSize;

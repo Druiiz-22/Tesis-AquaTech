@@ -187,7 +187,7 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
     /**
      * Función para vaciar todos los campos de todos los paneles
      */
-    public void vaciarCampos() {
+    public static void vaciarCampos() {
         panelTrasvasos.vaciarCampos();
         panelVentas.vaciarCampos();
         panelPedidos.vaciarCampos();
