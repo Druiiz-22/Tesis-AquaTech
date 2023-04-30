@@ -118,10 +118,9 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
      * @param nombre
      * @param apellido
      * @param telefono
-     * @param direccion
      */
-    public static void editCliente(String cedula, String nombre, String apellido, String telefono, String direccion) {
-        nuevoCliente.editar(cedula, nombre, apellido, telefono, direccion);
+    public static void editCliente(String cedula, String nombre, String apellido, String telefono) {
+        nuevoCliente.editar(cedula, nombre, apellido, telefono);
     }
 
     //COMPONENTES

@@ -15,7 +15,6 @@ public class EmailCode {
 
     private static String emailEmpresa = "aquatech.tesis@gmail.com";
     private static String claveEmpresa = "xabidfizmcwimsri";
-    private static String fecha;
     private static String destino, asunto, contenido;
     private static int codigo;
 
@@ -44,8 +43,8 @@ public class EmailCode {
             mCorreo.setFrom(new InternetAddress(emailEmpresa));
 
             mCorreo.setRecipient(Message.RecipientType.TO, new InternetAddress(destino));
-            mCorreo.setSubject(asunto);
-            mCorreo.setText(contenido, "ISO 8859-1", "html");
+            mCorreo.setSubject(asunto, "UTF-8");
+            mCorreo.setText(contenido, "UTF-8", "html");
             
     }
 
@@ -87,7 +86,7 @@ public class EmailCode {
                 + "</p>"
                 + "<h1>" + EmailCode.codigo + "</h1>"
                 + "<p>"
-                + "Los código de verificación caducan después de 10 minutos."
+                + "Los código de verificación caducan después de 30 minutos."
                 + "</p>"
                 + "</center>"
                 + "<p>"
@@ -135,7 +134,7 @@ public class EmailCode {
                 + "</p>"
                 + "<h1>" + EmailCode.codigo + "</h1>"
                 + "<p>"
-                + "Los código de verificación caducan después de 10 minutos."
+                + "Los código de verificación caducan después de 30 minutos."
                 + "</p>"
                 + "</center>"
                 + "<p>"

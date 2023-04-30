@@ -110,10 +110,10 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
                             + "formato de un número telefónico." + msj;
                 }
             } else {
-                msj = "El apellido debe tener un rango de 2 a 25 letras." + msj;
+                msj = "El apellido solo puede llevar letras, entre 2 a 25." + msj;
             }
         } else {
-            msj = "El nombre debe tener un rango de 2 a 25 letras." + msj;
+            msj = "El nombre solo puede llevar letras, entre 2 a 25." + msj;
         }
 
         msjError(msj);

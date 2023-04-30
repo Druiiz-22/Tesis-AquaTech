@@ -23,7 +23,7 @@ import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjInformativo;
-import static properties.ValidarTexto.formatoNombre;
+import static properties.ValidarTexto.formatoNombreEmpresa;
 import static properties.ValidarTexto.formatoRIF;
 import static properties.ValidarTexto.formatoTelefono;
 import tabs.compras.Compras;
@@ -80,14 +80,6 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyChar() == TECLA_ENTER) {
-                    txtDireccion.requestFocus();
-                }
-            }
-        });
-        txtDireccion.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.getKeyChar() == TECLA_ENTER) {
                     if (crearProveedor) {
                         crear();
                     } else {
@@ -116,7 +108,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                 if (msjYesNo("¿Está seguro de realizar el registro del nuevo proveedor?")) {
 
                     //Intentar crear el cliente en la base de datos
-                    if (CreateDB.createProveedor(rif, nombre, telefono, direccion)) {
+                    if (CreateDB.createProveedor(rif, nombre, telefono)) {
 
                         //Ya que puede dar muchos problemas el alterar o agregar
                         //un dato a una tabla (y no a su Model), la forma de 
@@ -149,7 +141,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
                     //Mensaje de confirmación
                     if (msjYesNo("¿Está seguro de actualizar los datos del proveedor?")) {
                         //Intentar editar el proveedor en la base de datos
-                        if (UpdateDB.updateProveedor(String.valueOf(id), rif, nombre, telefono, direccion)) {
+                        if (UpdateDB.updateProveedor(id, rif, nombre, telefono)) {
 
                             //Ya que puede dar muchos problemas el alterar o agregar
                             //un dato a una tabla (y no a su Model), la forma de 
@@ -161,7 +153,7 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
 
                             dispose();
                             vaciarCampos();
-                            
+
                             Compras.vaciarCampos();
                         }
                     }
@@ -182,19 +174,14 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         nombre = txtNombre.getText().trim().toUpperCase();
         telefono = txtTelefono.getText().trim();
         rif = txtRif.getText().trim();
-        direccion = txtDireccion.getText().trim().toUpperCase();
 
         //Validar que los campos NO estén vacíos
         if (!nombre.isEmpty()) {
             if (!telefono.isEmpty()) {
                 if (!rif.isEmpty()) {
-                    if (!direccion.isEmpty()) {
 
-                        return true;
+                    return true;
 
-                    } else {
-                        msj = "La direccion no puede estar vacío." + msj;
-                    }
                 } else {
                     msj = "El RIF no puede estar vacío." + msj;
                 }
@@ -219,20 +206,15 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         String msj = "\nPor favor, revise sus datos.";
 
         //Validar los formatos de los datos
-        if (formatoNombre(nombre)) {
+        if (formatoNombreEmpresa(nombre)) {
             if (formatoTelefono(telefono)) {
                 if (formatoRIF(rif)) {
-                    if (direccion.length() >= 2 && direccion.length() <= 255) {
 
-                        return true;
+                    return true;
 
-                    } else {
-                        msj = "La dirección debe tener un rango de 2 a 255 letras." + msj;
-                    }
                 } else {
                     msj = "El RIF ingreso no cumple con el formato de un RIF." + msj;
                 }
-
             } else {
                 msj = "El teléfono ingresado no cumple con el\n"
                         + "formato de un número telefónico." + msj;
@@ -271,10 +253,10 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     }
 
     //ATRIBUTOS BACKEND
-    private static Boolean crearProveedor;
     private static int id;
     private static String rifViejo;
-    private static String nombre, rif, telefono, direccion;
+    private static Boolean crearProveedor;
+    private static String nombre, rif, telefono;
 
     // ========== FRONTEND ==========
     /**
@@ -311,8 +293,6 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         this.add(txtRif);
         this.add(lblTelefono);
         this.add(txtTelefono);
-        this.add(lblDireccion);
-        this.add(txtDireccion);
         this.add(btnGuardar);
         this.add(btnCancelar);
     }
@@ -335,13 +315,13 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
-        int y = paddingV * 2 + logo.getHeight();
+        int y = paddingV * 5/2 + logo.getHeight();
         int w = width - paddingH * 2;
         lblTitulo.setLocation(paddingH, y);
         lblTitulo.setSize(w, paddingV * 5 / 2);
 
         //Labels y campo de texto del rif
-        int lblY = y + lblTitulo.getHeight() + paddingV;
+        int lblY = y + lblTitulo.getHeight() + paddingV * 3/2;
         int txtY = lblY + lblNombre.getHeight() + gapV;
         lblRif.setLocation(paddingH, lblY);
         txtRif.setBounds(paddingH, txtY, fieldW, fieldH);
@@ -356,12 +336,6 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         txtY = lblY + lblNombre.getHeight() + gapV;
         lblNombre.setLocation(paddingH, lblY);
         txtNombre.setBounds(paddingH, txtY, w, fieldH);
-
-        //Labels y campo de texto de la dirección
-        lblY = txtY + fieldH + paddingV / 2;
-        txtY = lblY + lblDireccion.getHeight() + gapV;
-        lblDireccion.setLocation(paddingH, lblY);
-        txtDireccion.setBounds(paddingH, txtY, w, fieldH);
 
         //Botones
         y = height - paddingH - fieldH;
@@ -395,18 +369,18 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         this.setTitle("Agregar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        
+
         //Atributo
         crearProveedor = true;
-        
+
         //Titulo para la ventana
         lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
                 + "nuevo proveedor al sistema.</html>");
-        
+
         //Logo para la ventana
         logo.setText("Agregar Proveedor");
         logo.setSize(logo.getPreferredSize());
-        
+
         //Redimensionar los componentes
         relocateComponents();
     }
@@ -417,31 +391,29 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * @param nombre
      * @param rif
      * @param telefono
-     * @param direc
      */
-    protected void editar(String rif, String nombre, String telefono, String direc) {
+    protected void editar(String rif, String nombre, String telefono) {
         //Propiedades de la ventana
         this.setTitle("Editar un proveedor - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        
+
         //Atributos
         rifViejo = rif;
         crearProveedor = false;
-        
+
         //Titulo para la ventana
         lblTitulo.setText("<html>Ingrese los nuevos datos del proveedor "
                 + "que desea actualizar.</html>");
         //Logo para la ventana
         logo.setText("Editar Proveedor");
         logo.setSize(logo.getPreferredSize());
-        
+
         //Sobreescribir los campos
         txtRif.setText(rif);
         txtNombre.setText(nombre);
         txtTelefono.setText(telefono);
-        txtDireccion.setText(direc);
-        
+
         //Redimensionar los componentes
         relocateComponents();
     }
@@ -454,7 +426,6 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         txtNombre.setText("");
         txtRif.setText("");
         txtTelefono.setText("");
-        txtDireccion.setText("");
 
         //Vaciar los atributos
         id = 0;
@@ -462,7 +433,6 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         rifViejo = null;
         nombre = null;
         telefono = null;
-        direccion = null;
     }
 
     /**
@@ -483,13 +453,10 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     private static final CampoTexto txtRif = new CampoTexto("Rif del proveedor", NUMERO);
 
     private static final Label lblTelefono = new Label("Teléfono", PLANO, 16);
-    private static final CampoTexto txtTelefono = new CampoTexto("Teléfono del proveedor", NUMERO);
+    private static final CampoTexto txtTelefono = new CampoTexto("Teléfono", NUMERO);
 
     private static final Label lblNombre = new Label("Nombre", PLANO, 16);
     private static final CampoTexto txtNombre = new CampoTexto("Nombre del proveedor", NOMBRE);
-
-    private static final Label lblDireccion = new Label("Direccion", PLANO, 16);
-    private static final CampoTexto txtDireccion = new CampoTexto("Direccion del proveedor", CUALQUIER);
 
     private static final Boton btnGuardar = new Boton("Guardar", VERDE);
     private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);

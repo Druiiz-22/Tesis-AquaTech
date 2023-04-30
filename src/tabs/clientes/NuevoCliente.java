@@ -85,14 +85,6 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyChar() == TECLA_ENTER) {
-                    txtDireccion.requestFocus();
-                }
-            }
-        });
-        txtDireccion.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.getKeyChar() == TECLA_ENTER) {
                     if (crearCliente) {
                         crear();
                     } else {
@@ -121,7 +113,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                 if (msjYesNo("¿Está seguro de realizar el registro del nuevo cliente?")) {
 
                     //Intentar crear el cliente en la base de datos
-                    if (CreateDB.createCliente(cedula, nombre, apellido, telefono, direccion)) {
+                    if (CreateDB.createCliente(cedula, nombre, apellido, telefono)) {
 
                         //Ya que puede dar muchos problemas el alterar o agregar
                         //un dato a una tabla (y no a su Model), la forma de 
@@ -130,10 +122,10 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                         PanelClientes.actualizarDatos();
 
                         Mensaje.msjInformativo("Se creó el nuevo cliente con éxito.");
-                        
+
                         dispose();
                         vaciarCampos();
-                        
+
                         Ventas.vaciarCampos();
                     }
                 }
@@ -154,19 +146,19 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
                     //Mensaje de confirmación
                     if (msjYesNo("¿Está seguro de actualizar los datos del cliente?")) {
                         //Intentar editar el cliente en la base de datos
-                        if (UpdateDB.updateCliente(String.valueOf(id), cedula, nombre, apellido, telefono, direccion)) {
+                        if (UpdateDB.updateCliente(id, cedula, nombre, apellido, telefono)) {
 
                             //Ya que puede dar muchos problemas el alterar o agregar
                             //un dato a una tabla (y no a su Model), la forma de 
                             //visualizar los cambios será actualizando los datos 
                             //de la tabla con la base de datos
                             PanelClientes.actualizarDatos();
-                            
+
                             Mensaje.msjInformativo("Se actualizaron los datos del cliente con éxito.");
-                            
+
                             dispose();
                             vaciarCampos();
-                            
+
                             Ventas.vaciarCampos();
                         }
                     }
@@ -187,21 +179,16 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         nombre = txtNombre.getText().trim().toUpperCase();
         apellido = txtApellido.getText().trim().toUpperCase();
         telefono = txtTelefono.getText().trim();
-        cedula = txtCedula.getText().trim();
-        direccion = txtDireccion.getText().trim().toUpperCase();
+        String ci = txtCedula.getText().trim();
 
         //Validar que los campos NO estén vacíos
         if (!nombre.isEmpty()) {
             if (!apellido.isEmpty()) {
                 if (!telefono.isEmpty()) {
-                    if (!cedula.isEmpty()) {
-                        if (!direccion.isEmpty()) {
+                    if (!ci.isEmpty()) {
 
-                            return true;
+                        return true;
 
-                        } else {
-                            msj = "La direccion no puede estar vacío." + msj;
-                        }
                     } else {
                         msj = "La cédula no puede estar vacía." + msj;
                     }
@@ -232,26 +219,23 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         if (formatoNombre(nombre)) {
             if (formatoNombre(apellido)) {
                 if (formatoTelefono(telefono)) {
-                    if (direccion.length() >= 2 && direccion.length() <= 255) {
 
-                        //Validar que la cédula se pueda convertir a un entero
-                        //y que esté dentro del rango correcto
-                        try {
-                            int ci = Integer.parseInt(cedula);
-                            if (ci >= 1 && ci <= 99999999) {
+                    //Validar que la cédula se pueda convertir a un entero
+                    //y que esté dentro del rango correcto
+                    try {
+                        cedula = Integer.parseInt(txtCedula.getText().trim());
+                        if (cedula >= 1 && cedula <= 99999999) {
 
-                                return true;
+                            return true;
 
-                            } else {
-                                throw new NumberFormatException();
-                            }
-
-                        } catch (NumberFormatException ex) {
-                            msj = "El valor de la cédula es incorrecto.\nDebe estar entre 1 y 99.999.999";
+                        } else {
+                            throw new NumberFormatException();
                         }
-                    } else {
-                        msj = "La dirección debe tener un rango de 2 a 255 letras." + msj;
+
+                    } catch (NumberFormatException ex) {
+                        msj = "El valor de la cédula es incorrecto.\nDebe estar entre 1 y 99.999.999";
                     }
+
                 } else {
                     msj = "El teléfono ingresado no cumple con el\n"
                             + "formato de un número telefónico." + msj;
@@ -293,10 +277,10 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     }
 
     //ATRIBUTOS BACKEND
-    private static int id;
+    private static int id, cedula;
     private static String cedulaVieja;
     private static Boolean crearCliente;
-    private static String nombre, apellido, cedula, telefono, direccion;
+    private static String nombre, apellido, telefono;
 
     // ========== FRONTEND ==========
     /**
@@ -334,8 +318,6 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         this.add(txtCedula);
         this.add(lblTelefono);
         this.add(txtTelefono);
-        this.add(lblDireccion);
-        this.add(txtDireccion);
         this.add(btnGuardar);
         this.add(btnCancelar);
     }
@@ -358,13 +340,13 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
-        int y = paddingV * 2 + logo.getHeight();
+        int y = paddingV * 5/2 + logo.getHeight();
         int w = width - paddingH * 2;
         lblTitulo.setLocation(paddingH, y);
         lblTitulo.setSize(w, paddingV * 5 / 2);
 
         //Labels y campo de texto del nombre
-        int lblY = y + lblTitulo.getHeight() + paddingV;
+        int lblY = y + lblTitulo.getHeight() + paddingV * 3/2;
         int txtY = lblY + lblNombre.getHeight() + gapV;
         lblNombre.setLocation(paddingH, lblY);
         txtNombre.setBounds(paddingH, txtY, fieldW, fieldH);
@@ -383,12 +365,6 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         //Labels y campo de texto del número
         lblTelefono.setLocation(x, lblY);
         txtTelefono.setBounds(x, txtY, fieldW, fieldH);
-
-        //Labels y campo de texto de la dirección
-        lblY = txtY + fieldH + paddingV / 2;
-        txtY = lblY + lblDireccion.getHeight() + gapV;
-        lblDireccion.setLocation(paddingH, lblY);
-        txtDireccion.setBounds(paddingH, txtY, w, fieldH);
 
         //Botones
         y = height - paddingH - fieldH;
@@ -441,7 +417,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * @param telefono
      * @param direc
      */
-    protected void editar(String cedula, String nombre, String apellido, String telefono, String direc) {
+    protected void editar(String cedula, String nombre, String apellido, String telefono) {
         this.setTitle("Editar un cliente - AquaTech");
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -459,7 +435,6 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         txtNombre.setText(nombre);
         txtApellido.setText(apellido);
         txtTelefono.setText(telefono);
-        txtDireccion.setText(direc);
 
         relocateComponents();
     }
@@ -473,16 +448,14 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         txtApellido.setText("");
         txtCedula.setText("");
         txtTelefono.setText("");
-        txtDireccion.setText("");
 
         //Vaciar los atributos
         id = 0;
+        cedula = 0;
         cedulaVieja = null;
         nombre = null;
         apellido = null;
-        cedula = null;
         telefono = null;
-        direccion = null;
     }
 
     /**
@@ -510,9 +483,6 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
 
     private static final Label lblTelefono = new Label("Teléfono", PLANO, 16);
     private static final CampoTexto txtTelefono = new CampoTexto("Teléfono del cliente", NUMERO);
-
-    private static final Label lblDireccion = new Label("Direccion", PLANO, 16);
-    private static final CampoTexto txtDireccion = new CampoTexto("Direccion del cliente", CUALQUIER);
 
     private static final Boton btnGuardar = new Boton("Guardar", VERDE);
     private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);

@@ -248,6 +248,22 @@ public class ValidarTexto {
     }
 
     /**
+     * Función para validar que un texto cumpla con el formato de un nombre de
+     * empresa:
+     * <ul>
+     * <li>Solo letras.</li>
+     * <li>Todas las letras en mayúscula.</li>
+     * <li>Se permiten acentos y comillas simples</li>
+     * </ul>
+     *
+     * @param name
+     * @return
+     */
+    public static boolean formatoNombreEmpresa(String name) {
+        return name.matches("^[A-Z À-Ü]+$");
+    }
+
+    /**
      * Función para validar que un <b>texto</b> cumpla con el formato básico de
      * un correo:
      * <ul>

@@ -482,7 +482,7 @@ public class CrearReporte {
 
             case REP_CLIENTES:
                 //Crear la cabecera para los clientes
-                String[] campos = new String[]{"#", "Cedula", "Nombre", "Apellido", "Telefono", "Direccion"};
+                String[] campos = new String[]{"#", "Cedula", "Nombre", "Apellido", "Telefono"};
                 //Lista de clientes obtenida de la base de datos
                 Object[][] lista = ReadDB.getClientes();
                 //Si la lista está vacía, terminar el case
@@ -508,7 +508,7 @@ public class CrearReporte {
 
             case REP_PROVEEDORES:
                 //Crear la cabecera para los clientes
-                campos = new String[]{"#", "RIF", "Nombre", "Telefono", "Direccion"};
+                campos = new String[]{"#", "RIF", "Nombre", "Telefono"};
                 //Lista de clientes obtenida de la base de datos
                 lista = ReadDB.getProveedores();
                 //Si la lista está vacía, terminar el case

@@ -1,5 +1,6 @@
 package components;
 
+import database.AdminDB;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -24,6 +25,7 @@ import static properties.Mensaje.msjError;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
+import static properties.Mensaje.msjInformativo;
 import tabs.admin.Usuarios;
 
 public class Tabla extends JScrollPane implements properties.Constantes {
@@ -157,10 +159,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                         case CLIENTES:
                             //Intentar eliminarlo de la base de datos
                             if (DeleteDB.removeCliente(dni)) {
+
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
+
+                                msjInformativo("Se eliminó al cliente con éxito.");
 
                                 Ventas.vaciarCampos();
                             }
@@ -174,19 +179,30 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
 
+                                msjInformativo("Se eliminó el proveedor con éxito.");
+
                                 Compras.vaciarCampos();
                             }
                             break;
 
                         case ADMIN_USUARIOS:
-                            if (DeleteDB.removeUsuario(dni)) {
-                                //Ya que no es posible eliminar una fila de una tabla
-                                //sin acceder a su Model, al eliminar la final en la
-                                //base de datos, se actualizará la tabla
-                                actualizarDatos();
+                            Object cedula = tabla.getValueAt(index, 1);
+                            
+                            //Validar el rol de administrador y su clave para
+                            //intentar eliminar el usuario
+                            if (AdminDB.validateAdminUser()) {
+                                if (DeleteDB.removeUsuario(dni, cedula)) {
+                                    //Ya que no es posible eliminar una fila de una tabla
+                                    //sin acceder a su Model, al eliminar la final en la
+                                    //base de datos, se actualizará la tabla
+                                    actualizarDatos();
 
-                                Usuarios.vaciarCampos();
+                                    msjInformativo("Se eliminó al usuario con éxito.");
+
+                                    Usuarios.vaciarCampos();
+                                }
                             }
+
                             break;
                     }
                 } catch (Exception e) {
@@ -202,7 +218,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private void editar() {
         //Obtener le índice de la fila seleccionada
         int index = tabla.getSelectedRow();
-        
+
         //Validar que el índice sea correcto
         if (validarSelect(index)) {
             //Determinar el tipo de tabla
@@ -213,15 +229,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     Object nombre = tabla.getValueAt(index, 1);
                     Object apellido = tabla.getValueAt(index, 2);
                     Object telefono = tabla.getValueAt(index, 3);
-                    Object direccion = tabla.getValueAt(index, 4);
                     //Enviar el cliente a la pestaña de clientes, que será 
                     //enviado a la ventana de nuevos clientes para su edición
                     PanelClientes.editCliente(
                             cedula.toString(),
                             nombre.toString(),
                             apellido.toString(),
-                            telefono.toString(),
-                            direccion.toString()
+                            telefono.toString()
                     );
                     break;
                 }
@@ -230,14 +244,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     Object rif = tabla.getValueAt(index, 0);
                     Object nombre = tabla.getValueAt(index, 1);
                     Object telefono = tabla.getValueAt(index, 2);
-                    Object direccion = tabla.getValueAt(index, 3);
                     //Enviar el proveedor a la pestaña de proveedores, que será 
                     //enviado a la ventana de nuevos proveedores para su edición
                     Proveedores.editProveedor(
                             rif.toString(),
                             nombre.toString(),
-                            telefono.toString(),
-                            direccion.toString()
+                            telefono.toString()
                     );
                     break;
                 }
@@ -245,12 +257,19 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     //Obtener los datos del usuario seleccionado
                     Object cedula = tabla.getValueAt(index, 1);
                     Object rol = tabla.getValueAt(index, 2);
-                    Object correo = tabla.getValueAt(index, 3);
+                    Object nombre = tabla.getValueAt(index, 3);
+                    Object apellido = tabla.getValueAt(index, 4);
+                    Object telefono = tabla.getValueAt(index, 5);
+                    Object correo = tabla.getValueAt(index, 6);
+                    
                     //Enviar el usuario a la pestaña de usuarios, que será 
                     //enviado a la ventana de nuevos usuarios para su edición
                     Usuarios.editUsuario(
                             cedula.toString(),
                             rol.toString(),
+                            nombre.toString(),
+                            apellido.toString(),
+                            telefono.toString(),
                             correo.toString()
                     );
                     break;
@@ -369,12 +388,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         switch (type) {
             case CLIENTES:
                 //Establecer las columnas de la tabla
-                cabecera = new String[]{"Cedula", "Nombre", "Apellido", "Telefono", "Direccion"};
+                cabecera = new String[]{"Cedula", "Nombre", "Apellido", "Telefono"};
                 break;
 
             case PROVEEDOR:
                 //Establecer las columnas de la tabla
-                cabecera = new String[]{"RIF", "Nombre", "Telefono", "Direccion"};
+                cabecera = new String[]{"RIF", "Nombre", "Telefono"};
 
                 break;
             case HISTORIAL_TRASVASO:
@@ -389,18 +408,21 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     "Monto Total", "Fecha"};
 
                 break;
+
             case HISTORIAL_VENTA:
                 //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "Cedula", "Cantidad", "Tipo pago",
                     "Monto Total", "Fecha"};
                 break;
+
             case HISTORIAL_COMPRA:
                 //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "RIF", "Proveedor", "Cantidad",
                     "Monto Total", "Fecha"};
                 break;
+
             case ADMIN_USUARIOS:
-                cabecera = new String[]{"ID", "Cedula", "Rol", "Correo"};
+                cabecera = new String[]{"ID", "Cedula", "Rol", "Nombre", "Apellido", "Telefono", "Correo"};
                 break;
         }
     }

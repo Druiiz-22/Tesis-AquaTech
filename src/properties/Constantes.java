@@ -178,8 +178,8 @@ public interface Constantes {
     public static final int GRUESA = 32;
     /**
      * Constante para designar los <b>labels para los títulos</b>, son aquellos
-     * labels que cuentan con la fuente predeterminada del software, pero en
-     * su versión SemiBold (semi negrita), es usado para los títulos dentro del
+     * labels que cuentan con la fuente predeterminada del software, pero en su
+     * versión SemiBold (semi negrita), es usado para los títulos dentro del
      * software.
      */
     public static final int TITULO = 33;
@@ -191,10 +191,10 @@ public interface Constantes {
      */
     public static final int LINK = 34;
     /**
-     * Constante para designar el <b>label para las páginas</b>, es aquél
-     * que se utiliza para resaltar (en el menú superior) la pestaña que se
-     * encuentra abierta y visualizada. Cuenta con la fuente predeterminada
-     * del software, pero de color blanco.
+     * Constante para designar el <b>label para las páginas</b>, es aquél que se
+     * utiliza para resaltar (en el menú superior) la pestaña que se encuentra
+     * abierta y visualizada. Cuenta con la fuente predeterminada del software,
+     * pero de color blanco.
      */
     public static final int NORMAL_BLANCO = 35;
     /**
@@ -207,8 +207,8 @@ public interface Constantes {
      */
     public static final int DEUDAS = 37;
     /**
-     * Constante para determinar que el botón presionado va a dirigirse
-     * hacia el sitio web de la empresa
+     * Constante para determinar que el botón presionado va a dirigirse hacia el
+     * sitio web de la empresa
      */
     public static final int WEB = 38;
     /**
@@ -217,34 +217,41 @@ public interface Constantes {
      */
     public static final int SELECT_CLIENTE = 39;
     /**
-     * Constante para determinar el botón de selección de proveedores, 
-     * en el apartado de compra y recarga de botellones
+     * Constante para determinar el botón de selección de proveedores, en el
+     * apartado de compra y recarga de botellones
      */
     public static final int ASIGNAR_PROV = 40;
     /**
      * Constante para determinar qué el <b>ancho del panel de información</b>,
-     * siendo el tamaño mediano cuando éste esté dentro de un contenedor
-     * menor a 600 px o cuando el panel mida 300 px de ancho
+     * siendo el tamaño mediano cuando éste esté dentro de un contenedor menor a
+     * 600 px o cuando el panel mida 300 px de ancho
      */
     public static final int PANEL_MEDIANO = 41;
     /**
      * Constante para determinar qué el <b>ancho del panel de información</b>,
-     * siendo el tamaño grande cuando éste esté dentro de un contenedor
-     * mayor a 600 px y menor a 900 px
+     * siendo el tamaño grande cuando éste esté dentro de un contenedor mayor a
+     * 600 px y menor a 900 px
      */
     public static final int PANEL_GRANDE = 42;
-    
+    /**
+     * Constante para determinar que un campo de texto admite cualquier tipo de
+     * carácter de entrada
+     */
     public static final int CUALQUIER = 43;
-    
+
+    /**
+     * Constante con el valor del rol de cliente para el usuario
+     */
+    public static final int CLIENTE = 0;
     /**
      * Constante con el valor del rol de empleado para el usuario
      */
-    public static final int EMPLEADO = 0;
+    public static final int EMPLEADO = 1;
     /**
      * Constante con el valor del rol de administrador para el usuario
      */
-    public static final int ADMINISTRADOR = 1;
-    
+    public static final int ADMINISTRADOR = 2;
+
     //CONSTANTES EXTRAÍDOS
     /**
      * Escalar una imagen de forma suave, extraído de java.awt.Image
@@ -253,10 +260,11 @@ public interface Constantes {
     /**
      * Valor de la tecla enter, extraído de la clase java.awt.event.KeyEvent
      */
-    public static final int TECLA_ENTER  = '\n';
+    public static final int TECLA_ENTER = '\n';
     /**
-     * Valor de la tecla suprimir/delete, extraído de la clase java.awt.event.KeyEvent
+     * Valor de la tecla suprimir/delete, extraído de la clase
+     * java.awt.event.KeyEvent
      */
     public static final int TECLA_SUPR = 0x7F;
-    
+
 }

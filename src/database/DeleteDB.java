@@ -35,10 +35,16 @@ public class DeleteDB {
      * datos
      *
      * @param id ID del usuario a eliminar
+     * @param cedula Cédula para eliminar el usuario en clientes
      * @return
      */
-    public static boolean removeUsuario(Object id) {
+    public static boolean removeUsuario(Object id, Object cedula) {
 
+        //Remover el cliente con la cédula del usuario
+        if(removeCliente(cedula)){
+            
+        }
+        
         return true;
     }
 }

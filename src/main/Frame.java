@@ -93,15 +93,21 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(lateral);
 
         //LISTA DE COSAS PENDIENTES
-        //- Diseñar los ajustes.
-        //- Diseñar los pedidos.
-        //- Diseñar la tabla de deudas.
-        
-        //- Realizar el envío de código al correo.
         //- Ver el google maps.
         
+        //- Diseñar los ajustes.
+        //- Diseñar los pedidos.
+        
+        //- Diseñar la tabla de deudas.
         //- Realizar la generación de reportes de deudas
+        
         //- Dar formulario a los RIF
+        
+        //NOTAS
+        //se crea un cliente -> NO se crea un usuario
+        //se crea un usuario de cliente -> Se crea un cliente
+        //se crea un usuario operativo -> Se crea un cliente
+        //se crea un cliente y luego se crea un usuario -> Se sobreponen los datos del usuario en el cliente
     }
     
     /**
@@ -345,6 +351,10 @@ public class Frame extends JFrame implements properties.Constantes {
 
     public static String getUserName() {
         return nombreUsuario;
+    }
+    
+    public static int getUserRol(){
+        return rolUsuario;
     }
 
     //ATRIBUTOS

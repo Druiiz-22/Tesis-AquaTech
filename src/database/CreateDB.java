@@ -17,10 +17,9 @@ public class CreateDB {
      * @param nombre
      * @param apellido
      * @param telefono
-     * @param direccion
      * @return
      */
-    public static boolean createCliente(String cedula, String nombre, String apellido, String telefono, String direccion) {
+    public static boolean createCliente(int cedula, String nombre, String apellido, String telefono) {
 
 //        Mensaje por si no se puede conectar con la base de datos
 //        msjError("No se pudo crear el cliente en la base de datos."
@@ -38,29 +37,33 @@ public class CreateDB {
      * @param rif
      * @param nombre
      * @param telefono
-     * @param direccion
      * @return
      */
-    public static boolean createProveedor(String rif, String nombre, String telefono, String direccion) {
+    public static boolean createProveedor(String rif, String nombre, String telefono) {
 
-        return true;
-    }
-
-    /**
-     * Función para la creación de un nuevo usuario en el sistema.
-     * 
-     * @param cedula
-     * @param correo
-     * @param rol
-     * @param clave
-     * @return 
-     */
-    public static boolean createUsuarioAdministracion(String cedula, String correo, int rol, String clave) {
         return true;
     }
     
-    public static boolean createUsuarioNuevo(int cedula, String nombre, String apellido, String telefono, String correo, String clave){
+    /**
+     * Función para crear un usuario operativo nuevo en el sistema 
+     * 
+     * @param cedula
+     * @param nombre
+     * @param apellido
+     * @param telefono
+     * @param correo
+     * @param clave
+     * @param rol
+     * 
+     * @return 
+     */
+    public static boolean createUsuario(int cedula, String nombre, String apellido, String telefono, String correo, String clave, int rol){
      
+        //Crear un cliente, con los mismos datos del usuario, en el sistema
+        if(createCliente(cedula, nombre, apellido, telefono)){
+            
+        }
+        
         return true;
     }
 

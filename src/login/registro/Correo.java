@@ -8,7 +8,7 @@ import database.ReadDB;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Random;
+import java.util.Calendar;
 import login.Registro;
 import static login.Frame.replacePanel;
 import static login.Registro.getContentSize;
@@ -33,18 +33,31 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
             //Validar que el correo NO exista en la base de datos
             if (!ReadDB.emailExists(correoUsuario)) {
 
-                //Objeto para generar un número aleatorio
-                Random aleatorio = new Random();
-                int codigoSeguridad = aleatorio.nextInt(999999);
+                //Generar un número aleatorio de 6 dígitos
+                int codigoSeguridad = (int) (Math.random() * (999999 - 100000) + 100000);
 
                 //Validar si se pudo enviar el correo o no
                 if (EmailCode.comprobarCorreo(correoUsuario, codigoSeguridad)) {
-                    
+
+                    //Obtener la fecha actual
+                    java.util.Date actual = new java.util.Date();
+                    Calendar fechaSalida = new java.util.GregorianCalendar();
+                    fechaSalida.setTime(actual);
+                    //Sumar 10 minutos a la fecha
+                    fechaSalida.add(Calendar.MINUTE, 30);
+
+                    //Obtener la fecha máxima de validación del código de seguridad
+                    Calendar fechaExpiracion = new java.util.GregorianCalendar();
+                    fechaExpiracion.setTime(fechaSalida.getTime());
+
+                    //Reasignar la fecha actual
+                    fechaSalida.setTime(actual);
+
                     //Guardar el correo en la clase de registro
                     Registro.setCorreo(correoUsuario);
 
                     //Enviar el correo y el código a la pestaña siguiente
-                    Codigo.setCorreo(correoUsuario, codigoSeguridad);
+                    Codigo.setDatos(correoUsuario, codigoSeguridad, fechaSalida, fechaExpiracion);
 
                     //Avanzar a la pestaña de validación de código
                     replaceContainer(CODIGO);

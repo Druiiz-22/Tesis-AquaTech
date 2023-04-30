@@ -14,10 +14,9 @@ public class UpdateDB {
      * @param nombre
      * @param apellido
      * @param telefono
-     * @param direccion
      * @return
      */
-    public static boolean updateCliente(String id, String cedula, String nombre, String apellido, String telefono, String direccion) {
+    public static boolean updateCliente(int id, int cedula, String nombre, String apellido, String telefono) {
 
 //        Mensaje por si no se puede conectar con la base de datos
 //        msjError("No se pudo crear el cliente en la base de datos."
@@ -36,10 +35,9 @@ public class UpdateDB {
      * @param rif
      * @param nombre
      * @param telefono
-     * @param direccion
      * @return
      */
-    public static boolean updateProveedor(String id, String rif, String nombre, String telefono, String direccion) {
+    public static boolean updateProveedor(int id, String rif, String nombre, String telefono) {
 
         return true;
     }
@@ -47,14 +45,22 @@ public class UpdateDB {
     /**
      * Función para editar los datos de un usuario mediante la administración
      *
-     * @param id
+     * @param id_usuario 
+     * @param id_cliente
      * @param cedula
+     * @param nombre
+     * @param apellido
+     * @param telefono
      * @param correo
      * @param rol
      * @return
      */
-    public static boolean updateUsuarioAdministracion(String id, String cedula, String correo, int rol) {
+    public static boolean updateUsuario(int id_usuario, int id_cliente, int cedula, String nombre, String apellido, String telefono, String correo, int rol) {
 
+        if(updateCliente(id_cliente, cedula, nombre, apellido, telefono)){
+            
+        }
+        
         return true;
     }
 

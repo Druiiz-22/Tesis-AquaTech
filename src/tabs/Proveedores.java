@@ -118,10 +118,9 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      * @param rif
      * @param nombre
      * @param telefono
-     * @param direccion
      */
-    public static void editProveedor(String rif, String nombre, String telefono, String direccion) {
-        nuevoProv.editar(rif, nombre, telefono, direccion);
+    public static void editProveedor(String rif, String nombre, String telefono) {
+        nuevoProv.editar(rif, nombre, telefono);
     }
 
     //COMPONENTES
