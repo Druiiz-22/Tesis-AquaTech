@@ -274,8 +274,14 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         Trasvasos.pagados = pagar;
         Trasvasos.entregados = entregar;
         
+        //Poner el valor en los campos
+        txtEntregados.setText(String.valueOf(Trasvasos.entregados));
+        txtPagados.setText(String.valueOf(Trasvasos.pagados));
+        
         //Actualizar la factura
         factura.setInformacion(cedula, apellido);
+        factura.setBotellonesEntregados(Trasvasos.entregados);
+        factura.setBotellonesPagados(Trasvasos.pagados);
     }
 
     //ATRIBUTOS BACKEND

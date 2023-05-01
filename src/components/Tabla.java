@@ -181,10 +181,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
                     //Cambiar al panel de trasvasos
                     MenuLateral.clickButton(HISTORIAL_TRASVASO);
-                    
+
                     //Buscar la factura en la tabla del historial de trasvasos
                     HistorialTrasvasos.buscarFactura(factura);
-                    
+
                 } else {
                     msjError("No se pudo seleccionar la factura.");
                 }
@@ -194,20 +194,36 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-
-                Object cedula = tabla.getValueAt(index, 0);
-                Object apellido = tabla.getValueAt(index, 2);
-
+                
+                //Obtener la cédula de la deuda
+                String cedula = tabla.getValueAt(index, 2).toString();
+                
                 //Validar que los campos NO estén vacíos
-                if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
-
-                    //Enviar los datos
-                    Trasvasos.setCliente(cedula.toString(), apellido.toString());
-
-                    //Cambiar al panel de trasvasos
-                    MenuLateral.clickButton(VENTAS_TRASVASO);
+                if (!cedula.isEmpty()) {
+                    
+                    //Buscar el apellido del cliente
+                    String apellido = PanelClientes.getApellido(cedula);
+                    
+                    if(!apellido.isEmpty()){
+                        try {
+                            //Intentar convertir pagar y entregar en enteros
+                            int pagar = Integer.parseInt(tabla.getValueAt(index, 3).toString());
+                            int entregar = Integer.parseInt(tabla.getValueAt(index, 4).toString());
+                            
+                            //Enviar los datos para pagar la deuda
+                            Trasvasos.pagarDeuda(cedula, apellido, pagar, entregar);
+                            
+                            //Cambiar al panel de trasvasos
+                            MenuLateral.clickButton(VENTAS_TRASVASO);
+                            
+                        } catch (NumberFormatException ex) {
+                            msjError("La cantidad de pagar o entregar, son inválidos."
+                                    + "\nPor favor, actualice los datos y verifique"
+                                    + "que estos campos tengan número enteros válidos.");
+                        }
+                    }
                 } else {
-                    msjError("No se pudo seleccionar el cliente.");
+                    msjError("No se pudo seleccionar el cliente de la deuda.");
                 }
             }
         });
@@ -762,28 +778,34 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         tabla.setRowSorter(sorter);
     }
 
-    public void focusRow(String txt){
-        if(type == HISTORIAL_TRASVASO){
-            
+    /**
+     * Función para buscar un texto dentro de la tabla y enfocar su fila.
+     *
+     * @param txt Texto que será buscado dentro de la tabla
+     */
+    public void focusRow(String txt) {
+        if (type == HISTORIAL_TRASVASO) {
+
             int row = -99;
-            
+
             //Buscar todos los id de la factura en la tabla de trasvasos
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 //Obtener el id en cada iteración
-                String id = tabla.getValueAt(i, 0);
+                String id = tabla.getValueAt(i, 0).toString();
+
                 //Validar si el id coincide con el id recibido
-                if(id.equals(txt)){
+                if (id.equals(txt)) {
                     //Guardar el índice de la fila y romper el cíclo
                     row = i;
                     break;
                 }
             }
-            
+
             //Comprobar que se seleccionó alguna fila
-            if(row >= 0){
+            if (row >= 0) {
                 tabla.requestFocus();
                 tabla.setRowSelectionInterval(row, row);
-                tabla.setColumnSelectionInterval(0, tabla.getColumnCount()-1);
+                tabla.setColumnSelectionInterval(0, tabla.getColumnCount() - 1);
             } else {
                 msjError("No se encontró la factura en los registros de "
                         + "trasvasos.\nPor favor, actualice los datos y verifique"
@@ -791,13 +813,36 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             }
         }
     }
-    
-    public String getClienteApellido(String cedula){
-        if(type == CLIENTES){
-            
+
+    /**
+     * Función para obtener el apellido de un cliente, de la tabla, según una
+     * cédula determinada
+     *
+     * @param cedula Cédula del cliente a buscar
+     * @return Apellido del cliente encontrado
+     */
+    public String getClienteApellido(String cedula) {
+        if (type == CLIENTES) {
+            //Buscar todas las cédulas de los clientes en la tabla
+            for (int i = 0; i < tabla.getRowCount(); i++) {
+                //Obtener la cédula en cada iteración
+                String ci = tabla.getValueAt(i, 0).toString();
+
+                //Validar si la cédula coincide con la cédula recibida
+                if (ci.equals(cedula)) {
+                    //Retornar el apellido del cliente encontrado
+                    return tabla.getValueAt(i, 2).toString();
+                }
+            }
+            //Si el ciclo termina, implica que NO hubo coincidencia, por lo que
+            //se muestra un mensaje de error
+            msjError("No se encontró el cliente de la factura en los registros."
+                    + "\nPor favor, actualice los datos y verifique la existencia"
+                    + "del cliente en el sistema.");
         }
+        return "";
     }
-    
+
     //ATRIBUTOS FRONTEND
     private final int type;
     private TableRowSorter sorter;
