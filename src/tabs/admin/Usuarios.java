@@ -75,7 +75,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      */
     protected void relocateComponents(int width, int height){
         Usuarios.width = width;
-        panelHeight = height - padding*2;
+        Usuarios.panelHeight = height - padding*2;
         
         //Posicion de la información fija
         informacion.setLocation(padding, padding);
@@ -103,7 +103,19 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         int panelWidth = width - padding*2;
         
         //Tamaño de la información
-        informacion.setSize(panelWidth, 260);
+        int infoH;
+        if(width < 402){
+            infoH = 300;
+            
+        } else if(width < 477){
+            infoH = 260;
+            
+        } else if(width < 630){
+            infoH = 240;
+        } else {
+            infoH = 210;
+        }
+        informacion.setSize(panelWidth, infoH);
         
         //Altura del panel de usuarios
         int y = padding*2 + informacion.getHeight();

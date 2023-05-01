@@ -27,7 +27,7 @@ public class Frame extends JFrame implements properties.Constantes {
         this.WindowsTheme();
 
         //Propiedades básicas
-        this.setResizable(true);
+        this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Login - AquaTech");
         this.setIconTitle();

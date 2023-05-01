@@ -288,7 +288,7 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      */
     public NuevoCliente() {
         this.setLayout(null);
-        this.setSize(450, 550);
+        this.setSize(440, 480);
         this.setResizable(false);
         this.getContentPane().setBackground(BLANCO);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -340,13 +340,13 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
-        int y = paddingV * 5/2 + logo.getHeight();
+        int y = paddingV * 2 + logo.getHeight();
         int w = width - paddingH * 2;
         lblTitulo.setLocation(paddingH, y);
         lblTitulo.setSize(w, paddingV * 5 / 2);
 
         //Labels y campo de texto del nombre
-        int lblY = y + lblTitulo.getHeight() + paddingV * 3/2;
+        int lblY = y + lblTitulo.getHeight() + paddingV;
         int txtY = lblY + lblNombre.getHeight() + gapV;
         lblNombre.setLocation(paddingH, lblY);
         txtNombre.setBounds(paddingH, txtY, fieldW, fieldH);

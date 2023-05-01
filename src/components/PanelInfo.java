@@ -202,8 +202,8 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
         this.lblDatos[0][0] = new Label(info, PLANO, FONT_SIZE);
         this.lblDatos[0][0].setVerticalAlignment(javax.swing.JLabel.TOP);
 
-        //Obtener la cantidad de filas
-        this.oneCell = true;
+        //Asignar que solo hay una celda con información
+        this.infoAdmin = true;
 
         //Agregar el título
         this.add(this.lblTitulo);
@@ -341,7 +341,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
         this.lblTitulo.setLocation(tituloX, PADDING * 2);
 
         //Validar que SOLO exista una celda
-        if (oneCell) {
+        if (infoAdmin) {
             //Posicionar la información
             int datoY = PADDING * 4 + lblTitulo.getHeight();
             int datoWidth = width - PADDING * 4;
@@ -614,5 +614,5 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
     private Label lblTitulo = new Label("Información General", TITULO, 24);
     private Label lblDatos[][];
     private int datosRow;
-    private boolean oneCell = false;
+    private boolean infoAdmin = false;
 }

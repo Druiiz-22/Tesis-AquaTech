@@ -172,7 +172,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         boolean realizar;
 
         if (copiaSeguridad) {
-            
+
             //Mensaje de advertencia
             String msj
                     = "<html><div style='font-size:13pt;font-weight:400;'>"
@@ -564,14 +564,28 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
      * cuando el panel contenedor tenga un tamaño menor a 600 px
      */
     private void panelPequenio() {
-        expH += padding;
         int panelW = width - padding * 2;
 
-        informacion.setSize(panelW, 340);
+        //Tamaño de la información
+        int infoH;
+        if (width < 452) {
+            infoH = 340;
 
+        } else if (width <= 650) {
+            infoH = 280;
+
+        } else {
+            infoH = 260;
+        }
+
+        informacion.setSize(panelW, infoH);
+
+        //Tamaño del panel de exportación
+        expH = 270;
         int y = padding * 2 + informacion.getHeight();
         panelExporte.setBounds(padding, y, panelW, expH);
 
+        impH = 210;
         y = y + expH + padding;
         panelImporte.setBounds(padding, y, panelW, impH);
 
@@ -608,13 +622,12 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         lblTituloExp.setLocation(padding, padding);
 
         int expW = panelExporte.getWidth();
+        int panelH = panelExporte.getHeight();
         int gap = 5;
-        int h = 35;
-        int w = expW - padding * 2;
+        int h = (panelH < 210) ? 28 : 35;
 
-        txtNombre.setSize(w, h);
+        int w = expW - padding * 2 - h - gap;
         btnUbicacionExp.setSize(h, h);
-        w = expW - padding * 2 - h - gap;
         txtUbicacion.setSize(w, h);
 
         int y = padding * 3 / 2 + lblTituloExp.getHeight();
@@ -629,41 +642,83 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         y += gap + h;
         lblNombre.setLocation(padding, y);
 
-        y += lblNombre.getHeight() + gap;
-        txtNombre.setLocation(padding, y);
+        //Validar si la altura del panel permite agregar el botón debajo del
+        //campo del nombre, o si debe colocarlse a su derecha
+        if (panelH < 260) {
+            if(expW < 450){
+                btnExportar.setText("Guardar");
+            } else {
+                btnImportar.setText("Guardar Respaldo");
+            }
+            
+            w = btnExportar.getPreferredSize().width + 20;
+            x = expW - w - padding;
+            y += lblNombre.getHeight() + gap;
+            btnExportar.setBounds(x, y, w, h);
 
-        w = btnExportar.getPreferredSize().width + 30;
-        x = expW - w - padding;
-        y = panelExporte.getHeight() - padding - h;
-        btnExportar.setBounds(x, y, w, h);
+            w = x - padding - gap;
+            txtNombre.setBounds(padding, y, w, h);
+
+        } else {
+            y += lblNombre.getHeight() + gap;
+            w = expW - padding * 2;
+            txtNombre.setBounds(padding, y, w, h);
+
+            btnExportar.setText("Guardar Respaldo");
+            w = btnExportar.getPreferredSize().width + 30;
+            x = expW - w - padding;
+            y = panelH - padding - h;
+            btnExportar.setBounds(x, y, w, h);
+        }
     }
 
     /**
      * Función para reposicionar los componentes dentro del panel de importación
      */
     private void relocateImporte() {
-
         lblTituloImp.setLocation(padding, padding);
 
+        int impW = panelImporte.getWidth();
+        int panelH = panelImporte.getHeight();
         int gap = 5;
         int h = 35;
-        int w = panelImporte.getWidth() - padding * 2 - h - gap;
-        btnUbicacionImp.setSize(h, h);
-        txtArchivo.setSize(w, h);
-
+        
         int y = padding * 2 + lblTituloImp.getHeight();
         lblArchivo.setLocation(padding, y);
 
         y += lblArchivo.getHeight() + gap;
-        txtArchivo.setLocation(padding, y);
+        int w, x;
+        if (panelH < 200) {
+            if(impW < 450){
+                btnImportar.setText("Importar");
+            } else {
+                btnImportar.setText("Importar respaldo");
+            }
+            w = btnImportar.getPreferredSize().width + 20;
+            x = impW - w - padding;
+            btnImportar.setBounds(x, y, w, h);
 
-        int x = panelImporte.getWidth() - padding - h;
-        btnUbicacionImp.setLocation(x, y);
+            x = x - gap - h;
+            btnUbicacionImp.setBounds(x, y, h, h);
 
-        w = btnImportar.getPreferredSize().width + 30;
-        x = panelImporte.getWidth() - w - padding;
-        y = panelImporte.getHeight() - padding - h;
-        btnImportar.setBounds(x, y, w, h);
+            w = x - padding - gap;
+            txtArchivo.setBounds(padding, y, w, h);
+
+        } else {
+            w = impW - padding * 2 - h - gap;
+            txtArchivo.setSize(w, h);
+            txtArchivo.setLocation(padding, y);
+
+            x = impW - padding - h;
+            btnUbicacionImp.setSize(h, h);
+            btnUbicacionImp.setLocation(x, y);
+
+            btnImportar.setText("Importar respaldo");
+            w = btnImportar.getPreferredSize().width + 30;
+            x = impW - w - padding;
+            y = panelH - padding - h;
+            btnImportar.setBounds(x, y, w, h);
+        }
     }
 
     protected static void vaciarCampos() {

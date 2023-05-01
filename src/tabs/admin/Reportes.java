@@ -21,7 +21,6 @@ import static properties.Mensaje.msjYesNo;
 import static properties.ValidarTexto.formatoFecha;
 import static properties.ValidarTexto.rangoFecha;
 import static properties.ValidarTexto.cronologia;
-import tabs.admin.CrearReporte;
 
 /**
  * Clase para la creación del panel de generación de reportes, en el
@@ -92,20 +91,20 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
                 //Validar la existencia de la ruta
                 if (validateFile(path)) {
-                    this.txtUbicacion.setText(path);
+                    txtUbicacion.setText(path);
 
                 } else {
                     //Si la ruta no es válida, asignar la ruta por defecto
-                    this.txtUbicacion.setText("Predeterminado");
+                    txtUbicacion.setText("Predeterminado");
                 }
 
             } else {
                 //Si la ruta está vacía, asignar la ruta predeterminada
-                this.txtUbicacion.setText("Predeterminado");
+                txtUbicacion.setText("Predeterminado");
             }
         } else {
             //Si no se seleccionó una carpeta, asignar la ruta predeterminada
-            this.txtUbicacion.setText("Predeterminado");
+            txtUbicacion.setText("Predeterminado");
         }
     }
 
@@ -396,20 +395,20 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      */
     protected void relocateComponents(int width, int height) {
         //Variables recurrentes
-        this.width = width;
-        this.panelHeight = height - padding * 2;
+        Reportes.width = width;
+        Reportes.panelHeight = height - padding * 2;
 
         //Posicionar la información al comienzo
         informacion.setLocation(padding, padding);
 
         //Validar el tamaño del ancho del contenedor
-        if (this.width < 600) {
+        if (Reportes.width < 600) {
             panelPequenio();
 
-        } else if (this.width < 900) {
+        } else if (Reportes.width < 900) {
             panelMediano();
 
-        } else if (this.width >= 900) {
+        } else if (Reportes.width >= 900) {
             this.setPreferredSize(new Dimension(width, height));
             panelGrande();
         }
@@ -429,10 +428,23 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      */
     private void panelPequenio() {
         //Ancho de los paneles
-        int w = this.width - padding * 2;
+        int w = Reportes.width - padding * 2;
 
         //Tamaño del panel de información
-        informacion.setSize(w, 260);
+        System.out.println("repW = "+w);
+        
+        int infoH;
+        if(w < 410){
+            infoH = 260;
+            
+        } else if (w < 548){
+            infoH = 230;
+            
+        } else {
+            infoH = 200;
+        }
+        
+        informacion.setSize(w, infoH);
 
         //Posición del panel de reportes
         int y = informacion.getHeight() + padding * 2;
@@ -462,6 +474,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         //Obtener el tercio del panel contenedor
         int halfWidth = width / 2 - padding * 2;
         int infoWidth = (halfWidth < infoMaxWidth) ? halfWidth : infoMaxWidth;
+        panelHeight += 15;
         informacion.setSize(infoWidth, panelHeight);
 
         //Posicionar el panel de reportes al lado de la información
@@ -492,8 +505,8 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      */
     private void panelGrande() {
         //Aumentar el ancho y el alto en 15 px
-        this.width += 15;
-        this.panelHeight += 15;
+        Reportes.width += 15;
+        Reportes.panelHeight += 15;
 
         //Obtener el tercio del panel contenedor
         int thirdWidth = width / 3 - padding * 2;

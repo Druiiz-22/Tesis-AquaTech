@@ -79,8 +79,9 @@ public class Frame extends JFrame implements properties.Constantes {
                 //Pinter un fondo oscuro en el contenedor
                 g.setColor(new java.awt.Color(0, 0, 0, 0.2f));
                 int y = menu.getHeight();
-                int h = getWidth() - y;
-                g.fillRect(0, y, getWidth(), h);
+                int h = getContentPane().getHeight() - y;
+                
+                g.fillRect(0, y, getContentPane().getWidth(), h);
             }
         });
 
@@ -181,7 +182,13 @@ public class Frame extends JFrame implements properties.Constantes {
     /**
      * Función para posicionar los componentes a tiempo real
      */
-    private void relocateComponents() {
+    private void relocateComponents() {      
+        //Obtener el tamaño de la pantalla a tiempo real
+        this.setMinimumSize(getMinSize());
+        
+        System.out.println("\nFrame size: w="+this.getWidth()+", h="+this.getHeight());
+        System.out.println("Minimum size: mw="+this.getMinimumSize().width+", mh="+this.getMinimumSize().height);
+        
         //Obtener el tamaño del componente
         Dimension frameSize = this.getContentPane().getSize();
 
@@ -277,7 +284,7 @@ public class Frame extends JFrame implements properties.Constantes {
      *
      * @return Dimensiones mínimas para el programa.
      */
-    private Dimension getMinSize() {
+    public static Dimension getMinSize() {
 
         //Obtener el tamaño de la pantalla
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -290,7 +297,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Retornar el tamaño mínimo
         return new Dimension(minWidth, minHeight);
     }
-
+    
     /**
      * Función para reemplazar el panel del contenedor
      *

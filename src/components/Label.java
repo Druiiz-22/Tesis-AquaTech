@@ -19,7 +19,7 @@ public class Label extends JLabel implements properties.Colores, properties.Cons
 
     //Atributos
     private final int type;
-    private final int fontSize;
+    private int fontSize;
 
     /**
      * Constructor para la creación de los labels de forma sencilla.
@@ -127,6 +127,16 @@ public class Label extends JLabel implements properties.Colores, properties.Cons
             });
         }
         
+    }
+    
+    /**
+     * Función para asignar un tamaño en específico a la fuente
+     * @param fontSize Tamaño de letra
+     */
+    public void setFontSize(int fontSize){
+        this.fontSize = fontSize;
+        //Actualizar la fuente
+        this.setFont(fuenteLetra());
     }
     
     /**
