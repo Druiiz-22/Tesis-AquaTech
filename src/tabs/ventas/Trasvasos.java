@@ -51,10 +51,10 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
                                 + "<b>cantidad de botellones</b>, ¿Está seguro de realizar el registro?</html>";
 
                         if (msjYesNoWarning(msj)) {
-                            CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
+                            CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula);
                         }
                     } else {
-                        CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), clienteCI);
+                        CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula);
                     }
 
                     vaciarCampos();
@@ -76,7 +76,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         if (!txtEntregados.getText().trim().isEmpty()) {
             if (!txtPagados.getText().trim().isEmpty()) {
                 if (boxTipoPago.getSelectedIndex() > 0) {
-                    if (!clienteCI.isEmpty() && !clienteApellido.isEmpty()) {
+                    if (!cedula.isEmpty() && !apellido.isEmpty()) {
                         return true;
 
                     } else {
@@ -253,17 +253,35 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * @param apellido Apellido del cliente seleccionado
      */
     public static void setCliente(String ci, String apellido) {
-        clienteCI = ci;
-        clienteApellido = apellido;
+        Trasvasos.cedula = ci;
+        Trasvasos.apellido = apellido;
 
         //Actualizar la factura
-        factura.setInformacion(clienteCI, clienteApellido);
+        factura.setInformacion(cedula, apellido);
+    }
+    
+    /**
+     * Función para asignar los datos para pagar una deuda con un cliente
+     * 
+     * @param cedula 
+     * @param apellido 
+     * @param pagar 
+     * @param entregar 
+     */
+    public static void pagarDeuda(String cedula, String apellido, int pagar, int entregar){
+        Trasvasos.cedula = cedula;
+        Trasvasos.apellido = apellido;
+        Trasvasos.pagados = pagar;
+        Trasvasos.entregados = entregar;
+        
+        //Actualizar la factura
+        factura.setInformacion(cedula, apellido);
     }
 
     //ATRIBUTOS BACKEND
     private static int entregados = 0, pagados = 0;
     private static double precio = 0;
-    private static String tipoPago = "", clienteCI = "10", clienteApellido = "Aj";
+    private static String tipoPago = "", cedula = "", apellido = "";
 
     // ========== FRONTEND ==========
     /**
@@ -586,8 +604,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         entregados = 0;
         pagados = 0;
         tipoPago = "";
-        clienteCI = "";
-        clienteApellido = "";
+        cedula = "";
+        apellido = "";
     }
 
     //ATRIBUTOS FRONTEND

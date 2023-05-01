@@ -31,19 +31,19 @@ public class Historial extends JPanel implements properties.Constantes, properti
     private void initComponents() {
         //Activar el botón de historial de trasvasos
         btnTrasvasos.setForeground(AZUL_PRINCIPAL);
-        
+
         //Asignar el mouse de mano a los botones
         btnTrasvasos.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnRecargas.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnVentas.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCompras.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
+
         //Asignar el tooltip a los botones
         btnTrasvasos.setToolTipText("Historial de todos los trasvasos realizados a los clientes");
         btnRecargas.setToolTipText("Historial de todas las recargas realizados con los proveedores");
         btnVentas.setToolTipText("Historial de las ventas de botellones a los clientes");
         btnCompras.setToolTipText("Historial de las compras de botellones a los proveedores");
-        
+
         //Propiedades del menú de navegación
         menu.setBackground(GRIS);
         menu.add(btnTrasvasos);
@@ -65,7 +65,7 @@ public class Historial extends JPanel implements properties.Constantes, properti
         this.add(menu);
         this.add(contenedor);
     }
-    
+
     /**
      * Función para aplicar los MouseListener a los componentes
      */
@@ -103,20 +103,21 @@ public class Historial extends JPanel implements properties.Constantes, properti
             }
         });
     }
-    
+
     /**
      * Función para reposicionar y redimensionar los componentes
+     *
      * @param size Tamaño del parent contenedor
      */
     public void relocateComponents(java.awt.Dimension size) {
         this.setSize(size);
-        
+
         menu.setSize(size.width, menu.getPreferredSize().height);
 
         int contY = menu.getHeight();
         contenedor.setLocation(0, contY);
         contenedor.setSize(size.width, size.height - contY);
-        
+
         panelTrasvasos.relocateComponents(contenedor.getSize());
         panelRecargas.relocateComponents(contenedor.getSize());
         panelVentas.relocateComponents(contenedor.getSize());
@@ -125,6 +126,7 @@ public class Historial extends JPanel implements properties.Constantes, properti
 
     /**
      * Reemplazar el panel contenedor
+     *
      * @param type Panel que será mostrado
      */
     private static void replacePanel(int type) {
@@ -142,47 +144,38 @@ public class Historial extends JPanel implements properties.Constantes, properti
                         : (type == HISTORIAL_RECARGA) ? "2"
                                 : (type == HISTORIAL_VENTA) ? "3" : "4"
         );
-        
+
         //Actualizar los datos del historial que se esté visualizando
-        if(btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)){
+        if (btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)) {
             panelTrasvasos.actualizarDatos();
-            
-        }else if(btnRecargas.getForeground().equals(AZUL_PRINCIPAL)){
+
+        } else if (btnRecargas.getForeground().equals(AZUL_PRINCIPAL)) {
             panelRecargas.actualizarDatos();
-            
-        }else if(btnVentas.getForeground().equals(AZUL_PRINCIPAL)){
+
+        } else if (btnVentas.getForeground().equals(AZUL_PRINCIPAL)) {
             panelVentas.actualizarDatos();
-            
-        }else if(btnCompras.getForeground().equals(AZUL_PRINCIPAL)){
+
+        } else if (btnCompras.getForeground().equals(AZUL_PRINCIPAL)) {
             panelCompras.actualizarDatos();
         }
     }
 
-    public void vaciarCampos(){
-        panelTrasvasos.vaciarCampos();
-        panelRecargas.vaciarCampos();
-        panelVentas.vaciarCampos();
-        panelCompras.vaciarCampos();
-        
+    public static void vaciarCampos() {
+        HistorialTrasvasos.vaciarCampos();
+        HistorialRecargas.vaciarCampos();
+        HistorialVentas.vaciarCampos();
+        HistorialCompras.vaciarCampos();
+
         replacePanel(HISTORIAL_TRASVASO);
     }
-    
-    public void actualizarDatos(){
-        //Actualizar los datos del historial que se esté visualizando
-        if(btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)){
-            panelTrasvasos.actualizarDatos();
-            
-        }else if(btnRecargas.getForeground().equals(AZUL_PRINCIPAL)){
-            panelRecargas.actualizarDatos();
-            
-        }else if(btnVentas.getForeground().equals(AZUL_PRINCIPAL)){
-            panelVentas.actualizarDatos();
-            
-        }else if(btnCompras.getForeground().equals(AZUL_PRINCIPAL)){
-            panelCompras.actualizarDatos();
-        }
+
+    public static void actualizarDatos() {
+        HistorialTrasvasos.actualizarDatos();
+        HistorialRecargas.actualizarDatos();
+        HistorialVentas.actualizarDatos();
+        HistorialCompras.actualizarDatos();
     }
-    
+
     //COMPONENTES
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
     private static final JPanel contenedor = new JPanel();

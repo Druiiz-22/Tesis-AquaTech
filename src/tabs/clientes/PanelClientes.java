@@ -97,7 +97,7 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
     /**
      * Función para vaciar los campos
      */
-    protected void vaciarCampos() {
+    protected static void vaciarCampos() {
         txtBusqueda.setText("");
         nuevoCliente.vaciarCampos();
     }
@@ -121,6 +121,17 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
      */
     public static void editCliente(String cedula, String nombre, String apellido, String telefono) {
         nuevoCliente.editar(cedula, nombre, apellido, telefono);
+    }
+
+    /**
+     * Función para acceder a la tabla de la clase y buscar el apellido de un
+     * cliente, según una cédula dada
+     *
+     * @param cedula Cédula del cliente a buscar
+     * @return Apellido del cliente encontrado
+     */
+    public static String getApellido(String cedula) {
+        return tabla.getClienteApellido(cedula);
     }
 
     //COMPONENTES

@@ -6,6 +6,8 @@ import components.Label;
 import components.PanelInfo;
 import components.Tabla;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
@@ -55,6 +57,13 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
             @Override
             public void mouseReleased(MouseEvent e) {
                 nuevoUsuario.agregar();
+            }
+        });
+        
+        txtBuscar.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tabla.buscar(txtBuscar.getText());
             }
         });
     }
@@ -169,10 +178,11 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     /**
      * Función para actualizar el panel de usuarios y la ventana
      */
-    public static void actualizarDatos(){
+    protected static void actualizarDatos(){
         txtBuscar.setText("");
         tabla.actualizarDatos();
     }
+    
     /**
      * Función para editar un usuario seleccionado
      * 

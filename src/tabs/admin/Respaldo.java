@@ -666,7 +666,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         btnImportar.setBounds(x, y, w, h);
     }
 
-    protected void vaciarCampos() {
+    protected static void vaciarCampos() {
         txtUbicacion.setText("");
         txtNombre.setText("");
         txtArchivo.setText("");

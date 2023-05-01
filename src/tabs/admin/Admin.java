@@ -193,16 +193,16 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
     /**
      * Función para vaciar todos los campos de todos los paneles
      */ 
-    public void vaciarCampos(){
-        panelAjustes.vaciarCampos();
-        panelReportes.vaciarCampos();
-        panelRespaldo.vaciarCampos();
+    public static void vaciarCampos(){
+        Ajustes.vaciarCampos();
+        Reportes.vaciarCampos();
+        Respaldo.vaciarCampos();
         Usuarios.vaciarCampos();
         
         replacePanel(ADMIN_AJUSTES);
     }
     
-    public void actualizarDatos(){
+    public static void actualizarDatos(){
         Usuarios.actualizarDatos();
     }
     

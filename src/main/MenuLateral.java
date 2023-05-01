@@ -231,7 +231,7 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
             }
         }
         //Validar que el botón presionado fue el del Historial
-        if (type == HISTORIAL) {
+        if (type == HISTORIAL || type == HISTORIAL_TRASVASO) {
             
             if (!btnHistorial.getBackground().equals(AZUL_OSCURO)) {
                 

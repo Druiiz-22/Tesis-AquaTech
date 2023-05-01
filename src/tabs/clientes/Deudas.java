@@ -1,6 +1,9 @@
 package tabs.clientes;
 
 import components.CampoTexto;
+import components.Tabla;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 /**
@@ -17,7 +20,7 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
         this.setOpaque(false);
 
         initComponents();
-        mouseListeners();
+        listeners();
     }
 
     /**
@@ -30,13 +33,20 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
 
         //Agregar los componentes
         this.add(txtBusqueda);
+        this.add(tabla);
     }
 
     /**
      * Función para asignar los mouse listener a los componentes
      */
-    private void mouseListeners() {
-
+    private void listeners() {
+        //KEY LISTENER
+        txtBusqueda.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tabla.buscar(txtBusqueda.getText());
+            }
+        });
     }
 
     /**
@@ -52,15 +62,30 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
         int fieldWidth = this.getWidth() - padding * 2;
 
         txtBusqueda.setBounds(padding, padding, fieldWidth, fieldHeight);
+
+        int y = fieldHeight + padding * 2;
+        int h = size.height - y - padding;
+        int w = size.width - padding * 2;
+
+        tabla.setBounds(padding, y, w, h);
+    }
+
+    /**
+     * Función para actualizar los datos de la tabla del historial
+     */
+    protected static void actualizarDatos() {
+        txtBusqueda.setText("");
+        tabla.actualizarDatos();
     }
 
     /**
      * Función para vaciar los campos
      */
-    protected void vaciarCampos(){
+    protected static void vaciarCampos() {
         txtBusqueda.setText("");
     }
-    
+
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
+    private static final Tabla tabla = new Tabla(DEUDAS);
 }

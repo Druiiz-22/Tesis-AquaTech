@@ -6,15 +6,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.Timer;
 import static javax.swing.JOptionPane.showOptionDialog;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static main.MenuLateral.clickButton;
@@ -72,9 +69,9 @@ public class Frame extends JFrame implements properties.Constantes {
         this.add(lateral);
         this.add(contenedor);
 
-        //Ocultar el menú lateral
-        lateral.setVisible(false);
-
+        //Actualizar todas las pestañas 
+        contenedor.actualizarDatos();
+        
         //GlassPane de notificaciones
         this.setGlassPane(new JComponent() {
             @Override
@@ -92,6 +89,8 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(notificaciones);
         glass.add(lateral);
 
+        
+        
         //LISTA DE COSAS PENDIENTES
         //- Ver el google maps.
         
@@ -346,13 +345,21 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //Vaciar los datos del usuario
         nombreUsuario = null;
-        rolUsuario = 0;
+        rolUsuario = -99;
     }
-
+    
+    /**
+     * Función para obtener el nombre del usuario que tiene la sesión activa
+     * @return 
+     */
     public static String getUserName() {
         return nombreUsuario;
     }
-    
+        
+    /**
+     * Función para obtener el rol del usuario que tiene la sesión activa
+     * @return 
+     */
     public static int getUserRol(){
         return rolUsuario;
     }
@@ -360,9 +367,6 @@ public class Frame extends JFrame implements properties.Constantes {
     //ATRIBUTOS
     private static String nombreUsuario;
     private static int rolUsuario;
-    private static Timer show;
-    private static ActionListener action;
-    private static boolean press = false;
 
     //COMPONENTES
     private static final MenuSuperior menu = new MenuSuperior();

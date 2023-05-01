@@ -56,14 +56,14 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
     /**
      * Función para vaciar todos los campos
      */ 
-    protected void vaciarCampos(){
+    protected static void vaciarCampos(){
         txtBusqueda.setText("");
     }
     
     /**
      * Función para actualizar los datos de la tabla del historial
      */
-    protected void actualizarDatos(){
+    protected static void actualizarDatos(){
         tabla.actualizarDatos();
     }
     

@@ -203,6 +203,14 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
         panelVentas.setCliente(ci, apellido);
     }
 
+    /**
+     * Función para actualizar todos los datos de la pestaña
+     */
+    public static void actualizarDatos() {
+        panelTrasvasos.actualizarDatos();
+        panelVentas.actualizarDatos();
+    }
+
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 5));

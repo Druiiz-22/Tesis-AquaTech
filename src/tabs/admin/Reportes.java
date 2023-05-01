@@ -581,7 +581,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     /**
      * Función para vaciar todos los campos
      */
-    protected void vaciarCampos() {
+    protected static void vaciarCampos() {
         fechaInicio.vaciarCampos();
         fechaFin.vaciarCampos();
         boxTipoReporte.setSelectedIndex(0);

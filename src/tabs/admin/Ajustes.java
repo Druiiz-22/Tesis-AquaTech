@@ -35,7 +35,7 @@ public class Ajustes extends JPanel implements properties.Constantes, properties
     /**
      * Función para vaciar todos los campos
      */ 
-    protected void vaciarCampos(){
+    protected static void vaciarCampos(){
     }
     
     //COMPONENTES

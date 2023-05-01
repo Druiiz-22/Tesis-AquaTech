@@ -27,6 +27,7 @@ import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjInformativo;
 import tabs.admin.Usuarios;
+import tabs.historial.HistorialTrasvasos;
 
 public class Tabla extends JScrollPane implements properties.Constantes {
 
@@ -37,6 +38,75 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private void listeners() {
 
         //ACTION LISTENER A LOS ITEMS
+        //Determinar el tipo de la tabla
+        switch (type) {
+            case CLIENTES:
+                clientesListeners();
+                break;
+
+            case PROVEEDOR:
+                provListeners();
+                break;
+
+            case DEUDAS:
+                deudasListeners();
+                break;
+
+            case ADMIN_USUARIOS:
+                itemBorrar.addActionListener((ActionEvent e) -> {
+                    eliminar();
+                });
+                itemEditar.addActionListener((ActionEvent e) -> {
+                    editar();
+                });
+                break;
+        }
+    }
+
+    private void clientesListeners() {
+        itemTrasv.addActionListener((ActionEvent e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+
+                Object cedula = tabla.getValueAt(index, 0);
+                Object apellido = tabla.getValueAt(index, 2);
+
+                //Validar que los campos NO estén vacíos
+                if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
+
+                    //Enviar los datos
+                    Trasvasos.setCliente(cedula.toString(), apellido.toString());
+
+                    //Cambiar al panel de trasvasos
+                    MenuLateral.clickButton(VENTAS_TRASVASO);
+                } else {
+                    msjError("No se pudo seleccionar el cliente.");
+                }
+            }
+        });
+
+        itemVend.addActionListener((ActionEvent e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+                Object cedula = tabla.getValueAt(index, 0);
+                Object apellido = tabla.getValueAt(index, 2);
+
+                //Validar que los campos NO estén vacíos
+                if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
+
+                    //Enviar los datos
+                    Ventas.setCliente(cedula.toString(), apellido.toString());
+
+                    //Cambiar al panel de trasvasos
+                    MenuLateral.clickButton(VENTAS_BOTELLON);
+                } else {
+                    msjError("No se pudo seleccionar el cliente.");
+                }
+            }
+        });
+
         itemBorrar.addActionListener((ActionEvent e) -> {
             eliminar();
         });
@@ -44,96 +114,103 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         itemEditar.addActionListener((ActionEvent e) -> {
             editar();
         });
+    }
 
-        //Determinar el tipo de la tabla
-        if (type == CLIENTES) {
+    private void provListeners() {
+        itemRecar.addActionListener((ActionEvent e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+                Object rif = tabla.getValueAt(index, 0);
+                Object nombre = tabla.getValueAt(index, 1);
 
-            itemTrasv.addActionListener((ActionEvent e) -> {
-                //Obtener el index de la fila seleccionada en la tabla
-                int index = tabla.getSelectedRow();
-                if (validarSelect(index)) {
+                //Validar que los campos NO estén vacíos
+                if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
 
-                    Object cedula = tabla.getValueAt(index, 0);
-                    Object apellido = tabla.getValueAt(index, 2);
+                    //Enviar los datos
+                    Recargas.setProveedor(rif.toString(), nombre.toString());
 
-                    //Validar que los campos NO estén vacíos
-                    if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
-
-                        //Enviar los datos
-                        Trasvasos.setCliente(cedula.toString(), apellido.toString());
-
-                        //Cambiar al panel de trasvasos
-                        MenuLateral.clickButton(VENTAS_TRASVASO);
-                    } else {
-                        msjError("No se pudo seleccionar el cliente.");
-                    }
+                    //Cambiar al panel de trasvasos
+                    MenuLateral.clickButton(COMPRAS_RECARGA);
+                } else {
+                    msjError("No se pudo seleccionar el proveedor.");
                 }
-            });
+            }
+        });
 
-            itemVend.addActionListener((ActionEvent e) -> {
-                //Obtener el index de la fila seleccionada en la tabla
-                int index = tabla.getSelectedRow();
-                if (validarSelect(index)) {
-                    Object cedula = tabla.getValueAt(index, 0);
-                    Object apellido = tabla.getValueAt(index, 2);
+        itemCompr.addActionListener((ActionEvent e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+                Object rif = tabla.getValueAt(index, 0);
+                Object nombre = tabla.getValueAt(index, 1);
 
-                    //Validar que los campos NO estén vacíos
-                    if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
+                //Validar que los campos NO estén vacíos
+                if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
 
-                        //Enviar los datos
-                        Ventas.setCliente(cedula.toString(), apellido.toString());
+                    //Enviar los datos
+                    Compras.setProveedor(rif.toString(), nombre.toString());
 
-                        //Cambiar al panel de trasvasos
-                        MenuLateral.clickButton(VENTAS_BOTELLON);
-                    } else {
-                        msjError("No se pudo seleccionar el cliente.");
-                    }
+                    //Cambiar al panel de trasvasos
+                    MenuLateral.clickButton(COMPRAS_BOTELLON);
+                } else {
+                    msjError("No se pudo seleccionar el proveedor.");
                 }
-            });
+            }
+        });
 
-        } else if (type == PROVEEDOR) {
-            itemRecar.addActionListener((ActionEvent e) -> {
-                //Obtener el index de la fila seleccionada en la tabla
-                int index = tabla.getSelectedRow();
-                if (validarSelect(index)) {
-                    Object rif = tabla.getValueAt(index, 0);
-                    Object nombre = tabla.getValueAt(index, 1);
+        itemBorrar.addActionListener((ActionEvent e) -> {
+            eliminar();
+        });
 
-                    //Validar que los campos NO estén vacíos
-                    if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
+        itemEditar.addActionListener((ActionEvent e) -> {
+            editar();
+        });
+    }
 
-                        //Enviar los datos
-                        Recargas.setProveedor(rif.toString(), nombre.toString());
+    private void deudasListeners() {
+        itemFactura.addActionListener((ActionEvent e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
 
-                        //Cambiar al panel de trasvasos
-                        MenuLateral.clickButton(COMPRAS_RECARGA);
-                    } else {
-                        msjError("No se pudo seleccionar el proveedor.");
-                    }
+                String factura = tabla.getValueAt(index, 1).toString();
+
+                //Validar que el campo NO esté vacío
+                if (!factura.isEmpty()) {
+
+                    //Cambiar al panel de trasvasos
+                    MenuLateral.clickButton(HISTORIAL_TRASVASO);
+                    
+                    //Buscar la factura en la tabla del historial de trasvasos
+                    HistorialTrasvasos.buscarFactura(factura);
+                    
+                } else {
+                    msjError("No se pudo seleccionar la factura.");
                 }
-            });
+            }
+        });
+        itemTrasv.addActionListener((ActionEvent e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
 
-            itemCompr.addActionListener((ActionEvent e) -> {
-                //Obtener el index de la fila seleccionada en la tabla
-                int index = tabla.getSelectedRow();
-                if (validarSelect(index)) {
-                    Object rif = tabla.getValueAt(index, 0);
-                    Object nombre = tabla.getValueAt(index, 1);
+                Object cedula = tabla.getValueAt(index, 0);
+                Object apellido = tabla.getValueAt(index, 2);
 
-                    //Validar que los campos NO estén vacíos
-                    if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
+                //Validar que los campos NO estén vacíos
+                if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
 
-                        //Enviar los datos
-                        Compras.setProveedor(rif.toString(), nombre.toString());
+                    //Enviar los datos
+                    Trasvasos.setCliente(cedula.toString(), apellido.toString());
 
-                        //Cambiar al panel de trasvasos
-                        MenuLateral.clickButton(COMPRAS_BOTELLON);
-                    } else {
-                        msjError("No se pudo seleccionar el proveedor.");
-                    }
+                    //Cambiar al panel de trasvasos
+                    MenuLateral.clickButton(VENTAS_TRASVASO);
+                } else {
+                    msjError("No se pudo seleccionar el cliente.");
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -187,7 +264,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
                         case ADMIN_USUARIOS:
                             Object cedula = tabla.getValueAt(index, 1);
-                            
+
                             //Validar el rol de administrador y su clave para
                             //intentar eliminar el usuario
                             if (AdminDB.validateAdminUser()) {
@@ -261,7 +338,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     Object apellido = tabla.getValueAt(index, 4);
                     Object telefono = tabla.getValueAt(index, 5);
                     Object correo = tabla.getValueAt(index, 6);
-                    
+
                     //Enviar el usuario a la pestaña de usuarios, que será 
                     //enviado a la ventana de nuevos usuarios para su edición
                     Usuarios.editUsuario(
@@ -316,6 +393,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
             case PROVEEDOR:
                 datos = ReadDB.getProveedores();
+                break;
+
+            case DEUDAS:
+                datos = ReadDB.getDeudas();
                 break;
 
             case HISTORIAL_TRASVASO:
@@ -392,21 +473,21 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case PROVEEDOR:
-                //Establecer las columnas de la tabla
                 cabecera = new String[]{"RIF", "Nombre", "Telefono"};
-
                 break;
+
+            case DEUDAS:
+                cabecera = new String[]{"id", "Factura", "Cedula", "Debe pagar", "Debemos dar", "Fecha"};
+                break;
+
             case HISTORIAL_TRASVASO:
-                //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "Cedula", "Pagados", "Entregados",
                     "Pago", "Delivery", "Monto Total", "Fecha"};
-
                 break;
+
             case HISTORIAL_RECARGA:
-                //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "RIF", "Proveedor", "Cantidad",
                     "Monto Total", "Fecha"};
-
                 break;
 
             case HISTORIAL_VENTA:
@@ -416,7 +497,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case HISTORIAL_COMPRA:
-                //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "RIF", "Proveedor", "Cantidad",
                     "Monto Total", "Fecha"};
                 break;
@@ -441,17 +521,22 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         //Crear el menú según el tipo de tabla
         switch (type) {
             case CLIENTES:
-                initClienteMenu();
+                clientesMenu();
                 listeners();
                 break;
 
             case PROVEEDOR:
-                initProvMenu();
+                provMenu();
+                listeners();
+                break;
+
+            case DEUDAS:
+                deudasMenu();
                 listeners();
                 break;
 
             case ADMIN_USUARIOS:
-                initUsuariosMenu();
+                usuariosMenu();
                 listeners();
                 break;
         }
@@ -460,7 +545,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     /**
      * Función para iniciar el menú para proveedores
      */
-    private void initProvMenu() {
+    private void provMenu() {
         //Propiedades de los items del menú
         itemEditar.setFont(segoe(18, PLAIN));
         itemEditar.setForeground(NEGRO);
@@ -477,10 +562,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         try {
             //Buscar la imagen de cada item
-            itemEditar.setIcon(getImageIcon("editar"));
-            itemBorrar.setIcon(getImageIcon("borrar"));
-            itemRecar.setIcon(getImageIcon("recargar"));
-            itemCompr.setIcon(getImageIcon("comprar"));
+            itemEditar.setIcon(getMenuIcon("editar"));
+            itemBorrar.setIcon(getMenuIcon("borrar"));
+            itemRecar.setIcon(getMenuIcon("recargar"));
+            itemCompr.setIcon(getMenuIcon("comprar"));
 
         } catch (Exception e) {
             msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
@@ -504,7 +589,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     /**
      * Función para iniciar el menú para clientes
      */
-    private void initClienteMenu() {
+    private void clientesMenu() {
         //Propiedades de los items del menú
         itemEditar.setFont(segoe(18, PLAIN));
         itemEditar.setForeground(NEGRO);
@@ -521,10 +606,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         try {
             //Buscar la imagen de cada item
-            itemEditar.setIcon(getImageIcon("editar"));
-            itemBorrar.setIcon(getImageIcon("borrar"));
-            itemTrasv.setIcon(getImageIcon("trasvasar"));
-            itemVend.setIcon(getImageIcon("vender"));
+            itemEditar.setIcon(getMenuIcon("editar"));
+            itemBorrar.setIcon(getMenuIcon("borrar"));
+            itemTrasv.setIcon(getMenuIcon("trasvasar"));
+            itemVend.setIcon(getMenuIcon("vender"));
 
         } catch (Exception e) {
             msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
@@ -548,7 +633,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     /**
      * Función para iniciar el menú para usuarios en administración
      */
-    private void initUsuariosMenu() {
+    private void usuariosMenu() {
         //Propiedades de los items del menú
         itemEditar.setFont(segoe(18, PLAIN));
         itemEditar.setForeground(NEGRO);
@@ -558,8 +643,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         try {
             //Buscar la imagen de cada item
-            itemEditar.setIcon(getImageIcon("editar"));
-            itemBorrar.setIcon(getImageIcon("borrar"));
+            itemEditar.setIcon(getMenuIcon("editar"));
+            itemBorrar.setIcon(getMenuIcon("borrar"));
 
         } catch (Exception e) {
             msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
@@ -575,13 +660,48 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         }
     }
 
+    private void deudasMenu() {
+        itemBorrar.setText("Cancelar deuda");
+        itemBorrar.setFont(segoe(18, PLAIN));
+        itemBorrar.setForeground(NEGRO);
+
+        itemTrasv = new JMenuItem("Pagar deuda");
+        itemTrasv.setFont(segoe(18, PLAIN));
+        itemTrasv.setForeground(NEGRO);
+
+        itemFactura = new JMenuItem("Ver factura");
+        itemFactura.setFont(segoe(18, PLAIN));
+        itemFactura.setForeground(NEGRO);
+
+        try {
+            //Buscar la imagen de cada item
+            itemBorrar.setIcon(getMenuIcon("borrar"));
+            itemTrasv.setIcon(getMenuIcon("vender"));
+            itemFactura.setIcon(getMenuIcon("factura"));
+
+        } catch (Exception e) {
+            msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
+                    + "El software seguirá funcionando sin los íconos.");
+
+        } finally {
+
+            //Añadir los items al menú
+            menuPopup.add(itemFactura);
+            menuPopup.add(itemTrasv);
+            menuPopup.addSeparator();
+            menuPopup.add(itemBorrar);
+
+            tabla.setComponentPopupMenu(menuPopup);
+        }
+    }
+
     /**
      * Función para buscar los íconos de los items
      *
      * @param name Nombre del ícon
      * @return ImageIcon del item
      */
-    private ImageIcon getImageIcon(String name) {
+    private ImageIcon getMenuIcon(String name) {
         //Variable para las imagenes
         ImageIcon img = new ImageIcon(getClass().getResource("/icons/popup/" + name + ".png"));
 
@@ -642,6 +762,42 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         tabla.setRowSorter(sorter);
     }
 
+    public void focusRow(String txt){
+        if(type == HISTORIAL_TRASVASO){
+            
+            int row = -99;
+            
+            //Buscar todos los id de la factura en la tabla de trasvasos
+            for (int i = 0; i < tabla.getRowCount(); i++) {
+                //Obtener el id en cada iteración
+                String id = tabla.getValueAt(i, 0);
+                //Validar si el id coincide con el id recibido
+                if(id.equals(txt)){
+                    //Guardar el índice de la fila y romper el cíclo
+                    row = i;
+                    break;
+                }
+            }
+            
+            //Comprobar que se seleccionó alguna fila
+            if(row >= 0){
+                tabla.requestFocus();
+                tabla.setRowSelectionInterval(row, row);
+                tabla.setColumnSelectionInterval(0, tabla.getColumnCount()-1);
+            } else {
+                msjError("No se encontró la factura en los registros de "
+                        + "trasvasos.\nPor favor, actualice los datos y verifique"
+                        + " la existencia de la deuda.");
+            }
+        }
+    }
+    
+    public String getClienteApellido(String cedula){
+        if(type == CLIENTES){
+            
+        }
+    }
+    
     //ATRIBUTOS FRONTEND
     private final int type;
     private TableRowSorter sorter;
@@ -654,6 +810,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private final JMenuItem itemBorrar = new JMenuItem("Borrar");
     private JMenuItem itemTrasv;
     private JMenuItem itemVend;
+    private JMenuItem itemFactura;
     private JMenuItem itemRecar;
     private JMenuItem itemCompr;
     private DefaultTableModel modelo;

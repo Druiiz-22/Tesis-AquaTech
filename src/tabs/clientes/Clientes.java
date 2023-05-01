@@ -24,8 +24,7 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
 
         initComponents();
         mouseListeners();
-        
-        
+
     }
 
     /**
@@ -118,20 +117,30 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         card.show(contenedor, (type == CLIENTES) ? "1" : "2");
 
         //Actualizar datos cuando se muestre el panel de clientes
-        if(btnClientes.getForeground().equals(AZUL_PRINCIPAL)){
+        if (btnClientes.getForeground().equals(AZUL_PRINCIPAL)) {
             panelClientes.actualizarDatos();
+        } else {
+            panelDeudas.actualizarDatos();
         }
-        
+
     }
 
     /**
      * Función para vaciar clientes y deudas
      */
-    public void vaciarCampos() {
-        panelClientes.vaciarCampos();
-        panelDeudas.vaciarCampos();
+    public static void vaciarCampos() {
+        PanelClientes.vaciarCampos();
+        Deudas.vaciarCampos();
     }
-    
+
+    /**
+     * Función para actualizar todos los datos de la pestaña
+     */
+    public static void actualizarDatos() {
+        PanelClientes.actualizarDatos();
+        Deudas.actualizarDatos();
+    }
+
     //COMPONENTES
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
     private static final JPanel contenedor = new JPanel();
