@@ -18,7 +18,6 @@ import static javax.swing.SwingConstants.CENTER;
 import static java.awt.Cursor.HAND_CURSOR;
 import java.awt.Dimension;
 import static java.awt.Font.PLAIN;
-import javax.swing.Icon;
 import static properties.Mensaje.msjError;
 import static properties.Fuentes.segoe;
 
@@ -119,7 +118,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             msjError("El software NO podrá iniciar hasta que se carguen "
                     + "todos los íconos.");
 
-            //Terminar el programa arrojando un error
+            //Terminar el programa
             System.exit(0);
         }
 
@@ -275,6 +274,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             }
 
         } else {
+            logo.setText("AquaTech");
             grid.setHgap(15);
 
             //Si el ancho es mayor o igual a 700px, quitar

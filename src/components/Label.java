@@ -78,7 +78,7 @@ public class Label extends JLabel implements properties.Colores, properties.Cons
     public Label(String texto, int type, int fontSize, boolean info){
         
         if(info){
-            texto = "<html>"+texto+" <style='font-family:Monotype Corsiva;font-size:16px;'><b>i</b></style></html>";
+            texto = "<html>"+texto+" <style='font-family:Monotype Corsiva;font-size:"+fontSize+"px;'><b>i</b></style></html>";
         }
 
         //Asignar el texto

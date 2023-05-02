@@ -71,7 +71,7 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //Actualizar todas las pestañas 
         contenedor.actualizarDatos();
-        
+
         //GlassPane de notificaciones
         this.setGlassPane(new JComponent() {
             @Override
@@ -80,7 +80,7 @@ public class Frame extends JFrame implements properties.Constantes {
                 g.setColor(new java.awt.Color(0, 0, 0, 0.2f));
                 int y = menu.getHeight();
                 int h = getContentPane().getHeight() - y;
-                
+
                 g.fillRect(0, y, getContentPane().getWidth(), h);
             }
         });
@@ -90,26 +90,20 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(notificaciones);
         glass.add(lateral);
 
-        
-        
         //LISTA DE COSAS PENDIENTES
         //- Ver el google maps.
-        
         //- Diseñar los ajustes.
         //- Diseñar los pedidos.
-        
         //- Diseñar la tabla de deudas.
         //- Realizar la generación de reportes de deudas
-        
         //- Dar formulario a los RIF
-        
         //NOTAS
         //se crea un cliente -> NO se crea un usuario
         //se crea un usuario de cliente -> Se crea un cliente
         //se crea un usuario operativo -> Se crea un cliente
         //se crea un cliente y luego se crea un usuario -> Se sobreponen los datos del usuario en el cliente
     }
-    
+
     /**
      * Función para asignar los listener a los componentes de la clase
      */
@@ -134,7 +128,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Listener para el GlassPane para cuando que se cierre
         //cuando sea presionado fuera del panel de notificaciones
         glass.addMouseListener(new MouseAdapter() {
-            
+
             //Variable para determinar si se cerrará el GlassPane,
             //ANTES de soltar el mouse
             boolean cerrar = true;
@@ -147,15 +141,15 @@ public class Frame extends JFrame implements properties.Constantes {
 
                 //Variables para la osicion y tamaño del panel que esté visible
                 int panelX = 0, panelY = 0, panelW = 0, panelH = 0;
-                
+
                 //Comprobar si el menú lateral está siendo visible
-                if(lateral.isVisible()){
+                if (lateral.isVisible()) {
                     //Posición y tamaño del menú lateral
                     panelX = lateral.getX();
                     panelY = lateral.getY();
                     panelW = panelX + lateral.getWidth();
                     panelH = panelY + lateral.getHeight();
-                    
+
                 } else {
                     //En caso contrario, se estará viendo las notificaciones
                     //Posición y tamaño del panel de notificaciones
@@ -182,13 +176,13 @@ public class Frame extends JFrame implements properties.Constantes {
     /**
      * Función para posicionar los componentes a tiempo real
      */
-    private void relocateComponents() {      
+    private void relocateComponents() {
         //Obtener el tamaño de la pantalla a tiempo real
         this.setMinimumSize(getMinSize());
-        
-        System.out.println("\nFrame size: w="+this.getWidth()+", h="+this.getHeight());
-        System.out.println("Minimum size: mw="+this.getMinimumSize().width+", mh="+this.getMinimumSize().height);
-        
+
+        System.out.println("\nFrame size: w=" + this.getWidth() + ", h=" + this.getHeight());
+        System.out.println("Minimum size: mw=" + this.getMinimumSize().width + ", mh=" + this.getMinimumSize().height);
+
         //Obtener el tamaño del componente
         Dimension frameSize = this.getContentPane().getSize();
 
@@ -220,10 +214,10 @@ public class Frame extends JFrame implements properties.Constantes {
         //Validar si el panel está en su tamaño mínimo
         if (contenedor.getWidth() < 700) {
             notificaciones.panelGrande(false);
-            Inicio.relocateButtons(false);
+            Inicio.relocateButtons(false, contenedorHeight);
         } else {
             notificaciones.panelGrande(true);
-            Inicio.relocateButtons(true);
+            Inicio.relocateButtons(true, contenedorHeight);
         }
     }
 
@@ -297,7 +291,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Retornar el tamaño mínimo
         return new Dimension(minWidth, minHeight);
     }
-    
+
     /**
      * Función para reemplazar el panel del contenedor
      *
@@ -311,9 +305,9 @@ public class Frame extends JFrame implements properties.Constantes {
         if (type == INICIO) {
             Run.repaintFrame();
             if (contenedor.getWidth() < 700) {
-                Inicio.relocateButtons(false);
+                Inicio.relocateButtons(false, contenedor.getHeight());
             } else {
-                Inicio.relocateButtons(true);
+                Inicio.relocateButtons(true, contenedor.getHeight());
             }
         }
 
@@ -322,22 +316,22 @@ public class Frame extends JFrame implements properties.Constantes {
     /**
      * Función para abrir el panel de cristal por encima del contentPane
      *
-     * @param menu TRUE en caso de abrir el menú lateral, FALSE en caso de
-     * abrir las notificaciones
+     * @param menu TRUE en caso de abrir el menú lateral, FALSE en caso de abrir
+     * las notificaciones
      */
     public static void openGlass(boolean menu) {
         //Validar que el componente de glass NO esté vacío
         if (glass != null) {
-            
+
             //Validar si se abrirá el menú o las notificaciones
-            if(menu){
+            if (menu) {
                 lateral.setVisible(true);
                 notificaciones.setVisible(false);
             } else {
                 lateral.setVisible(false);
                 notificaciones.setVisible(true);
             }
-            
+
             glass.setVisible(true);
         }
     }
@@ -354,20 +348,22 @@ public class Frame extends JFrame implements properties.Constantes {
         nombreUsuario = null;
         rolUsuario = -99;
     }
-    
+
     /**
      * Función para obtener el nombre del usuario que tiene la sesión activa
-     * @return 
+     *
+     * @return
      */
     public static String getUserName() {
         return nombreUsuario;
     }
-        
+
     /**
      * Función para obtener el rol del usuario que tiene la sesión activa
-     * @return 
+     *
+     * @return
      */
-    public static int getUserRol(){
+    public static int getUserRol() {
         return rolUsuario;
     }
 

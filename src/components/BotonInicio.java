@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import static properties.Fuentes.segoeSemibold;
 import static properties.Mensaje.msjAdvertencia;
+import static properties.Mensaje.msjError;
 import static main.MenuLateral.clickButton;
 import static main.MenuSuperior.abrirWeb;
 
@@ -25,15 +26,16 @@ public class BotonInicio extends JPanel implements properties.Constantes {
      */
     public BotonInicio(int type) {
         this.type = type;
-        
+
         //PROPIEDADES BÁSICAS DEL BOTÓN
         btn.setFont(segoeSemibold(18));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setHorizontalAlignment(JLabel.CENTER);
-        btn.setVerticalAlignment(JLabel.CENTER);
-        btn.setHorizontalTextPosition(JLabel.CENTER);
-        btn.setVerticalTextPosition(JLabel.BOTTOM);
         btn.setForeground(properties.Colores.NEGRO);
+        btn.setIconTextGap(5);
+        btn.setHorizontalAlignment(JLabel.CENTER);
+        btn.setHorizontalTextPosition(JLabel.CENTER);
+        btn.setVerticalAlignment(JLabel.CENTER);
+        btn.setVerticalTextPosition(JLabel.BOTTOM);
 
         //PROPIEDADES ÚNICAS DEL BOTÓN
         setUniqueProperties();
@@ -41,9 +43,7 @@ public class BotonInicio extends JPanel implements properties.Constantes {
         //LISTENERS PARA EL BOTÓN
         listener();
 
-        //IMAGENES DEL BOTÓN
         try {
-            //Gurdar las imágenes escaladas
             this.imgSmallButton = new ImageIcon(getButtomImage(64));
             this.imgSmallPress = new ImageIcon(getPressImage(64));
             this.imgSmallEntered = new ImageIcon(getEnterImage(64));
@@ -52,20 +52,19 @@ public class BotonInicio extends JPanel implements properties.Constantes {
             this.imgLargePress = new ImageIcon(getPressImage(85));
             this.imgLargeEntered = new ImageIcon(getEnterImage(85));
 
-            //Colocar la imágen al botón
             btn.setIcon(imgLargeButton);
 
-            btn.setIconTextGap(5);
-
         } catch (Exception e) {
-            msjAdvertencia(
-                    "No se encontró el ícono del botón " + imgName + " del inicio.\n"
-                    + "El software seguirá ejecutandose normalmente sin el logo."
-            );
+            msjError("No se encontró el ícono de algún botón del inicio.");
+            msjError("El software NO podrá iniciar hasta que se carguen "
+                    + "todos los íconos.");
+
+            //Terminar el programa
+            System.exit(0);
         }
 
         //TAMAÑO DEL BOTÓN
-        btn.setSize(btn.getPreferredSize().width+5, btn.getPreferredSize().height+5);
+        btn.setSize(btn.getPreferredSize().width + 5, btn.getPreferredSize().height + 5);
 
         //PROPIEDADES DEL PANEL
         this.setLayout(null);
@@ -85,46 +84,55 @@ public class BotonInicio extends JPanel implements properties.Constantes {
                 btn.setText(imgName);
                 btn.setToolTipText("Realizar un trasvaso a un cliente");
                 break;
+
             case COMPRAS_RECARGA:
                 this.imgName = "Recargas";
                 btn.setText(imgName);
                 btn.setToolTipText("Registrar una recarga con los proveedores");
                 break;
+
             case VENTAS_PEDIDOS:
                 this.imgName = "Pedidos";
                 btn.setText(imgName);
                 btn.setToolTipText("Ver las entregas a domicilio pendientes");
                 break;
+
             case DEUDAS:
                 this.imgName = "Deudas";
                 btn.setText(imgName);
                 btn.setToolTipText("Ver las deudas actuales con los clientes");
                 break;
+
             case CLIENTES:
                 this.imgName = "Clientes";
                 btn.setText(imgName);
                 btn.setToolTipText("Ver el registro de los clientes");
                 break;
+
             case VENTAS_BOTELLON:
                 this.imgName = "Vender";
                 btn.setText(imgName);
                 btn.setToolTipText("Realizar la venta de un botellón a un cliente");
                 break;
+
             case COMPRAS_BOTELLON:
                 this.imgName = "Compras";
                 btn.setText(imgName);
                 btn.setToolTipText("Registrar una compra de botellones con los proveedores");
                 break;
+
             case HISTORIAL:
                 this.imgName = "Historial";
                 btn.setText(imgName);
                 btn.setToolTipText("Ver el historial de los distintos movimientos");
                 break;
+
             case PROVEEDOR:
                 this.imgName = "Proveedores";
                 btn.setText(imgName);
                 btn.setToolTipText("Ver el registro de los proveedores");
                 break;
+
             case WEB:
                 this.imgName = "Sitio Web";
                 btn.setText(imgName);
@@ -138,19 +146,54 @@ public class BotonInicio extends JPanel implements properties.Constantes {
      *
      * @param largeSize TRUE si el botón debe ser de tamaño grande, FALSE en
      * caso de que sea pequeño
+     * @param parentHeight Tamaño del panel contenedor
      */
-    public void relocateComponents(boolean largeSize) {
+    public void relocateComponents(boolean largeSize, int parentHeight) {
         this.largeSize = largeSize;
 
-        if(largeSize){
+        try {
+            if (parentHeight < 549) {
+                this.imgSmallButton = new ImageIcon(getButtomImage(48));
+                this.imgSmallPress = new ImageIcon(getPressImage(48));
+                this.imgSmallEntered = new ImageIcon(getEnterImage(48));
+
+                this.imgLargeButton = new ImageIcon(getButtomImage(64));
+                this.imgLargePress = new ImageIcon(getPressImage(64));
+                this.imgLargeEntered = new ImageIcon(getEnterImage(64));
+
+            } else {
+                this.imgSmallButton = new ImageIcon(getButtomImage(64));
+                this.imgSmallPress = new ImageIcon(getPressImage(64));
+                this.imgSmallEntered = new ImageIcon(getEnterImage(64));
+
+                this.imgLargeButton = new ImageIcon(getButtomImage(85));
+                this.imgLargePress = new ImageIcon(getPressImage(85));
+                this.imgLargeEntered = new ImageIcon(getEnterImage(85));
+            }
+            if (largeSize) {
+                btn.setIcon(imgLargeButton);
+            } else {
+                btn.setIcon(imgSmallButton);
+            }
+
+        } catch (Exception e) {
+            msjError("No se encontró el ícono de algún botón del inicio.");
+            msjError("El software NO podrá iniciar hasta que se carguen "
+                    + "todos los íconos.");
+
+            //Terminar el programa
+            System.exit(0);
+        }
+
+        if (largeSize) {
             setLargeImage();
         } else {
             setSmallImage();
         }
-        
+
         int middleX = getWidth() / 2 - btn.getWidth() / 2;
         int middleY = getHeight() / 2 - btn.getHeight() / 2;
-        
+
         btn.setLocation(middleX, middleY);
     }
 
@@ -269,52 +312,57 @@ public class BotonInicio extends JPanel implements properties.Constantes {
     /**
      * Función para cargar las imágenes pequeñas
      */
-    private void setSmallImage(){
+    private void setSmallImage() {
         //Comprobar que el botón tenga la imagen grande
-        if(btn.getIcon().equals(imgLargeButton)){
+        if (btn.getIcon().equals(imgLargeButton)) {
             btn.setIcon(imgSmallButton);
         }
         //Comprobar que el botón tenga la imagen grande 
         //cuando el mouse esté dentro
-        if(btn.getIcon().equals(imgLargeEntered)){
+        if (btn.getIcon().equals(imgLargeEntered)) {
             btn.setIcon(imgSmallEntered);
         }
         //Comprobar que el botón tenga la imagen grande
         //cuando el mouse lo presione
-        if(btn.getIcon().equals(imgLargePress)){
+        if (btn.getIcon().equals(imgLargePress)) {
             btn.setIcon(imgSmallPress);
         }
     }
-    
+
     /**
      * Función para cargar las imágenes grandes
      */
-    private void setLargeImage(){
+    private void setLargeImage() {
+
         //Comprobar que el botón tenga la imagen grande
-        if(btn.getIcon().equals(imgSmallButton)){
+        if (btn.getIcon().equals(imgSmallButton)) {
             btn.setIcon(imgLargeButton);
         }
         //Comprobar que el botón tenga la imagen grande 
         //cuando el mouse esté dentro
-        if(btn.getIcon().equals(imgSmallEntered)){
+        if (btn.getIcon().equals(imgSmallEntered)) {
             btn.setIcon(imgLargeEntered);
         }
         //Comprobar que el botón tenga la imagen grande
         //cuando el mouse lo presione
-        if(btn.getIcon().equals(imgSmallPress)){
+        if (btn.getIcon().equals(imgSmallPress)) {
             btn.setIcon(imgLargePress);
         }
     }
-    
+
     //ATRIBUTOS
     private final int type;
     private String imgName;
+
     private boolean largeSize = true;
+
     private ImageIcon imgSmallButton;
     private ImageIcon imgSmallEntered;
     private ImageIcon imgSmallPress;
+
     private ImageIcon imgLargeButton;
     private ImageIcon imgLargeEntered;
     private ImageIcon imgLargePress;
+
     private JLabel btn = new JLabel();
 }

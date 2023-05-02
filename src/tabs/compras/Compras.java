@@ -490,7 +490,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         }
 
         //Reposicionar los elementos de la factura
-        factura.relocateComponents();
+        factura.relocateComponents(facHeight < 281);
         relocateCompra();
     }
 
@@ -533,7 +533,9 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
      * 900 px
      */
     private void panelMediano() {
-
+        
+        this.facHeight += 20;
+        this.compraHeight += 20;
         //Dividir el panel en dos 
         int halfWidth = width / 2 - padding * 2;
 
@@ -620,7 +622,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         txtPrecio.setSize(txtWidth, txtHeight);
 
         //Posición del título del panel para los datos
-        lblTitulo.setLocation(padding, padding);
+        lblTitulo.setLocation(padding, padding/2);
 
         //Para posicionar los campos en el centro vertical del panel
         //primero se obtiene le punto medio del panel

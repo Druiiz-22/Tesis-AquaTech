@@ -319,7 +319,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
         }
 
         //Reposicionar los elementos de la factura
-        factura.relocateComponents();
+        factura.relocateComponents(facHeight < 281);
         relocateRecarga();
     }
 
@@ -363,6 +363,8 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
      */
     private void panelMediano() {
 
+        this.facHeight += 20;
+        this.recarHeight += 20;
         //Dividir el panel en dos 
         int halfWidth = width / 2 - padding * 2;
 
@@ -449,7 +451,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
         txtPrecio.setSize(txtWidth, txtHeight);
 
         //Posición del título del panel para los datos
-        lblTitulo.setLocation(padding, padding);
+        lblTitulo.setLocation(padding, padding/2);
 
         //Para posicionar los campos en el centro vertical del panel
         //primero se obtiene le punto medio del panel

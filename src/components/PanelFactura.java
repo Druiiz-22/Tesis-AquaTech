@@ -12,7 +12,6 @@ import static javax.swing.SwingConstants.HORIZONTAL;
 public class PanelFactura extends JPanel implements properties.Colores, properties.Constantes {
 
     // ========== BACKEND ==========
-    
     //SETTERS
     /**
      * Función para asignar el monto total en las facturas de venta y trasvasos
@@ -20,7 +19,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
      * @param total Precio total de la venta o trasvaso
      */
     public void setMontoTotal(double total) {
-        
+
         this.lblTotal[1].setText(String.format("%.2f", total) + " Bs");
         this.lblTotal[1].setSize(this.lblTotal[1].getPreferredSize());
 
@@ -28,9 +27,9 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         int y = lblTotal[0].getY();
         int x = this.getWidth() - padding - lblTotal[1].getWidth();
         this.lblTotal[1].setLocation(x, y);
-        
+
     }
-    
+
     /**
      * Función para asignar la cantidad de botellones entregados en la factura
      * de los trasvasos
@@ -84,7 +83,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         if (type == VENTAS_BOTELLON || type == COMPRAS_RECARGA || type == COMPRAS_BOTELLON) {
 
             //Asignar la cantidad de botellones entregados
-            this.lblDatos[0][1].setText(""+cantidad);
+            this.lblDatos[0][1].setText("" + cantidad);
             this.lblDatos[0][1].setSize(this.lblDatos[0][1].getPreferredSize());
 
             //Reposicionar
@@ -158,9 +157,9 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
      */
     public void setPrecioCadaUno(double precio) {
         //Validar que la factura sea de tipo de compras
-        
+
         if (type == COMPRAS_RECARGA || type == COMPRAS_BOTELLON) {
-            
+
             this.lblDatos[1][1].setText(String.format("%.2f", precio) + " Bs");
             this.lblDatos[1][1].setSize(this.lblDatos[1][1].getPreferredSize());
 
@@ -179,10 +178,10 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
      * @param name Nombre de la empresa o persona
      */
     public void setInformacion(String id, String name) {
-        lblHeader[1][0].setText(id);
-        lblHeader[1][1].setText(name);
-        this.lblHeader[1][0].setSize(this.lblHeader[1][0].getPreferredSize());
-        this.lblHeader[1][1].setSize(this.lblHeader[1][1].getPreferredSize());
+        lblPersona[1][0].setText(id);
+        lblPersona[1][1].setText(name);
+        this.lblPersona[1][0].setSize(this.lblPersona[1][0].getPreferredSize());
+        this.lblPersona[1][1].setSize(this.lblPersona[1][1].getPreferredSize());
     }
 
     // ========== FRONTEND ==========
@@ -227,7 +226,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         this.lblTotal = new Label[2];
         this.lblTotal[0] = new Label("Total", GRUESA, fontSize, true);
         this.lblTotal[0].setToolTipText("Ganancias totales (Bs) de la cuenta");
-        this.lblTotal[1] = new Label("0,00 Bs", GRUESA, 14);
+        this.lblTotal[1] = new Label("0,00 Bs", GRUESA, fontSize - 2);
 
         //SEPARADORES
         this.separadores = new JSeparator[3];
@@ -238,12 +237,12 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
             separadores[i].setForeground(NEGRO);
         }
 
-        //PROPIEDADES DEL HEADER
-        this.lblHeader = new Label[2][2];
-        this.lblHeader[0][0] = new Label((this.type == COMPRAS) ? "RIF" : "Cédula", GRUESA, fontSize);
-        this.lblHeader[0][1] = new Label((this.type == COMPRAS) ? "Nombre" : "Apellido", GRUESA, fontSize);
-        this.lblHeader[1][0] = new Label("", PLANO, fontSize);
-        this.lblHeader[1][1] = new Label("", PLANO, fontSize);
+        //PROPIEDADES DEL DESTINATARIO
+        this.lblPersona = new Label[2][2];
+        this.lblPersona[0][0] = new Label((this.type == COMPRAS) ? "RIF" : "Cédula", GRUESA, fontSize);
+        this.lblPersona[0][1] = new Label((this.type == COMPRAS) ? "Nombre" : "Apellido", GRUESA, fontSize);
+        this.lblPersona[1][0] = new Label("", PLANO, fontSize);
+        this.lblPersona[1][1] = new Label("", PLANO, fontSize);
 
         //AGREGAR LOS COMPONENTES
         this.add(this.lblTitulo);
@@ -252,7 +251,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         this.add(this.separadores[0]);
         this.add(this.separadores[1]);
         this.add(this.separadores[2]);
-        for (Label[] row : lblHeader) {
+        for (Label[] row : lblPersona) {
             for (Label dato : row) {
                 this.add(dato);
             }
@@ -268,7 +267,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         this.lblDatos[0][0] = new Label("Cantidad", PLANO, fontSize, true);
         this.lblDatos[0][1] = new Label("0", GRUESA, fontSize);
         this.lblDatos[1][0] = new Label("Precio c/u", PLANO, fontSize, true);
-        this.lblDatos[1][1] = new Label("0,00 Bs", GRUESA, 14);
+        this.lblDatos[1][1] = new Label("0,00 Bs", GRUESA, fontSize - 2);
 
         //Asignar el tooltip según el tipo
         String tooltip = (this.type == COMPRAS_BOTELLON)
@@ -369,24 +368,35 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
 
     /**
      * Función para reposicionar los componentes en tiempo real
+     *
+     * @param alturaBaja TRUE si la altura del panel es muy baja, requiriendo
+     * bajar el tamaño de la fuente de letra. FALSE si la fuente de letra se
+     * puede mantener de tamaño normal
      */
-    public void relocateComponents() {
+    public void relocateComponents(boolean alturaBaja) {
         //Ancho y alto de los separadores
         int spWidth = this.getWidth() - padding * 2;
         int spHeight = separadores[0].getPreferredSize().height;
-        //alto de las celdas
-        int cellHeight = lblHeader[0][0].getHeight();
 
         //El título de la factura siempre estará en la misma posición
-        this.lblTitulo.setLocation(padding, padding);
+        this.lblTitulo.setLocation(padding, padding/2);
 
         //PRIMERA FILA CABECERA
         //Altura de las primeras celdas
-        int cellY = padding * 2 + lblTitulo.getHeight();
+        int cellY = lblTitulo.getHeight() + ((alturaBaja) ? padding * 3 / 2 : padding * 2);
         //Posición de la segunda celda
         int cellX = padding + 80;
-        lblHeader[0][0].setLocation(padding, cellY);
-        lblHeader[0][1].setLocation(cellX, cellY);
+        lblPersona[0][0].setLocation(padding, cellY);
+        lblPersona[0][1].setLocation(cellX, cellY);
+        //Reajustar el tamaño de fuente de letra
+        lblPersona[0][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        lblPersona[0][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        //Reajustar el tamaño del label
+        lblPersona[0][0].setSize(lblPersona[0][0].getPreferredSize());
+        lblPersona[0][1].setSize(lblPersona[0][1].getPreferredSize());
+
+        //alto de las celdas, según el tamaño del label anterior
+        int cellHeight = lblPersona[0][0].getHeight();
 
         //SEPARADOR
         //Posicion y altura de la celda + el gap vertical
@@ -395,17 +405,29 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
 
         //SEGUNDA FILA CABECERA
         //Posición y altura del separador + el gap vertical
-        cellY = spY + spHeight + gapV;
-        lblHeader[1][0].setLocation(padding, cellY);
-        lblHeader[1][1].setLocation(cellX, cellY);
+        cellY = spY + spHeight + ((alturaBaja) ? gapV / 2 : gapV);
+        lblPersona[1][0].setLocation(padding, cellY);
+        lblPersona[1][1].setLocation(cellX, cellY);
+        //Reajustar el tamaño de fuente de letra
+        lblPersona[1][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        lblPersona[1][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        //Reajustar el tamaño del label
+        lblPersona[1][0].setSize(lblPersona[1][0].getPreferredSize());
+        lblPersona[1][1].setSize(lblPersona[1][1].getPreferredSize());
 
         //SEPARADOR
         //Posición y altura de la última celda + un padding
-        spY = cellY + cellHeight + padding;
+        spY = cellY + cellHeight + ((alturaBaja) ? padding / 2 : padding);
         separadores[1].setBounds(padding, spY, spWidth, spHeight);
 
         //PRIMERA FILA DE LOS DATOS
-        //Posición y altura de la última celda + gap vertical
+        //Reajustar el tamaño de fuente de letra
+        lblDatos[0][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        lblDatos[0][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        //Reajustar el tamaño del label
+        lblDatos[0][0].setSize(lblDatos[0][0].getPreferredSize().width + 5, lblDatos[0][0].getPreferredSize().height);
+        lblDatos[0][1].setSize(lblDatos[0][1].getPreferredSize());
+        //Posición y altura del último separador + gap vertical
         cellY = spY + spHeight + gapV;
         //Posición de la segunda celda a la derecha de la factura
         cellX = this.getWidth() - padding - lblDatos[0][1].getWidth();
@@ -413,6 +435,18 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         lblDatos[0][1].setLocation(cellX, cellY);
 
         //SEGUNDA FILA DE LOS DATOS
+        //Reajustar el tamaño de fuente de letra
+        lblDatos[1][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        //Si el panel es de tipo compra o recarga, este dato es más pequeño de
+        //lo normal, ya que representa un precio en Bs
+        if (type == COMPRAS_RECARGA || type == COMPRAS_BOTELLON) {
+            lblDatos[1][1].setFontSize((alturaBaja) ? smallFontSize - 2 : fontSize - 2);
+        } else {
+            lblDatos[1][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        }
+        //Reajustar el tamaño del label
+        lblDatos[1][0].setSize(lblDatos[1][0].getPreferredSize().width + 5, lblDatos[1][0].getPreferredSize().height);
+        lblDatos[1][1].setSize(lblDatos[1][1].getPreferredSize());
         //Posición y altura de la última celda + gap vertical
         cellY = cellY + cellHeight + gapV;
         //Posición de la segunda celda a la derecha de la factura
@@ -423,6 +457,12 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         //Validar si existe una tercera fila en los datos
         if (datosRows > 2) {
             //TERCERA FILA DE LOS DATOS
+            //Reajustar el tamaño de fuente de letra
+            lblDatos[2][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+            lblDatos[2][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+            //Reajustar el tamaño del label
+            lblDatos[2][0].setSize(lblDatos[2][0].getPreferredSize().width + 5, lblDatos[2][0].getPreferredSize().height);
+            lblDatos[2][1].setSize(lblDatos[2][1].getPreferredSize());
             //Posición y altura de la última celda + gap vertical
             cellY = cellY + cellHeight + gapV;
             //Posición de la segunda celda a la derecha de la factura
@@ -434,6 +474,12 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         //Validar si existe una cuarta fila en los datos
         if (datosRows > 3) {
             //CUARTA FILA DE LOS DATOS
+            //Reajustar el tamaño de fuente de letra
+            lblDatos[3][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+            lblDatos[3][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+            //Reajustar el tamaño del label
+            lblDatos[3][0].setSize(lblDatos[3][0].getPreferredSize().width + 5, lblDatos[3][0].getPreferredSize().height);
+            lblDatos[3][1].setSize(lblDatos[3][1].getPreferredSize());
             //Posición y altura de la última celda + gap vertical
             cellY = cellY + cellHeight + gapV;
             //Posición de la segunda celda a la derecha de la factura
@@ -448,6 +494,12 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         separadores[2].setBounds(padding, spY, spWidth, spHeight);
 
         //MONTO TOTAL
+        //Reajustar el tamaño de fuente de letra
+        lblTotal[0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        lblTotal[1].setFontSize((alturaBaja) ? smallFontSize - 2 : fontSize - 2);
+        //Reajustar el tamaño del label
+        lblTotal[0].setSize(lblTotal[0].getPreferredSize().width + 5, lblTotal[0].getPreferredSize().height);
+        lblTotal[1].setSize(lblTotal[1].getPreferredSize());
         //Posición y altura del último separador + gap vertical
         cellY = spY + spHeight + gapV;
         //Posición de la segunda celda a la derecha de la factura
@@ -457,17 +509,18 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
     }
 
     //ATRIBUTOS
+    private int datosRows;
+    private int fontSize = 16;
+    private int smallFontSize = fontSize - 2;
     private final int type;
     private static final int padding = 20;
     private static final int gapV = 4;
 
     //COMPONENTES
-    private final Label lblTitulo = new Label("Cuenta", TITULO, 26);
-    private Label[] lblTotal;
     private JSeparator[] separadores;
-    private Label[][] lblHeader;
+    private Label[][] lblPersona;
     private Label[][] lblDatos;
-    private int datosRows;
-    private int fontSize = 16;
+    private Label[] lblTotal;
+    private final Label lblTitulo = new Label("Cuenta", TITULO, fontSize + 10);
 
 }

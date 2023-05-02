@@ -69,17 +69,19 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
 
         //Asignar el tamaño al panel contenedor
         this.setSize(size);
-
+        //Obtener el ancho
+        int width = size.width;
+        
         //Asignar el tamaño de la barra de bienvenida
         saludo.setSize(size.width, saludo.getPreferredSize().height);
-
+    
+        //Si el ancho es demasiado pequeño, se baja la fuente de letra del saludo
+        lblSaludo.setFontSize((size.height < 549) ? 20 : 24);
+        
         //Asignar la posición y el tamaño del panel inicio
         int inicioY = saludo.getHeight();
         inicio.setLocation(0, inicioY);
-        inicio.setSize(size.width, size.height - inicioY);
-
-        //Obtener el ancho
-        int width = inicio.getWidth();
+        inicio.setSize(width, size.height - inicioY);
 
         //Determinar cuantas filas y columnas tendrá el layour
         //según el ancho del contenedor
@@ -110,18 +112,19 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
      *
      * @param largeSize TRUE si el botón debe ser de tamaño grande, FALSE en
      * caso de que sea pequeño
+     * @param parentHeight altura del panel contenedor
      */
-    public static void relocateButtons(boolean largeSize) {
-        btnTrasvasos.relocateComponents(largeSize);
-        btnRecargas.relocateComponents(largeSize);
-        btnDelivery.relocateComponents(largeSize);
-        btnDeudas.relocateComponents(largeSize);
-        btnClientes.relocateComponents(largeSize);
-        btnVentas.relocateComponents(largeSize);
-        btnCompras.relocateComponents(largeSize);
-        btnHistorial.relocateComponents(largeSize);
-        btnProveedor.relocateComponents(largeSize);
-        btnWeb.relocateComponents(largeSize);
+    public static void relocateButtons(boolean largeSize, int parentHeight) {
+        btnTrasvasos.relocateComponents(largeSize, parentHeight);
+        btnRecargas.relocateComponents(largeSize, parentHeight);
+        btnDelivery.relocateComponents(largeSize, parentHeight);
+        btnDeudas.relocateComponents(largeSize, parentHeight);
+        btnClientes.relocateComponents(largeSize, parentHeight);
+        btnVentas.relocateComponents(largeSize, parentHeight);
+        btnCompras.relocateComponents(largeSize, parentHeight);
+        btnHistorial.relocateComponents(largeSize, parentHeight);
+        btnProveedor.relocateComponents(largeSize, parentHeight);
+        btnWeb.relocateComponents(largeSize, parentHeight);
     }
 
     /**
@@ -146,13 +149,20 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
      * @param name Nombre del usuario
      */
     public static void setUserName(String name) {
-        String capitalize = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+        String split[] = name.split(" ");
+        String capitalize = "";
+        
+        for (String nombre : split){
+            capitalize += nombre.substring(0, 1).toUpperCase() + nombre.substring(1).toLowerCase();
+            capitalize += " ";
+        }
+        
         lblSaludo.setText("Bienvenido, usuario " + capitalize);
     }
 
     //COMPONENTES
     private static final JPanel saludo = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-    private static final Label lblSaludo = new Label("Bienvenido, usuario", TITULO, 24);
+    private static final Label lblSaludo = new Label("", TITULO, 24);
     private static final JPanel inicio = new JPanel();
     private static final GridLayout grid = new GridLayout(2, 5);
     private static final BotonInicio btnTrasvasos = new BotonInicio(VENTAS_TRASVASO);

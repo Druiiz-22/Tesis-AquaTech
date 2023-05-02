@@ -37,12 +37,12 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * base de datos
      */
     private void registrar() {
-        
+
         if (validarCampos()) {
             if (validarDatos()) {
-                
+
                 if (msjYesNo("¿Está seguro de realizar el registro del trasvaso?")) {
-                    
+
                     //Validar que el registro NO sea de números más grandes de 100
                     if (entregados > 100 || pagados > 100) {
 
@@ -259,25 +259,25 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         //Actualizar la factura
         factura.setInformacion(cedula, apellido);
     }
-    
+
     /**
      * Función para asignar los datos para pagar una deuda con un cliente
-     * 
-     * @param cedula 
-     * @param apellido 
-     * @param pagar 
-     * @param entregar 
+     *
+     * @param cedula
+     * @param apellido
+     * @param pagar
+     * @param entregar
      */
-    public static void pagarDeuda(String cedula, String apellido, int pagar, int entregar){
+    public static void pagarDeuda(String cedula, String apellido, int pagar, int entregar) {
         Trasvasos.cedula = cedula;
         Trasvasos.apellido = apellido;
         Trasvasos.pagados = pagar;
         Trasvasos.entregados = entregar;
-        
+
         //Poner el valor en los campos
         txtEntregados.setText(String.valueOf(Trasvasos.entregados));
         txtPagados.setText(String.valueOf(Trasvasos.pagados));
-        
+
         //Actualizar la factura
         factura.setInformacion(cedula, apellido);
         factura.setBotellonesEntregados(Trasvasos.entregados);
@@ -404,7 +404,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         }
 
         //Reposicionar los elementos de la factura
-        factura.relocateComponents();
+        factura.relocateComponents(facHeight < 281);
         relocateTrasvaso();
     }
 
@@ -449,6 +449,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      */
     private void panelMediano() {
 
+        this.facHeight += 20;
+        this.trasvHeight += 20;
         //Dividir el panel en dos 
         int halfWidth = width / 2 - padding * 2;
 
@@ -524,7 +526,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * Función para posicionar los componentes del panel de trasvasos
      */
     private void relocateTrasvaso() {
-        int txtHeight = 40;
+        boolean alturaBaja = trasvHeight < 410;
+        int txtHeight = (alturaBaja) ? 30 : 40;
         int gapV = 5;
         int trasW = panelTrasvaso.getWidth();
         int txtWidth = trasW - padding * 2;
@@ -537,7 +540,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         checkDelivery.setSize(checkDelivery.getPreferredSize());
 
         //Posición del título del panel para los datos
-        lblTitulo.setLocation(padding, padding);
+        lblTitulo.setLocation(padding, padding / 2);
 
         //Para posicionar los campos en el centro vertical del panel
         //primero se obtiene le punto medio del panel
@@ -545,35 +548,36 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         //Luego la suma de la altura de TODOS los componentes y sus labels
         int allHeights = txtHeight * 3 + checkDelivery.getHeight() + lblEntregados.getHeight() * 3;
         //Finalmente calcular el punto medio, sumando, además, los padding utilizados 
-        int positionY = middleY - (allHeights + padding * 5) / 2;
+        int positionY = middleY - (allHeights + ((alturaBaja)? padding/2 : padding) * 5) / 2;
         lblEntregados.setLocation(padding, positionY);
 
         //Posición vertical para el primer campo de texto
-        positionY = positionY + lblEntregados.getHeight() + gapV;
+        positionY = positionY + lblEntregados.getHeight() + ((alturaBaja)? gapV/2 : gapV);
         txtEntregados.setLocation(padding, positionY);
 
         //Posición vertical del segundo label para su campo de texto
-        positionY = positionY + txtHeight + padding;
+        positionY = positionY + txtHeight + ((alturaBaja)? padding/2 : padding);
         lblPagados.setLocation(padding, positionY);
 
         //Posición vertical para el segundo campo de texto
-        positionY = positionY + lblPagados.getHeight() + gapV;
+        positionY = positionY + lblPagados.getHeight() + ((alturaBaja)? gapV/2 : gapV);
         txtPagados.setLocation(padding, positionY);
 
         //Posición vertical del label para el comboBox
-        positionY = positionY + txtHeight + padding;
+        positionY = positionY + txtHeight + ((alturaBaja)? padding/2 : padding);
         lblTipoPago.setLocation(padding, positionY);
 
         //Posición vertical para el comboBox
-        positionY = positionY + lblTipoPago.getHeight() + gapV;
+        positionY = positionY + lblTipoPago.getHeight() + ((alturaBaja)? gapV/2 : gapV);
         boxTipoPago.setLocation(padding, positionY);
 
         //Posición vertical y horizontal para el checkBox
         int positionX = trasW / 2 - checkDelivery.getWidth() / 2;
-        positionY = positionY + txtHeight + padding;
+        positionY = positionY + txtHeight + ((alturaBaja)? padding/2 : padding);
         checkDelivery.setLocation(positionX, positionY);
 
         //Posición vertical de los dos botones inferiores
+        txtHeight += 10;
         positionY = panelTrasvaso.getHeight() - txtHeight - padding;
 
         //Ancho del botón de cancelar
@@ -619,6 +623,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     private final int padding = 20;
     private final int btnHeight = 80;
     private final int facMaxWidth = 300;
+    private static final int labelFontSize = 18;
 
     //COMPONENTES
     private static final Boton btnCliente = new Boton(SELECT_CLIENTE);
@@ -628,13 +633,13 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
     private static final Label lblTitulo = new Label("Trasvaso de botellones", TITULO, 24);
 
-    private static final Label lblEntregados = new Label("botellones entregados", PLANO, 18, true);
+    private static final Label lblEntregados = new Label("botellones entregados", PLANO, labelFontSize, true);
     private static final CampoTexto txtEntregados = new CampoTexto("Botellones entregados", NUMERO);
 
-    private static final Label lblPagados = new Label("botellones pagados", PLANO, 18, true);
+    private static final Label lblPagados = new Label("botellones pagados", PLANO, labelFontSize, true);
     private static final CampoTexto txtPagados = new CampoTexto("Botellones pagados", NUMERO);
 
-    private static final Label lblTipoPago = new Label("Tipo de pago", PLANO, 18, true);
+    private static final Label lblTipoPago = new Label("Tipo de pago", PLANO, labelFontSize, true);
     private static final String opciones[] = {"Seleccionar", "Efectivo", "Transferencia", "Dolar en efectivo"};
     private static final JComboBox boxTipoPago = new JComboBox(opciones);
 
