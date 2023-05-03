@@ -10,7 +10,7 @@ import database.CreateDB;
 import database.EmailCode;
 import database.ReadDB;
 import database.UpdateDB;
-import javax.swing.JFrame;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Calendar;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static properties.Mensaje.msjAdvertencia;
@@ -33,7 +34,7 @@ import static properties.ValidarTexto.formatoTelefono;
  *
  * @author diego
  */
-public class NuevoUsuario extends JFrame implements properties.Constantes, properties.Colores {
+public class NuevoUsuario extends JDialog implements properties.Constantes, properties.Colores {
 
     // ========== BACKEND ==========
     /**
@@ -60,6 +61,19 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
 
         //WINDOW LISTENER
         this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                //Obtener el tamaño del panel contenedor + los bordes de la 
+                //ventana una vez que la ventana sea abierta, para asignar el 
+                //tamaño al Dialog
+                int w = paneSize.width + getInsets().left + getInsets().right;
+                int h = paneSize.height + getInsets().top + getInsets().bottom;
+                
+                //Asignar el tamaño y centrar el Dialog
+                setSize(w, h);
+                setLocation(centerLocation());
+            }
+
             @Override
             public void windowClosing(WindowEvent e) {
                 salir();
@@ -467,14 +481,18 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un proveedor
+     *
+     * @param parent
+     * @param modal
      */
-    public NuevoUsuario() {
-        this.setLayout(null);
-        this.setSize(450, 610);
-        this.setResizable(false);
-        this.getContentPane().setBackground(BLANCO);
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    public NuevoUsuario(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
+        this.setResizable(false);
+        this.setLayout(null);
+        this.getContentPane().setSize(paneSize);
+        this.getContentPane().setBackground(BLANCO);
 
         initComponents();
         listeners();
@@ -517,73 +535,74 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
      * Función para reposicionar y redimensionar los componentes
      */
     private void relocateComponents() {
-        int gapV = 2;
-        int paddingH = 40;
-        int paddingV = 20;
-        int height = this.getContentPane().getHeight();
-        int width = this.getContentPane().getWidth();
-        int middleX = width / 2;
-        int fieldH = 30;
-        int fieldW = middleX - paddingH - (paddingV / 2);
+        int width = paneSize.width;
+        int height = paneSize.height;
+
+        int gap = 2;
+        int margin = 40;
+        int padding = 10;
+        int fieldH = 40;
+        int fieldW = (width - margin * 2 - padding * 2) / 3;
 
         //Posición del logo
-        int x = middleX - logo.getWidth() / 2;
-        logo.setLocation(x, paddingV);
+        int x = width / 2 - logo.getWidth() / 2;
+        logo.setLocation(x, padding * 2);
 
-        //Posición y tamaño del título
-        int y = paddingV * 2 + logo.getHeight();
-        int w = width - paddingH * 2;
-        lblTitulo.setLocation(paddingH, y);
-        lblTitulo.setSize(w, paddingV * 5 / 2);
+        //Posición del título
+        int y = padding * 4 + logo.getHeight();
+        lblTitulo.setLocation(margin, y);
 
         //Label y campo de texto del correo
-        int lblY = y + lblTitulo.getHeight() + paddingV / 2;
-        int txtY = lblY + lblCorreo.getHeight() + gapV;
-        lblCorreo.setLocation(paddingH, lblY);
-        txtCorreo.setLocation(paddingH, txtY);
-        txtCorreo.setSize(w, fieldH);
+        int lblY = y + lblTitulo.getHeight() + padding;
+        int txtY = lblY + lblCorreo.getHeight() + gap;
+        int w = width - margin * 2 - fieldW - padding;
+        lblCorreo.setLocation(margin, lblY);
+        txtCorreo.setBounds(margin, txtY, w, fieldH);
 
         //Label y campo de texto del rol del usuario
-        lblY = txtY + fieldH + paddingV / 4;
-        txtY = lblY + lblRol.getHeight() + gapV;
-        lblRol.setLocation(paddingH, lblY);
-        boxRoles.setBounds(paddingH, txtY, w, fieldH);
+        x = margin + txtCorreo.getWidth() + padding;
+        lblRol.setLocation(x, lblY);
+        boxRoles.setBounds(x, txtY, fieldW, fieldH);
 
         //Label y campo de texto del nombre
-        lblY = txtY + fieldH + paddingV / 4;
-        txtY = lblY + lblNombre.getHeight() + gapV;
-        lblNombre.setLocation(paddingH, lblY);
-        txtNombre.setBounds(paddingH, txtY, fieldW, fieldH);
+        lblY = txtY + fieldH + padding;
+        txtY = lblY + lblNombre.getHeight() + gap;
+        lblNombre.setLocation(margin, lblY);
+        txtNombre.setBounds(margin, txtY, fieldW, fieldH);
 
         //Label y campo de texto del apellido
-        x = width - paddingH - fieldW;
+        x = margin + fieldW + padding;
         lblApellido.setLocation(x, lblY);
         txtApellido.setBounds(x, txtY, fieldW, fieldH);
 
         //Label y campo de texto de la cédula
-        lblY = txtY + fieldH + paddingV / 4;
-        txtY = lblY + lblCedula.getHeight() + gapV;
-        lblCedula.setLocation(paddingH, lblY);
-        txtCedula.setBounds(paddingH, txtY, fieldW, fieldH);
+        x += fieldW + padding;
+        lblCedula.setLocation(x, lblY);
+        txtCedula.setBounds(x, txtY, fieldW, fieldH);
 
         //Label y campo de texto del teléfono
-        lblTelefono.setLocation(x, lblY);
-        txtTelefono.setBounds(x, txtY, fieldW, fieldH);
+        lblY = txtY + fieldH + padding;
+        txtY = lblY + lblTelefono.getHeight() + gap;
+        lblTelefono.setLocation(margin, lblY);
+        txtTelefono.setBounds(margin, txtY, fieldW, fieldH);
 
         //Label y campo de la clave nueva
-        lblY = txtY + fieldH + paddingV / 4;
-        txtY = lblY + lblClave.getHeight() + gapV;
-        lblClave.setLocation(paddingH, lblY);
-        txtClave.setBounds(paddingH, txtY, fieldW, fieldH);
+        x = margin + fieldW + padding;
+        lblClave.setLocation(x, lblY);
+        txtClave.setBounds(x, txtY, fieldW, fieldH);
 
         //Label y campo de la clave repetida
+        x += fieldW + padding;
         lblClaveRepetida.setLocation(x, lblY);
         txtClaveRepetida.setBounds(x, txtY, fieldW, fieldH);
 
         //Botones
-        fieldH += 10;
-        y = height - paddingH - fieldH;
-        btnCancelar.setBounds(paddingH, y, fieldW, fieldH);
+        fieldH = 40;
+        fieldW = 120;
+        y = height - padding * 2 - fieldH;
+        x = width / 2 - (fieldW * 2 + padding) / 2;
+        btnCancelar.setBounds(x, y, fieldW, fieldH);
+        x += fieldW + padding * 2;
         btnGuardar.setBounds(x, y, fieldW, fieldH);
     }
 
@@ -610,6 +629,9 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
     protected void vaciarCampos() {
         //Vaciar los campos
         txtCedula.setText("");
+        txtNombre.setText("");
+        txtApellido.setText("");
+        txtTelefono.setText("");
         txtCorreo.setText("");
         txtClave.setText("");
         txtClave.hidePassword();
@@ -618,21 +640,20 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
         boxRoles.setSelectedIndex(0);
 
         //Vaciar los atributos
-        crearUsuario = null;
         id_usuario = 0;
         id_cliente = 0;
-        
+
         cedula = 0;
         cedulaVieja = null;
-        
+
         correo = null;
         correoViejo = null;
         rol = -99;
-        
+
         nombre = null;
         apellido = null;
         telefono = null;
-        
+
         claveFinal = null;
     }
 
@@ -643,24 +664,24 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
         //Atributo
         crearUsuario = true;
 
-        //Propiedades de la ventana
-        this.setTitle("Agregar un usuario - AquaTech");
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
+        //Label para el título
+        lblTitulo.setText("Ingrese los datos necesarios para registrar un "
+                + "nuevo usuario al sistema.");
+        lblTitulo.setSize(lblTitulo.getPreferredSize());
 
-        //Titulo para la ventana
-        lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
-                + "nuevo usuario al sistema.</html>");
         //Logo para la ventana
         logo.setText("Agregar Usuario");
         logo.setSize(logo.getPreferredSize());
-
+        
+        //Preparar los campos
         vaciarCampos();
         txtClave.setEnabled(true);
         txtClaveRepetida.setEnabled(true);
 
-        //Redimensionar los componentes
-        relocateComponents();
+        //Propiedades de la ventana
+        this.setTitle("Agregar un usuario - AquaTech");
+        this.relocateComponents();
+        this.setVisible(true);
     }
 
     /**
@@ -675,11 +696,6 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
      */
     protected void editar(String cedula, String rol, String nombre, String apellido, String telefono, String correo) {
         crearUsuario = false;
-
-        //Propiedades de la ventana
-        this.setTitle("Editar un proveedor - AquaTech");
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
 
         //Atributos
         NuevoUsuario.cedulaVieja = cedula;
@@ -696,14 +712,16 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
                 break;
         }
 
-        //Titulo para la ventana
-        lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
-                + "nuevo usuario al sistema.</html>");
+        //Label para el título
+        lblTitulo.setText("Ingrese los datos necesarios para registrar un "
+                + "nuevo usuario al sistema.");
+        lblTitulo.setSize(lblTitulo.getPreferredSize());
         //Logo para la ventana
         logo.setText("Agregar Usuario");
         logo.setSize(logo.getPreferredSize());
 
         //Sobreescribir los campos
+        vaciarCampos();
         txtCorreo.setText(correo);
         txtNombre.setText(nombre);
         txtApellido.setText(apellido);
@@ -720,8 +738,10 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
         txtClave.setEnabled(false);
         txtClaveRepetida.setEnabled(false);
 
-        //Redimensionar los componentes
-        relocateComponents();
+        //Propiedades de la ventana
+        this.setTitle("Editar un proveedor - AquaTech");
+        this.relocateComponents();
+        this.setVisible(true);
     }
 
     /**
@@ -730,13 +750,34 @@ public class NuevoUsuario extends JFrame implements properties.Constantes, prope
     private void salir() {
         if (msjYesNo("¿Está seguro de cancelar la operación?")) {
             vaciarCampos();
+            crearUsuario = null;
             dispose();
         }
     }
+    
+    /**
+     * Función para obtener las coordenadas necesarias para posicionar la
+     * ventana en el centro de la pantalla
+     * @return 
+     */
+    private java.awt.Point centerLocation(){
+        
+        //Obtener el tamaño de la pantalla
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
+        //Posición en X del frame
+        int x = screen.width/2 - this.getWidth()/2;
+        //Posición en Y del frame
+        int y = screen.height/2 - this.getHeight()/2;
+
+        //Retornar el tamaño mínimo
+        return new java.awt.Point(x, y);
+    }
+    
     //COMPONENTES
+    private static final Dimension paneSize = new Dimension(640, 450);
     private static final Logo logo = new Logo(HORIZONTAL);
-    private static final Label lblTitulo = new Label("", PLANO, 16);
+    private static final Label lblTitulo = new Label("", TITULO, 16);
 
     private static final Label lblCedula = new Label("Cédula", PLANO, 16);
     private static final CampoTexto txtCedula = new CampoTexto("Cédula del usuario", NUMERO);

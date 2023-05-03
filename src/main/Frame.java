@@ -91,17 +91,15 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(lateral);
 
         //LISTA DE COSAS PENDIENTES
-        //- Ver el google maps.
-        //- Diseñar los ajustes.
-        //- Diseñar los pedidos.
-        //- Diseñar la tabla de deudas.
+        //- Redimensionar el Login
+        
         //- Realizar la generación de reportes de deudas
+
+        //- Ver el google maps.
+        //- Diseñar los pedidos.
+        
+        //- Diseñar los ajustes.
         //- Dar formulario a los RIF
-        //NOTAS
-        //se crea un cliente -> NO se crea un usuario
-        //se crea un usuario de cliente -> Se crea un cliente
-        //se crea un usuario operativo -> Se crea un cliente
-        //se crea un cliente y luego se crea un usuario -> Se sobreponen los datos del usuario en el cliente
     }
 
     /**
@@ -179,9 +177,6 @@ public class Frame extends JFrame implements properties.Constantes {
     private void relocateComponents() {
         //Obtener el tamaño de la pantalla a tiempo real
         this.setMinimumSize(getMinSize());
-
-        System.out.println("\nFrame size: w=" + this.getWidth() + ", h=" + this.getHeight());
-        System.out.println("Minimum size: mw=" + this.getMinimumSize().width + ", mh=" + this.getMinimumSize().height);
 
         //Obtener el tamaño del componente
         Dimension frameSize = this.getContentPane().getSize();
@@ -278,8 +273,7 @@ public class Frame extends JFrame implements properties.Constantes {
      *
      * @return Dimensiones mínimas para el programa.
      */
-    public static Dimension getMinSize() {
-
+    protected static Dimension getMinSize() {
         //Obtener el tamaño de la pantalla
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 

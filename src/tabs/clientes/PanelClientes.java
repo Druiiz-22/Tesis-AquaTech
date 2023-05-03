@@ -45,7 +45,7 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                nuevoCliente.agregar();
+                nuevo.agregar();
             }
         });
         //KEY LISTENER
@@ -99,7 +99,7 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
      */
     protected static void vaciarCampos() {
         txtBusqueda.setText("");
-        nuevoCliente.vaciarCampos();
+        nuevo.vaciarCampos();
     }
 
     /**
@@ -120,7 +120,7 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
      * @param telefono
      */
     public static void editCliente(String cedula, String nombre, String apellido, String telefono) {
-        nuevoCliente.editar(cedula, nombre, apellido, telefono);
+        nuevo.editar(cedula, nombre, apellido, telefono);
     }
 
     /**
@@ -138,5 +138,5 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Cliente", VERDE);
     private static final Tabla tabla = new Tabla(CLIENTES);
-    private static final NuevoCliente nuevoCliente = new NuevoCliente();
+    private static final NuevoCliente nuevo = new NuevoCliente(main.Run.getFrameRoot(), true);
 }

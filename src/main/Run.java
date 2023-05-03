@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.Component;
+
 public class Run {
 
     /**
@@ -62,11 +64,24 @@ public class Run {
         }
     }
 
+    /**
+     * Función para actualizar la interfaz gráfica del Frame principal del
+     * programa
+     */
     public static void repaintFrame() {
         if (mainFrame != null) {
             mainFrame.revalidate();
             mainFrame.repaint();
         }
+    }
+
+    /**
+     * Función para obtener el Frame del programa principal
+     *
+     * @return
+     */
+    public static java.awt.Frame getFrameRoot() {
+        return mainFrame;
     }
 
 }

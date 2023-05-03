@@ -429,9 +429,6 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private void panelPequenio() {
         //Ancho de los paneles
         int w = Reportes.width - padding * 2;
-
-        //Tamaño del panel de información
-        System.out.println("repW = "+w);
         
         int infoH;
         if(w < 410){

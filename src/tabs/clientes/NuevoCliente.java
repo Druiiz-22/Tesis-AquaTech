@@ -7,6 +7,7 @@ import components.Logo;
 import database.CreateDB;
 import database.ReadDB;
 import database.UpdateDB;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -15,7 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import properties.Mensaje;
 import tabs.ventas.Ventas;
 import static javax.swing.SwingConstants.HORIZONTAL;
@@ -29,7 +30,7 @@ import static properties.ValidarTexto.formatoTelefono;
 /**
  * Clase para la creación de la ventana para agregar o editar un cliente
  */
-public class NuevoCliente extends JFrame implements properties.Constantes, properties.Colores {
+public class NuevoCliente extends JDialog implements properties.Constantes, properties.Colores {
 
     // ========== BACKEND ==========
     /**
@@ -96,6 +97,19 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
 
         //WINDOW LISTENER
         this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                //Obtener el tamaño del panel contenedor + los bordes de la 
+                //ventana una vez que la ventana sea abierta, para asignar el 
+                //tamaño al Dialog
+                int w = paneSize.width + getInsets().left + getInsets().right;
+                int h = paneSize.height + getInsets().top + getInsets().bottom;
+                
+                //Asignar el tamaño y centrar el Dialog
+                setSize(w, h);
+                setLocation(centerLocation());
+            }
+            
             @Override
             public void windowClosing(WindowEvent e) {
                 salir();
@@ -285,14 +299,17 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un cliente
+     * @param parent
+     * @param modal
      */
-    public NuevoCliente() {
-        this.setLayout(null);
-        this.setSize(440, 480);
-        this.setResizable(false);
-        this.getContentPane().setBackground(BLANCO);
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    public NuevoCliente(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
+        this.setResizable(false);
+        this.setLayout(null);
+        this.getContentPane().setSize(paneSize);
+        this.getContentPane().setBackground(BLANCO);
 
         initComponents();
         listeners();
@@ -326,17 +343,17 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * Función para reposicionar y redimensionar los componentes
      */
     private void relocateComponents() {
+        int width = paneSize.width;
+        int height = paneSize.height;
+        
         int gapV = 2;
         int paddingH = 40;
         int paddingV = 20;
-        int height = this.getContentPane().getHeight();
-        int width = this.getContentPane().getWidth();
-        int middleX = width / 2;
         int fieldH = 40;
-        int fieldW = middleX - paddingH - paddingV / 2;
+        int fieldW = width/2 - paddingH - paddingV / 2;
 
         //Posición del logo
-        int x = middleX - logo.getWidth() / 2;
+        int x = width/2 - logo.getWidth() / 2;
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
@@ -394,18 +411,24 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * Función para agregar un nuevo cliente
      */
     protected void agregar() {
-        this.setTitle("Agregar un cliente - AquaTech");
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
-
+        //Atributo
         crearCliente = true;
+        
+        //Label para el título
         lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
                 + "nuevo cliente al sistema.</html>");
-
+        
+        //Logo para la ventana
         logo.setText("Agregar Cliente");
         logo.setSize(logo.getPreferredSize());
-
-        relocateComponents();
+        
+        //Preparar los campos
+        vaciarCampos();
+        
+        //Propiedades de la ventana
+        this.setTitle("Agregar un cliente - AquaTech");
+        this.relocateComponents();
+        this.setVisible(true);
     }
 
     /**
@@ -418,25 +441,28 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
      * @param direc
      */
     protected void editar(String cedula, String nombre, String apellido, String telefono) {
-        this.setTitle("Editar un cliente - AquaTech");
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
-
+        //Atributos
         cedulaVieja = cedula;
-
         crearCliente = false;
+        
+        //Label para el título
         lblTitulo.setText("<html>Ingrese los nuevos datos del cliente "
                 + "seleccionado que desea actualizar.</html>");
-
+        
+        //Logo para la ventana
         logo.setText("Editar Cliente");
         logo.setSize(logo.getPreferredSize());
-
+        
+        //Sobreescribir los campos
+        vaciarCampos();
         txtCedula.setText(cedula);
         txtNombre.setText(nombre);
         txtApellido.setText(apellido);
         txtTelefono.setText(telefono);
 
-        relocateComponents();
+        this.setTitle("Editar un cliente - AquaTech");
+        this.relocateComponents();
+        this.setVisible(true);
     }
 
     /**
@@ -464,13 +490,34 @@ public class NuevoCliente extends JFrame implements properties.Constantes, prope
     private void salir() {
         if (msjYesNo("¿Está seguro de cancelar la operación?")) {
             vaciarCampos();
+            crearCliente = null;
             dispose();
         }
     }
 
+    /**
+     * Función para obtener las coordenadas necesarias para posicionar la
+     * ventana en el centro de la pantalla
+     * @return 
+     */
+    private java.awt.Point centerLocation(){
+        
+        //Obtener el tamaño de la pantalla
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+
+        //Posición en X del frame
+        int x = screen.width/2 - this.getWidth()/2;
+        //Posición en Y del frame
+        int y = screen.height/2 - this.getHeight()/2;
+
+        //Retornar el tamaño mínimo
+        return new java.awt.Point(x, y);
+    }
+    
     //COMPONENTES
+    private static final Dimension paneSize = new Dimension(425, 440);
     private static final Logo logo = new Logo(HORIZONTAL);
-    private static final Label lblTitulo = new Label("", PLANO, 16);
+    private static final Label lblTitulo = new Label("", TITULO, 16);
 
     private static final Label lblNombre = new Label("Nombre", PLANO, 16);
     private static final CampoTexto txtNombre = new CampoTexto("Nombre del cliente", NOMBRE);

@@ -45,7 +45,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                nuevoProv.agregar();
+                nuevo.agregar();
             }
         });
 
@@ -100,7 +100,7 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      */
     public static void vaciarCampos() {
         txtBusqueda.setText("");
-        nuevoProv.vaciarCampos();
+        nuevo.vaciarCampos();
     }
 
     /**
@@ -120,12 +120,12 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      * @param telefono
      */
     public static void editProveedor(String rif, String nombre, String telefono) {
-        nuevoProv.editar(rif, nombre, telefono);
+        nuevo.editar(rif, nombre, telefono);
     }
 
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);
     private static final Tabla tabla = new Tabla(PROVEEDOR);
-    private static final NuevoProveedor nuevoProv = new NuevoProveedor();
+    private static final NuevoProveedor nuevo = new NuevoProveedor(main.Run.getFrameRoot(), true);
 }

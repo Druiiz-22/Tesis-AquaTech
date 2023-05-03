@@ -202,7 +202,6 @@ public class ValidarTexto {
             return date.compareTo(min) >= 0 && date.compareTo(max) < 0;
 
         } catch (ParseException e) {
-            System.out.println("\n" + e);
             return false;
         }
     }

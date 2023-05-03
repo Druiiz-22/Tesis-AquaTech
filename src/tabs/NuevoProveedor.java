@@ -7,6 +7,7 @@ import components.Logo;
 import database.CreateDB;
 import database.ReadDB;
 import database.UpdateDB;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -15,8 +16,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
 import static java.awt.Font.BOLD;
+import javax.swing.JDialog;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
@@ -32,7 +33,7 @@ import tabs.compras.Compras;
  *
  * @author diego
  */
-public class NuevoProveedor extends JFrame implements properties.Constantes, properties.Colores {
+public class NuevoProveedor extends JDialog implements properties.Constantes, properties.Colores {
 
     // ========== BACKEND ==========
     /**
@@ -91,6 +92,20 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
 
         //WINDOW LISTENER
         this.addWindowListener(new WindowAdapter() {
+            
+            @Override
+            public void windowOpened(WindowEvent e) {
+                //Obtener el tamaño del panel contenedor + los bordes de la 
+                //ventana una vez que la ventana sea abierta, para asignar el 
+                //tamaño al Dialog
+                int w = paneSize.width + getInsets().left + getInsets().right;
+                int h = paneSize.height + getInsets().top + getInsets().bottom;
+                
+                //Asignar el tamaño y centrar el Dialog
+                setSize(w, h);
+                setLocation(centerLocation());
+            }
+            
             @Override
             public void windowClosing(WindowEvent e) {
                 salir();
@@ -261,14 +276,17 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un proveedor
+     * @param parent
+     * @param modal
      */
-    public NuevoProveedor() {
-        this.setLayout(null);
-        this.setSize(440, 480);
-        this.setResizable(false);
-        this.getContentPane().setBackground(BLANCO);
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    public NuevoProveedor(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
+        this.setResizable(false);
+        this.setLayout(null);
+        this.getContentPane().setSize(paneSize);
+        this.getContentPane().setBackground(BLANCO);
 
         initComponents();
         listeners();
@@ -301,17 +319,17 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * Función para reposicionar y redimensionar los componentes
      */
     private void relocateComponents() {
+        int width = paneSize.width;
+        int height = paneSize.height;
+        
         int gapV = 2;
         int paddingH = 40;
         int paddingV = 20;
-        int height = this.getContentPane().getHeight();
-        int width = this.getContentPane().getWidth();
-        int middleX = width / 2;
         int fieldH = 40;
-        int fieldW = middleX - paddingH - paddingV / 2;
+        int fieldW = width/2 - paddingH - paddingV / 2;
 
         //Posición del logo
-        int x = middleX - logo.getWidth() / 2;
+        int x = width/2 - logo.getWidth() / 2;
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
@@ -365,15 +383,10 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * Función para agregar un nuevo proveedor
      */
     protected void agregar() {
-        //Propiedades de la ventana 
-        this.setTitle("Agregar un proveedor - AquaTech");
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
-
         //Atributo
         crearProveedor = true;
 
-        //Titulo para la ventana
+        //Label para el título
         lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
                 + "nuevo proveedor al sistema.</html>");
 
@@ -381,8 +394,13 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
         logo.setText("Agregar Proveedor");
         logo.setSize(logo.getPreferredSize());
 
-        //Redimensionar los componentes
-        relocateComponents();
+        //Preparar los campos
+        vaciarCampos();
+        
+        //Propiedades de la ventana 
+        this.setTitle("Agregar un proveedor - AquaTech");
+        this.relocateComponents();
+        this.setVisible(true);
     }
 
     /**
@@ -393,29 +411,30 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
      * @param telefono
      */
     protected void editar(String rif, String nombre, String telefono) {
-        //Propiedades de la ventana
-        this.setTitle("Editar un proveedor - AquaTech");
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
-
         //Atributos
         rifViejo = rif;
         crearProveedor = false;
 
-        //Titulo para la ventana
+        //Label para el título
         lblTitulo.setText("<html>Ingrese los nuevos datos del proveedor "
                 + "que desea actualizar.</html>");
+        
         //Logo para la ventana
         logo.setText("Editar Proveedor");
         logo.setSize(logo.getPreferredSize());
 
         //Sobreescribir los campos
+        vaciarCampos();
         txtRif.setText(rif);
         txtNombre.setText(nombre);
         txtTelefono.setText(telefono);
-
+        
+        //Propiedades de la ventana
+        this.setTitle("Editar un proveedor - AquaTech");
+        this.relocateComponents();
+        this.setVisible(true);
+        
         //Redimensionar los componentes
-        relocateComponents();
     }
 
     /**
@@ -441,13 +460,34 @@ public class NuevoProveedor extends JFrame implements properties.Constantes, pro
     private void salir() {
         if (msjYesNo("¿Está seguro de cancelar la operación?")) {
             vaciarCampos();
+            crearProveedor = null;
             dispose();
         }
     }
 
+    /**
+     * Función para obtener las coordenadas necesarias para posicionar la
+     * ventana en el centro de la pantalla
+     * @return 
+     */
+    private java.awt.Point centerLocation(){
+        
+        //Obtener el tamaño de la pantalla
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+
+        //Posición en X del frame
+        int x = screen.width/2 - this.getWidth()/2;
+        //Posición en Y del frame
+        int y = screen.height/2 - this.getHeight()/2;
+
+        //Retornar el tamaño mínimo
+        return new java.awt.Point(x, y);
+    }
+    
     //COMPONENTES
+    private static final Dimension paneSize = new Dimension(425, 440);
     private static final Logo logo = new Logo(HORIZONTAL);
-    private static final Label lblTitulo = new Label("", PLANO, 16);
+    private static final Label lblTitulo = new Label("", TITULO, 16);
 
     private static final Label lblRif = new Label("RIF", PLANO, 16);
     private static final CampoTexto txtRif = new CampoTexto("Rif del proveedor", NUMERO);

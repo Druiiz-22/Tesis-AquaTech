@@ -19,6 +19,8 @@ import database.DeleteDB;
 import tabs.Proveedores;
 import tabs.clientes.PanelClientes;
 import static java.awt.Font.PLAIN;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import static javax.swing.RowFilter.regexFilter;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjError;
@@ -36,7 +38,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * Función para aplicar los listeners a los items del menú
      */
     private void listeners() {
-
         //ACTION LISTENER A LOS ITEMS
         //Determinar el tipo de la tabla
         switch (type) {
@@ -194,28 +195,28 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-                
+
                 //Obtener la cédula de la deuda
                 String cedula = tabla.getValueAt(index, 2).toString();
-                
+
                 //Validar que los campos NO estén vacíos
                 if (!cedula.isEmpty()) {
-                    
+
                     //Buscar el apellido del cliente
                     String apellido = PanelClientes.getApellido(cedula);
-                    
-                    if(!apellido.isEmpty()){
+
+                    if (!apellido.isEmpty()) {
                         try {
                             //Intentar convertir pagar y entregar en enteros
                             int pagar = Integer.parseInt(tabla.getValueAt(index, 3).toString());
                             int entregar = Integer.parseInt(tabla.getValueAt(index, 4).toString());
-                            
+
                             //Enviar los datos para pagar la deuda
                             Trasvasos.pagarDeuda(cedula, apellido, pagar, entregar);
-                            
+
                             //Cambiar al panel de trasvasos
                             MenuLateral.clickButton(VENTAS_TRASVASO);
-                            
+
                         } catch (NumberFormatException ex) {
                             msjError("La cantidad de pagar o entregar, son inválidos."
                                     + "\nPor favor, actualice los datos y verifique"
@@ -529,7 +530,28 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private void initComponents() {
 
         //Instanciar la tabla con el modelo
-        this.tabla = new JTable();
+        this.tabla = new JTable(){
+            
+            //Heredar la función getToolTipText para mostrar un mensaje
+            //personalizado a cada celda de las tablas
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                String tip = null;
+                java.awt.Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                int colIndex = columnAtPoint(p);
+
+                try {
+                    tip = "<html>"
+                            + "<b>Dato: </b>" 
+                            + getValueAt(rowIndex, colIndex).toString() 
+                            + "</html>";
+                } catch (RuntimeException ex) {
+                    
+                }
+                return tip;
+            }
+        };
 
         //Insertar la tabla en la clase de scroll
         this.setViewportView(tabla);
