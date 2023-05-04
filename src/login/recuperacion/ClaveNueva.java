@@ -4,6 +4,8 @@ import components.Boton;
 import components.CampoClave;
 import components.Label;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static login.Frame.replacePanel;
@@ -12,7 +14,6 @@ import static login.Recuperacion.getContentSize;
 import static login.Recuperacion.replaceContainer;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
-import static properties.Mensaje.msjInformativo;
 
 /**
  * Clase para el panel de ingreso de la nueva contraseña del usuario
@@ -20,7 +21,6 @@ import static properties.Mensaje.msjInformativo;
 public class ClaveNueva extends javax.swing.JPanel implements properties.Constantes, properties.Colores {
 
     // ========== BACKEND ==========
-    
     /**
      * Función para guardar la clave nueva
      */
@@ -29,7 +29,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
 
             //Guardar la contraseña del usuario
             Recuperacion.setClaveNueva(String.valueOf(claveRepetida));
-            
+
             //Crear el usuario
             Recuperacion.cambiarClave();
         }
@@ -110,31 +110,32 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
         //Margen interno al comienzo (izquierda)
         int paddingStart = 40;
         //Margen interno al final (abajo)
-        int paddingBottom = 50;
+        int paddingBottom = 25;
         //Tamaño de los campos de textos y botones
-        int fieldHeight = 40;
+        int fieldHeight = 35;
         int fieldWidth = this.getWidth() - paddingStart * 2;
         Dimension fieldSize = new Dimension(fieldWidth, fieldHeight);
-
+        
         //LABEL PARA LA INFORMACIÓN DEL PANEL
         String info = "<html><b>Ingrese la nueva contraseña.</b>"
-                + " En caso de<br>perderla, podrá recuperarla mediante "
-                + "su correo<br>electrónico.</html>";
+                + " En caso de perderla,<br>podrá recuperarla mediante "
+                + "su correo electrónico.</html>";
         lblInfo.setText(info);
+        lblInfo.setVerticalAlignment(javax.swing.JLabel.TOP);
         lblInfo.setLocation(paddingStart, 0);
-        lblInfo.setSize(lblInfo.getPreferredSize());
-
+        lblInfo.setSize(fieldWidth, lblInfo.getPreferredSize().height);
+        
         //CAMPOS DE TEXTO DEL PANEL
-        //Localización del label y campo de texto del nombre
+        //Localización del label y campo de texto del nombre        
         int nuevaY = lblInfo.getHeight() + 40;
-        int txtNuevaY = nuevaY + lblNueva.getHeight() + 5;
+        int txtNuevaY = nuevaY + lblNueva.getHeight() + 2;
         lblNueva.setLocation(paddingStart, nuevaY);
         txtNueva.setLocation(paddingStart, txtNuevaY);
         txtNueva.setSize(fieldSize);
 
         //Localización del label y campo de texto de la cédula
-        int repetidaY = txtNuevaY + txtNueva.getHeight() + 20;
-        int txtRepetidaY = repetidaY + lblRepetida.getHeight() + 5;
+        int repetidaY = txtNuevaY + fieldHeight + 10;
+        int txtRepetidaY = repetidaY + lblRepetida.getHeight() + 2;
         lblRepetida.setLocation(paddingStart, repetidaY);
         txtRepetida.setLocation(paddingStart, txtRepetidaY);
         txtRepetida.setSize(fieldSize);
@@ -173,6 +174,22 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
      * Función que contiene los listener de los componentes del panel
      */
     private void listeners() {
+        txtNueva.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == TECLA_ENTER) {
+                    txtRepetida.requestFocus();
+                }
+            }
+        });
+        txtRepetida.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == TECLA_ENTER) {
+                    cambiarClave();
+                }
+            }
+        });
         btnIniciar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -187,7 +204,6 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
                 }
             }
         });
-
         btnCambiar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -197,7 +213,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblNueva = new Label("Contraseña nueva", PLANO, 16);
     private static final CampoClave txtNueva = new CampoClave("Ingrese su contraseña");
     private static final Label lblRepetida = new Label("Repita su contraseña", PLANO, 16);

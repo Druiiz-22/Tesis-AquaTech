@@ -170,27 +170,27 @@ public final class Inicio extends JPanel implements properties.Colores, properti
         int paddingStart = 40;
         int paddingEnd = this.getWidth() - paddingStart;
         int paddingTop = 20;
-        int paddingBottom = 50;
+        int paddingBottom = 25;
         //Asignar la altura de los campos de texto
         int fieldWidth = this.getWidth() - paddingStart * 2;
-        int fieldHeight = 40;
+        int fieldHeight = 35;
 
         //Obtener el punto medio del panel y restarle la mitad
         //del tamaño del label (para que quede centrado).
         int logoX = middleX - lblLogo.getWidth() / 2;
         lblLogo.setLocation(logoX, paddingTop);
 
-        //Posicionar el label 30 pixeles debajo del logo
-        int iniciarY = lblLogo.getY() + lblLogo.getHeight() + 40;
+        //Posicionar el label 15 pixeles debajo del logo
+        int iniciarY = lblLogo.getY() + lblLogo.getHeight() + 15;
         lblIniciar.setLocation(paddingStart, iniciarY);
 
         //Posicionar el campo de texto 20 pixeles debajo del label Inicio
-        int userY = lblIniciar.getY() + lblIniciar.getHeight() + 20;
+        int userY = iniciarY + lblIniciar.getHeight() + 15;
         txtUsuario.setBounds(paddingStart, userY, fieldWidth, fieldHeight);
 
         //Posicionar el campo de contraseña 20 pixeles debajo del campo
         //de texto del usuario
-        int passY = txtUsuario.getY() + txtUsuario.getHeight() + 20;
+        int passY = userY + fieldHeight + 20;
         txtClave.setBounds(paddingStart, passY, fieldWidth, fieldHeight);
 
         //posicionar el label de restauración en el lado derecho del panel

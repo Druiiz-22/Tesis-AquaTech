@@ -41,7 +41,7 @@ public class Logo extends JLabel implements properties.Constantes{
         //Logo con el nombre de la empresa
         String nombre = "<html><nobr><font color='#1BA2E6'>Aqua</font><font color='#2AD9FF'>Tech</font></nobr></html>";
         this.setText(nombre);
-        this.setFont(segoe(48, BOLD));
+        this.setFont(segoe(40, BOLD));
         this.setIconTextGap(0);  //Separación del texto con el icon
         this.setHorizontalTextPosition(CENTER); //Alineación horizontal del texto   
         this.setVerticalTextPosition(BOTTOM);   //Alineación vertical del texto
@@ -52,7 +52,7 @@ public class Logo extends JLabel implements properties.Constantes{
         try {
             ImageIcon imgLogo = new ImageIcon(getClass().getResource("/icons/logo.png"));
             this.setIcon(
-                    new ImageIcon(imgLogo.getImage().getScaledInstance(120, 120, ESCALA_SUAVE))
+                    new ImageIcon(imgLogo.getImage().getScaledInstance(100, 100, ESCALA_SUAVE))
             );
             this.setSize(getPreferredSize());
 
@@ -72,7 +72,7 @@ public class Logo extends JLabel implements properties.Constantes{
         //Logo con el nombre de la empresa
         String nombre = "<html><nobr><font color='#1BA2E6'>Aqua</font><font color='#2AD9FF'>Tech</font></nobr></html>";
         this.setText(nombre);
-        this.setFont(segoe(40, BOLD));
+        this.setFont(segoe(32, BOLD));
         this.setIconTextGap(0);  //Separación del texto con el icon
         this.setHorizontalAlignment(CENTER); //Alineación Horizontal
         this.setVerticalAlignment(CENTER);   //Alineación Vertical

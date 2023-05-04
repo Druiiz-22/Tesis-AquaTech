@@ -75,19 +75,20 @@ public class ReadDB {
      * Función para comprobar la existencia de un correo en la base de datos
      *
      * @param correo Correo que será validado
-     * 
+     *
      * @return
      */
     public static boolean emailExists(String correo) {
 
-        return false;
+        return true;
     }
-    
+
     /**
      * Función para comprobar la existencia y validez de un usuario
+     *
      * @param user
      * @param pass
-     * @return 
+     * @return
      */
     public static boolean getUser(String user, int pass) {
 
@@ -101,81 +102,84 @@ public class ReadDB {
      * @return Clientes registrados
      */
     public static Object[][] getClientes() {
-        //Cedula, Nombre, Apellido, Telefono, Direccion
+        //ID, Cedula, Nombre, Apellido, Telefono, Direccion
 
         //Cédula minima y máxima
         int ci_min = 5000000;
         int ci_max = 35000000;
-        
-        int tlf_min = 1000000;
-        int tlf_max = 9999999;
-        
-        
+        int id = 1;
+
         Object[][] clientes = {
-            {"27909011", "DIEGO", "RUIZ", "04120268484"},
-            {"30445134", "JESUS", "GONZALES", "04246451278"},
-            {"20154005", "HECTOR", "LOPEZ", "04160884512"},
-            {"25451987", "MARIA", "JIMENEZ", "04146451277"},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {(int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416"+(int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, "27909011", "DIEGO", "RUIZ", "04120268484"},
+            {id++, "30445134", "JESUS", "GONZALES", "04246451278"},
+            {id++, "20154005", "HECTOR", "LOPEZ", "04160884512"},
+            {id++, "25451987", "MARIA", "JIMENEZ", "04146451277"},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
+            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)}
         };
 
         return clientes;
@@ -189,101 +193,57 @@ public class ReadDB {
     public static Object[][] getProveedores() {
         //RIF, Nombre, Telefono, Direccion
 
+        int id = 1;
+
         Object[][] proveedores = {
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-516513", "AGUA RICA", "04120268754"},
-            {"J-516510", "AGUA BLANCA", "04166484512"},
-            {"J-516671", "LA CATEDRAL", "04241349765"},
-            {"J-671164", "MANANTIAL", "041231645077"},
-            {"J-671164", "MANANTIAL", "041231645077"}
-        };
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},
+            {id++, "J-516513", "AGUA RICA", "04120268754"},
+            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
+            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
+            {id++, "J-671164", "MANANTIAL", "041231645077"},};
 
         return proveedores;
     }
@@ -295,9 +255,9 @@ public class ReadDB {
      */
     public static Object[][] getTrasvasos() {
         //ID, Cedula, Pagados, Entregados, Pago, Delivery, Monto total, Fecha
-        
+
         int i = 0;
-        
+
         Object[][] historial = {
             {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
             {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
@@ -562,24 +522,28 @@ public class ReadDB {
             {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
             {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
             {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-        };
+            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},};
 
         return historial;
     }
 
-    public static Object[][] getDeudas(){
+    /**
+     * Función para obtener los clientes con deudas pendientes
+     *
+     * @return Clientes con deudas
+     */
+    public static Object[][] getDeudas() {
         //ID, Factura, Cedula, Debe Pagar, Debemos Dar, Fecha
-        
-        Object [][] historial = {
+
+        Object[][] historial = {
             {"7", "974", "20154005", "1", "0", "16-3-2023 10:24 AM"},
             {"13", "984", "30445134", "0", "4", "16-3-2023 12:19 PM"},
             {"15", "990", "25451987", "4", "0", "17-3-2023 3:57 PM"}
         };
-        
+
         return historial;
     }
-    
+
     /**
      * Función para obtener el historial completo de las recargas
      *
@@ -653,7 +617,8 @@ public class ReadDB {
     // ========== ADMINISTRADOR ==========
     /**
      * Función para obtener la lista de los usuarios registrados en el sistema
-     * @return 
+     *
+     * @return
      */
     public static Object[][] getUsers() {
         //ID, Cedula, Rol, Correo
@@ -665,11 +630,12 @@ public class ReadDB {
 
         return usuarios;
     }
-    
+
     /**
      * Función para obtener el id de un usuario mediante su cédula
+     *
      * @param cedula
-     * @return 
+     * @return
      */
     public static int getUserID(String cedula) {
         return 1;
@@ -685,9 +651,105 @@ public class ReadDB {
      */
     public static Object[][] getDeudas(String initDate, String finalDate) {
 
-        String[] columnas = new String[]{"ID", "", "", "", ""};
+        int id = 1;
+
+        //Cédula minima y máxima
+        int ci_min = 5000000;
+        int ci_max = 35000000;
+
+        String[] columnas = new String[]{"ID", "Factura", "Cedula", "Debe pagar", "Debemos dar", "Fecha"};
         Object[][] historial = {
-            columnas
+            columnas,
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
+            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
+            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
+            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
+            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
+            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
+            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
+            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"}
         };
 
         return historial;
@@ -706,7 +768,7 @@ public class ReadDB {
         //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, MontoPago, MontoEntr, Fecha
         String[] header = new String[]{"#", "ID", "Cedula", "Pagos", "Entregados", "Tipo pago", "Delivery", "Monto pago", "Monto entre", "Fecha"};
 
-        int rows = 140;
+        int rows = 41;
         //numero del id
         int id = 5403;
 

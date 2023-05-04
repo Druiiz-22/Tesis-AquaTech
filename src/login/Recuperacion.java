@@ -94,8 +94,8 @@ public class Recuperacion extends JPanel implements properties.Colores, properti
 
         //Posicionar el logo a mitad del panel
         int logoX = middleX - logo.getWidth() / 2;
-        int logoMarginTop = 30;
-        int logoMarginBottom = 37;
+        int logoMarginTop = 20;
+        int logoMarginBottom = 20;
         logo.setLocation(logoX, logoMarginTop);
 
         //Posicionar el contenedor debajo del logo.

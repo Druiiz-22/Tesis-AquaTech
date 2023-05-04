@@ -148,24 +148,24 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
         //Margen interno al comienzo (izquierda)
         int paddingStart = 40;
         //Margen interno al final (abajo)
-        int paddingBottom = 50;
+        int paddingBottom = 25;
         //Tamaño de los campos de textos y botones
-        int fieldHeight = 40;
+        int fieldHeight = 35;
         int fieldWidth = middleX - paddingStart - 10;
         Dimension fieldSize = new Dimension(fieldWidth, fieldHeight);
 
         //LABEL PARA LA INFORMACIÓN DEL PANEL
         String info = "<html><b>Ingrese sus datos personales.</b>"
                 + " Tome en cuenta<br>que será identificado mediante su "
-                + "cédula, por lo<br>que su usuario será único e irrepetible.</html>";
+                + "cédula, por lo que<br>su usuario será único e irrepetible.</html>";
         lblInfo.setText(info);
         lblInfo.setLocation(paddingStart, 0);
         lblInfo.setSize(lblInfo.getPreferredSize());
 
         //CAMPOS DE TEXTO DEL PANEL
         //Localización del label y campo de texto del nombre
-        int nombreY = lblInfo.getHeight() + 40;
-        int txtNombreY = nombreY + lblNombre.getHeight() + 5;
+        int nombreY = lblInfo.getHeight() + 20;
+        int txtNombreY = nombreY + lblNombre.getHeight() + 2;
         lblNombre.setLocation(paddingStart, nombreY);
         txtNombre.setLocation(paddingStart, txtNombreY);
         txtNombre.setSize(fieldSize);
@@ -177,8 +177,8 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
         txtApellido.setSize(fieldSize);
 
         //Localización del label y campo de texto de la cédula
-        int cedulaY = txtNombreY + txtNombre.getHeight() + 20;
-        int txtCedulaY = cedulaY + lblCedula.getHeight() + 5;
+        int cedulaY = txtNombreY + txtNombre.getHeight() + 10;
+        int txtCedulaY = cedulaY + lblCedula.getHeight() + 2;
         lblCedula.setLocation(paddingStart, cedulaY);
         txtCedula.setLocation(paddingStart, txtCedulaY);
         txtCedula.setSize(fieldSize);
@@ -246,7 +246,7 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblNombre = new Label("Nombre", PLANO, 16);
     private static final CampoTexto txtNombre = new CampoTexto("Ingrese su nombre", NOMBRE);
     private static final Label lblApellido = new Label("Apellido", PLANO, 16);

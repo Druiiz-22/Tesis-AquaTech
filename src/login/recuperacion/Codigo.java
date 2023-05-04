@@ -4,6 +4,8 @@ import components.Boton;
 import components.CampoTexto;
 import components.Label;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
@@ -130,9 +132,9 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
         //Margen interno al comienzo (izquierda)
         int paddingStart = 40;
         //Margen interno al final (abajo)
-        int paddingBottom = 50;
+        int paddingBottom = 25;
         //Tamaño de los campos de textos y botones
-        int fieldHeight = 40;
+        int fieldHeight = 35;
         int fieldWidth = this.getWidth() - paddingStart * 2;
         Dimension fieldSize = new Dimension(fieldWidth, fieldHeight);
 
@@ -145,7 +147,7 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
 
         //LABEL PARA LA INFORMACIÓN DEL PANEL
         lblInfo.setLocation(paddingStart, 0);
-        lblInfo.setSize(txtCodigo.getWidth(), lblCodigo.getY());
+        lblInfo.setSize(fieldWidth, labelY);
         lblInfo.setVerticalAlignment(javax.swing.JLabel.TOP);
 
         //LABEL PARA RETROCEDER
@@ -155,22 +157,15 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
         btnReenviar.setLocation(iniciarX + lblReenviar.getWidth(), iniciarY);
         btnReenviar.setToolTipText("Regresar hacia atrás para verificar el correo y reenviar el código");
 
-        //BOTÓN PARA RETROCEDER
-        int btnY = iniciarY - fieldHeight - 5;
-        btnVolver.setLocation(paddingStart, btnY);
-        btnVolver.setSize(btnVolver.getPreferredSize().width + 30, fieldHeight);
-
         //BOTÓN PARA AVANZAR
-        int enviarX = paddingStart + btnVolver.getWidth() + 10;
-        int enviarWidth = this.getWidth() - paddingStart - enviarX;
-        btnConfirmar.setLocation(enviarX, btnY);
-        btnConfirmar.setSize(enviarWidth, fieldHeight);
+        int btnY = iniciarY - fieldHeight - 5;
+        btnConfirmar.setLocation(paddingStart, btnY);
+        btnConfirmar.setSize(fieldSize);
 
         //Agregar los componentes
         this.add(lblInfo);
         this.add(lblCodigo);
         this.add(txtCodigo);
-        this.add(btnVolver);
         this.add(btnConfirmar);
         this.add(lblReenviar);
         this.add(btnReenviar);
@@ -187,6 +182,14 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
      * Función que contiene los listener de los componentes del panel.
      */
     private void listeners() {
+        txtCodigo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == TECLA_ENTER) {
+                    verificarCodigo();
+                }
+            }
+        });
         btnReenviar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -195,20 +198,10 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
                 vaciarCampos();
             }
         });
-
         btnConfirmar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 verificarCodigo();
-            }
-        });
-
-        btnVolver.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //Retroceder hacia el panel de los datos personales
-                replaceContainer(CORREO);
-                vaciarCampos();
             }
         });
     }
@@ -224,25 +217,26 @@ public class Codigo extends javax.swing.JPanel implements properties.Constantes,
      */
     public static void setDatos(String correo, int codigoSeguridad, Calendar fechaSalida, Calendar fechaExpiracion) {
         Codigo.codigoSeguridad = codigoSeguridad;
-
+        Codigo.fechaSalida = fechaSalida;
+        Codigo.fechaExpiracion = fechaExpiracion;
+        
         String info
                 = "<html>"
                 + "<p><b>Se envió un código al correo:</b></p>"
                 + "<p><i>" + correo + "</i></p>"
                 + "<p style='margin-top:5px;'>"
-                + "Ingrese el código enviado para confirmar su<br>correo. Si no "
-                + "encuentra el correo, revise en su<br>bandeja de spam o no deseado."
+                + "Ingrese el código de seguridad enviado para confirmar su "
+                + "correo y restaurar su contraseña."
                 + "</p>"
                 + "</html>";
         lblInfo.setText(info);
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblCodigo = new Label("Código de seguridad", PLANO, 15);
-    private static final CampoTexto txtCodigo = new CampoTexto("Ingrese el código", CUALQUIER);
+    private static final CampoTexto txtCodigo = new CampoTexto("Ingrese el código", NUMERO);
     private static final Boton btnConfirmar = new Boton("Confirmar código", CELESTE);
-    private static final Boton btnVolver = new Boton("Volver", ROJO_OSCURO);
     private static final Label lblReenviar = new Label("¿No recibió el código? ", PLANO, 16);
     private static final Label btnReenviar = new Label("Reenviar código", LINK, 16);
 }

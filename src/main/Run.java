@@ -1,6 +1,9 @@
 package main;
 
-import java.awt.Component;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Run {
 
@@ -13,7 +16,6 @@ public class Run {
     public static void main(String[] args) {
         iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
-
     }
 
     /**

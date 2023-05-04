@@ -16,7 +16,7 @@ import static properties.Mensaje.msjAdvertencia;
 public class Frame extends JFrame implements properties.Constantes {
 
     //Atributo
-    private static final Dimension DIMENSION = new Dimension(450, 600);
+    private static final Dimension DIMENSION = new Dimension(420, 500);
 
     /**
      * Constructor para la creación del Frame del Login.

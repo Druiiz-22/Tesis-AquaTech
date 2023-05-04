@@ -39,8 +39,8 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         if (validarCampos()) {
             
             //Validar de fechas en caso de que el tipo de reporte seleccionado
-            //sea DISTINTO al de clientes o proveedores
-            if ((index == REP_CLIENTES || index  == REP_PROVEEDORES) ?  true : validarFechas()) {
+            //sea DISTINTO al de clientes, proveedores o deudas
+            if ((index == REP_CLIENTES || index  == REP_PROVEEDORES || index == REP_DEUDAS) ?  true : validarFechas()) {
                 
                 if (msjYesNo("¿Está seguro de realizar el reporte?")) {
 
@@ -50,7 +50,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                     //Validar si la ubicación es predeterminada o personalizada
                     path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
 
-                    if (index == REP_CLIENTES || index  == REP_PROVEEDORES) {
+                    if (index == REP_CLIENTES || index  == REP_PROVEEDORES || index == REP_DEUDAS) {
                         CrearReporte.crear(type, path);
                         
                     } else{
@@ -375,6 +375,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             //Validar si se selecionó clientes o proveedor para deshabilitar
             //las fechas o activarlas en caso contrario
             switch (index) {
+                case REP_DEUDAS:
                 case REP_CLIENTES:
                 case REP_PROVEEDORES:
                     fechaInicio.habilitar(false);

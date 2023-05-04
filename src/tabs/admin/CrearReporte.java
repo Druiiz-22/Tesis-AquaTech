@@ -326,13 +326,13 @@ public class CrearReporte {
                 //Ciclo para recorrer los datos de la tabla
                 for (int i = 1; i < datos.length; i++) {
                     //Sumar la cantidad de compras o recargas
-                    cantidad += Float.valueOf(datos[i][4].toString());
+                    cantidad += Integer.valueOf(datos[i][4].toString());
                     //Sumar los montos de compras o recargas
                     ganancias += Float.valueOf(datos[i][5].toString());
                 }
 
                 //Titulo, según si es de recargas o de compras
-                String titulo = (type == REP_RECARGAS) ? "Recargados" : "Comprados";
+                String titulo = (type == REP_RECARGAS) ? "Recargados:" : "Comprados:";
                 //Añadir el título al parrafo
                 parrafo.add(new Text("Botellones " + titulo + "\t\t").addStyle(titleStyle));
                 //Añadir los datos al parrafo
@@ -348,6 +348,53 @@ public class CrearReporte {
                 );
                 break;
 
+            case REP_DEUDAS:
+                //Variables para la cantidad de botellones que se deben pagar y entregar
+                int cant_pagar = 0;
+                int cant_entregar = 0;
+
+                //Ciclo para recorrer todos los datos de la tabla
+                for (int i = 1; i < datos.length; i++) {
+                    //Sumar todas las cantidades de ventas realizados
+                    cant_pagar += Integer.valueOf(datos[i][3].toString());
+                    //Sumar todos los precios de venta asignados
+                    cant_entregar += Integer.valueOf(datos[i][4].toString());
+                }
+
+                //Tabla interna para mostrar un dato arriba del otro
+                Table tablaInterna = new Table(1);
+                //Posicionar la tabla interna en el centro de la tabla
+                tablaInterna.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+                //Vaciar el parrafo instanciando un nuevo parrafo
+                parrafo = new Paragraph();
+                //Añadir el título para los botellones que se deben pagar
+                parrafo.add(
+                        new Text("Botellones que deben pagar:\t\t" + cant_pagar)
+                                .addStyle(titleStyle)
+                                .setFontColor((cant_pagar > cant_entregar) ? rojo : verde)
+                );
+                //Añadir el parrafo con los botellones pagados
+                tablaInterna.addCell(customCell(parrafo, TextAlignment.RIGHT));
+
+                //Vaciar el parrafo instanciando un nuevo parrafo
+                parrafo = new Paragraph();
+                //Añadir el título para los botellones pagados
+                parrafo.add(
+                        new Text("Botellones que se deben entregar:\t\t" + cant_entregar)
+                                .addStyle(titleStyle)
+                                .setFontColor((cant_pagar > cant_entregar) ? rojo : verde)
+                );
+                //Añadir el parrafo con los botellones pagados
+                tablaInterna.addCell(customCell(parrafo, TextAlignment.RIGHT));
+
+                //Añadir la tabla interna con la alineación hacia la derecha
+                tabla.addCell(
+                        customCell(tablaInterna, TextAlignment.RIGHT)
+                                .setBorderTop(new SolidBorder(azul, 1))
+                );
+                break;
+
             case REP_VENTAS:
                 //Vaciar las variables para las cantidades y ganancias
                 cantidad = 0;
@@ -356,13 +403,13 @@ public class CrearReporte {
                 //Ciclo para recorrer todos los datos de la tabla
                 for (int i = 1; i < datos.length; i++) {
                     //Sumar todas las cantidades de ventas realizados
-                    cantidad += Float.valueOf(datos[i][3].toString());
+                    cantidad += Integer.valueOf(datos[i][3].toString());
                     //Sumar todos los precios de venta asignados
                     ganancias += Float.valueOf(datos[i][5].toString());
                 }
 
                 //Añadir el título de los botellones vendidos
-                parrafo.add(new Text("Botellones Vendidos\t\t").addStyle(titleStyle));
+                parrafo.add(new Text("Botellones Vendidos:\t\t").addStyle(titleStyle));
                 //Añadir los datos al parrafo
                 parrafo.add(
                         new Text(cantidad + "\t (" + ganancias + " Bs)")
@@ -418,14 +465,14 @@ public class CrearReporte {
                 }
 
                 //Tabla interna para mostrar un dato encima del otro
-                Table tablaInterna = new Table(1);
+                tablaInterna = new Table(1);
                 //Posicionar la tabla interna en el centro de la tabla
                 tablaInterna.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
                 //Vaciar el parrafo instanciando un nuevo parrafo
                 parrafo = new Paragraph();
                 //Añadir el título para los botellones pagados
-                parrafo.add(new Text("Botellones pagados\t\t").addStyle(titleStyle));
+                parrafo.add(new Text("Botellones pagados:\t\t").addStyle(titleStyle));
                 //Añadir los datos de botellones pagados
                 parrafo.add(pagados);
                 //Añadir el parrafo con los botellones pagados
@@ -434,7 +481,7 @@ public class CrearReporte {
                 //Vaciar el parrafo instanciando un nuevo parrafo
                 parrafo = new Paragraph();
                 //Añadir el título para los botellones pagados
-                parrafo.add(new Text("Botellones Entregados\t\t").addStyle(titleStyle));
+                parrafo.add(new Text("Botellones Entregados:\t\t").addStyle(titleStyle));
                 //Añadir los datos de botellones pagados
                 parrafo.add(entregados);
                 //Añadir el parrafo con los botellones pagados
@@ -465,7 +512,7 @@ public class CrearReporte {
                 break;
 
             case REP_DEUDAS:
-                datos = ReadDB.getDeudas(initialDate, finalDate);
+                datos = ReadDB.getDeudas();
                 break;
 
             case REP_RECARGAS:
@@ -482,13 +529,9 @@ public class CrearReporte {
 
             case REP_CLIENTES:
                 //Crear la cabecera para los clientes
-                String[] campos = new String[]{"#", "Cedula", "Nombre", "Apellido", "Telefono"};
+                String[] campos = new String[]{"ID", "Cedula", "Nombre", "Apellido", "Telefono"};
                 //Lista de clientes obtenida de la base de datos
                 Object[][] lista = ReadDB.getClientes();
-                //Si la lista está vacía, terminar el case
-                if (lista == null) {
-                    break;
-                }
 
                 //Instanciar la matriz de datos, según la cantidad de clientes 
                 //obtenidos, más la cabecera.
@@ -498,23 +541,16 @@ public class CrearReporte {
 
                 //Ciclo que iterará la cantidad de clientes obtenidos.
                 for (int i = 0; i < lista.length; i++) {
-                    //Asignar el primer campo como el índice de registros
-                    datos[i + 1][0] = i + 1;
-
                     //Copiar la fila actual de clientes obtenidos a la matriz
-                    System.arraycopy(lista[i], 0, datos[i + 1], 1, lista[0].length);
+                    System.arraycopy(lista[i], 0, datos[i + 1], 0, lista[0].length);
                 }
                 break;
 
             case REP_PROVEEDORES:
                 //Crear la cabecera para los clientes
-                campos = new String[]{"#", "RIF", "Nombre", "Telefono"};
+                campos = new String[]{"ID", "RIF", "Nombre", "Telefono"};
                 //Lista de clientes obtenida de la base de datos
                 lista = ReadDB.getProveedores();
-                //Si la lista está vacía, terminar el case
-                if (lista == null) {
-                    break;
-                }
 
                 //Instanciar la matriz de datos, según la cantidad de proveedores 
                 //obtenidos, más la cabecera.
@@ -524,11 +560,8 @@ public class CrearReporte {
 
                 //Ciclo que iterará la cantidad de proveedores obtenidos.
                 for (int i = 0; i < lista.length; i++) {
-                    //Asignar el primer campo como el índice de registros
-                    datos[i + 1][0] = i + 1;
-
                     //Copiar la fila actual de clientes obtenidos a la matriz
-                    System.arraycopy(lista[i], 0, datos[i + 1], 1, lista[0].length);
+                    System.arraycopy(lista[i], 0, datos[i + 1], 0, lista[0].length);
                 }
                 break;
         }
@@ -603,20 +636,16 @@ public class CrearReporte {
         tabla.addCell(customCell(proposito, TextAlignment.LEFT));
 
         //Validar si el reporte llevará fecha de filtro
-        if (type != REP_CLIENTES && type != REP_PROVEEDORES) {
-
-            //Validar si el reporte mostrará las ganancias
-            if (type != REP_DEUDAS) {
-                //Parrafo para las ganancias
-                Paragraph ganancias = getProfits();
-                tabla.addCell(customCell(ganancias, TextAlignment.CENTER));
-            }
+        if (type != REP_CLIENTES && type != REP_PROVEEDORES && type != REP_DEUDAS) {
+            //Parrafo para las ganancias
+            Paragraph ganancias = getProfits();
+            tabla.addCell(customCell(ganancias, TextAlignment.CENTER));
 
             //Tabla para las fechas de filtros
             Table fechas = getDates();
             tabla.addCell(customCell(fechas, TextAlignment.RIGHT));
+            
         } else {
-
             //Si el reporte no tiene fechas de filtro, solo mostrará
             //la fecha en que fue generado el reporte
             Paragraph fecha = getDate();
@@ -861,9 +890,6 @@ public class CrearReporte {
         //Determinar el tipo de reporte para asignar un ancho en específico al
         //parrafo del propósito
         switch (type) {
-            case REP_DEUDAS:
-                proposito.setWidth(200);
-                break;
 
             case REP_TRASVASOS:
                 proposito.setWidth(120);
@@ -873,6 +899,7 @@ public class CrearReporte {
                 proposito.setWidth(140);
                 break;
 
+            case REP_DEUDAS:
             case REP_CLIENTES:
             case REP_PROVEEDORES:
                 proposito.setWidth(250);
@@ -983,12 +1010,12 @@ public class CrearReporte {
         calendario.setTime(date);
 
         //Dividir la información de la fecha
-        int year = calendario.get(java.util.Calendar.YEAR);
-        int month = calendario.get(java.util.Calendar.MONTH);
-        int day = calendario.get(java.util.Calendar.DAY_OF_MONTH);
-        int hour = calendario.get(java.util.Calendar.HOUR_OF_DAY);
-        int minute = calendario.get(java.util.Calendar.MINUTE);
-        int second = calendario.get(java.util.Calendar.SECOND);
+        int year = calendario.get(Calendar.YEAR);
+        int month = calendario.get(Calendar.MONTH)+1;
+        int day = calendario.get(Calendar.DAY_OF_MONTH);
+        int hour = calendario.get(Calendar.HOUR_OF_DAY);
+        int minute = calendario.get(Calendar.MINUTE);
+        int second = calendario.get(Calendar.SECOND);
 
         //Validar que los datos sean de uno o dos dígitos.
         //En caso de ser de un dígito, se le coloca un cero antes del 
@@ -1019,13 +1046,16 @@ public class CrearReporte {
         //Asignar la fecha actual
         calendario.setTime(date);
 
+        System.out.println("Calendar = "+calendario);
+        System.out.println("Calendar Moth = "+calendario.get(Calendar.MONTH));
+        
         //Dividir la información de la fecha
-        int year = calendario.get(java.util.Calendar.YEAR);
-        int month = calendario.get(java.util.Calendar.MONTH);
-        int day = calendario.get(java.util.Calendar.DAY_OF_MONTH);
-        int hour = calendario.get(java.util.Calendar.HOUR_OF_DAY);
-        int minute = calendario.get(java.util.Calendar.MINUTE);
-        int second = calendario.get(java.util.Calendar.SECOND);
+        int year = calendario.get(Calendar.YEAR);
+        int month = calendario.get(Calendar.MONTH)+1;
+        int day = calendario.get(Calendar.DAY_OF_MONTH);
+        int hour = calendario.get(Calendar.HOUR_OF_DAY);
+        int minute = calendario.get(Calendar.MINUTE);
+        int second = calendario.get(Calendar.SECOND);
 
         //Validar que los datos sean de uno o dos dígitos.
         //En caso de ser de un dígito, se le coloca un cero antes del 
@@ -1039,7 +1069,7 @@ public class CrearReporte {
         //Nombre predeterminado de las base de datos
         String name = getReportName() + "_";
         //Fecha cuando se realizó el respaldo
-        String fecha = year + "_" + mes + "_" + dia + "_" + hora + "_" + minuto + "_" + segundo + ".pdf";
+        String fecha = year + "-" + mes + "-" + dia + "-" + hora + "_" + minuto + "-" + segundo + ".pdf";
 
         //Retornar el nombre con la fecha
         return name + fecha;

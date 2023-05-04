@@ -6,6 +6,8 @@ import components.Label;
 import database.EmailCode;
 import database.ReadDB;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import login.Registro;
 import static login.Frame.replacePanel;
 import static login.Registro.getContentSize;
 import static login.Registro.replaceContainer;
+import static properties.Constantes.TECLA_ENTER;
 import static properties.Mensaje.msjError;
 import static properties.ValidarTexto.formatoCorreo;
 
@@ -125,24 +128,17 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
      */
     public void initComponents() {
         this.setSize(getContentSize());
+        
         //Punto medio
         int middleX = this.getWidth() / 2;
         //Margen interno al comienzo (izquierda)
         int paddingStart = 40;
         //Margen interno al final (abajo)
-        int paddingBottom = 50;
+        int paddingBottom = 25;
         //Tamaño de los campos de textos y botones
-        int fieldHeight = 40;
+        int fieldHeight = 35;
         int fieldWidth = this.getWidth() - paddingStart * 2;
         Dimension fieldSize = new Dimension(fieldWidth, fieldHeight);
-
-        //LABEL PARA LA INFORMACIÓN DEL PANEL
-        String info = "<html><b>Ingrese su correo electrónico.</b>"
-                + " Se le enviará<br>un código de seguridad para "
-                + "verificar el correo<br>electrónico ingresado.</html>";
-        lblInfo.setText(info);
-        lblInfo.setLocation(paddingStart, 0);
-        lblInfo.setSize(lblInfo.getPreferredSize());
 
         //CAMPO DE TEXTO DEL CORREO
         int correoY = this.getHeight() / 2 - fieldHeight;
@@ -151,6 +147,15 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
         txtCorreo.setLocation(paddingStart, correoY);
         txtCorreo.setSize(fieldSize);
 
+        //LABEL PARA LA INFORMACIÓN DEL PANEL
+        String info = "<html><b>Ingrese su correo electrónico.</b>"
+                + " Se le enviará un código de seguridad para "
+                + "verificar el correo electrónico ingresado.</html>";
+        lblInfo.setText(info);
+        lblInfo.setVerticalAlignment(javax.swing.JLabel.TOP);
+        lblInfo.setLocation(paddingStart, 0);
+        lblInfo.setSize(fieldWidth, labelY);
+        
         //LABEL PARA IR AL INICIO
         int iniciarY = this.getHeight() - paddingBottom - lblIniciar.getHeight();
         int iniciarX = middleX - (lblIniciar.getWidth() + btnIniciar.getWidth()) / 2;
@@ -190,6 +195,14 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
      * Función que contiene los listener de los componentes del panel
      */
     private void listeners() {
+        txtCorreo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == TECLA_ENTER) {
+                    enviarCodigo();
+                }
+            }
+        });
         btnIniciar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -198,7 +211,6 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
                 replaceContainer(DATOS);
             }
         });
-
         btnEnviar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -206,7 +218,6 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
                 enviarCodigo();
             }
         });
-
         btnVolver.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -217,7 +228,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
     }
 
     //COMPONENTES
-    private static final Label lblInfo = new Label("", PLANO, 16);
+    private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblCorreo = new Label("Correo electrónico", PLANO, 16);
     private static final CampoTexto txtCorreo = new CampoTexto("Ingrese su correo", CORREO);
     private static final Boton btnEnviar = new Boton("Enviar código", CELESTE);

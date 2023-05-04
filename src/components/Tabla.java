@@ -19,7 +19,6 @@ import database.DeleteDB;
 import tabs.Proveedores;
 import tabs.clientes.PanelClientes;
 import static java.awt.Font.PLAIN;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static javax.swing.RowFilter.regexFilter;
 import static properties.Mensaje.msjYesNo;
@@ -486,15 +485,15 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         switch (type) {
             case CLIENTES:
                 //Establecer las columnas de la tabla
-                cabecera = new String[]{"Cedula", "Nombre", "Apellido", "Telefono"};
+                cabecera = new String[]{"ID", "Cedula", "Nombre", "Apellido", "Telefono"};
                 break;
 
             case PROVEEDOR:
-                cabecera = new String[]{"RIF", "Nombre", "Telefono"};
+                cabecera = new String[]{"ID", "RIF", "Nombre", "Telefono"};
                 break;
 
             case DEUDAS:
-                cabecera = new String[]{"id", "Factura", "Cedula", "Debe pagar", "Debemos dar", "Fecha"};
+                cabecera = new String[]{"ID", "Factura", "Cedula", "Debe pagar", "Debemos dar", "Fecha"};
                 break;
 
             case HISTORIAL_TRASVASO:
