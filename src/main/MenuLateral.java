@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
+import javax.swing.ToolTipManager;
 import static main.MenuSuperior.setTabTitle;
 import static main.Run.setFrameTitle;
 import tabs.clientes.Clientes;
@@ -36,17 +37,6 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
      * Función para agregar los botones al panel
      */
     private void initComponents() {
-        
-        //Asignar el tooltiptext a cada botón
-        btnInicio.setToolTipText("Ir al inicio del programa");
-        btnClientes.setToolTipText("Ir hacia el apartado de los clientes registrados y las deudas");
-        btnVentas.setToolTipText("Ir hacia el apartado de ventas, trasvases y pedidos");
-        btnCompras.setToolTipText("Ir hacia el apartado de compras y recargas");
-        btnHistorial.setToolTipText("Ir hacia el historial de los movimientos");
-        btnProveedores.setToolTipText("Ir a los proveedores registrados");
-        btnManual.setToolTipText("Abrir el manual de usuario");
-        btnAdmin.setToolTipText("Ir a las configuraciones de administrador");
-        
         //Agregar los botones al menú
         this.add(gapTop);
         this.add(btnInicio);

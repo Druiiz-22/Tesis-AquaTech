@@ -318,7 +318,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                 + "Determinar la ubicación del archivo del reporte (PDF)."
                 + "</p>"
                 + "<p>"
-                + "En caso de dejar el campo vacío, se creará en la ruta por defecto"
+                + "En caso de dejar el <b>campo vacío,</b> se creará en la <b>ruta por defecto.</b>"
                 + "</p>"
                 + "</html>"
         );

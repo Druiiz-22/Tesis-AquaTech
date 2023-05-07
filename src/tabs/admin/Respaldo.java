@@ -477,6 +477,29 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         panelImporte.setBackground(BLANCO);
         panelImporte.setBorder(createLineBorder(GRIS));
 
+        //Asignar los tooltips
+        lblUbicacion.setToolTipText(
+                "<html>"
+                + "<p>"
+                + "Determinar la ubicación donde se creará el respaldo de la base de datos."
+                + "</p>"
+                + "<p>"
+                + "En caso de dejar el <b>campo vacío,</b> se creará en la <b>ruta por defecto.</b>"
+                + "</p>"
+                + "</html>"
+        );
+        lblNombre.setToolTipText(
+                "<html>"
+                + "<p>"
+                + "Determinar el nombre que tendrá el archivo del respaldo de la base de datos."
+                + "</p>"
+                + "<p>"
+                + "En caso de dejar el <b>campo vacío,</b> se asginará el <b>nombre por defecto.</b>"
+                + "</p>"
+                + "</html>"
+        );
+        lblArchivo.setToolTipText("Determinar el archivo seleccionado que será importado a la base de datos.");
+        
         //Añadir los componentes
         panelExporte.add(lblTituloExp);
         panelExporte.add(lblUbicacion);

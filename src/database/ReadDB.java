@@ -1,5 +1,7 @@
 package database;
 
+import java.util.Random;
+
 /**
  * Clase contenedora de funciones estáticos para la obtención de datos de la
  * base de datos
@@ -591,7 +593,101 @@ public class ReadDB {
 
         return historial;
     }
+    
+    public static Object[][] getPedidos(){
+        //ID, cedula, servicio, cantidad, tipo_pago, fecha, latitud, longitud, Entregado
+        
+        int rows = 15;
+        Object lista[][] = new Object[rows][9];
+        
+        //Variables para las fechas
+        int dia = 1;
+        int hora = 9;
+        int minuto = 0;
+        int mes = 3;
+        int anio = 2023;
+        
+        //Cédula minima y máxima
+        int ci_min = 5000000;
+        int ci_max = 35000000;
+        
+        double posiciones[][] = {
+            {10.585293809414747, -71.65681002383909},
+            {10.586411214531502, -71.6600759296157},
+            {10.587085202950155, -71.65502369968503},
+            {10.583644299163073, -71.64740926727356},
+            {10.587635034534275, -71.65475304444573},
+            {10.582846145861863, -71.65919178937048},
+            {10.58265104140613, -71.6564671939436},
+            {10.588007500522133, -71.6574235090139},
+            {10.5879542911241, -71.6590113527064},
+            {10.585617897584934, -71.65977969023554},
+            {10.581527153778518, -71.64728569103546},
+            {10.583549146810844, -71.64609480818609},
+            {10.583134169541635, -71.65784095293495},
+            {10.585253703446991, -71.6576966035375},
+            {10.587116043330223, -71.65775073450976}
+        };
+        
+        for (int i = 0; i < rows; i++) {
+            int servicio = (int) (Math.random() * (10 - 1 + 1) + 1);
+            int cantidad = (int) (Math.random() * (30 - 1 + 1) + 1);
+            boolean tipoPago = new Random().nextBoolean();
+            
+            //Los clientes vienen entre 2 a 30 minutos de diferencia
+            minuto += (int) (Math.random() * (30 - 2 + 1) + 2);
 
+            //Si los minutos superan los 59min
+            if (minuto > 59) {
+                //Aumentar una hora
+                hora++;
+                //Obtener los minutos de esa siguiente hora
+                minuto = minuto - 59;
+
+                //Si la hora supera las 19 (7 pm)
+                if (hora > 19) {
+                    //Aumentar un día
+                    dia++;
+                    //Reiniciar la hora
+                    hora = 9;
+
+                    //Si el día supera los 30 días
+                    if (dia > 30) {
+                        //Avanzar de mes
+                        mes++;
+                        //Reinicar los días
+                        dia = 1;
+
+                        //Si los meses superan el mes 12
+                        if (mes > 12) {
+
+                            //Avanzar de año
+                            anio++;
+                            //Reiniciar el mes
+                            mes = 1;
+                        }
+                    }
+                }
+            }
+            //Obtener la feha
+            String fecha = dia + "-" + mes + "-" + anio + " " + hora + ":" + minuto;
+            
+            lista[i] = new Object[]{
+                i+1, 
+                (int) (Math.random() * (ci_max - ci_min + 1) + ci_min),
+                ((servicio == 10)? "COMPRA" : "RECARGA"),
+                cantidad,
+                ((tipoPago)? "TRNSF":"EFECT"),
+                fecha,
+                posiciones[i][0],
+                posiciones[i][1],
+                false
+            };
+        }
+
+        return lista;
+    }
+    
     /**
      * Función para validar la existencia de un cliente en la base de datos,
      * mediante el uso de su cédula.

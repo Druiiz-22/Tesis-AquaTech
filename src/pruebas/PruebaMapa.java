@@ -4,30 +4,25 @@
  */
 package pruebas;
 
+import components.map.PanelMap;
 import java.awt.Dimension;
-import static javax.swing.BorderFactory.createLineBorder;
 
 /**
  *
  * @author diego
  */
-public class Prue extends javax.swing.JFrame {
+public class PruebaMapa extends javax.swing.JFrame {
 
     /**
-     * Creates new form Prue
+     * Creates new form PruebaMapa
      */
-    public Prue() {
+    public PruebaMapa() {
         initComponents();
         
-        Dimension min = new Dimension(800, 600);
-        this.setSize(min);
+        PanelMap mapa = new PanelMap();
+        this.add(mapa);
+        this.setMinimumSize(new Dimension(450, 600));
         this.setLocationRelativeTo(null);
-        
-//        jCalendar1.setBorder(createLineBorder(java.awt.Color.BLUE));
-        
-//        PanelNotificaciones noti = new PanelNotificaciones();
-//        noti.setLocation(100, 50);
-//        this.add(noti);
     }
 
     /**
@@ -40,23 +35,11 @@ public class Prue extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 677, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
-        );
+        getContentPane().setLayout(new java.awt.GridLayout(1, 0));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
     /**
      * @param args the command line arguments
      */
@@ -74,25 +57,24 @@ public class Prue extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Prue.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PruebaMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Prue.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PruebaMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Prue.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PruebaMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Prue.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PruebaMapa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Prue().setVisible(true);
+                new PruebaMapa().setVisible(true);
             }
         });
     }
-   
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
