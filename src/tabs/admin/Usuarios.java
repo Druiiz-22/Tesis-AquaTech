@@ -85,7 +85,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         if (width < 700) {
             panelPequenio();
 
-        } else if (width >= 700) {
+        } else {
             this.setPreferredSize(new Dimension(width, height));
             panelGrande();
         }

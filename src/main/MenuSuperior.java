@@ -42,7 +42,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
      * Función para iniciar los componentes del menú superior
      */
     private void initComponents() {
-
         //Ajustar el label de las pestañas
         lblTabTitle.setHorizontalAlignment(CENTER);
         lblTabTitle.setVerticalAlignment(CENTER);
@@ -140,11 +139,11 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         this.add(panelEnd, BorderLayout.LINE_END);
 
         //Ajustar el PopUp Menú
-        itemNotif.setFont(segoe(18, PLAIN));
+        itemNotif.setFont(segoe(13, PLAIN));
         itemNotif.setForeground(NEGRO);
-        itemWeb.setFont(segoe(18, PLAIN));
+        itemWeb.setFont(segoe(13, PLAIN));
         itemWeb.setForeground(NEGRO);
-        itemPerfil.setFont(segoe(18, PLAIN));
+        itemPerfil.setFont(segoe(13, PLAIN));
         itemPerfil.setForeground(NEGRO);
 
         //Agregar los items al PopUp Menu
@@ -170,7 +169,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             size = 48;
 
         } else if (type.contains("popup")) {
-            size = 22;
+            size = 18;
 
         } else {
             size = 32;
@@ -349,7 +348,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
      * Función para abrir el sitio web del programa
      */
     public static void abrirWeb() {
-        actualizar(0);
+        
     }
 
     /**
@@ -357,17 +356,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
      * web
      */
     private void perfil() {
-        actualizar(12);
-    }
-
-    /**
-     * Función para actualizar las notificaciones
-     *
-     * @param notificaciones Cantidad de notificaciones en total
-     */
-    public static void actualizar(int notificaciones) {
-        PanelNotificaciones.setNotificationCount(notificaciones, notificaciones);
-        setNotificationCount(notificaciones);
+        
     }
 
     /**
@@ -383,11 +372,11 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
     /**
      * Función para asignar el número de notificaciones sin revisar
      *
-     * @param number Número de notificaciones
+     * @param count Número de notificaciones
      */
-    private static void setNotificationCount(int number) {
+    public static void setNotificationCount(int count) {
         //Guardar el número de notificaciones
-        notificaciones = number;
+        notificaciones = count;
         
         //Obtener el tamaño mínimo del frame
         int mh = Frame.getMinSize().height;

@@ -1,6 +1,7 @@
 package components.map;
 
 import java.awt.Desktop;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -8,11 +9,14 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
+import static properties.Fuentes.segoe;
+import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjInformativo;
 import static properties.Mensaje.msjError;
 
@@ -80,7 +84,10 @@ public class MyWaypoint extends DefaultWaypoint {
         button.addActionListener((ActionEvent ae) -> {
             event.selected(MyWaypoint.this);
         });
-        button.setToolTipText("Presiona para ver su información.");
+        button.setToolTipText("<html>"
+                + "<p><b>Cédula del pedido:</b> "+getName()+"</p>"
+                + "<p>Presiona para ver más información.</p>"
+                + "</html>");
     }
 
     /**
@@ -92,19 +99,51 @@ public class MyWaypoint extends DefaultWaypoint {
         //Guardar las coordendas
         latitud = coord.getLatitude();
         longitud = coord.getLongitude();
-        //Asignar las coordenadas al item de la posición
-        posicion.setText(String.format("%.3f", latitud) + ", " + String.format("%.3f", longitud));
-        posicion.setIcon(null);
-        informacion.setIcon(null);
-        pedido.setIcon(null);
-        google.setIcon(null);
 
-        //Agregar los items al menú y agregar el menú al botón
-        menu.add(posicion);
-        menu.add(informacion);
-        menu.add(pedido);
-        menu.add(google);
-        button.setComponentPopupMenu(menu);
+        //Asignar las coordenadas al item de la posición
+        String lat = String.valueOf(Math.round(latitud*100000)/100000.0);
+        String lon = String.valueOf(Math.round(longitud*100000)/100000.0);
+        posicion.setText(lat + ", " + lon);
+
+        //Asignar las fuentes de letra
+        posicion.setFont(segoe(13, properties.Constantes.PLANO));
+        posicion.setForeground(properties.Colores.NEGRO);
+
+        informacion.setFont(segoe(13, properties.Constantes.PLANO));
+        informacion.setForeground(properties.Colores.NEGRO);
+
+        pedido.setFont(segoe(13, properties.Constantes.PLANO));
+        pedido.setForeground(properties.Colores.NEGRO);
+
+        google.setFont(segoe(13, properties.Constantes.PLANO));
+        google.setForeground(properties.Colores.NEGRO);
+
+        try {
+            ImageIcon img = new ImageIcon(getClass().getResource("/icons/popup/ubicacion.png"));
+            posicion.setIcon(new ImageIcon(img.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
+           
+            img = new ImageIcon(getClass().getResource("/icons/popup/informacion.png"));
+            informacion.setIcon(new ImageIcon(img.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
+            
+            img = new ImageIcon(getClass().getResource("/icons/popup/factura.png"));
+            pedido.setIcon(new ImageIcon(img.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
+            
+            img = new ImageIcon(getClass().getResource("/icons/popup/web.png"));
+            google.setIcon(new ImageIcon(img.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
+            
+            
+        } catch (Exception e) {
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable del mapa.\n"
+                    + "El software seguirá funcionando sin los íconos.");
+
+        } finally {
+            //Agregar los items al menú y agregar el menú al botón
+            menu.add(posicion);
+            menu.add(informacion);
+            menu.add(pedido);
+            menu.add(google);
+            button.setComponentPopupMenu(menu);
+        }
     }
 
     private void listeners() {
@@ -113,7 +152,7 @@ public class MyWaypoint extends DefaultWaypoint {
             StringSelection selection = new StringSelection(p);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(selection, selection);
-            
+
             msjInformativo("Se copió la dirección al portapapeles.");
         });
 
@@ -134,9 +173,11 @@ public class MyWaypoint extends DefaultWaypoint {
      * Función para abrir un punto marcado en Google Maps, según sus coordenadas
      */
     private void abrirGoogleMaps() {
+        //Validar que la plataforma sea capaz de usar la clase Desktop
         if (Desktop.isDesktopSupported()) {
             Desktop escritorio = Desktop.getDesktop();
 
+            //Validar que la plataforma sea capaz de usar un navegador
             if (escritorio.isSupported(Desktop.Action.BROWSE)) {
                 try {
                     //URL de google maps, abriendo un punto en el mapa, según 
@@ -167,7 +208,7 @@ public class MyWaypoint extends DefaultWaypoint {
     private double longitud;
     private final JPopupMenu menu = new JPopupMenu();
     private final JMenuItem posicion = new JMenuItem();
-    private final JMenuItem informacion = new JMenuItem("Informacion");
-    private final JMenuItem pedido = new JMenuItem("Ver el pedido");
+    private final JMenuItem informacion = new JMenuItem("Ver la informacion");
+    private final JMenuItem pedido = new JMenuItem("Seleccionar el pedido");
     private final JMenuItem google = new JMenuItem("Abrir en Google Maps");
 }

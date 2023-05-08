@@ -17,6 +17,5 @@ public class ButtonWaypoint extends JButton {
         //Cargar la imágen
         ImageIcon punto = new ImageIcon(getClass().getResource("/icons/ubicacion.png"));
         setIcon(new ImageIcon(punto.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
-        
     }
 }

@@ -125,9 +125,9 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
     }
 
     /**
-     * Función para presionar un botón del menú lateral, cambiando su
-     * fondo, el título del frame, el título del menú superior, cambiar
-     * el contenedor y, de ser posible, cambiar el panel dentro del contenedor
+     * Función para presionar un botón del menú lateral, cambiando su fondo, el
+     * título del frame, el título del menú superior, cambiar el contenedor y,
+     * de ser posible, cambiar el panel dentro del contenedor
      *
      * @param type Botón presionado.
      */
@@ -135,19 +135,12 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
 
         //Validar qué botón fue presionado fue el de inicio
         if (type == INICIO) {
+            btnInicio.setBackground(AZUL_OSCURO);
 
-            //Validar que el botón NO sea de color azúl. En 
-            //caso de serlo, significa que el botón YA está 
-            //presionado; por lo que, no se le reaplica el mismo
-            //color de fondo
-            if (!btnInicio.getBackground().equals(AZUL_OSCURO)) {
-                btnInicio.setBackground(AZUL_OSCURO);
-
-                //Cambiar el panel por del botón presionado
-                Frame.replacePanel(INICIO);
-                setTabTitle("Inicio");
-                setFrameTitle("Inicio");
-            }
+            //Cambiar el panel por del botón presionado
+            Frame.replacePanel(INICIO);
+            setTabTitle("Inicio");
+            setFrameTitle("Inicio");
 
         } else {
             /*
@@ -169,14 +162,11 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
 
         //Validar que el botón presionado fue el de clientes
         if (type == CLIENTES || type == DEUDAS) {
-            if (!btnClientes.getBackground().equals(AZUL_OSCURO)) {
-                btnClientes.setBackground(AZUL_OSCURO);
-                Frame.replacePanel(CLIENTES);
-                Clientes.replacePanel(type);
-                setTabTitle("Clientes");
-                setFrameTitle("Clientes");
-
-            }
+            btnClientes.setBackground(AZUL_OSCURO);
+            Frame.replacePanel(CLIENTES);
+            Clientes.replacePanel(type);
+            setTabTitle("Clientes");
+            setFrameTitle("Clientes");
 
         } else {
             if (btnClientes.getBackground().equals(AZUL_OSCURO)) {
@@ -185,16 +175,15 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
         }
         //Validar que el botón presionado fue el de Ventas
         if (type == VENTAS || type == VENTAS_TRASVASO || type == VENTAS_BOTELLON || type == VENTAS_PEDIDOS) {
-            if (!btnVentas.getBackground().equals(AZUL_OSCURO)) {
-                btnVentas.setBackground(AZUL_OSCURO);
-                Frame.replacePanel(VENTAS);
 
-                //Validar si se presionó VENTAS u otro tipo
-                Ventas.replacePanel((type == VENTAS) ? VENTAS_TRASVASO : type);
+            btnVentas.setBackground(AZUL_OSCURO);
+            Frame.replacePanel(VENTAS);
 
-                setTabTitle("Ventas");
-                setFrameTitle("Ventas");
-            }
+            //Validar si se presionó VENTAS u otro tipo
+            Ventas.replacePanel((type == VENTAS) ? VENTAS_TRASVASO : type);
+
+            setTabTitle("Ventas");
+            setFrameTitle("Ventas");
 
         } else {
             if (btnVentas.getBackground().equals(AZUL_OSCURO)) {
@@ -204,16 +193,14 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
 
         //Validar que el botón presionado fue el de Compras
         if (type == COMPRAS || type == COMPRAS_RECARGA || type == COMPRAS_BOTELLON) {
-            if (!btnCompras.getBackground().equals(AZUL_OSCURO)) {
-                btnCompras.setBackground(AZUL_OSCURO);
-                Frame.replacePanel(COMPRAS);
+            btnCompras.setBackground(AZUL_OSCURO);
+            Frame.replacePanel(COMPRAS);
 
-                //Validar si se presionó VENTAS u otro tipo
-                Compras.replacePanel((type == COMPRAS) ? COMPRAS_RECARGA : type);
+            //Validar si se presionó VENTAS u otro tipo
+            Compras.replacePanel((type == COMPRAS) ? COMPRAS_RECARGA : type);
 
-                setTabTitle("Compras");
-                setFrameTitle("Compras");
-            }
+            setTabTitle("Compras");
+            setFrameTitle("Compras");
 
         } else {
             if (btnCompras.getBackground().equals(AZUL_OSCURO)) {
@@ -222,15 +209,12 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
         }
         //Validar que el botón presionado fue el del Historial
         if (type == HISTORIAL || type == HISTORIAL_TRASVASO) {
-            
-            if (!btnHistorial.getBackground().equals(AZUL_OSCURO)) {
-                
-                btnHistorial.setBackground(AZUL_OSCURO);
-                Frame.replacePanel(HISTORIAL);
 
-                setTabTitle("Historial");
-                setFrameTitle("Historial");
-            }
+            btnHistorial.setBackground(AZUL_OSCURO);
+            Frame.replacePanel(HISTORIAL);
+
+            setTabTitle("Historial");
+            setFrameTitle("Historial");
 
         } else {
             if (btnHistorial.getBackground().equals(AZUL_OSCURO)) {
@@ -239,12 +223,10 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
         }
         //Validar que el botón presionado fue el de Proveedores
         if (type == PROVEEDOR) {
-            if (!btnProveedores.getBackground().equals(AZUL_OSCURO)) {
-                btnProveedores.setBackground(AZUL_OSCURO);
-                Frame.replacePanel(PROVEEDOR);
-                setTabTitle("Proveedores");
-                setFrameTitle("Proveedores");
-            }
+            btnProveedores.setBackground(AZUL_OSCURO);
+            Frame.replacePanel(PROVEEDOR);
+            setTabTitle("Proveedores");
+            setFrameTitle("Proveedores");
 
         } else {
             if (btnProveedores.getBackground().equals(AZUL_OSCURO)) {
@@ -253,12 +235,10 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
         }
         //Validar que el botón presionado fue el de Administración
         if (type == ADMIN) {
-            if (!btnAdmin.getBackground().equals(AZUL_OSCURO)) {
-                btnAdmin.setBackground(AZUL_OSCURO);
-                Frame.replacePanel(ADMIN);
-                setTabTitle("Administración");
-                setFrameTitle("Administración");
-            }
+            btnAdmin.setBackground(AZUL_OSCURO);
+            Frame.replacePanel(ADMIN);
+            setTabTitle("Administración");
+            setFrameTitle("Administración");
 
         } else {
             if (btnAdmin.getBackground().equals(AZUL_OSCURO)) {
@@ -274,27 +254,27 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
     protected void addAdminButton() {
         //Quitar el espacio del final
         this.remove(gapBottom);
-        
+
         //Agregar el botón de admin
         this.add(btnAdmin);
         //Agregar el espacio al final
         this.add(gapBottom);
     }
-    
+
     /**
      * Función para desactivar el botón del administrador
      */
-    protected void removeAdminButton(){
-        
+    protected void removeAdminButton() {
+
         //Obtener los componentes
         Component[] componente = this.getComponents();
         //Obtener la posición donde DEBERÍA estár el 
         //botón de administración
         int penultimo = componente.length - 2;
-        
+
         //Validar si el componente en esa posición, es el
         //botón de administración
-        if(componente[penultimo].equals(btnAdmin)){
+        if (componente[penultimo].equals(btnAdmin)) {
             //Eliminar el botón
             this.remove(btnAdmin);
         }

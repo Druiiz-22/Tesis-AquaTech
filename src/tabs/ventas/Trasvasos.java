@@ -37,7 +37,6 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * base de datos
      */
     private void registrar() {
-
         if (validarCampos()) {
             if (validarDatos()) {
 
@@ -184,6 +183,9 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
                 //Actualizar la cantidad en la factura
                 factura.setBotellonesPagados(pagados);
+                
+                //Actualizar el monto total
+                factura.setMontoTotal(precio * pagados);
             }
         });
 
@@ -283,7 +285,54 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         factura.setBotellonesEntregados(Trasvasos.entregados);
         factura.setBotellonesPagados(Trasvasos.pagados);
     }
+    
+    /**
+     * Función para asignar los datos para pagar un pedido de un cliente
+     * 
+     * @param cedula
+     * @param apellido
+     * @param cantidad
+     * @param tipoPago 
+     */
+    public static void pagarPedido(String cedula, String apellido, int cantidad, String tipoPago){
+        Trasvasos.cedula = cedula;
+        Trasvasos.apellido = apellido;
+        Trasvasos.pagados = cantidad;
+        Trasvasos.entregados = cantidad;
+        
+        //Poner el valor en los campos
+        txtEntregados.setText(String.valueOf(Trasvasos.entregados));
+        txtPagados.setText(String.valueOf(Trasvasos.pagados));
+        checkDelivery.setSelected(true);
+        
+        //Determinar el tipo de pago
+        switch (tipoPago) {
+                case "EFECT":
+                    boxTipoPago.setSelectedIndex(1);
+                    factura.setTipoPago(tipoPago);
+                    break;
+                case "DOLAR":
+                    boxTipoPago.setSelectedIndex(3);
+                    factura.setTipoPago(tipoPago);
+                    break;
+                case "TRNSF":
+                    boxTipoPago.setSelectedIndex(2);
+                    factura.setTipoPago(tipoPago);
+                    break;
+                default:
+                    boxTipoPago.setSelectedIndex(0);
+                    factura.setTipoPago("");
+                    break;
+            }
 
+        //Actualizar la factura
+        factura.setInformacion(cedula, apellido);
+        factura.setBotellonesEntregados(Trasvasos.entregados);
+        factura.setBotellonesPagados(Trasvasos.pagados);
+        factura.setDelivery(true);
+        factura.setMontoTotal(precio * Trasvasos.pagados);
+    }
+    
     //ATRIBUTOS BACKEND
     private static int entregados = 0, pagados = 0;
     private static double precio = 0;

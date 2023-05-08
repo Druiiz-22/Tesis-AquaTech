@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.BorderFactory;
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -17,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MouseInputListener;
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.VirtualEarthTileFactoryInfo;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
@@ -25,8 +25,9 @@ import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jxmapviewer.viewer.WaypointPainter;
-import static properties.Constantes.PLANO;
 import properties.Fuentes;
+import static properties.Constantes.PLANO;
+import tabs.ventas.Pedidos;
 
 /**
  * Clase para la creación de un panel contenedor de un mapa
@@ -38,17 +39,11 @@ public class PanelMap extends JPanel implements properties.Colores {
      */
     public PanelMap() {
         this.setLayout(new GridLayout());
+        this.setBorder(createLineBorder(GRIS_OSCURO));
 
         initComponents();
         initMap();
         listener();
-        actualizarPuntos();
-        
-        //Funciones del mapa:
-        // - Abrir la posición en google maps
-        // - Buscar pedido en la tabla
-        // - Abrir la información de un punto
-        // - Centrar el mapa
     }
 
     /**
@@ -103,7 +98,7 @@ public class PanelMap extends JPanel implements properties.Colores {
      */
     private void initMap() {
         //Establecer la carga por defecto de los "chunks"
-        TileFactoryInfo info =  new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
+        TileFactoryInfo info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
         mapa.setTileFactory(tileFactory);
 
@@ -145,7 +140,7 @@ public class PanelMap extends JPanel implements properties.Colores {
         puntos.add(punto);
         initWaypoint();
     }
-    
+
     /**
      * Función para eliminar todos los puntos actuales en el mapa
      */
@@ -156,7 +151,7 @@ public class PanelMap extends JPanel implements properties.Colores {
         puntos.clear();
         initWaypoint();
     }
-    
+
     /**
      * Función para asignar el evento que ejecutarán los puntos
      *
@@ -164,28 +159,43 @@ public class PanelMap extends JPanel implements properties.Colores {
      */
     private EventWaypoint getEvent() {
         return (MyWaypoint waypoint) -> {
-            
+
         };
     }
 
-    public static void actualizarPuntos(){
+    /**
+     * Función para obtener los pedidos pendientes, seleccionar sus direcciones
+     * y mostrar los puntos en el mapa
+     */
+    public static void actualizarPuntos() {
         //Vaciar los puntos del mapa
         borrarPuntos();
-        
+
         //Obtener la lista de los pedidos
-        Object[][] pedidos = ReadDB.getPedidos();
-        
-        //Función para recorrer todos los datos
-        for(Object[] pedido : pedidos){
-            boolean entregado = Boolean.parseBoolean(pedido[8].toString());
-            if(!entregado){
-                double lat = Double.parseDouble(pedido[6].toString());
-                double lon = Double.parseDouble(pedido[7].toString());
-                agregarPunto(new MyWaypoint(pedido[1].toString(), event, new GeoPosition(lat, lon)));
+        pedidos = Pedidos.getTable();
+
+        //Validar que la tabla obtenida NO esté vacía
+        if (pedidos != null) {
+            //Función para recorrer todos los datos
+            for (Object[] pedido : pedidos) {
+                double lat = Double.parseDouble(pedido[1].toString());
+                double lon = Double.parseDouble(pedido[2].toString());
+                agregarPunto(new MyWaypoint(pedido[0].toString(), event, new GeoPosition(lat, lon)));
             }
         }
     }
-    
+
+    /**
+     * Función para enfocar un punto en el mapa, según la dirección
+     *
+     * @param latitud
+     * @param longitud
+     */
+    public static void enfocarPunto(double latitud, double longitud) {
+        mapa.setAddressLocation(new GeoPosition(latitud, longitud));
+        mapa.setZoom(2);
+    }
+
     /**
      * Función para asignar los listener a los componentes
      */
@@ -197,7 +207,7 @@ public class PanelMap extends JPanel implements properties.Colores {
         btnCentrar.addActionListener((e) -> {
             mapa.setAddressLocation(POSICION_PRINCIPAL);
             mapa.setZoom(4);
-        }); 
+        });
 
         boxEstilos.addActionListener((e) -> {
             TileFactoryInfo info;
@@ -208,7 +218,7 @@ public class PanelMap extends JPanel implements properties.Colores {
                     info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
                     break;
                 default:
-                    info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.SATELLITE);
+                    info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.HYBRID);
                     break;
             }
             DefaultTileFactory tileFactory = new DefaultTileFactory(info);
@@ -223,15 +233,16 @@ public class PanelMap extends JPanel implements properties.Colores {
     private static final JComboBox boxEstilos = new JComboBox(capas);
     private static final JButton btnActualizar = new JButton("Actualizar");
     private static final JButton btnCentrar = new JButton("Centrar mapa");
-    
+
     private static final JPopupMenu menu = new JPopupMenu();
     private static final JMenuItem posicion = new JMenuItem();
     private static final JMenuItem google = new JMenuItem("Abrir en Google Maps");
-    
+
     //ATRIBUTOS
     private static final double LATITUD_PRINCIPAL = 10.58344935417965;
     private static final double LONGITUD_PRINCIPAL = -71.65015478472176;
     private static final GeoPosition POSICION_PRINCIPAL = new GeoPosition(LATITUD_PRINCIPAL, LONGITUD_PRINCIPAL);
     private static final Set<MyWaypoint> puntos = new HashSet<>();
+    private static Object[][] pedidos;
     private static EventWaypoint event;
 }

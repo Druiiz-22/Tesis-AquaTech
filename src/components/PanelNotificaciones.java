@@ -20,6 +20,8 @@ import main.MenuSuperior;
 import static properties.Constantes.ESCALA_SUAVE;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
+import tabs.clientes.Deudas;
+import tabs.ventas.Pedidos;
 
 /**
  * Clase para la creación del panel contenedor de las notificaciones
@@ -41,7 +43,8 @@ public class PanelNotificaciones extends JPanel implements properties.Constantes
         actualizar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                MenuSuperior.actualizar(25);
+                Deudas.actualizarDatos();
+                Pedidos.actualizarDatos();
             }
         });
     }
@@ -145,15 +148,19 @@ public class PanelNotificaciones extends JPanel implements properties.Constantes
     }
     
     /**
-     * Función para asignar la cantidad de deudas y pedidos en las notificaciones
-     * @param deuda Cantidad de deudas
-     * @param pedido Cantidad de pedidos
+     * Función para notificar la cantidad de deudas pendientes
+     * @param count 
      */
-    public static void setNotificationCount(int deuda, int pedido){
-        deudas.setNumero(deuda);
-        pedidos.setNumero(pedido);
+    public static void setDeudas(int count){
+        deudas.setNumero(count);
     }
-    
+    /**
+     * Función para notificar la cantidad de pedidos activos
+     * @param count 
+     */
+    public static void setPedidos(int count){
+        pedidos.setNumero(count);
+    }
     
     //COMPONENTES
     private static final Label lblTitulo = new Label("Notificaciones", TITULO, 18);

@@ -1,5 +1,6 @@
 package components;
 
+import components.map.PanelMap;
 import database.AdminDB;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
@@ -16,16 +17,20 @@ import tabs.ventas.Ventas;
 import tabs.compras.Compras;
 import tabs.compras.Recargas;
 import database.DeleteDB;
+import java.awt.Desktop;
 import tabs.Proveedores;
 import tabs.clientes.PanelClientes;
 import static java.awt.Font.PLAIN;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import static javax.swing.RowFilter.regexFilter;
 import static properties.Mensaje.msjYesNo;
-import static properties.Mensaje.msjError;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
+import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjInformativo;
 import tabs.admin.Usuarios;
 import tabs.historial.HistorialTrasvasos;
@@ -52,6 +57,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 deudasListeners();
                 break;
 
+            case VENTAS_PEDIDOS:
+                pedidosListeners();
+                break;
+
             case ADMIN_USUARIOS:
                 itemBorrar.addActionListener((ActionEvent e) -> {
                     eliminar();
@@ -63,6 +72,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         }
     }
 
+    /**
+     * Función para asignar los listeners a los items de la tabla de clientes
+     */
     private void clientesListeners() {
         itemTrasv.addActionListener((ActionEvent e) -> {
             //Obtener el index de la fila seleccionada en la tabla
@@ -116,6 +128,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         });
     }
 
+    /**
+     * Función para asignar los listeners a los items de la tabla de proveedores
+     */
     private void provListeners() {
         itemRecar.addActionListener((ActionEvent e) -> {
             //Obtener el index de la fila seleccionada en la tabla
@@ -168,6 +183,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         });
     }
 
+    /**
+     * Función para asignar los listeners a los items de la tabla de deudas
+     */
     private void deudasListeners() {
         itemFactura.addActionListener((ActionEvent e) -> {
             //Obtener el index de la fila seleccionada en la tabla
@@ -224,6 +242,102 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     }
                 } else {
                     msjError("No se pudo seleccionar el cliente de la deuda.");
+                }
+            }
+        });
+    }
+
+    /**
+     * Función para asignar los listeners a los items de la tabla de pedidos
+     */
+    private void pedidosListeners() {
+        itemTrasv.addActionListener((e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+
+                //Obtener la cédula de la deuda
+                String cedula = tabla.getValueAt(index, 1).toString();
+
+                //Validar que el campos NO esté vacíos
+                if (!cedula.isEmpty()) {
+
+                    //Buscar el apellido del cliente
+                    String apellido = PanelClientes.getApellido(cedula);
+
+                    //Validar que el campo no esté vacío
+                    if (!apellido.isEmpty()) {
+                        try {
+                            //Obtener los datos del pedido
+                            String servicio = tabla.getValueAt(index, 2).toString();
+                            String tipoPago = tabla.getValueAt(index, 4).toString();
+                            int cantidad = Integer.parseInt(tabla.getValueAt(index, 3).toString());
+
+                            //Determinar si es un trasvaso o venta
+                            if (servicio.equals("RECARGA")) {
+                                //Enviar los datos para pagar el pedido
+                                Trasvasos.pagarPedido(cedula, apellido, cantidad, tipoPago);
+                                //Cambiar al panel de trasvasos
+                                MenuLateral.clickButton(VENTAS_TRASVASO);
+
+                            } else {
+                                //Enviar los datos para pagar el pedido
+                                Ventas.pagarPedido(cedula, apellido, cantidad, tipoPago);
+                                //Cambiar al panel de trasvasos
+                                MenuLateral.clickButton(VENTAS_BOTELLON);
+                            }
+
+                        } catch (NumberFormatException ex) {
+                            msjError("La cantidad de pagar o entregar, son inválidos."
+                                    + "\nPor favor, actualice los datos y verifique"
+                                    + "que estos campos tengan número enteros válidos.");
+                        }
+                    } 
+                } else {
+                    msjError("No se pudo seleccionar el cliente del pedido.");
+                }
+            }
+        });
+        itemUbicar.addActionListener((e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+
+                //Buscar el punto en el mapa
+                PanelMap.enfocarPunto(latitudes[index], longitudes[index]);
+
+            }
+        });
+        itemGoogleMaps.addActionListener((e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+                //Validar que la plataforma sea capaz de usar la clase Desktop
+                if (Desktop.isDesktopSupported()) {
+                    Desktop escritorio = Desktop.getDesktop();
+
+                    //Validar que la plataforma sea capaz de usar un navegador
+                    if (escritorio.isSupported(Desktop.Action.BROWSE)) {
+                        try {
+                            //URL de google maps, abriendo un punto en el mapa, según 
+                            //la latitud y longitud del mismo
+                            URI uri = new URI("https://www.google.es/maps?q=" + latitudes[index] + "," + longitudes[index]);
+
+                            //Intentar abrir el navegador y buscar la URL
+                            escritorio.browse(uri);
+
+                        } catch (IOException | URISyntaxException ex) {
+                            msjError("No se pudo abrir el navegador.\nError: " + ex.getMessage());
+                        }
+                    } else {
+                        msjError("La plataforma actual no es compatible para "
+                                + "abrir un navegador.\nDeberá copiar las coordenadas del"
+                                + "punto y buscarlo manualmente en Google Maps.");
+                    }
+                } else {
+                    msjError("La plataforma actual no es compatible con la clase"
+                            + "\"Desktop\", impidiendo\n la posibilidad de abrir ficheros y "
+                            + "sitios web.");
                 }
             }
         });
@@ -415,6 +529,41 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 datos = ReadDB.getDeudas();
                 break;
 
+            case VENTAS_PEDIDOS:
+                //Obtener los datos en una lista auxiliar
+                Object[][] lista = ReadDB.getPedidos();
+                //String para unificar las latitudes y longitudes
+                String direccion;
+
+                //Inicializar la lista de los datos y los atributos
+                datos = new Object[lista.length][cabecera.length];
+                latitudes = new double[lista.length];
+                longitudes = new double[lista.length];
+
+                //Recorrer cada dato para unificar la latitud y longitud, del
+                //pedido actual, en una sola cadena de texto
+                for (int i = 0; i < lista.length; i++) {
+
+                    latitudes[i] = Double.parseDouble(lista[i][6].toString());
+                    longitudes[i] = Double.parseDouble(lista[i][7].toString());
+                    
+                    String lat = String.valueOf(Math.round(latitudes[i]*100000)/100000.0);
+                    String lon = String.valueOf(Math.round(longitudes[i]*100000)/100000.0);
+                    direccion = lat + ", " + lon;
+
+                    //Guardar los datos con la nueva dirección
+                    datos[i] = new Object[]{
+                        lista[i][0],
+                        lista[i][1],
+                        lista[i][2],
+                        lista[i][3],
+                        lista[i][4],
+                        lista[i][5],
+                        direccion
+                    };
+                }
+                break;
+
             case HISTORIAL_TRASVASO:
                 datos = ReadDB.getTrasvasos();
                 break;
@@ -458,6 +607,40 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         //Insertar el modelo en la tabla
         tabla.setModel(modelo);
     }
+    
+    /**
+     * Función para obtener la cantidad de filas que hayan en la tabla
+     * @return 
+     */
+    public int getRowCount(){
+        return tabla.getRowCount();
+    }
+    
+    /**
+     * Función para obtener la información necesaria de la tabla, para asignar
+     * los puntos en el mapa para los pedidos
+     * @return 
+     */
+    public Object[][] getPedidosTabla(){
+        if(type == VENTAS_PEDIDOS){
+            Object[][] puntos = new Object[tabla.getRowCount()][3];
+            
+            for (int i = 0; i < tabla.getRowCount(); i++) {
+                puntos[i] = new Object[]{
+                    tabla.getValueAt(i, 1),
+                    latitudes[i],
+                    longitudes[i]
+                };
+            }
+            
+            return puntos;
+        }
+        
+        return null;
+    }
+    
+    //ATRIBUTOS BACK-END
+    private double[] latitudes, longitudes;
 
     // ========== FRONTEND ==========
     /**
@@ -496,6 +679,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 cabecera = new String[]{"ID", "Factura", "Cedula", "Debe pagar", "Debemos dar", "Fecha"};
                 break;
 
+            case VENTAS_PEDIDOS:
+                cabecera = new String[]{"ID", "Cedula", "Servicio", "Cantidad",
+                    "Tipo Pago", "Fecha", "Direccion"};
+                break;
+
             case HISTORIAL_TRASVASO:
                 cabecera = new String[]{"ID", "Cedula", "Pagados", "Entregados",
                     "Pago", "Delivery", "Monto Total", "Fecha"};
@@ -518,7 +706,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case ADMIN_USUARIOS:
-                cabecera = new String[]{"ID", "Cedula", "Rol", "Nombre", "Apellido", "Telefono", "Correo"};
+                cabecera = new String[]{"ID", "Cedula", "Rol", "Nombre", 
+                    "Apellido", "Telefono", "Correo"};
                 break;
         }
     }
@@ -529,8 +718,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private void initComponents() {
 
         //Instanciar la tabla con el modelo
-        this.tabla = new JTable(){
-            
+        this.tabla = new JTable() {
+
             //Heredar la función getToolTipText para mostrar un mensaje
             //personalizado a cada celda de las tablas
             @Override
@@ -542,11 +731,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
                 try {
                     tip = "<html>"
-                            + "<b>Dato: </b>" 
-                            + getValueAt(rowIndex, colIndex).toString() 
+                            + "<b>Dato: </b>"
+                            + getValueAt(rowIndex, colIndex).toString()
                             + "</html>";
                 } catch (RuntimeException ex) {
-                    
+
                 }
                 return tip;
             }
@@ -572,6 +761,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 listeners();
                 break;
 
+            case VENTAS_PEDIDOS:
+                pedidosMenu();
+                listeners();
+                break;
+
             case ADMIN_USUARIOS:
                 usuariosMenu();
                 listeners();
@@ -584,17 +778,17 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     private void provMenu() {
         //Propiedades de los items del menú
-        itemEditar.setFont(segoe(18, PLAIN));
+        itemEditar.setFont(segoe(13, PLAIN));
         itemEditar.setForeground(NEGRO);
-        itemBorrar.setFont(segoe(18, PLAIN));
+        itemBorrar.setFont(segoe(13, PLAIN));
         itemBorrar.setForeground(NEGRO);
 
         itemRecar = new JMenuItem("Seleccionar para recargar");
-        itemRecar.setFont(segoe(18, PLAIN));
+        itemRecar.setFont(segoe(13, PLAIN));
         itemRecar.setForeground(NEGRO);
 
         itemCompr = new JMenuItem("Seleccionar para comprarle");
-        itemCompr.setFont(segoe(18, PLAIN));
+        itemCompr.setFont(segoe(13, PLAIN));
         itemCompr.setForeground(NEGRO);
 
         try {
@@ -605,7 +799,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             itemCompr.setIcon(getMenuIcon("comprar"));
 
         } catch (Exception e) {
-            msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable en los proveedores.\n"
                     + "El software seguirá funcionando sin los íconos.");
 
         } finally {
@@ -628,17 +822,17 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     private void clientesMenu() {
         //Propiedades de los items del menú
-        itemEditar.setFont(segoe(18, PLAIN));
+        itemEditar.setFont(segoe(13, PLAIN));
         itemEditar.setForeground(NEGRO);
-        itemBorrar.setFont(segoe(18, PLAIN));
+        itemBorrar.setFont(segoe(13, PLAIN));
         itemBorrar.setForeground(NEGRO);
 
         itemTrasv = new JMenuItem("Seleccionar para trasvasarle");
-        itemTrasv.setFont(segoe(18, PLAIN));
+        itemTrasv.setFont(segoe(13, PLAIN));
         itemTrasv.setForeground(NEGRO);
 
         itemVend = new JMenuItem("Seleccionar para venderle");
-        itemVend.setFont(segoe(18, PLAIN));
+        itemVend.setFont(segoe(13, PLAIN));
         itemVend.setForeground(NEGRO);
 
         try {
@@ -649,7 +843,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             itemVend.setIcon(getMenuIcon("vender"));
 
         } catch (Exception e) {
-            msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable en los clientes.\n"
                     + "El software seguirá funcionando sin los íconos.");
 
         } finally {
@@ -672,10 +866,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     private void usuariosMenu() {
         //Propiedades de los items del menú
-        itemEditar.setFont(segoe(18, PLAIN));
+        itemEditar.setFont(segoe(13, PLAIN));
         itemEditar.setForeground(NEGRO);
 
-        itemBorrar.setFont(segoe(18, PLAIN));
+        itemBorrar.setFont(segoe(13, PLAIN));
         itemBorrar.setForeground(NEGRO);
 
         try {
@@ -684,7 +878,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             itemBorrar.setIcon(getMenuIcon("borrar"));
 
         } catch (Exception e) {
-            msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable en los usuarios.\n"
                     + "El software seguirá funcionando sin los íconos.");
 
         } finally {
@@ -697,17 +891,20 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         }
     }
 
+    /**
+     * Función para iniciar el menú para la tabla de las deudas
+     */
     private void deudasMenu() {
         itemBorrar.setText("Cancelar deuda");
-        itemBorrar.setFont(segoe(18, PLAIN));
+        itemBorrar.setFont(segoe(13, PLAIN));
         itemBorrar.setForeground(NEGRO);
 
         itemTrasv = new JMenuItem("Pagar deuda");
-        itemTrasv.setFont(segoe(18, PLAIN));
+        itemTrasv.setFont(segoe(13, PLAIN));
         itemTrasv.setForeground(NEGRO);
 
         itemFactura = new JMenuItem("Ver factura");
-        itemFactura.setFont(segoe(18, PLAIN));
+        itemFactura.setFont(segoe(13, PLAIN));
         itemFactura.setForeground(NEGRO);
 
         try {
@@ -717,16 +914,52 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             itemFactura.setIcon(getMenuIcon("factura"));
 
         } catch (Exception e) {
-            msjAdvertencia("No se pudo cargar los íconos de un menú desplegable.\n"
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable en las deudas.\n"
                     + "El software seguirá funcionando sin los íconos.");
 
         } finally {
-
             //Añadir los items al menú
             menuPopup.add(itemFactura);
             menuPopup.add(itemTrasv);
             menuPopup.addSeparator();
             menuPopup.add(itemBorrar);
+
+            tabla.setComponentPopupMenu(menuPopup);
+        }
+    }
+
+    /**
+     * Función para iniciar el menú para la tabla de los pedidos
+     */
+    private void pedidosMenu() {
+        itemTrasv = new JMenuItem("Pagar el pedido");
+        itemTrasv.setFont(segoe(13, PLAIN));
+        itemTrasv.setForeground(NEGRO);
+        
+        itemUbicar = new JMenuItem("Ubicar en el mapa");
+        itemUbicar.setFont(segoe(13, PLAIN));
+        itemTrasv.setForeground(NEGRO);
+        
+        itemGoogleMaps = new JMenuItem("Ubicar en Google Maps");
+        itemGoogleMaps.setFont(segoe(13, PLAIN));
+        itemTrasv.setForeground(NEGRO);
+
+        try {
+            //Buscar la imagen de cada item
+            itemTrasv.setIcon(getMenuIcon("vender"));
+            itemUbicar.setIcon(getMenuIcon("ubicacion"));
+            itemGoogleMaps.setIcon(getMenuIcon("web"));
+
+        } catch (Exception e) {
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable en los pedidos.\n"
+                    + "El software seguirá funcionando sin los íconos.");
+
+        } finally {
+            //Añadir los items al menú
+            menuPopup.add(itemTrasv);
+            menuPopup.addSeparator();
+            menuPopup.add(itemUbicar);
+            menuPopup.add(itemGoogleMaps);
 
             tabla.setComponentPopupMenu(menuPopup);
         }
@@ -743,7 +976,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         ImageIcon img = new ImageIcon(getClass().getResource("/icons/popup/" + name + ".png"));
 
         //Determinar el tamaño de la imagen.
-        int size = 22;
+        int size = 18;
 
         //Retornar la imagen escalada
         return new ImageIcon(img.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
@@ -772,6 +1005,16 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case PROVEEDOR:
                 //Buscar la coincidencia entre todos los indices
                 sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3));
+                break;
+
+            case DEUDAS:
+                //Buscar la coincidencia entre todos los indices
+                sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5, 6, 7));
+                break;
+
+            case VENTAS_PEDIDOS:
+                //Buscar la coincidencia entre todos los indices
+                sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5, 6, 7));
                 break;
 
             case HISTORIAL_TRASVASO:
@@ -844,15 +1087,16 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     public String getClienteApellido(String cedula) {
         if (type == CLIENTES) {
+            
             //Buscar todas las cédulas de los clientes en la tabla
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 //Obtener la cédula en cada iteración
-                String ci = tabla.getValueAt(i, 0).toString();
-
+                String ci = tabla.getValueAt(i, 1).toString();
+                
                 //Validar si la cédula coincide con la cédula recibida
                 if (ci.equals(cedula)) {
                     //Retornar el apellido del cliente encontrado
-                    return tabla.getValueAt(i, 2).toString();
+                    return tabla.getValueAt(i, 3).toString();
                 }
             }
             //Si el ciclo termina, implica que NO hubo coincidencia, por lo que
@@ -879,5 +1123,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private JMenuItem itemFactura;
     private JMenuItem itemRecar;
     private JMenuItem itemCompr;
+    private JMenuItem itemUbicar;
+    private JMenuItem itemGoogleMaps;
     private DefaultTableModel modelo;
 }

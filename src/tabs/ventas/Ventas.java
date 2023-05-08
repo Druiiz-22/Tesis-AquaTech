@@ -135,6 +135,7 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
 
         panelTrasvasos.relocateComponents(scrollW, scrollY);
         panelVentas.relocateComponents(scrollW, scrollY);
+        panelPedidos.relocateComponents(scrollW, scrollY);
 
         //Determinar el preferred size
         if (btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)) {
@@ -178,10 +179,10 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
             contenedor.setPreferredSize(panelVentas.getPreferredSize());
 
         } else if (btnPedidos.getForeground().equals(AZUL_PRINCIPAL)) {
-            //panelPedidos.actualizarDatos();
+            panelPedidos.actualizarDatos();
             contenedor.setPreferredSize(panelPedidos.getPreferredSize());
         }
-
+        
     }
 
     /**
@@ -204,11 +205,23 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
     }
 
     /**
+     * Función para asignar los datos para pagar un pedido de un cliente
+     * @param cedula
+     * @param apellido
+     * @param cantidad
+     * @param tipoPago
+     */
+    public static void pagarPedido(String cedula, String apellido, int cantidad, String tipoPago) {
+        panelVentas.pagarPedido(cedula, apellido, cantidad, tipoPago);
+    }
+
+    /**
      * Función para actualizar todos los datos de la pestaña
      */
     public static void actualizarDatos() {
         panelTrasvasos.actualizarDatos();
         panelVentas.actualizarDatos();
+        panelPedidos.actualizarDatos();
     }
 
     //COMPONENTES
@@ -246,11 +259,11 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
                                 + "cantidad de botellones, ¿Está seguro de realizar el registro?";
 
                         if (msjYesNoWarning(msj)) {
-                            CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
+                            CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), cedula);
                         }
 
                     } else {
-                        CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), clienteCI);
+                        CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), cedula);
                     }
 
                     vaciarCampos();
@@ -271,7 +284,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         //se haya seleccionado un tipo de pago
         if (!txtCantidad.getText().trim().isEmpty()) {
             if (boxTipoPago.getSelectedIndex() > 0) {
-                if (!clienteCI.isEmpty() && !clienteApellido.isEmpty()) {
+                if (!cedula.isEmpty() && !apellido.isEmpty()) {
                     return true;
 
                 } else {
@@ -425,17 +438,61 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
      * @param apellido Apellido del cliente seleccionado
      */
     protected void setCliente(String ci, String apellido) {
-        clienteCI = ci;
-        clienteApellido = apellido;
+        PanelVentas.cedula = ci;
+        PanelVentas.apellido = apellido;
 
         //Actualizar la factura
-        factura.setInformacion(clienteCI, clienteApellido);
+        PanelVentas.factura.setInformacion(cedula, apellido);
+    }
+    
+    /**
+     * Función para asignar los datos para pagar un pedido de un cliente
+     * 
+     * @param cedula
+     * @param apellido
+     * @param cantidad
+     * @param tipoPago 
+     */
+    public static void pagarPedido(String cedula, String apellido, int cantidad, String tipoPago) {
+        PanelVentas.cedula = cedula;
+        PanelVentas.apellido = apellido;
+        PanelVentas.cantidad = cantidad;
+
+        //Poner el valor en los campos
+        txtCantidad.setText(String.valueOf(cantidad));
+        checkDelivery.setSelected(true);
+
+        //Determinar el tipo de pago
+        switch (tipoPago) {
+            case "EFECT":
+                boxTipoPago.setSelectedIndex(1);
+                factura.setTipoPago(tipoPago);
+                break;
+            case "DOLAR":
+                boxTipoPago.setSelectedIndex(3);
+                factura.setTipoPago(tipoPago);
+                break;
+            case "TRNFS":
+                boxTipoPago.setSelectedIndex(2);
+                factura.setTipoPago(tipoPago);
+                break;
+            default:
+                boxTipoPago.setSelectedIndex(0);
+                factura.setTipoPago("");
+                break;
+        }
+
+        //Actualizar la factura
+        PanelVentas.factura.setInformacion(cedula, apellido);
+        factura.setBotellonesTotal(cantidad);
+        factura.setDelivery(true);
+        factura.setMontoTotal(precio * cantidad);
     }
 
     //ATRIBUTOS BACKEND
     private static int cantidad = 0;
     private static double precio = 0;
-    private static String tipoPago = "", clienteCI = "", clienteApellido = "";
+    private static String tipoPago = "", cedula = "", apellido = "";
 
     // ========== FRONTEND ==========
     /**
@@ -587,7 +644,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
         this.facHeight += 20;
         this.ventaHeight += 20;
-        
+
         //Dividir el panel en dos 
         int halfWidth = width / 2 - padding * 2;
 
@@ -675,7 +732,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         txtCantidad.setSize(txtWidth, txtHeight);
 
         //Posición del título del panel para los datos
-        lblTitulo.setLocation(padding, padding/2);
+        lblTitulo.setLocation(padding, padding / 2);
 
         //Para posicionar los campos en el centro vertical del panel
         //primero se obtiene le punto medio del panel
@@ -737,8 +794,8 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         //Vaciar los atributos
         cantidad = 0;
         tipoPago = "";
-        clienteCI = "";
-        clienteApellido = "";
+        cedula = "";
+        apellido = "";
     }
 
     //Atributos

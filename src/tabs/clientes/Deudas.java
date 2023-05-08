@@ -1,10 +1,12 @@
 package tabs.clientes;
 
 import components.CampoTexto;
+import components.PanelNotificaciones;
 import components.Tabla;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
+import main.MenuSuperior;
 
 /**
  * Clase para la creación del panel con las deudas pendientes que posean los
@@ -27,7 +29,6 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
      * Función para inicar los componentes
      */
     private void initComponents() {
-
         //Agregar el tooltiptext
         txtBusqueda.setToolTipText("Ingrese cualquier nombre para buscar alguna coincidencia en la tabla");
 
@@ -73,11 +74,15 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
     /**
      * Función para actualizar los datos de la tabla del historial
      */
-    protected static void actualizarDatos() {
+    public static void actualizarDatos() {
         txtBusqueda.setText("");
         tabla.actualizarDatos();
+        
+        int rows = tabla.getRowCount();
+        PanelNotificaciones.setDeudas(rows);
+        MenuSuperior.setNotificationCount(rows);
     }
-
+    
     /**
      * Función para vaciar los campos
      */

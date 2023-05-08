@@ -1,7 +1,5 @@
 package database;
 
-import java.util.Random;
-
 /**
  * Clase contenedora de funciones estáticos para la obtención de datos de la
  * base de datos
@@ -530,9 +528,9 @@ public class ReadDB {
     }
 
     /**
-     * Función para obtener los clientes con deudas pendientes
+     * Función para obtener las deudas registradas en el sistema
      *
-     * @return Clientes con deudas
+     * @return 
      */
     public static Object[][] getDeudas() {
         //ID, Factura, Cedula, Debe Pagar, Debemos Dar, Fecha
@@ -594,23 +592,27 @@ public class ReadDB {
         return historial;
     }
     
-    public static Object[][] getPedidos(){
-        //ID, cedula, servicio, cantidad, tipo_pago, fecha, latitud, longitud, Entregado
-        
+    /**
+     * Función para obtener todos los pedidos registrados en el sistema
+     * @return 
+     */
+    public static Object[][] getPedidos() {
+        //ID, cedula, servicio, cantidad, tipo_pago, fecha, latitud, longitud
+
         int rows = 15;
-        Object lista[][] = new Object[rows][9];
-        
+        Object lista[][] = new Object[rows][8];
+
         //Variables para las fechas
         int dia = 1;
         int hora = 9;
         int minuto = 0;
         int mes = 3;
         int anio = 2023;
-        
+
         //Cédula minima y máxima
         int ci_min = 5000000;
         int ci_max = 35000000;
-        
+
         double posiciones[][] = {
             {10.585293809414747, -71.65681002383909},
             {10.586411214531502, -71.6600759296157},
@@ -628,12 +630,12 @@ public class ReadDB {
             {10.585253703446991, -71.6576966035375},
             {10.587116043330223, -71.65775073450976}
         };
-        
+
         for (int i = 0; i < rows; i++) {
             int servicio = (int) (Math.random() * (10 - 1 + 1) + 1);
             int cantidad = (int) (Math.random() * (30 - 1 + 1) + 1);
-            boolean tipoPago = new Random().nextBoolean();
-            
+            int tipoPago = (int) (Math.random() * (3 - 1 + 1) + 1);
+
             //Los clientes vienen entre 2 a 30 minutos de diferencia
             minuto += (int) (Math.random() * (30 - 2 + 1) + 2);
 
@@ -671,23 +673,39 @@ public class ReadDB {
             }
             //Obtener la feha
             String fecha = dia + "-" + mes + "-" + anio + " " + hora + ":" + minuto;
+
+            int ci = (int) (Math.random() * (ci_max - ci_min + 1) + ci_min);
+            
+            switch (i) {
+                case 1:
+                    ci = 27909011;
+                    break;
+                case 2:
+                    ci = 30445134;
+                    break;
+                case 3:
+                    ci = 20154005;
+                    break;
+                case 4:
+                    ci = 25451987;
+                    break;
+            }
             
             lista[i] = new Object[]{
-                i+1, 
-                (int) (Math.random() * (ci_max - ci_min + 1) + ci_min),
-                ((servicio == 10)? "COMPRA" : "RECARGA"),
+                i + 1,
+                ci,
+                ((servicio == 10) ? "COMPRA" : "RECARGA"),
                 cantidad,
-                ((tipoPago)? "TRNSF":"EFECT"),
+                ((tipoPago == 1) ? "EFECT" : (tipoPago == 2) ? "TRNSF" : "DOLAR"),
                 fecha,
                 posiciones[i][0],
-                posiciones[i][1],
-                false
+                posiciones[i][1]
             };
         }
 
         return lista;
     }
-    
+
     /**
      * Función para validar la existencia de un cliente en la base de datos,
      * mediante el uso de su cédula.
