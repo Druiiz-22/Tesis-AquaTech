@@ -94,7 +94,7 @@ public class ReadDB {
 
         return !(user.isEmpty() || pass == 0);
     }
-
+    
     //========== HISTORIAL ==========
     /**
      * Función para obtener todos los clientes registrados en el sistema
@@ -530,7 +530,7 @@ public class ReadDB {
     /**
      * Función para obtener las deudas registradas en el sistema
      *
-     * @return 
+     * @return
      */
     public static Object[][] getDeudas() {
         //ID, Factura, Cedula, Debe Pagar, Debemos Dar, Fecha
@@ -591,10 +591,11 @@ public class ReadDB {
 
         return historial;
     }
-    
+
     /**
      * Función para obtener todos los pedidos registrados en el sistema
-     * @return 
+     *
+     * @return
      */
     public static Object[][] getPedidos() {
         //ID, cedula, servicio, cantidad, tipo_pago, fecha, latitud, longitud
@@ -631,7 +632,12 @@ public class ReadDB {
             {10.587116043330223, -71.65775073450976}
         };
 
-        for (int i = 0; i < rows; i++) {
+        lista[0] = new Object[]{1, 27909011, "COMPRA", 2, "TRNSF", "27-2-2023 12:08", 10.585293809414747, -71.65681002383909};
+        lista[1] = new Object[]{2, 30445134, "RECARGA", 4, "TRNSF", "27-2-2023 12:57", 10.586411214531502, -71.6600759296157};
+        lista[2] = new Object[]{3, 20154005, "RECARGA", 2, "TRNSF", "27-2-2023 14:22", 10.587085202950155, -71.65502369968503};
+        lista[3] = new Object[]{4, 25451987, "COMPRA", 1, "TRNSF", "27-2-2023 16:12", 10.583644299163073, -71.64740926727356};
+
+        for (int i = 4; i < rows; i++) {
             int servicio = (int) (Math.random() * (10 - 1 + 1) + 1);
             int cantidad = (int) (Math.random() * (30 - 1 + 1) + 1);
             int tipoPago = (int) (Math.random() * (3 - 1 + 1) + 1);
@@ -675,22 +681,7 @@ public class ReadDB {
             String fecha = dia + "-" + mes + "-" + anio + " " + hora + ":" + minuto;
 
             int ci = (int) (Math.random() * (ci_max - ci_min + 1) + ci_min);
-            
-            switch (i) {
-                case 1:
-                    ci = 27909011;
-                    break;
-                case 2:
-                    ci = 30445134;
-                    break;
-                case 3:
-                    ci = 20154005;
-                    break;
-                case 4:
-                    ci = 25451987;
-                    break;
-            }
-            
+
             lista[i] = new Object[]{
                 i + 1,
                 ci,
@@ -704,6 +695,19 @@ public class ReadDB {
         }
 
         return lista;
+    }
+
+    public static Object[][] getTransferencias() {
+        //ID, Pedido, Referencia, Banco, Fecha
+        
+        Object[][] transf = {
+            {157, 1, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "BANESCO", "27-2-2023 12:06"},
+            {156, 2, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "PROVINCIAL", "27-2-2023 12:54"},
+            {158, 3, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "MERCANTIL", "27-2-2023 14:15"},
+            {159, 4, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "VENEZUELA", "27-2-2023 16:06"}
+        };
+
+        return transf;
     }
 
     /**

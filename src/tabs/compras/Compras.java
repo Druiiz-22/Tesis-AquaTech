@@ -646,6 +646,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         txtPrecio.setLocation(padding, positionY);
 
         //Posición vertical de los dos botones inferiores
+        txtHeight += 10;
         positionY = panelCompras.getHeight() - txtHeight - padding;
 
         //Ancho del botón de cancelar

@@ -222,5 +222,5 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     private static final Label lblTitulo = new Label("Usuarios", TITULO, 24);
     private static final CampoTexto txtBuscar = new CampoTexto("Buscar usuario", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar", VERDE);
-    private static final NuevoUsuario nuevo = new NuevoUsuario(main.Run.getFrameRoot(), true);
+    private static final NuevoUsuario nuevo = new NuevoUsuario();
 }

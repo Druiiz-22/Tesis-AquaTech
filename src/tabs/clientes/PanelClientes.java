@@ -138,5 +138,5 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Cliente", VERDE);
     private static final Tabla tabla = new Tabla(CLIENTES);
-    private static final NuevoCliente nuevo = new NuevoCliente(main.Run.getFrameRoot(), true);
+    private static final NuevoCliente nuevo = new NuevoCliente();
 }

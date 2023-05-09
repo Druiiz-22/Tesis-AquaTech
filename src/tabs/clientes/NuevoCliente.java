@@ -37,7 +37,6 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      * Función para agregar los listeners a los componentes
      */
     private void listeners() {
-
         //MOUSE LISTENERS
         btnCancelar.addMouseListener(new MouseAdapter() {
             @Override
@@ -104,12 +103,12 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
                 //tamaño al Dialog
                 int w = paneSize.width + getInsets().left + getInsets().right;
                 int h = paneSize.height + getInsets().top + getInsets().bottom;
-                
+
                 //Asignar el tamaño y centrar el Dialog
                 setSize(w, h);
                 setLocation(centerLocation());
             }
-            
+
             @Override
             public void windowClosing(WindowEvent e) {
                 salir();
@@ -299,11 +298,12 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un cliente
+     *
      * @param parent
      * @param modal
      */
-    public NuevoCliente(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public NuevoCliente() {
+        super(main.Run.getFrameRoot(), true);
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
         this.setResizable(false);
@@ -345,15 +345,15 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     private void relocateComponents() {
         int width = paneSize.width;
         int height = paneSize.height;
-        
+
         int gapV = 2;
         int paddingH = 40;
         int paddingV = 20;
         int fieldH = 40;
-        int fieldW = width/2 - paddingH - paddingV / 2;
+        int fieldW = width / 2 - paddingH - paddingV / 2;
 
         //Posición del logo
-        int x = width/2 - logo.getWidth() / 2;
+        int x = width / 2 - logo.getWidth() / 2;
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
@@ -413,18 +413,18 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     protected void agregar() {
         //Atributo
         crearCliente = true;
-        
+
         //Label para el título
         lblTitulo.setText("<html>Ingrese los datos necesarios para registrar un "
                 + "nuevo cliente al sistema.</html>");
-        
+
         //Logo para la ventana
         logo.setText("Agregar Cliente");
         logo.setSize(logo.getPreferredSize());
-        
+
         //Preparar los campos
         vaciarCampos();
-        
+
         //Propiedades de la ventana
         this.setTitle("Agregar un cliente - AquaTech");
         this.relocateComponents();
@@ -444,15 +444,15 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
         //Atributos
         cedulaVieja = cedula;
         crearCliente = false;
-        
+
         //Label para el título
         lblTitulo.setText("<html>Ingrese los nuevos datos del cliente "
                 + "seleccionado que desea actualizar.</html>");
-        
+
         //Logo para la ventana
         logo.setText("Editar Cliente");
         logo.setSize(logo.getPreferredSize());
-        
+
         //Sobreescribir los campos
         vaciarCampos();
         txtCedula.setText(cedula);
@@ -498,22 +498,23 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     /**
      * Función para obtener las coordenadas necesarias para posicionar la
      * ventana en el centro de la pantalla
-     * @return 
+     *
+     * @return
      */
-    private java.awt.Point centerLocation(){
-        
+    private java.awt.Point centerLocation() {
+
         //Obtener el tamaño de la pantalla
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
         //Posición en X del frame
-        int x = screen.width/2 - this.getWidth()/2;
+        int x = screen.width / 2 - this.getWidth() / 2;
         //Posición en Y del frame
-        int y = screen.height/2 - this.getHeight()/2;
+        int y = screen.height / 2 - this.getHeight() / 2;
 
         //Retornar el tamaño mínimo
         return new java.awt.Point(x, y);
     }
-    
+
     //COMPONENTES
     private static final Dimension paneSize = new Dimension(425, 440);
     private static final Logo logo = new Logo(HORIZONTAL);

@@ -34,6 +34,7 @@ import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjInformativo;
 import tabs.admin.Usuarios;
 import tabs.historial.HistorialTrasvasos;
+import tabs.ventas.Pedidos;
 
 public class Tabla extends JScrollPane implements properties.Constantes {
 
@@ -255,57 +256,15 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-
-                //Obtener la cédula de la deuda
-                String cedula = tabla.getValueAt(index, 1).toString();
-
-                //Validar que el campos NO esté vacíos
-                if (!cedula.isEmpty()) {
-
-                    //Buscar el apellido del cliente
-                    String apellido = PanelClientes.getApellido(cedula);
-
-                    //Validar que el campo no esté vacío
-                    if (!apellido.isEmpty()) {
-                        try {
-                            //Obtener los datos del pedido
-                            String servicio = tabla.getValueAt(index, 2).toString();
-                            String tipoPago = tabla.getValueAt(index, 4).toString();
-                            int cantidad = Integer.parseInt(tabla.getValueAt(index, 3).toString());
-
-                            //Determinar si es un trasvaso o venta
-                            if (servicio.equals("RECARGA")) {
-                                //Enviar los datos para pagar el pedido
-                                Trasvasos.pagarPedido(cedula, apellido, cantidad, tipoPago);
-                                //Cambiar al panel de trasvasos
-                                MenuLateral.clickButton(VENTAS_TRASVASO);
-
-                            } else {
-                                //Enviar los datos para pagar el pedido
-                                Ventas.pagarPedido(cedula, apellido, cantidad, tipoPago);
-                                //Cambiar al panel de trasvasos
-                                MenuLateral.clickButton(VENTAS_BOTELLON);
-                            }
-
-                        } catch (NumberFormatException ex) {
-                            msjError("La cantidad de pagar o entregar, son inválidos."
-                                    + "\nPor favor, actualice los datos y verifique"
-                                    + "que estos campos tengan número enteros válidos.");
-                        }
-                    } 
-                } else {
-                    msjError("No se pudo seleccionar el cliente del pedido.");
-                }
+                pagarPedido(index);
             }
         });
         itemUbicar.addActionListener((e) -> {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-
                 //Buscar el punto en el mapa
                 PanelMap.enfocarPunto(latitudes[index], longitudes[index]);
-
             }
         });
         itemGoogleMaps.addActionListener((e) -> {
@@ -341,8 +300,64 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 }
             }
         });
+        itemInformacion.addActionListener((e) ->{
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+                Pedidos.infoPedido(index);
+            }
+        });
     }
+    
+    /**
+     * Función privada para pagar un pedido de una fila
+     * @param index 
+     */
+    public void pagarPedido(int index) {
+        if (type == VENTAS_PEDIDOS) {
+            //Obtener la cédula de la deuda
+            String cedula = tabla.getValueAt(index, 1).toString();
 
+            //Validar que el campos NO esté vacíos
+            if (!cedula.isEmpty()) {
+
+                //Buscar el apellido del cliente
+                String apellido = PanelClientes.getApellido(cedula);
+
+                //Validar que el campo no esté vacío
+                if (!apellido.isEmpty()) {
+                    try {
+                        //Obtener los datos del pedido
+                        String servicio = tabla.getValueAt(index, 2).toString();
+                        String tipoPago = tabla.getValueAt(index, 4).toString();
+                        int cantidad = Integer.parseInt(tabla.getValueAt(index, 3).toString());
+
+                        //Determinar si es un trasvaso o venta
+                        if (servicio.equals("RECARGA")) {
+                            //Enviar los datos para pagar el pedido
+                            Trasvasos.pagarPedido(cedula, apellido, cantidad, tipoPago);
+                            //Cambiar al panel de trasvasos
+                            MenuLateral.clickButton(VENTAS_TRASVASO);
+
+                        } else {
+                            //Enviar los datos para pagar el pedido
+                            Ventas.pagarPedido(cedula, apellido, cantidad, tipoPago);
+                            //Cambiar al panel de trasvasos
+                            MenuLateral.clickButton(VENTAS_BOTELLON);
+                        }
+
+                    } catch (NumberFormatException ex) {
+                        msjError("La cantidad de pagar o entregar, son inválidos."
+                                + "\nPor favor, actualice los datos y verifique"
+                                + "que estos campos tengan número enteros válidos.");
+                    }
+                }
+            } else {
+                msjError("No se pudo seleccionar el cliente del pedido.");
+            }
+        }
+    }
+    
     /**
      * <h2>Función para eliminar una fila de la tabla</h2>
      * <p>
@@ -546,9 +561,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
                     latitudes[i] = Double.parseDouble(lista[i][6].toString());
                     longitudes[i] = Double.parseDouble(lista[i][7].toString());
-                    
-                    String lat = String.valueOf(Math.round(latitudes[i]*100000)/100000.0);
-                    String lon = String.valueOf(Math.round(longitudes[i]*100000)/100000.0);
+
+                    String lat = String.valueOf(Math.round(latitudes[i] * 100000) / 100000.0);
+                    String lon = String.valueOf(Math.round(longitudes[i] * 100000) / 100000.0);
                     direccion = lat + ", " + lon;
 
                     //Guardar los datos con la nueva dirección
@@ -607,24 +622,26 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         //Insertar el modelo en la tabla
         tabla.setModel(modelo);
     }
-    
+
     /**
      * Función para obtener la cantidad de filas que hayan en la tabla
-     * @return 
+     *
+     * @return
      */
-    public int getRowCount(){
+    public int getRowCount() {
         return tabla.getRowCount();
     }
-    
+
     /**
-     * Función para obtener la información necesaria de la tabla, para asignar
+     * Función para obtener la información necesaria, de la tabla, para asignar
      * los puntos en el mapa para los pedidos
-     * @return 
+     *
+     * @return
      */
-    public Object[][] getPedidosTabla(){
-        if(type == VENTAS_PEDIDOS){
+    public Object[][] getDireccionPedidos() {
+        if (type == VENTAS_PEDIDOS) {
             Object[][] puntos = new Object[tabla.getRowCount()][3];
-            
+
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 puntos[i] = new Object[]{
                     tabla.getValueAt(i, 1),
@@ -632,11 +649,21 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     longitudes[i]
                 };
             }
-            
+
             return puntos;
         }
-        
+
         return null;
+    }
+
+    /**
+     * Función para obtener un dato en una celda en específico de la tabla.
+     * @param row
+     * @param column
+     * @return 
+     */
+    public Object getValueAt(int row, int column){
+        return tabla.getValueAt(row, column);
     }
     
     //ATRIBUTOS BACK-END
@@ -706,7 +733,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case ADMIN_USUARIOS:
-                cabecera = new String[]{"ID", "Cedula", "Rol", "Nombre", 
+                cabecera = new String[]{"ID", "Cedula", "Rol", "Nombre",
                     "Apellido", "Telefono", "Correo"};
                 break;
         }
@@ -935,20 +962,25 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         itemTrasv = new JMenuItem("Pagar el pedido");
         itemTrasv.setFont(segoe(13, PLAIN));
         itemTrasv.setForeground(NEGRO);
-        
+
         itemUbicar = new JMenuItem("Ubicar en el mapa");
         itemUbicar.setFont(segoe(13, PLAIN));
-        itemTrasv.setForeground(NEGRO);
-        
+        itemUbicar.setForeground(NEGRO);
+
         itemGoogleMaps = new JMenuItem("Ubicar en Google Maps");
         itemGoogleMaps.setFont(segoe(13, PLAIN));
-        itemTrasv.setForeground(NEGRO);
+        itemGoogleMaps.setForeground(NEGRO);
+
+        itemInformacion = new JMenuItem("Más información");
+        itemInformacion.setFont(segoe(13, PLAIN));
+        itemInformacion.setForeground(NEGRO);
 
         try {
             //Buscar la imagen de cada item
             itemTrasv.setIcon(getMenuIcon("vender"));
             itemUbicar.setIcon(getMenuIcon("ubicacion"));
             itemGoogleMaps.setIcon(getMenuIcon("web"));
+            itemInformacion.setIcon(getMenuIcon("informacion"));
 
         } catch (Exception e) {
             msjAdvertencia("No se pudo cargar los íconos del menú desplegable en los pedidos.\n"
@@ -956,6 +988,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         } finally {
             //Añadir los items al menú
+            menuPopup.add(itemInformacion);
             menuPopup.add(itemTrasv);
             menuPopup.addSeparator();
             menuPopup.add(itemUbicar);
@@ -1047,11 +1080,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      *
      * @param txt Texto que será buscado dentro de la tabla
      */
-    public void focusRow(String txt) {
+    public void enfocarFila(String txt) {
+        int row = -99;
+
         if (type == HISTORIAL_TRASVASO) {
-
-            int row = -99;
-
             //Buscar todos los id de la factura en la tabla de trasvasos
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 //Obtener el id en cada iteración
@@ -1064,7 +1096,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     break;
                 }
             }
-
             //Comprobar que se seleccionó alguna fila
             if (row >= 0) {
                 tabla.requestFocus();
@@ -1074,6 +1105,30 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 msjError("No se encontró la factura en los registros de "
                         + "trasvasos.\nPor favor, actualice los datos y verifique"
                         + " la existencia de la deuda.");
+            }
+
+        } else if (type == VENTAS_PEDIDOS) {
+            //Buscar todas las cédulas en la tabla de pedidos
+            for (int i = 0; i < tabla.getRowCount(); i++) {
+                //Obtener la cédula en cada iteración
+                String cedula = tabla.getValueAt(i, 1).toString();
+
+                //Validar si la cédula coincide con la cédula recibida
+                if (cedula.equals(txt)) {
+                    //Guardar el índice de la fila y romper el cíclo
+                    row = i;
+                    break;
+                }
+            }
+            //Comprobar que se seleccionó alguna fila
+            if (row >= 0) {
+                tabla.requestFocus();
+                tabla.setRowSelectionInterval(row, row);
+                tabla.setColumnSelectionInterval(0, tabla.getColumnCount() - 1);
+            } else {
+                msjError("No se encontró el pedido en los registros.\nPor favor, "
+                        + "actualice los datos y verifique la existencia de "
+                        + "la deuda.");
             }
         }
     }
@@ -1087,12 +1142,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      */
     public String getClienteApellido(String cedula) {
         if (type == CLIENTES) {
-            
+
             //Buscar todas las cédulas de los clientes en la tabla
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 //Obtener la cédula en cada iteración
                 String ci = tabla.getValueAt(i, 1).toString();
-                
+
                 //Validar si la cédula coincide con la cédula recibida
                 if (ci.equals(cedula)) {
                     //Retornar el apellido del cliente encontrado
@@ -1125,5 +1180,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private JMenuItem itemCompr;
     private JMenuItem itemUbicar;
     private JMenuItem itemGoogleMaps;
+    private JMenuItem itemInformacion;
     private DefaultTableModel modelo;
 }

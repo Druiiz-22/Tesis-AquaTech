@@ -485,8 +485,8 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
      * @param parent
      * @param modal
      */
-    public NuevoUsuario(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public NuevoUsuario() {
+        super(main.Run.getFrameRoot(), true);
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
         this.setResizable(false);

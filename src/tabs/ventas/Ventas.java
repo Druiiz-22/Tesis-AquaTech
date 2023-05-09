@@ -761,6 +761,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         checkDelivery.setLocation(positionX, positionY);
 
         //Posición vertical de los dos botones inferiores
+        txtHeight += 10;
         positionY = panelVentas.getHeight() - txtHeight - padding;
 
         //Ancho del botón de cancelar

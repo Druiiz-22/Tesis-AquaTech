@@ -127,5 +127,5 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);
     private static final Tabla tabla = new Tabla(PROVEEDOR);
-    private static final NuevoProveedor nuevo = new NuevoProveedor(main.Run.getFrameRoot(), true);
+    private static final NuevoProveedor nuevo = new NuevoProveedor();
 }

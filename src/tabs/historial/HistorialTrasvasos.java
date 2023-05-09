@@ -95,7 +95,7 @@ public class HistorialTrasvasos extends JPanel implements properties.Constantes,
         tabla.buscar(factura);
 
         //Enfocar la tabla con la factura enviada
-        tabla.focusRow(factura);
+        tabla.enfocarFila(factura);
     }
 
     //COMPONENTES

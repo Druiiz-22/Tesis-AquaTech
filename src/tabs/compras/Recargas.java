@@ -475,6 +475,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
         txtPrecio.setLocation(padding, positionY);
 
         //Posición vertical de los dos botones inferiores
+        txtHeight += 10;
         positionY = panelRecarga.getHeight() - txtHeight - padding;
 
         //Ancho del botón de cancelar
