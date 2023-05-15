@@ -470,13 +470,11 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      */
     private void panelMediano() {
         //Obtener el tercio del panel contenedor
-        int halfWidth = width / 2 - padding * 2;
-        int infoWidth = (halfWidth < infoMaxWidth) ? halfWidth : infoMaxWidth;
         panelHeight += 15;
-        informacion.setSize(infoWidth, panelHeight);
+        informacion.setSize(infoMaxWidth, panelHeight);
 
         //Posicionar el panel de reportes al lado de la información
-        int x = padding * 2 + infoWidth;
+        int x = padding * 2 + infoMaxWidth;
         //Asignar el ancho como el resto del espacio
         int w = width - x - padding;
         panelReportes.setBounds(x, padding, w, panelHeight);

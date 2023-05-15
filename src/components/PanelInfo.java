@@ -108,8 +108,6 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
                 initAdmin();
                 break;
         }
-
-        actualizarDatos();
     }
 
     /**
@@ -129,20 +127,19 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
                         + "El apartado de ajustes permite configurar datos "
                         + "del programa manualmente:"
                         + "</p>"
-                        + "<ul>"
-                        + "<li>Precio de trasvase</li>"
-                        + "<li>Precio de venta</li>"
-                        + "<li>Ubicación del local</li>"
-                        + "<li>Nombre del local</li>"
+                        + "<ul style='list-style-type:none;margin-left:5px'>"
+                        + "<li>Precio de trasvase y venta</li>"
+                        + "<li>Sucursales y dispositivos registrados</li>"
                         + "</ul>"
                         + "<p>"
                         + "<b>Solo los administradores tienen permitido "
                         + "realizar los cambios.</b>"
-                        + "</p>"
+                        + "</p><br>"
                         + "<p>"
-                        + "Advertencia: Los cambios aplicados, <b>se verán "
-                        + "reflejados en todos los dispositivos</b> "
-                        + "conectados a la base de datos."
+                        + "<font color='#C00000'><b>Advertencia:</b></font> "
+                        + "Los cambios aplicados, <b>se verán reflejados en "
+                        + "todos los dispositivos</b> conectados a la base de "
+                        + "datos local y la nube."
                         + "</p>"
                         + "</html>";
                 break;

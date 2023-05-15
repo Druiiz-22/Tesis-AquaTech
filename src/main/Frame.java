@@ -91,12 +91,12 @@ public class Frame extends JFrame implements properties.Constantes {
         glass.add(lateral);
 
         //LISTA DE COSAS PENDIENTES
-        //- Terminar pedidos
-        //- Reporte de pedidos
-        //- Reajustar reporte de trasvasos
         //- Diseñar los ajustes
-        //- Reajustar reportes por sucursales
         //- Crear el rol de "operador"
+        
+        //- Reajustar reportes por sucursales
+        //- Reajustar reporte de trasvasos
+        //- Reporte de pedidos
         //- Dar formulario a los RIF
         
         //CAMBIOS EN LA BASE DE DATOS

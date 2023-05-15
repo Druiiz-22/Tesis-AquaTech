@@ -136,17 +136,15 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         //Aumentar 15px al ancho y alto de los paneles
         width += 15;
         panelHeight += 15;
-
-        //Mitad del ancho del contenedor
-        int halfWidth = width / 2 - padding * 2;
-        //Validar que el ancho NO supere el límite establecido
-        int infoWidth = (halfWidth < infoMaxWidth) ? halfWidth : infoMaxWidth;
-
+        
+        //Ancho máximo para el panel informativo
+        int infoMaxWidth = 300;
+        
         //Asignar el tamaño a la información
-        informacion.setSize(infoWidth, panelHeight);
+        informacion.setSize(infoMaxWidth, panelHeight);
 
         //Posición en x del panel de usuarios
-        int x = infoWidth + padding * 2;
+        int x = infoMaxWidth + padding * 2;
         //Ancho del panel de usuarios
         int w = width - x - padding;
         //Asignar la posición y el tamaño al panel de usuarios
@@ -213,7 +211,6 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     //ATRIBUTOS
     private static int width, panelHeight;
     private static final int padding = 20;
-    private static final int infoMaxWidth = 300;
 
     //COMPONENTES
     private static final PanelInfo informacion = new PanelInfo(ADMIN_USUARIOS);

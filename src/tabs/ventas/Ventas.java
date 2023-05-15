@@ -641,21 +641,14 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
      * 900 px
      */
     private void panelMediano() {
-
         this.facHeight += 20;
         this.ventaHeight += 20;
 
-        //Dividir el panel en dos 
-        int halfWidth = width / 2 - padding * 2;
-
-        //Comprobar que la mitad del panel NO supere el ancho
-        //máximo posible del botón y factura
-        int clienteWidth = (halfWidth > facMaxWidth) ? facMaxWidth : halfWidth;
-        btnCliente.setSize(clienteWidth, btnHeight);
-        factura.setSize(clienteWidth, facHeight);
+        btnCliente.setSize(facMaxWidth, btnHeight);
+        factura.setSize(facMaxWidth, facHeight);
 
         //Posicionar el panel de trasvaso después de la factura
-        int trasvX = padding * 2 + clienteWidth;
+        int trasvX = padding * 2 + facMaxWidth;
         //Obtener el ancho del panel, menos la posición en X del panel
         //de trasvaso y restarle un padding
         int trasvWidth = width - trasvX - padding;

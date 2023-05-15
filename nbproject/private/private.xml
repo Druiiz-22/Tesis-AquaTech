@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2">
         <file>
             <url>src/tabs/compras/Compras.java</url>
             <bookmark id="1">
@@ -9,15 +9,22 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>src/components/PanelInfo.java</url>
+            <bookmark id="2">
+                <name/>
+                <line>140</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/components/map/PanelMap.java</file>
-            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/components/Tabla.java</file>
-            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/tabs/clientes/Deudas.java</file>
+            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/tabs/admin/Ajustes.java</file>
+            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/tabs/admin/AjustesSucursales.java</file>
+            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/tabs/admin/AjustesGenerales.java</file>
             <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/main/Frame.java</file>
-            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/tabs/ventas/Pedidos.java</file>
-            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/components/map/MyWaypoint.java</file>
+            <file>file:/F:/Main%20Files/Documentos/NetBeansProjects/Tesis-AquaTech/src/tabs/admin/AjustesDispositivos.java</file>
         </group>
     </open-files>
 </project-private>

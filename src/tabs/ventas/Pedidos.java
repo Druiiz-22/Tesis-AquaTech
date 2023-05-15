@@ -27,9 +27,6 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
 
         initComponents();
         listeners();
-
-        //PENDIENTE
-        // - Abrir una ventana con la información detallada del pedido seleccionado
     }
 
     private void initComponents() {

@@ -625,12 +625,10 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         impH += 8;
         expH += 7;
         infoHeight += 15;
+        
+        informacion.setSize(infoMaxWidth, infoHeight);
 
-        int halfWidth = width / 2 - padding * 2;
-        int infoWidth = (halfWidth < infoMaxWidth) ? halfWidth : infoMaxWidth;
-        informacion.setSize(infoWidth, infoHeight);
-
-        int x = infoWidth + padding * 2;
+        int x = infoMaxWidth + padding * 2;
         int w = width - x - padding;
         panelExporte.setBounds(x, padding, w, expH);
 

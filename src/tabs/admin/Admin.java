@@ -134,6 +134,7 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         int scrollY = scroll.getHeight() - 20;
         
         //Redimencionar los paneles
+        panelAjustes.relocateComponents(scrollW, scrollY);
         panelReportes.relocateComponents(scrollW, scrollY);
         panelUsuarios.relocateComponents(scrollW, scrollY);
         panelRespaldo.relocateComponents(scrollW, scrollY);
