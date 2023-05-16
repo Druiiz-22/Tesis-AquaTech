@@ -239,8 +239,9 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
 
         //PROPIEDADES DEL DESTINATARIO
         this.lblPersona = new Label[2][2];
-        this.lblPersona[0][0] = new Label((this.type == COMPRAS) ? "RIF" : "Cédula", GRUESA, fontSize);
-        this.lblPersona[0][1] = new Label((this.type == COMPRAS) ? "Nombre" : "Apellido", GRUESA, fontSize);
+        boolean compras = (this.type == COMPRAS_BOTELLON || this.type == COMPRAS_RECARGA);
+        this.lblPersona[0][0] = new Label((compras) ? "RIF" : "Cédula", GRUESA, fontSize);
+        this.lblPersona[0][1] = new Label((compras) ? "Nombre" : "Apellido", GRUESA, fontSize);
         this.lblPersona[1][0] = new Label("", PLANO, fontSize);
         this.lblPersona[1][1] = new Label("", PLANO, fontSize);
 
