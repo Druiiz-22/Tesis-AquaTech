@@ -82,8 +82,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
 
-                Object cedula = tabla.getValueAt(index, 0);
-                Object apellido = tabla.getValueAt(index, 2);
+                Object cedula = tabla.getValueAt(index, 1);
+                Object apellido = tabla.getValueAt(index, 3);
 
                 //Validar que los campos NO estén vacíos
                 if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
@@ -103,8 +103,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-                Object cedula = tabla.getValueAt(index, 0);
-                Object apellido = tabla.getValueAt(index, 2);
+                Object cedula = tabla.getValueAt(index, 1);
+                Object apellido = tabla.getValueAt(index, 3);
 
                 //Validar que los campos NO estén vacíos
                 if (!cedula.toString().isEmpty() && !apellido.toString().isEmpty()) {
@@ -137,8 +137,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-                Object rif = tabla.getValueAt(index, 0);
-                Object nombre = tabla.getValueAt(index, 1);
+                Object rif = tabla.getValueAt(index, 1);
+                Object nombre = tabla.getValueAt(index, 2);
 
                 //Validar que los campos NO estén vacíos
                 if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
@@ -158,8 +158,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-                Object rif = tabla.getValueAt(index, 0);
-                Object nombre = tabla.getValueAt(index, 1);
+                Object rif = tabla.getValueAt(index, 1);
+                Object nombre = tabla.getValueAt(index, 2);
 
                 //Validar que los campos NO estén vacíos
                 if (!rif.toString().isEmpty() && !nombre.toString().isEmpty()) {
