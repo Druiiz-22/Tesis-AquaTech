@@ -81,7 +81,8 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-
+                
+                //Obtener la cédula y apellido del cliente
                 Object cedula = tabla.getValueAt(index, 1);
                 Object apellido = tabla.getValueAt(index, 3);
 
