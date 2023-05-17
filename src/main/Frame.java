@@ -26,12 +26,14 @@ public class Frame extends JFrame implements properties.Constantes {
     /**
      * Constructor del frame del programa principal
      *
-     * @param nombreUsuario Nombre de usuario
-     * @param rolUsuario Rol del usuario
+     * @param identificacion Nombre de usuario
+     * @param rol
+     * @param nombre
      */
-    public Frame(String nombreUsuario, int rolUsuario) {
-        Frame.nombreUsuario = nombreUsuario;
-        Frame.rolUsuario = rolUsuario;
+    public Frame(String identificacion, int rol, String nombre) {
+        Frame.identificacion = identificacion;
+        Frame.rol = rol;
+        Frame.nombre = nombre;
 
         //Propiedades básicas
         this.getContentPane().setLayout(null);
@@ -51,7 +53,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Presionar el botón de inicio
         clickButton(INICIO);
 
-        if (rolUsuario == ADMINISTRADOR) {
+        if (rol == ADMINISTRADOR) {
             lateral.addAdminButton();
         } else {
             lateral.removeAdminButton();
@@ -62,7 +64,7 @@ public class Frame extends JFrame implements properties.Constantes {
      * Función para iniciar los componentes
      */
     private void initComponents() {
-        Inicio.setUserName(Frame.nombreUsuario);
+        Inicio.setUserName(Frame.nombre);
 
         //Agregar los componentes
         this.add(menu);
@@ -341,8 +343,9 @@ public class Frame extends JFrame implements properties.Constantes {
         contenedor.vaciarCampos();
 
         //Vaciar los datos del usuario
-        nombreUsuario = null;
-        rolUsuario = -99;
+        nombre = null;
+        identificacion = null;
+        rol = -99;
     }
 
     /**
@@ -351,7 +354,7 @@ public class Frame extends JFrame implements properties.Constantes {
      * @return
      */
     public static String getUserName() {
-        return nombreUsuario;
+        return nombre;
     }
 
     /**
@@ -360,12 +363,17 @@ public class Frame extends JFrame implements properties.Constantes {
      * @return
      */
     public static int getUserRol() {
-        return rolUsuario;
+        return rol;
     }
 
+    public static String getUserIdentified(){
+        return Frame.identificacion;
+    }
+    
     //ATRIBUTOS
-    private static String nombreUsuario;
-    private static int rolUsuario;
+    private static String nombre;
+    private static String identificacion;
+    private static int rol;
 
     //COMPONENTES
     private static final MenuSuperior menu = new MenuSuperior();

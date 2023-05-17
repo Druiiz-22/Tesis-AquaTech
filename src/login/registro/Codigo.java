@@ -72,7 +72,7 @@ public class Codigo extends javax.swing.JPanel implements properties.Colores, pr
 
         txtCodigo.requestFocus();
         //Retornar falso, en caso de no retornar true antes.
-        return true;
+        return false;
     }
 
     /**

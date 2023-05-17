@@ -1,5 +1,9 @@
 package database;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import properties.Mensaje;
+
 /**
  * Clase contenedora de funciones estáticos para la obtención de datos de la
  * base de datos
@@ -12,7 +16,40 @@ public class ReadDB {
      * @return Precio de los trasvasos
      */
     public static double getPrecioTrasvaso() {
-        return 7.5;
+        //Preparar la sentencia SQL para obtener el trasvaso
+        String sql = "SELECT trasvaso_bs FROM Precios WHERE id=1";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Avanzar a la primera fila obtenida
+                r.next();
+                //Obtener el precio
+                Double precio = r.getDouble(1);
+
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+
+                //Retornar el precio
+                return precio;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO retornar el precio anterior, se retornará 0 en }
+        //caso de error
+        return 0;
     }
 
     /**
@@ -21,7 +58,40 @@ public class ReadDB {
      * @return Precio de venta de los botellones
      */
     public static double getPrecioVenta() {
-        return 100;
+        //Preparar la sentencia SQL para obtener el trasvaso
+        String sql = "SELECT venta_bs FROM Precios WHERE id=1";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Avanzar a la primera fila obtenida
+                r.next();
+                //Obtener el precio
+                Double precio = r.getDouble(1);
+
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+
+                //Retornar el precio
+                return precio;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el precio de venta del botellón.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO retornar el precio anterior, se retornará 0 en }
+        //caso de error
+        return 0;
     }
 
     /**
@@ -78,9 +148,38 @@ public class ReadDB {
      *
      * @return
      */
-    public static boolean emailExists(String correo) {
+    public static int emailExists(String correo) {
+        //Preparar la sentencia SQL para obtener el trasvaso
+        String sql = "SELECT COUNT(*) FROM Usuario WHERE correo = \"" + correo + "\"";
 
-        return true;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Avanzar a la primera fila obtenida
+                r.next();
+
+                int count = r.getInt(1);
+
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+
+                return count;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        return -1;
     }
 
     /**
@@ -90,11 +189,53 @@ public class ReadDB {
      * @param pass
      * @return
      */
-    public static boolean getUser(String user, int pass) {
+    public static Object[] getUser(String user, int pass) {
+        //Preparar la sentencia SQL para obtener el trasvaso
+        String sql = "SELECT Nombre, Apellido, Rol "
+                + "FROM Usuario "
+                + "INNER JOIN Cliente "
+                + "ON Usuario.correo = \"" + user + "\""
+                + "OR Cliente.cedula = \"" + user + "\""
+                + "AND Usuario.contraseña = \"" + pass + "\"";
 
-        return !(user.isEmpty() || pass == 0);
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Avanzar a la primera fila obtenida
+                r.next();
+                
+                String nombre = r.getString(1);
+                String apellido = r.getString(2);
+                int rol = r.getInt(3);
+                
+                String name;
+                name = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
+                name += " ";
+                name += apellido.substring(0, 1).toUpperCase() + apellido.substring(1);
+                
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+
+                return new Object[]{rol, name};
+                
+            }
+        } catch (NumberFormatException | SQLException e) {
+            System.out.println("error = "+e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        return null;
     }
-    
+
     //========== HISTORIAL ==========
     /**
      * Función para obtener todos los clientes registrados en el sistema
@@ -699,7 +840,7 @@ public class ReadDB {
 
     public static Object[][] getTransferencias() {
         //ID, Pedido, Referencia, Banco, Fecha
-        
+
         Object[][] transf = {
             {157, 1, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "BANESCO", "27-2-2023 12:06"},
             {156, 2, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "PROVINCIAL", "27-2-2023 12:54"},

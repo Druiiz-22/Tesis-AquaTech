@@ -146,18 +146,10 @@ public class Inicio extends JPanel implements properties.Colores, properties.Con
     /**
      * Mostrar el nombre del usuario (capitalizado) en el label de bienvenida
      *
-     * @param name Nombre del usuario
+     * @param nombre Nombre del usuario
      */
-    public static void setUserName(String name) {
-        String split[] = name.split(" ");
-        String capitalize = "";
-        
-        for (String nombre : split){
-            capitalize += nombre.substring(0, 1).toUpperCase() + nombre.substring(1).toLowerCase();
-            capitalize += " ";
-        }
-        
-        lblSaludo.setText("Bienvenido, usuario " + capitalize);
+    public static void setUserName(String nombre) {
+        lblSaludo.setText("Bienvenido, usuario " + nombre);
     }
 
     //COMPONENTES

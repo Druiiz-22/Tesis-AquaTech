@@ -32,7 +32,7 @@ public class AdminDB implements properties.Constantes {
         if (rol == ADMINISTRADOR) {
             
             //Obtener el nombre del usuario de la sesión iniciada
-            String name = Frame.getUserName();
+            String name = Frame.getUserIdentified();
             
             
             //Panel de ingreso de contraseña para el JOptionPane
@@ -89,7 +89,9 @@ public class AdminDB implements properties.Constantes {
 
                 //Validar que coincida la clave ingresada con el usuario que 
                 //tiene la sesión iniciada
-                if (ReadDB.getUser(name, password)) {
+                Object[] cuenta = ReadDB.getUser(Frame.getUserIdentified(), password);
+                
+                if (cuenta != null) {
                     intentos = 0;
                     return true;
 

@@ -30,20 +30,18 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      * @return TRUE en caso de que exista coincidencia.
      */
     private boolean validarUsuario() {
-        //Obtener los datos ingresados
-        String userField = txtUsuario.getText().trim().toUpperCase();
-
-        //Obtener la contraseña en HashCode
-        int passField = String.valueOf(txtClave.getPassword()).hashCode();
-
         //Validar la existencia del usuario
-        boolean existe = ReadDB.getUser(userField, passField);
+        Object[] cuenta = ReadDB.getUser(identificacion, clave);
 
         //Comprobar la existencia del usuario
-        if (existe) {
+        if (cuenta != null) {
 
+            Inicio.rol = Integer.parseInt(cuenta[0].toString());
+            Inicio.nombre = cuenta[1].toString();
+            
             //Reiniciar los intentos
             intentos = 0;
+            
             return true;
 
         } else {
@@ -91,7 +89,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
                 //Iniciar el programa con el nombre del usuario y
                 //su nivel de rol
-                Run.iniciarPrograma("DIEGO RUIZ", ADMINISTRADOR);
+                Run.iniciarPrograma(identificacion, rol, nombre);
 
                 //Vaciar los campos del inicio
                 vaciarCampos();
@@ -109,16 +107,16 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      */
     private boolean validarCampos() {
         //Obtener el usuario
-        String userField = txtUsuario.getText().trim();
+        identificacion = txtUsuario.getText().trim().toUpperCase();
 
         //Obtener la contraseña
-        String passField = String.valueOf(txtClave.getPassword()).trim();
+        clave = String.valueOf(txtClave.getPassword()).hashCode();
 
         //Validar que el usuario NO esté vacío
-        if (!userField.isEmpty()) {
+        if (!identificacion.isEmpty()) {
 
             //Validar que la contraseña NO esté vacío
-            if (!passField.isEmpty()) {
+            if (clave != 0) {
 
                 return true;
 
@@ -145,6 +143,10 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
     //ATRIBUTOS
     private static int intentos = 0;
+    private static String identificacion;
+    private static String nombre;
+    private static int clave;
+    private static int rol;
 
     // ========== FRONTEND ==========
     /**

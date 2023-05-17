@@ -33,7 +33,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
         if (validarCampo()) {
 
             //Validar que el correo SÍ exista en la base de datos
-            if (ReadDB.emailExists(correoUsuario)) {
+            if (ReadDB.emailExists(correoUsuario) == 1) {
 
                 //Generar un número aleatorio de 6 dígitos
                 int codigoSeguridad = (int) (Math.random() * (999999 - 100000) + 100000);
@@ -76,7 +76,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
      * @return TRUE en caso de que el correo sea válido.
      */
     private boolean validarCampo() {
-        correoUsuario = txtCorreo.getText().trim();
+        correoUsuario = txtCorreo.getText().trim().toUpperCase();
 
         //Validar que el campo no esté vacío
         if (!correoUsuario.isEmpty()) {

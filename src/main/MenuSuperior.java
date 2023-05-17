@@ -2,7 +2,6 @@ package main;
 
 import components.Label;
 import components.Logo;
-import components.PanelNotificaciones;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.GridLayout;

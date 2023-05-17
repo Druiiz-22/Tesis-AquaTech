@@ -1,7 +1,7 @@
 package main;
 
 import database.ConexionDB;
-import java.sql.Connection;
+import database.ReadDB;
 
 public class Run {
 
@@ -13,18 +13,29 @@ public class Run {
 
     public static void main(String[] args) {
         
-        ConexionDB bddConexion = new ConexionDB();
+//        System.out.println("Conectar con la bdd...\n");
+//        
+//        
+//        try {
+//            String query = "SELECT * FROM Cliente";
+//            ResultSet result = bdd.createStatement().executeQuery(query);
+//            
+//            String datos[] = new String[5];
+//            
+//            while(result.next()){
+//                datos[0] = result.getString(1);
+//                datos[1] = result.getString(2);
+//                datos[2] = result.getString(3);
+//                datos[3] = result.getString(4);
+//                datos[4] = result.getString(5);
+//                System.out.println("Datos = "+Arrays.toString(datos));
+//            }
+//            
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
         
-        System.out.println("Conectar con la bdd...\n");
-        Connection bdd = bddConexion.conectar();
-        
-        System.out.println("\nbdd = "+bdd);
-        
-        System.out.println("\nDesconectar la bdd.");
-        bddConexion.desconectar();
-        
-        
-//        iniciarLogin();
+        iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
 
@@ -47,12 +58,13 @@ public class Run {
     /**
      * Función para iniciar el programa principal
      *
-     * @param nombreUsuario Nombre del usuario
-     * @param rolUsuario Rol del usuario
+     * @param identificacion Identificación del usuario
+     * @param rol Rol del usuario
+     * @param nombre Nombre del usuario
      */
-    public static void iniciarPrograma(String nombreUsuario, int rolUsuario) {
+    public static void iniciarPrograma(String identificacion, int rol, String nombre) {
 
-        mainFrame = new main.Frame(nombreUsuario, rolUsuario);
+        mainFrame = new main.Frame(identificacion, rol, nombre);
 
     }
 
