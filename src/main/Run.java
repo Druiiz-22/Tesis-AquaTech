@@ -1,7 +1,7 @@
 package main;
 
-import java.text.DecimalFormat;
-import javax.swing.JOptionPane;
+import database.ConexionDB;
+import java.sql.Connection;
 
 public class Run {
 
@@ -12,7 +12,19 @@ public class Run {
     private static main.Frame mainFrame;
 
     public static void main(String[] args) {
-        iniciarLogin();
+        
+        ConexionDB bddConexion = new ConexionDB();
+        
+        System.out.println("Conectar con la bdd...\n");
+        Connection bdd = bddConexion.conectar();
+        
+        System.out.println("\nbdd = "+bdd);
+        
+        System.out.println("\nDesconectar la bdd.");
+        bddConexion.desconectar();
+        
+        
+//        iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
 
