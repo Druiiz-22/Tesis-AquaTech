@@ -525,10 +525,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     /**
      * Función para insertar una lista de datos entera a la tabla, mediante una
      * única llamada a una función.
+     * @return 
      */
-    public void actualizarDatos() {
+    public boolean actualizarDatos() {
         //Matriz para guardar los datos retornados de la base de datos
-        Object[][] datos = new Object[][]{{""}};
+        Object[][] datos = null;
 
         //Determinar el tipo de la tabla y buscar sus registros en la base de datos
         switch (type) {
@@ -599,7 +600,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 datos = ReadDB.getUsers();
                 break;
         }
-
+        
+        //Si los datos obtenidos es nulo, retornar busqueda incompleta
+        if(datos == null){
+            return false;
+        }
+        
         //Eliminar todos los componentes de la tabla
         tabla.removeAll();
 
@@ -621,6 +627,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         //Insertar el modelo en la tabla
         tabla.setModel(modelo);
+        
+        //Retornar busqueda exitosa
+        return true;
     }
 
     /**

@@ -8,7 +8,7 @@ import properties.Mensaje;
  * Clase contenedora de funciones estáticos para la obtención de datos de la
  * base de datos
  */
-public class ReadDB {
+public class ReadDB implements properties.Constantes {
 
     /**
      * Función para obtener el precio actual de los trasvasos
@@ -27,10 +27,9 @@ public class ReadDB {
         ResultSet r = bdd.ejecutarQuery(sql);
 
         try {
-            //Validar que la respuesta NO sea null
-            if (r != null) {
-                //Avanzar a la primera fila obtenida
-                r.next();
+            //Validar que la respuesta NO sea null y que tenga, al menos, un dato
+            //obtenido que se pueda avanzar.
+            if (r != null && r.next()) {
                 //Obtener el precio
                 Double precio = r.getDouble(1);
 
@@ -47,9 +46,8 @@ public class ReadDB {
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
-        //En caso de NO retornar el precio anterior, se retornará 0 en }
-        //caso de error
-        return 0;
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_NUMBER;
     }
 
     /**
@@ -69,10 +67,9 @@ public class ReadDB {
         ResultSet r = bdd.ejecutarQuery(sql);
 
         try {
-            //Validar que la respuesta NO sea null
-            if (r != null) {
-                //Avanzar a la primera fila obtenida
-                r.next();
+            //Validar que la respuesta NO sea null y que tenga, al menos, un dato
+            //obtenido que se pueda avanzar.
+            if (r != null && r.next()) {
                 //Obtener el precio
                 Double precio = r.getDouble(1);
 
@@ -89,9 +86,8 @@ public class ReadDB {
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
-        //En caso de NO retornar el precio anterior, se retornará 0 en }
-        //caso de error
-        return 0;
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_NUMBER;
     }
 
     /**
@@ -160,11 +156,9 @@ public class ReadDB {
         ResultSet r = bdd.ejecutarQuery(sql);
 
         try {
-            //Validar que la respuesta NO sea null
-            if (r != null) {
-                //Avanzar a la primera fila obtenida
-                r.next();
-
+            //Validar que la respuesta NO sea null y que tenga, al menos, un dato
+            //obtenido que se pueda avanzar.
+            if (r != null && r.next()) {
                 int count = r.getInt(1);
 
                 //Terminar la conexión con la base de datos
@@ -191,11 +185,11 @@ public class ReadDB {
      */
     public static Object[] getUser(String user, int pass) {
         //Preparar la sentencia SQL para obtener el trasvaso
-        String sql = "SELECT Nombre, Apellido, Rol "
+        String sql = "SELECT nombre, apellido, rol "
                 + "FROM Usuario "
                 + "INNER JOIN Cliente "
-                + "ON Usuario.correo = \"" + user + "\""
-                + "OR Cliente.cedula = \"" + user + "\""
+                + "ON (Usuario.correo = \"" + user + "\""
+                + "OR Cliente.cedula = \"" + user + "\")"
                 + "AND Usuario.contraseña = \"" + pass + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
@@ -206,28 +200,35 @@ public class ReadDB {
         ResultSet r = bdd.ejecutarQuery(sql);
 
         try {
-            //Validar que la respuesta NO sea null
+            //Validar que se haya obtenido una respuesta
             if (r != null) {
-                //Avanzar a la primera fila obtenida
-                r.next();
-                
-                String nombre = r.getString(1);
-                String apellido = r.getString(2);
-                int rol = r.getInt(3);
-                
-                String name;
-                name = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
-                name += " ";
-                name += apellido.substring(0, 1).toUpperCase() + apellido.substring(1);
-                
-                //Terminar la conexión con la base de datos
-                bdd.desconectar();
+                //Validar que se haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener los datos
+                    String nombre = r.getString(1);
+                    String apellido = r.getString(2);
+                    int rol = r.getInt(3);
 
-                return new Object[]{rol, name};
-                
+                    //Convertir el nombre y apellido en una sola cadena capitalizada
+                    String name;
+                    name = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
+                    name += " ";
+                    name += apellido.substring(0, 1).toUpperCase() + apellido.substring(1);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el rol y el nombre del usuario
+                    return new Object[]{rol, name};
+                } else {
+                    Mensaje.msjError(
+                            "El usuario o contraseña es incorrecto.\n"
+                            + "Por favor, verifique sus datos"
+                    );
+                }
             }
         } catch (NumberFormatException | SQLException e) {
-            System.out.println("error = "+e);
+            System.out.println("Error getUser = " + e);
         }
 
         //Terminar la conexión con la base de datos

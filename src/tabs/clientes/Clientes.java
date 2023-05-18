@@ -116,13 +116,6 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         //Mostrar el panel, según el tipo
         card.show(contenedor, (type == CLIENTES) ? "1" : "2");
 
-        //Actualizar datos cuando se muestre el panel de clientes
-        if (btnClientes.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelClientes.actualizarDatos();
-        } else {
-            panelDeudas.actualizarDatos();
-        }
-
     }
 
     /**
@@ -135,10 +128,12 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
 
     /**
      * Función para actualizar todos los datos de la pestaña
+     * @return 
      */
-    public static void actualizarDatos() {
-        PanelClientes.actualizarDatos();
-        Deudas.actualizarDatos();
+    public static boolean actualizarDatos() {
+        //retornar como busqueda exitosa cuando los dos se hayan completado
+        //correctamente.
+        return PanelClientes.actualizarDatos() && Deudas.actualizarDatos();
     }
 
     //COMPONENTES

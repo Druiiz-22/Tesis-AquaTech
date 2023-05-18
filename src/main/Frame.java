@@ -42,9 +42,8 @@ public class Frame extends JFrame implements properties.Constantes {
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setIconTitle();
         this.setLocationRelativeTo(null);
-        this.setVisible(true);
         this.setTitle("AquaTech - Inicio");
-
+        
         //Iniciar los componentes
         initComponents();
 
@@ -70,9 +69,6 @@ public class Frame extends JFrame implements properties.Constantes {
         this.add(menu);
         this.add(lateral);
         this.add(contenedor);
-
-        //Actualizar todas las pestañas 
-        contenedor.actualizarDatos();
 
         //GlassPane de notificaciones
         this.setGlassPane(new JComponent() {
@@ -368,6 +364,10 @@ public class Frame extends JFrame implements properties.Constantes {
 
     public static String getUserIdentified(){
         return Frame.identificacion;
+    }
+        
+    protected static boolean actualizarPrograma(){
+        return Contenedor.actualizarDatos();
     }
     
     //ATRIBUTOS

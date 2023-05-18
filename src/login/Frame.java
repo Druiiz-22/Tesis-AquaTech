@@ -22,7 +22,6 @@ public class Frame extends JFrame implements properties.Constantes {
      * Constructor para la creación del Frame del Login.
      */
     public Frame() {
-
         //Tema de Windows
         this.WindowsTheme();
 
@@ -127,6 +126,7 @@ public class Frame extends JFrame implements properties.Constantes {
             );
         }
     }
+    
     
     //COMPONENTES
     private static final JPanel panelContenedor = new JPanel(null);

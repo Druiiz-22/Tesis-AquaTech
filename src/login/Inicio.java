@@ -7,6 +7,7 @@ import components.CampoTexto;
 import components.Label;
 import components.Logo;
 import database.ReadDB;
+import java.awt.Cursor;
 import javax.swing.JPanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -38,30 +39,20 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
             Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
-            
+
             //Reiniciar los intentos
             intentos = 0;
-            
+
             return true;
 
         } else {
-
             //Sumar un intento fallido
             intentos++;
 
-            if (intentos < 3) {
-                //Mostrar un mensaje de error si NO ha superado el límite 
-                //de intentos permitidos para iniciar sesión
-                msjError(
-                        "El usuario ingresado no existe.\n"
-                        + "Por favor, revise sus datos."
-                );
-
-            } else {
+            if (intentos == 3) {
                 //Mostrar un mensaje de error
                 msjError(
-                        "El usuario ingresado no existe.\n"
-                        + "Ha superado el límite de intentos de inicio.\n"
+                        "Ha superado el límite de intentos de inicio.\n"
                         + "El programa se cerrará."
                 );
 
@@ -80,22 +71,32 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      * Función para validar los datos y realizar el logeo
      */
     private void logear() {
-        //Validar que los campos estén correctos
-        if (validarCampos()) {
+        if (!iniciando) {
+            //Validar que los campos estén correctos
+            if (validarCampos()) {
 
-            //Validar que el usuario realmente exista
-            //en la base de datos
-            if (validarUsuario()) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-                //Iniciar el programa con el nombre del usuario y
-                //su nivel de rol
-                Run.iniciarPrograma(identificacion, rol, nombre);
+                        //Validar que el usuario realmente exista
+                        //en la base de datos
+                        if (validarUsuario()) {
+                            //Vaciar los campos del inicio
+                            vaciarCampos();
 
-                //Vaciar los campos del inicio
-                vaciarCampos();
+                            //Cerrar el login
+                            Run.cerrarLogin();
 
-                //Cerrar el login
-                Run.cerrarLogin();
+                            //Abrir el splash screen
+                            IniciarPrograma iniciar = new IniciarPrograma(identificacion, rol, nombre);
+                        }
+
+                        setCursor(Cursor.getDefaultCursor());
+                        iniciando = false;
+                    }
+                }.start();
             }
         }
     }
@@ -147,6 +148,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     private static String nombre;
     private static int clave;
     private static int rol;
+    private static boolean iniciando;
 
     // ========== FRONTEND ==========
     /**

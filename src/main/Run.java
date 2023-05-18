@@ -12,7 +12,7 @@ public class Run {
     private static main.Frame mainFrame;
 
     public static void main(String[] args) {
-        
+
 //        System.out.println("Conectar con la bdd...\n");
 //        
 //        
@@ -34,7 +34,6 @@ public class Run {
 //        } catch (Exception e) {
 //            System.out.println(e);
 //        }
-        
         iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
@@ -63,11 +62,24 @@ public class Run {
      * @param nombre Nombre del usuario
      */
     public static void iniciarPrograma(String identificacion, int rol, String nombre) {
-
         mainFrame = new main.Frame(identificacion, rol, nombre);
-
     }
 
+    public static boolean actualizarPrograma() {
+        if (mainFrame != null) {
+            return mainFrame.actualizarPrograma();
+
+        } else {
+            return false;
+        }
+    }
+
+    public static void setFrameVisible(boolean visible) {
+        if (mainFrame != null) {
+            mainFrame.setVisible(visible);
+        }
+    }
+    
     /**
      * Función para cerrar el frame del programa principal
      */

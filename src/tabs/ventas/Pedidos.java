@@ -101,16 +101,27 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         txtBusqueda.setText("");
     }
 
-    public static void actualizarDatos() {
+    public static boolean actualizarDatos() {
         txtBusqueda.setText("");
-        tabla.actualizarDatos();
-        mapa.actualizarPuntos();
         transferencias = ReadDB.getTransferencias();
+        
+        //Validar que la tabla y las transferencias hayan realizado sus busquedas
+        //de manera exitosa
+        if(tabla.actualizarDatos() && transferencias != null){
+            mapa.actualizarPuntos();
 
-        //Enviar la cantidad de pedidos para notificaciones
-        int rows = tabla.getRowCount();
-        PanelNotificaciones.setPedidos(rows);
-        MenuSuperior.setNotificationCount(rows);
+            //Enviar la cantidad de pedidos para notificaciones
+            int rows = tabla.getRowCount();
+            PanelNotificaciones.setPedidos(rows);
+            MenuSuperior.setNotificationCount(rows);
+            
+            //Retornar busqueda exitosa
+            return true;
+
+        } else {
+            //Retornar busqueda incompleta
+            return false;
+        }
     }
 
     public static Object[][] getTable() {

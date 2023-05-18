@@ -144,20 +144,6 @@ public class Historial extends JPanel implements properties.Constantes, properti
                         : (type == HISTORIAL_RECARGA) ? "2"
                                 : (type == HISTORIAL_VENTA) ? "3" : "4"
         );
-
-        //Actualizar los datos del historial que se esté visualizando
-        if (btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelTrasvasos.actualizarDatos();
-
-        } else if (btnRecargas.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelRecargas.actualizarDatos();
-
-        } else if (btnVentas.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelVentas.actualizarDatos();
-
-        } else if (btnCompras.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelCompras.actualizarDatos();
-        }
     }
 
     public static void vaciarCampos() {
@@ -169,11 +155,13 @@ public class Historial extends JPanel implements properties.Constantes, properti
         replacePanel(HISTORIAL_TRASVASO);
     }
 
-    public static void actualizarDatos() {
-        HistorialTrasvasos.actualizarDatos();
-        HistorialRecargas.actualizarDatos();
-        HistorialVentas.actualizarDatos();
-        HistorialCompras.actualizarDatos();
+    public static boolean actualizarDatos() {
+        //retornar como busqueda exitosa cuando todas las actualizaciones
+        //se hayan completado.
+        return HistorialTrasvasos.actualizarDatos() 
+                && HistorialRecargas.actualizarDatos()
+                && HistorialVentas.actualizarDatos()
+                && HistorialCompras.actualizarDatos();
     }
 
     //COMPONENTES

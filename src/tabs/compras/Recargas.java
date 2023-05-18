@@ -181,23 +181,28 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
+     * @return 
      */
-    protected void actualizarDatos() {
-        informacion.actualizarDatos();
+    protected boolean actualizarDatos() {
+        //Validar que el panel informativo se haya actualizado de manera correcta
+        if (informacion.actualizarDatos()) {
+            //Reposicionar el panel de información, según el 
+            //ancho del contenedor
+            if (width < 600) {
+                informacion.relocateComponents(PANEL_MEDIANO);
 
-        //Reposicionar el panel de información, según el 
-        //ancho del contenedor
-        if (width < 600) {
+            } else if (width < 900) {
+                informacion.relocateComponents(PANEL_GRANDE);
 
-            informacion.relocateComponents(PANEL_MEDIANO);
+            } else if (width >= 900) {
+                informacion.relocateComponents(PANEL_MEDIANO);
+            }
+            //Retornar busqueda exitosa
+            return true;
 
-        } else if (width < 900) {
-
-            informacion.relocateComponents(PANEL_GRANDE);
-
-        } else if (width >= 900) {
-
-            informacion.relocateComponents(PANEL_MEDIANO);
+        } else {
+            //Retornar busqueda incompleta
+            return false;
         }
     }
 

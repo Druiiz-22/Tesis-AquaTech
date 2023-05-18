@@ -21,13 +21,13 @@ public class Contenedor extends JPanel implements properties.Constantes {
      * Constructor para la creación del panel contenedor de la ventana principal
      */
     public Contenedor() {
-        
+
         this.setLayout(new BorderLayout());
         this.setBackground(properties.Colores.GRIS_CLARO);
 
         //Iniciar los componentes
         initComponents();
-        
+
     }
 
     /**
@@ -91,7 +91,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
                 this.add(panelInicio, BorderLayout.CENTER);
                 panelInicio.relocateComponents(this.getSize());
                 panelInicio.setButtonsUnselected();
-                
+
                 break;
             case CLIENTES:
                 this.add(panelClientes, BorderLayout.CENTER);
@@ -108,18 +108,15 @@ public class Contenedor extends JPanel implements properties.Constantes {
             case HISTORIAL:
                 this.add(panelHistorial, BorderLayout.CENTER);
                 panelHistorial.relocateComponents(this.getSize());
-                Historial.actualizarDatos();
                 break;
             case PROVEEDOR:
                 this.add(panelProv, BorderLayout.CENTER);
                 panelProv.relocateComponents(this.getSize());
-                Proveedores.actualizarDatos();
                 break;
             case ADMIN:
-                if(main.Frame.getUserRol() == ADMINISTRADOR){
+                if (main.Frame.getUserRol() == ADMINISTRADOR) {
                     this.add(panelAdmin, BorderLayout.CENTER);
                     panelAdmin.relocateComponents(this.getSize());
-                    Admin.actualizarDatos();
                 } else {
                     msjError("Usted no tiene los permisos para acceder a esta pestaña.");
                 }
@@ -135,33 +132,41 @@ public class Contenedor extends JPanel implements properties.Constantes {
     /**
      * Función para vaciar todos los campos de todos los paneles
      */
-    protected void vaciarCampos(){
+    protected void vaciarCampos() {
         Clientes.vaciarCampos();
         Historial.vaciarCampos();
         Proveedores.vaciarCampos();
         Ventas.vaciarCampos();
         Compras.vaciarCampos();
-        
-        if(main.Frame.getUserRol() == ADMINISTRADOR){
-            Admin.vaciarCampos(); 
+
+        if (main.Frame.getUserRol() == ADMINISTRADOR) {
+            Admin.vaciarCampos();
         }
     }
-    
+
     /**
      * Función para actualizar todos los datos de todas las pestañas
+     * @return 
      */
-    protected void actualizarDatos(){
-        Clientes.actualizarDatos();
-        Ventas.actualizarDatos();
-        Historial.actualizarDatos();
-        Compras.actualizarDatos();
-        Proveedores.actualizarDatos();
+    protected static boolean actualizarDatos() {
+        //retornar como busqueda exitosa cuando todas las actualizaciones
+        //se hayan completado.
+        boolean busquedas = Clientes.actualizarDatos()
+                && Ventas.actualizarDatos()
+                && Historial.actualizarDatos()
+                && Compras.actualizarDatos()
+                && Proveedores.actualizarDatos();
         
-        if(main.Frame.getUserRol() == ADMINISTRADOR){
-            Admin.actualizarDatos();
+        //Comprobar que el usuario sea administrador y que se hayan completado
+        //TODAS las busquedas, hasta este punto
+        if (busquedas && Frame.getUserRol() == ADMINISTRADOR) {
+            busquedas = Admin.actualizarDatos();
         }
+        
+        //Obtener el estado de las busquedas realizadas
+        return busquedas;
     }
-    
+
     //COMPONENTES
     private static final Inicio panelInicio = new Inicio();
     private static final Clientes panelClientes = new Clientes();

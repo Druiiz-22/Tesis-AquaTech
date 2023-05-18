@@ -171,18 +171,15 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
 
         //Determinar el preferred size
         if (btnTrasvasos.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelTrasvasos.actualizarDatos();
             contenedor.setPreferredSize(panelTrasvasos.getPreferredSize());
 
         } else if (btnVentas.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelVentas.actualizarDatos();
             contenedor.setPreferredSize(panelVentas.getPreferredSize());
 
         } else if (btnPedidos.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelPedidos.actualizarDatos();
             contenedor.setPreferredSize(panelPedidos.getPreferredSize());
         }
-        
+
     }
 
     /**
@@ -206,6 +203,7 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
 
     /**
      * Función para asignar los datos para pagar un pedido de un cliente
+     *
      * @param cedula
      * @param apellido
      * @param cantidad
@@ -217,11 +215,13 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
 
     /**
      * Función para actualizar todos los datos de la pestaña
+     *
+     * @return
      */
-    public static void actualizarDatos() {
-        panelTrasvasos.actualizarDatos();
-        panelVentas.actualizarDatos();
-        panelPedidos.actualizarDatos();
+    public static boolean actualizarDatos() {
+        //retornar como busqueda exitosa cuando todas las actualizaciones
+        //se hayan completado.
+        return panelTrasvasos.actualizarDatos() && panelVentas.actualizarDatos() && panelPedidos.actualizarDatos();
     }
 
     //COMPONENTES
@@ -406,28 +406,33 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
+     *
+     * @return
      */
-    protected void actualizarDatos() {
-
-        //Actualizar el panel de información
-        informacion.actualizarDatos();
-
+    protected boolean actualizarDatos() {
         //Obtener el precio
         precio = ReadDB.getPrecioVenta();
 
-        //Reposicionar el panel de información, según el 
-        //ancho del contenedor
-        if (width < 600) {
+        //Validar que el precio y el panel informativo, hayan buscado sus datos
+        //en la base de datos exitosamente
+        if (informacion.actualizarDatos() && precio != ERROR_NUMBER) {
+            //Reposicionar el panel de información, según el 
+            //ancho del contenedor
+            if (width < 600) {
+                informacion.relocateComponents(PANEL_MEDIANO);
 
-            informacion.relocateComponents(PANEL_MEDIANO);
+            } else if (width < 900) {
+                informacion.relocateComponents(PANEL_GRANDE);
 
-        } else if (width < 900) {
+            } else if (width >= 900) {
+                informacion.relocateComponents(PANEL_MEDIANO);
+            }
+            //Retornar busqueda exitosa
+            return true;
 
-            informacion.relocateComponents(PANEL_GRANDE);
-
-        } else if (width >= 900) {
-
-            informacion.relocateComponents(PANEL_MEDIANO);
+        } else {
+            //Retornar busqueda incompleta
+            return false;
         }
     }
 
@@ -444,14 +449,14 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         //Actualizar la factura
         PanelVentas.factura.setInformacion(cedula, apellido);
     }
-    
+
     /**
      * Función para asignar los datos para pagar un pedido de un cliente
-     * 
+     *
      * @param cedula
      * @param apellido
      * @param cantidad
-     * @param tipoPago 
+     * @param tipoPago
      */
     public static void pagarPedido(String cedula, String apellido, int cantidad, String tipoPago) {
         PanelVentas.cedula = cedula;

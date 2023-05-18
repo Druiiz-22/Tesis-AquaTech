@@ -202,8 +202,8 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         replacePanel(ADMIN_AJUSTES);
     }
     
-    public static void actualizarDatos(){
-        Usuarios.actualizarDatos();
+    public static boolean actualizarDatos(){
+        return Usuarios.actualizarDatos();
     }
     
     //COMPONENTES

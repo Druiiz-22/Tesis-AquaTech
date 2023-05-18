@@ -73,14 +73,28 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
 
     /**
      * Función para actualizar los datos de la tabla del historial
+     * @return 
      */
-    public static void actualizarDatos() {
+    public static boolean actualizarDatos() {
         txtBusqueda.setText("");
-        tabla.actualizarDatos();
+        boolean busqueda = tabla.actualizarDatos();
         
-        int rows = tabla.getRowCount();
-        PanelNotificaciones.setDeudas(rows);
-        MenuSuperior.setNotificationCount(rows);
+        //Validar que la busqueda fue exitosa
+        if(busqueda){
+            //Obtener la cantidad de filas de deudas
+            int rows = tabla.getRowCount();
+            //Asignar la cantidad a las notificaciones
+            PanelNotificaciones.setDeudas(rows);
+            //Asignar la cantidad de deudas al menu superior
+            MenuSuperior.setNotificationCount(rows);
+            
+            //Retornar busqueda exitosa
+            return true;
+            
+        } else{
+            //Retornar busqueda incompleta
+            return false;
+        }
     }
     
     /**

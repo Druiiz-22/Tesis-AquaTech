@@ -105,10 +105,11 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
 
     /**
      * Función para actualizar los datos en la tabla de proveedores
+     * @return 
      */
-    public static void actualizarDatos() {
+    public static boolean actualizarDatos() {
         txtBusqueda.setText("");
-        tabla.actualizarDatos();
+        return tabla.actualizarDatos();
     }
 
     /**

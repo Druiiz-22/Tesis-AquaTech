@@ -183,7 +183,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
                 //Actualizar la cantidad en la factura
                 factura.setBotellonesPagados(pagados);
-                
+
                 //Actualizar el monto total
                 factura.setMontoTotal(precio * pagados);
             }
@@ -226,25 +226,32 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
+     * @return 
      */
-    protected void actualizarDatos() {
-        informacion.actualizarDatos();
-
+    protected boolean actualizarDatos() {
+        //Obtener el precio del trasvaso
         precio = ReadDB.getPrecioTrasvaso();
 
-        //Reposicionar el panel de información, según el 
-        //ancho del contenedor
-        if (width < 600) {
+        //Validar que el precio y el panel informativo, hayan buscado sus datos
+        //en la base de datos exitosamente
+        if (informacion.actualizarDatos() && precio != ERROR_NUMBER) {
+            //Reposicionar el panel de información, según el 
+            //ancho del contenedor
+            if (width < 600) {
+                informacion.relocateComponents(PANEL_MEDIANO);
 
-            informacion.relocateComponents(PANEL_MEDIANO);
+            } else if (width < 900) {
+                informacion.relocateComponents(PANEL_GRANDE);
 
-        } else if (width < 900) {
+            } else if (width >= 900) {
+                informacion.relocateComponents(PANEL_MEDIANO);
+            }
+            //Retornar busqueda exitosa
+            return true;
 
-            informacion.relocateComponents(PANEL_GRANDE);
-
-        } else if (width >= 900) {
-
-            informacion.relocateComponents(PANEL_MEDIANO);
+        } else {
+            //Retornar busqueda incompleta
+            return false;
         }
     }
 
@@ -285,45 +292,45 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         factura.setBotellonesEntregados(Trasvasos.entregados);
         factura.setBotellonesPagados(Trasvasos.pagados);
     }
-    
+
     /**
      * Función para asignar los datos para pagar un pedido de un cliente
-     * 
+     *
      * @param cedula
      * @param apellido
      * @param cantidad
-     * @param tipoPago 
+     * @param tipoPago
      */
-    public static void pagarPedido(String cedula, String apellido, int cantidad, String tipoPago){
+    public static void pagarPedido(String cedula, String apellido, int cantidad, String tipoPago) {
         Trasvasos.cedula = cedula;
         Trasvasos.apellido = apellido;
         Trasvasos.pagados = cantidad;
         Trasvasos.entregados = cantidad;
-        
+
         //Poner el valor en los campos
         txtEntregados.setText(String.valueOf(Trasvasos.entregados));
         txtPagados.setText(String.valueOf(Trasvasos.pagados));
         checkDelivery.setSelected(true);
-        
+
         //Determinar el tipo de pago
         switch (tipoPago) {
-                case "EFECT":
-                    boxTipoPago.setSelectedIndex(1);
-                    factura.setTipoPago(tipoPago);
-                    break;
-                case "DOLAR":
-                    boxTipoPago.setSelectedIndex(3);
-                    factura.setTipoPago(tipoPago);
-                    break;
-                case "TRNSF":
-                    boxTipoPago.setSelectedIndex(2);
-                    factura.setTipoPago(tipoPago);
-                    break;
-                default:
-                    boxTipoPago.setSelectedIndex(0);
-                    factura.setTipoPago("");
-                    break;
-            }
+            case "EFECT":
+                boxTipoPago.setSelectedIndex(1);
+                factura.setTipoPago(tipoPago);
+                break;
+            case "DOLAR":
+                boxTipoPago.setSelectedIndex(3);
+                factura.setTipoPago(tipoPago);
+                break;
+            case "TRNSF":
+                boxTipoPago.setSelectedIndex(2);
+                factura.setTipoPago(tipoPago);
+                break;
+            default:
+                boxTipoPago.setSelectedIndex(0);
+                factura.setTipoPago("");
+                break;
+        }
 
         //Actualizar la factura
         factura.setInformacion(cedula, apellido);
@@ -332,7 +339,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         factura.setDelivery(true);
         factura.setMontoTotal(precio * Trasvasos.pagados);
     }
-    
+
     //ATRIBUTOS BACKEND
     private static int entregados = 0, pagados = 0;
     private static double precio = 0;
@@ -499,7 +506,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     private void panelMediano() {
         this.facHeight += 20;
         this.trasvHeight += 20;
-        
+
         btnCliente.setSize(facMaxWidth, btnHeight);
         factura.setSize(facMaxWidth, facHeight);
 
@@ -591,32 +598,32 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         //Luego la suma de la altura de TODOS los componentes y sus labels
         int allHeights = txtHeight * 3 + checkDelivery.getHeight() + lblEntregados.getHeight() * 3;
         //Finalmente calcular el punto medio, sumando, además, los padding utilizados 
-        int positionY = middleY - (allHeights + ((alturaBaja)? padding/2 : padding) * 5) / 2;
+        int positionY = middleY - (allHeights + ((alturaBaja) ? padding / 2 : padding) * 5) / 2;
         lblEntregados.setLocation(padding, positionY);
 
         //Posición vertical para el primer campo de texto
-        positionY = positionY + lblEntregados.getHeight() + ((alturaBaja)? gapV/2 : gapV);
+        positionY = positionY + lblEntregados.getHeight() + ((alturaBaja) ? gapV / 2 : gapV);
         txtEntregados.setLocation(padding, positionY);
 
         //Posición vertical del segundo label para su campo de texto
-        positionY = positionY + txtHeight + ((alturaBaja)? padding/2 : padding);
+        positionY = positionY + txtHeight + ((alturaBaja) ? padding / 2 : padding);
         lblPagados.setLocation(padding, positionY);
 
         //Posición vertical para el segundo campo de texto
-        positionY = positionY + lblPagados.getHeight() + ((alturaBaja)? gapV/2 : gapV);
+        positionY = positionY + lblPagados.getHeight() + ((alturaBaja) ? gapV / 2 : gapV);
         txtPagados.setLocation(padding, positionY);
 
         //Posición vertical del label para el comboBox
-        positionY = positionY + txtHeight + ((alturaBaja)? padding/2 : padding);
+        positionY = positionY + txtHeight + ((alturaBaja) ? padding / 2 : padding);
         lblTipoPago.setLocation(padding, positionY);
 
         //Posición vertical para el comboBox
-        positionY = positionY + lblTipoPago.getHeight() + ((alturaBaja)? gapV/2 : gapV);
+        positionY = positionY + lblTipoPago.getHeight() + ((alturaBaja) ? gapV / 2 : gapV);
         boxTipoPago.setLocation(padding, positionY);
 
         //Posición vertical y horizontal para el checkBox
         int positionX = trasW / 2 - checkDelivery.getWidth() / 2;
-        positionY = positionY + txtHeight + ((alturaBaja)? padding/2 : padding);
+        positionY = positionY + txtHeight + ((alturaBaja) ? padding / 2 : padding);
         checkDelivery.setLocation(positionX, positionY);
 
         //Posición vertical de los dos botones inferiores

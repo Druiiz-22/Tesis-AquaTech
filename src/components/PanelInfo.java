@@ -13,64 +13,123 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
     // ========== BACKEND ==========
     /**
      * Función para actualizar los datos según su tipo
+     * @return 
      */
-    public void actualizarDatos() {
+    public boolean actualizarDatos() {
+        boolean busqueda = true;
+
         switch (type) {
             case COMPRAS:
-                datosCompras();
+                busqueda = datosCompras();
                 break;
             case VENTAS_BOTELLON:
-                datosVentas();
+                busqueda = datosVentas();
                 break;
             case VENTAS_TRASVASO:
-                datosTrasvases();
+                busqueda = datosTrasvases();
                 break;
         }
+
+        return busqueda;
     }
 
     /**
      * Función para asignar los datos en las compras y recargas
+     * @return 
      */
-    private void datosCompras() {
-        //Precio del travaso
-        lblDatos[0][1].setText(getPrecioTrasvaso() + " Bs");
-        //Precio de venta del botellón
-        lblDatos[1][1].setText(getPrecioVenta() + " Bs");
-        //Botellones en el almacen
-        lblDatos[2][1].setText(String.valueOf(getBotellonesAlmacen()));
+    private boolean datosCompras() {
+        //Obtener los datos de la base de datos
+        double trasvaso = getPrecioTrasvaso();
+        double venta = getPrecioVenta();
+        int almacen = getBotellonesAlmacen();
+
+        //Validar que la busqueda de los datos haya sido exitosa
+        if (trasvaso != ERROR_NUMBER && venta != ERROR_NUMBER && almacen != ERROR_NUMBER) {
+            //Precio del travaso
+            lblDatos[0][1].setText(trasvaso + " Bs");
+            //Precio de venta del botellón
+            lblDatos[1][1].setText(venta + " Bs");
+            //Botellones en el almacen
+            lblDatos[2][1].setText(String.valueOf(almacen));
+
+            //Retornar busqueda exitosa
+            return true;
+
+        } else {
+            //Retornar busqueda incompleta
+            return false;
+        }
+
     }
 
     /**
      * Función para asignar los datos en las ventas
+     * @return 
      */
-    private void datosVentas() {
-        //Precio del botellón
-        lblDatos[0][1].setText(getPrecioVenta() + " Bs");
-        //Botellones en el almacen
-        lblDatos[1][1].setText(String.valueOf(getBotellonesAlmacen()));
-        //Clientes que deben pagar
-        lblDatos[2][1].setText(String.valueOf(getClientesPagar()));
-        //Clientes que debemos entregar
-        lblDatos[3][1].setText(String.valueOf(getClientesEntregar()));
+    private boolean datosVentas() {
+        //Obtener los datos de la base de datos
+        double venta = getPrecioVenta();
+        int almacen = getBotellonesAlmacen();
+        int pagar = getClientesPagar();
+        int entregar = getClientesEntregar();
+
+        //Validar que la busqueda de los datos haya sido exitosa
+        if (venta != ERROR_NUMBER && almacen != ERROR_NUMBER && pagar != ERROR_NUMBER && entregar != ERROR_NUMBER) {
+            //Precio del botellón
+            lblDatos[0][1].setText(venta + " Bs");
+            //Botellones en el almacen
+            lblDatos[1][1].setText(String.valueOf(almacen));
+            //Clientes que deben pagar
+            lblDatos[2][1].setText(String.valueOf(pagar));
+            //Clientes que debemos entregar
+            lblDatos[3][1].setText(String.valueOf(entregar));
+
+            //Retornar busqueda exitosa
+            return true;
+
+        } else {
+            //Retornar busqueda incompleta
+            return false;
+        }
     }
 
     /**
      * Función para asignar los datos en los trasvases
+     * @return 
      */
-    private void datosTrasvases() {
-        //Precio del trasvaso
-        lblDatos[0][1].setText(getPrecioTrasvaso() + " Bs");
-        //Cantidad de botellones llenos
-        lblDatos[1][1].setText(String.valueOf(getBotellonesLlenos()));
-        //Cantidad de botellones vacíos
-        lblDatos[2][1].setText(String.valueOf(getBotellonesVacios()));
-        //Botellones en el almacén
-        lblDatos[3][1].setText(String.valueOf(getBotellonesAlmacen()));
-        //Clientes que deben pagar
-        lblDatos[4][1].setText(String.valueOf(getClientesPagar()));
-        //Clientes que debemos entregar
-        lblDatos[5][1].setText(String.valueOf(getClientesEntregar()));
+    private boolean datosTrasvases() {
+        //Obtener los datos de la base de datos
+        double trasvaso = getPrecioTrasvaso();
+        int llenos = getBotellonesLlenos();
+        int vacios = getBotellonesVacios();
+        int almacen = getBotellonesAlmacen();
+        int pagar = getClientesPagar();
+        int entregar = getClientesEntregar();
 
+        if (trasvaso != ERROR_NUMBER && llenos != ERROR_NUMBER
+                && vacios != ERROR_NUMBER && almacen != ERROR_NUMBER
+                && pagar != ERROR_NUMBER && entregar != ERROR_NUMBER) 
+        {
+            //Precio del trasvaso
+            lblDatos[0][1].setText(trasvaso + " Bs");
+            //Cantidad de botellones llenos
+            lblDatos[1][1].setText(String.valueOf(llenos));
+            //Cantidad de botellones vacíos
+            lblDatos[2][1].setText(String.valueOf(vacios));
+            //Botellones en el almacén
+            lblDatos[3][1].setText(String.valueOf(almacen));
+            //Clientes que deben pagar
+            lblDatos[4][1].setText(String.valueOf(pagar));
+            //Clientes que debemos entregar
+            lblDatos[5][1].setText(String.valueOf(entregar));
+            
+            //Retornar busqueda exitosa
+            return true;
+
+        } else {
+            //Retornar busqueda incompleta
+            return false;
+        }
     }
 
     //ATRIBUTOS BACKEND

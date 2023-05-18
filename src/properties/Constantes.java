@@ -238,7 +238,12 @@ public interface Constantes {
      * carácter de entrada
      */
     public static final int CUALQUIER = 43;
-
+    /**
+     * Constante para determinar cuando una busqueda de un número en la base de 
+     * datos, pueda ser erronea y devolver un valor que represente este error
+     */
+    public static final int ERROR_NUMBER = -99;
+    
     /**
      * Constante con el valor del rol de cliente para el usuario
      */

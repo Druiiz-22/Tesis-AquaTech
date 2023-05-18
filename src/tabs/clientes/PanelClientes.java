@@ -104,10 +104,13 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
 
     /**
      * Función para actualizar los datos de la tabla de clientes
+     * @return 
      */
-    public static void actualizarDatos() {
+    public static boolean actualizarDatos() {
         txtBusqueda.setText("");
-        tabla.actualizarDatos();
+        
+        //Retornar el resultado de actualizar la tabla
+        return tabla.actualizarDatos();
     }
 
     /**

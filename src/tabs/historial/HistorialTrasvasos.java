@@ -63,9 +63,10 @@ public class HistorialTrasvasos extends JPanel implements properties.Constantes,
 
     /**
      * Función para actualizar los datos de la tabla del historial
+     * @return 
      */
-    protected static void actualizarDatos() {
-        tabla.actualizarDatos();
+    protected static boolean actualizarDatos() {
+        return tabla.actualizarDatos();
     }
 
     /**

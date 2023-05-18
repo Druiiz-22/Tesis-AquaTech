@@ -62,9 +62,10 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
     
     /**
      * Función para actualizar los datos de la tabla del historial
+     * @return 
      */
-    protected static void actualizarDatos(){
-        tabla.actualizarDatos();
+    protected static boolean actualizarDatos() {
+        return tabla.actualizarDatos();
     }
     
     private void listener(){

@@ -4,66 +4,64 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import static java.sql.DriverManager.getConnection;
 import java.sql.ResultSet;
+import login.IniciarPrograma;
 import properties.Mensaje;
 
 /**
  * Clase para realizar la conexión con la base de datos
  */
 public class ConexionDB {
-    
+
     private static final String bd = "diazmava_aquatech";
     private static final String url = "jdbc:mysql://diazmavarez.site/";
     private static final String user = "diazmava_admin";
     private static final String password = "Jere05032001.";
-    
+
     private static final String driver = "com.mysql.cj.jdbc.Driver";
     private Connection cx;
-    
-    public void conectar(){
+
+    public void conectar() {
         try {
             Class.forName(driver);
-            cx = getConnection(url+bd, user, password);
-        
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println(ex);
+            cx = getConnection(url + bd, user, password);
             
-            Mensaje.msjError(
-                    "<html>"
-                    + "<p>No se pudo realizar la conexión con la base de datos.</p>"
-                    + "<p>Error: "+ex.toString()+"</p>"
-                    + "</html>"
-            );
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.out.println("\nConectar error = "+ex);
+
+            //Mostrar un mensaje cuando NO se esté mostrando la ventana de carga
+            if(!IniciarPrograma.isActivated()){
+                //Cuando el programa esté iniciado, mostrar mensaje de error
+                Mensaje.msjError("No se pudo realizar la conexión con la base de datos."
+                    + "\nPor favor, verifique que su conexión a internet sea\n"
+                    + "estable y vuelva a intentarlo.");
+            }
         }
     }
-    
-    public void desconectar(){
+
+    public void desconectar() {
         try {
-            if(cx != null){
+            if (cx != null) {
                 cx.close();
             }
         } catch (SQLException ex) {
-            System.out.println(ex);
-            Mensaje.msjError(
-                    "<html>"
-                    + "<p>No se pudo desconectar la base de datos.</p>"
-                    + "<p>Error: "+ex.toString()+"</p>"
-                    + "</html>"
-            );
+            Mensaje.msjError("No se pudo desconectar la base de datos.\nError: "
+                    + ex.toString());
         }
     }
-    
-    public ResultSet ejecutarQuery(String query){
+
+    public ResultSet ejecutarQuery(String query) {
         try {
-            if(cx != null){
+            if (cx != null) {
                 ResultSet result = cx.createStatement().executeQuery(query);
                 return result;
-                
+
             } else {
                 return null;
             }
-            
+
         } catch (SQLException e) {
-            Mensaje.msjError("No se pudo ejecutar al sentencia SQL.\nError: "+e);
+            Mensaje.msjError("No se pudo ejecutar al sentencia SQL.\nError: " + e);
             return null;
         }
     }

@@ -146,11 +146,9 @@ public class Compras extends JPanel implements properties.Constantes, properties
 
         //Determinar el preferred size
         if (btnCompras.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelCompras.actualizarDatos();
             contenedor.setPreferredSize(panelCompras.getPreferredSize());
 
         } else if (btnRecargas.getForeground().equals(AZUL_PRINCIPAL)) {
-            panelRecargas.actualizarDatos();
             contenedor.setPreferredSize(panelRecargas.getPreferredSize());
         }
     }
@@ -176,10 +174,12 @@ public class Compras extends JPanel implements properties.Constantes, properties
 
     /**
      * Función para actualizar todos los datos de la pestaña
+     * @return 
      */
-    public static void actualizarDatos() {
-        panelCompras.actualizarDatos();
-        panelCompras.actualizarDatos();
+    public static boolean actualizarDatos() {
+        //retornar como busqueda exitosa cuando todas las actualizaciones
+        //se hayan completado.
+        return panelCompras.actualizarDatos() && panelRecargas.actualizarDatos();
     }
 
     //COMPONENTES
@@ -352,23 +352,28 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
+     * @return 
      */
-    protected void actualizarDatos() {
-        informacion.actualizarDatos();
+    protected boolean actualizarDatos() {
+        //Validar que el panel informativo se haya actualizado de manera correcta
+        if (informacion.actualizarDatos()) {
+            //Reposicionar el panel de información, según el 
+            //ancho del contenedor
+            if (width < 600) {
+                informacion.relocateComponents(PANEL_MEDIANO);
 
-        //Reposicionar el panel de información, según el 
-        //ancho del contenedor
-        if (width < 600) {
+            } else if (width < 900) {
+                informacion.relocateComponents(PANEL_GRANDE);
 
-            informacion.relocateComponents(PANEL_MEDIANO);
+            } else if (width >= 900) {
+                informacion.relocateComponents(PANEL_MEDIANO);
+            }
+            //Retornar busqueda exitosa
+            return true;
 
-        } else if (width < 900) {
-
-            informacion.relocateComponents(PANEL_GRANDE);
-
-        } else if (width >= 900) {
-
-            informacion.relocateComponents(PANEL_MEDIANO);
+        } else {
+            //Retornar busqueda incompleta
+            return false;
         }
     }
 
@@ -535,7 +540,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
     private void panelMediano() {
         this.facHeight += 20;
         this.compraHeight += 20;
-        
+
         //Comprobar que la mitad del panel NO supere el ancho
         //máximo posible del botón y factura
         btnProv.setSize(facMaxWidth, btnHeight);
@@ -618,7 +623,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         txtPrecio.setSize(txtWidth, txtHeight);
 
         //Posición del título del panel para los datos
-        lblTitulo.setLocation(padding, padding/2);
+        lblTitulo.setLocation(padding, padding / 2);
 
         //Para posicionar los campos en el centro vertical del panel
         //primero se obtiene le punto medio del panel

@@ -188,10 +188,11 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
 
     /**
      * Función para actualizar el panel de usuarios y la ventana
+     * @return 
      */
-    protected static void actualizarDatos() {
+    protected static boolean actualizarDatos() {
         txtBuscar.setText("");
-        tabla.actualizarDatos();
+        return tabla.actualizarDatos();
     }
 
     /**
