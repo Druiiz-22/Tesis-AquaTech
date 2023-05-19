@@ -1,7 +1,9 @@
 package main;
 
 import components.PanelNotificaciones;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -43,7 +45,7 @@ public class Frame extends JFrame implements properties.Constantes {
         this.setIconTitle();
         this.setLocationRelativeTo(null);
         this.setTitle("AquaTech - Inicio");
-        
+
         //Iniciar los componentes
         initComponents();
 
@@ -70,7 +72,7 @@ public class Frame extends JFrame implements properties.Constantes {
         this.add(lateral);
         this.add(contenedor);
 
-        //GlassPane de notificaciones
+        //GlassPane para las notificaciones y el menú lateral
         this.setGlassPane(new JComponent() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -92,12 +94,10 @@ public class Frame extends JFrame implements properties.Constantes {
         //- Hacer los ajustes
         //- Crear el rol de "operador"
         //- Cancelar un pedido
-        
         //- Reajustar reportes por sucursales
         //- Reajustar reporte de trasvasos
         //- Reporte de pedidos
         //- Dar formulario a los RIF
-        
         //CAMBIOS EN LA BASE DE DATOS
         //- proceso para crear usuario (creando cliente al mismo tiempo)
     }
@@ -163,11 +163,15 @@ public class Frame extends JFrame implements properties.Constantes {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                //Si se va a cerrar (true), el glass no será visible (false).
-                //Si NO se va a cerrar (false), el glass sigue visible (true).
-                glass.setVisible(!cerrar);
-            }
+                //Validar que el cursor activo en el GlassPane NO sea el cursor 
+                //de cargando.
+                if (!glass.getCursor().equals(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR))) {
+                    //Si se va a cerrar (true), el glass no será visible (false).
+                    //Si NO se va a cerrar (false), el glass sigue visible (true).
+                    glass.setVisible(!cerrar);
 
+                }
+            }
         });
     }
 
@@ -310,24 +314,44 @@ public class Frame extends JFrame implements properties.Constantes {
     /**
      * Función para abrir el panel de cristal por encima del contentPane
      *
-     * @param menu TRUE en caso de abrir el menú lateral, FALSE en caso de abrir
-     * las notificaciones
+     * @param tipo Entero para determinar lo que se mostrará al abrir el
+     * GlassPane. Uno (1) para el menú lateral, dos (2) para las notificaciones
+     * y cualquier otro para el glasspane cargando.
      */
-    public static void openGlass(boolean menu) {
+    public static void openGlass(int tipo) {
         //Validar que el componente de glass NO esté vacío
         if (glass != null) {
 
+            //Asignar el cursor predeterminado
+            glass.setCursor(Cursor.getDefaultCursor());
+
             //Validar si se abrirá el menú o las notificaciones
-            if (menu) {
-                lateral.setVisible(true);
-                notificaciones.setVisible(false);
-            } else {
-                lateral.setVisible(false);
-                notificaciones.setVisible(true);
+            switch (tipo) {
+                case 1:
+                    //Mostrar el menú lateral
+                    lateral.setVisible(true);
+                    notificaciones.setVisible(false);
+                    break;
+                case 2:
+                    //Mostrar las notificaciones
+                    lateral.setVisible(false);
+                    notificaciones.setVisible(true);
+                    break;
+                default:
+                    //Ocultar ambos
+                    lateral.setVisible(false);
+                    notificaciones.setVisible(false);
+                    //Asignar el cursor de cargando
+                    glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    break;
             }
 
             glass.setVisible(true);
         }
+    }
+    
+    public static void closeGlass(){
+        glass.setVisible(false);
     }
 
     /**
@@ -362,14 +386,14 @@ public class Frame extends JFrame implements properties.Constantes {
         return rol;
     }
 
-    public static String getUserIdentified(){
+    public static String getUserIdentified() {
         return Frame.identificacion;
     }
-        
-    protected static boolean actualizarPrograma(){
+
+    protected static boolean actualizarPrograma() {
         return Contenedor.actualizarDatos();
     }
-    
+
     //ATRIBUTOS
     private static String nombre;
     private static String identificacion;

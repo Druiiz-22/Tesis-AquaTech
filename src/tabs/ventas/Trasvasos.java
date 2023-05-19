@@ -250,6 +250,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
             return true;
 
         } else {
+            precio = 0;
+            
             //Retornar busqueda incompleta
             return false;
         }

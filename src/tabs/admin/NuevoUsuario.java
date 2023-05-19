@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import static javax.swing.SwingConstants.HORIZONTAL;
+import properties.Encript;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
@@ -251,19 +252,17 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                     if (crearUsuario) {
 
                         //Validar que las contraseñas tengan mínimo 8 carácteres
-                        String nueva = String.valueOf(txtClave.getPassword());
-                        String nuevaRep = String.valueOf(txtClaveRepetida.getPassword());
+                        char[] nueva = txtClave.getPassword();
+                        char[] repetida = txtClaveRepetida.getPassword();
 
-                        if (nueva.length() >= 8 && nuevaRep.length() >= 8) {
+                        if (nueva.length >= 8 && repetida.length >= 8) {
 
                             //Validar que las contraseñas sean las mismas
                             //estando convertidas en HashCode
-                            int nuevaCode = nueva.hashCode();
-                            int nuevaCodeRep = nuevaRep.hashCode();
+                            String claveNueva = Encript.encriptar(nueva);
+                            claveFinal = Encript.encriptar(repetida);
 
-                            if (nuevaCode == nuevaCodeRep) {
-                                //Guardar la clave nueva
-                                claveFinal = String.valueOf(nuevaCodeRep);
+                            if (claveNueva.equals(claveFinal)) {
 
                                 return true;
 

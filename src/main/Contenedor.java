@@ -1,5 +1,6 @@
 package main;
 
+import database.ConexionDB;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.JPanel;
@@ -162,6 +163,9 @@ public class Contenedor extends JPanel implements properties.Constantes {
         if (busquedas && Frame.getUserRol() == ADMINISTRADOR) {
             busquedas = Admin.actualizarDatos();
         }
+        
+        //Reiniciar el conteo de mensajes de error
+        ConexionDB.resetErrorCount();
         
         //Obtener el estado de las busquedas realizadas
         return busquedas;

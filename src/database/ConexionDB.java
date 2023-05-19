@@ -16,8 +16,9 @@ public class ConexionDB {
     private static final String url = "jdbc:mysql://diazmavarez.site/";
     private static final String user = "diazmava_admin";
     private static final String password = "Jere05032001.";
-
+    
     private static final String driver = "com.mysql.cj.jdbc.Driver";
+    private static int showErrorCount = 0;
     private Connection cx;
 
     public void conectar() {
@@ -27,10 +28,11 @@ public class ConexionDB {
             
 
         } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("\nConectar error = "+ex);
-
+            showErrorCount++;
+            
             //Mostrar un mensaje cuando NO se esté mostrando la ventana de carga
-            if(!IniciarPrograma.isActivated()){
+            //y que el mensaje de error NO se haya mostrado más de una vez
+            if(!IniciarPrograma.isActivated() && showErrorCount <= 1){
                 //Cuando el programa esté iniciado, mostrar mensaje de error
                 Mensaje.msjError("No se pudo realizar la conexión con la base de datos."
                     + "\nPor favor, verifique que su conexión a internet sea\n"
@@ -64,5 +66,9 @@ public class ConexionDB {
             Mensaje.msjError("No se pudo ejecutar al sentencia SQL.\nError: " + e);
             return null;
         }
+    }
+    
+    public static void resetErrorCount(){
+        showErrorCount = 0;
     }
 }

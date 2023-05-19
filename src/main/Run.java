@@ -1,7 +1,5 @@
 package main;
 
-import database.ConexionDB;
-import database.ReadDB;
 
 public class Run {
 
@@ -12,29 +10,8 @@ public class Run {
     private static main.Frame mainFrame;
 
     public static void main(String[] args) {
-
-//        System.out.println("Conectar con la bdd...\n");
-//        
-//        
-//        try {
-//            String query = "SELECT * FROM Cliente";
-//            ResultSet result = bdd.createStatement().executeQuery(query);
-//            
-//            String datos[] = new String[5];
-//            
-//            while(result.next()){
-//                datos[0] = result.getString(1);
-//                datos[1] = result.getString(2);
-//                datos[2] = result.getString(3);
-//                datos[3] = result.getString(4);
-//                datos[4] = result.getString(5);
-//                System.out.println("Datos = "+Arrays.toString(datos));
-//            }
-//            
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
         iniciarLogin();
+        
 //        iniciarPrograma("DIEGO", 1);
     }
 

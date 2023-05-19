@@ -17,6 +17,8 @@ import static javax.swing.SwingConstants.CENTER;
 import static java.awt.Cursor.HAND_CURSOR;
 import java.awt.Dimension;
 import static java.awt.Font.PLAIN;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static properties.Mensaje.msjError;
 import static properties.Fuentes.segoe;
 
@@ -314,29 +316,40 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         btnMenuLateral.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                Frame.openGlass(true);
+                Frame.openGlass(1);
             }
         });
         //ACTUALIZAR
         btnRefresh.addMouseListener(new MouseAdapter() {
-            boolean activo = false;
-            
             @Override
             public void mouseReleased(MouseEvent e) {
-                //Actualizar los datos cuando el botón NO esté presionado
-                //para evitar sobrecargas
-                if(!activo){
-                    activo = true;
-                    Contenedor.actualizarDatos();
-                    activo = false;
-                }
+                new Thread(){
+                    @Override
+                    public void run() {
+                        //Abrir el GlassPane cargando
+                        Frame.openGlass(0);
+                       
+                        //Pausar el programa por un segundo
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(MenuSuperior.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                        //Actualizar todos los datos
+                        Contenedor.actualizarDatos();
+                        
+                        //Cerrar el glassPane
+                        Frame.closeGlass();
+                    }
+                }.start();
             }
         });
         //NOTIFICACIONES
         btnNotificacion.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                Frame.openGlass(false);
+                Frame.openGlass(2);
             }
         });
         //SITIO WEB
@@ -363,7 +376,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         });
         //ITEMS DEL POPUP MENÚ
         itemNotif.addActionListener((ActionEvent e) -> {
-            Frame.openGlass(false);
+            Frame.openGlass(2);
         });
         itemWeb.addActionListener((ActionEvent e) -> {
             abrirWeb();

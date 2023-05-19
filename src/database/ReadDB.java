@@ -183,7 +183,7 @@ public class ReadDB implements properties.Constantes {
      * @param pass
      * @return
      */
-    public static Object[] getUser(String user, int pass) {
+    public static Object[] getUser(String user, String pass) {
         //Preparar la sentencia SQL para obtener el trasvaso
         String sql = "SELECT nombre, apellido, rol "
                 + "FROM Usuario "
@@ -211,9 +211,9 @@ public class ReadDB implements properties.Constantes {
 
                     //Convertir el nombre y apellido en una sola cadena capitalizada
                     String name;
-                    name = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
+                    name = nombre.substring(0, 1).toUpperCase() + nombre.substring(1).toLowerCase();
                     name += " ";
-                    name += apellido.substring(0, 1).toUpperCase() + apellido.substring(1);
+                    name += apellido.substring(0, 1).toUpperCase() + apellido.substring(1).toLowerCase();
 
                     //Terminar la conexión con la base de datos
                     bdd.desconectar();

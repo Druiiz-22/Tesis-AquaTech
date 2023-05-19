@@ -12,6 +12,7 @@ import static login.Frame.replacePanel;
 import login.Recuperacion;
 import static login.Recuperacion.getContentSize;
 import static login.Recuperacion.replaceContainer;
+import properties.Encript;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 
@@ -51,13 +52,13 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
             if (repetida.length >= 8) {
 
                 //Convertir la contraseña en hashCode
-                int claveNueva = String.valueOf(nueva).hashCode();
+                String claveNueva = Encript.encriptar(nueva);
 
                 //Convertir la contraseña en hashCode
-                claveRepetida = String.valueOf(repetida).hashCode();
+                claveRepetida = Encript.encriptar(repetida);
 
                 //Validar que las contraseñas sean iguales
-                if (claveNueva == claveRepetida) {
+                if (claveNueva.equals(claveRepetida)) {
 
                     return true;
 
@@ -86,7 +87,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
     }
 
     //ATRIBUTOS
-    private static int claveRepetida;
+    private static String claveRepetida;
 
     // ========== FRONTEND ==========
     /**

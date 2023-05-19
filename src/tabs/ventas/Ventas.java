@@ -431,6 +431,8 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
             return true;
 
         } else {
+            precio = 0;
+            
             //Retornar busqueda incompleta
             return false;
         }

@@ -14,6 +14,7 @@ import login.Registro;
 import static login.Registro.getContentSize;
 import static login.Registro.replaceContainer;
 import static properties.Constantes.TECLA_ENTER;
+import properties.Encript;
 import static properties.Mensaje.msjError;
 
 /**
@@ -55,13 +56,13 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
             if (repetida.length >= 8) {
 
                 //Convertir la contraseña en hashCode
-                int claveNueva = String.valueOf(nueva).hashCode();
+                String claveNueva = Encript.encriptar(nueva);
 
                 //Convertir la contraseña en hashCode
-                claveRepetida = String.valueOf(repetida).hashCode();
+                claveRepetida = Encript.encriptar(repetida);
 
                 //Validar que las contraseñas sean iguales
-                if (claveNueva == claveRepetida) {
+                if (claveNueva.equals(claveRepetida)) {
 
                     return true;
 
@@ -90,7 +91,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
     }
 
     //ATRIBUTOS
-    private static int claveRepetida;
+    private static String claveRepetida;
 
     // ========== FRONTEND ==========
     

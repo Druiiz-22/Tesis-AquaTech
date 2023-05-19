@@ -7,15 +7,17 @@ import components.CampoTexto;
 import components.Label;
 import components.Logo;
 import database.ReadDB;
-import java.awt.Cursor;
 import javax.swing.JPanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javax.swing.SwingConstants.VERTICAL;
 import static login.Frame.getParentSize;
 import static login.Frame.replacePanel;
+import properties.Encript;
 import static properties.Mensaje.msjError;
 
 /**
@@ -39,7 +41,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
             Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
-
+            
             //Reiniciar los intentos
             intentos = 0;
 
@@ -63,6 +65,9 @@ public final class Inicio extends JPanel implements properties.Colores, properti
                 System.exit(0);
             }
 
+            //Cerrar el GlassPane
+            Frame.openGlass(false);
+
             return false;
         }
     }
@@ -71,34 +76,39 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      * Función para validar los datos y realizar el logeo
      */
     private void logear() {
-        if (!iniciando) {
-            //Validar que los campos estén correctos
-            if (validarCampos()) {
+        new Thread() {
+            @Override
+            public void run() {
+                Frame.openGlass(true);
+                //Validar que los campos estén correctos
+                if (validarCampos()) {
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-                        //Validar que el usuario realmente exista
-                        //en la base de datos
-                        if (validarUsuario()) {
-                            //Vaciar los campos del inicio
-                            vaciarCampos();
-
-                            //Cerrar el login
-                            Run.cerrarLogin();
-
-                            //Abrir el splash screen
-                            IniciarPrograma iniciar = new IniciarPrograma(identificacion, rol, nombre);
-                        }
-
-                        setCursor(Cursor.getDefaultCursor());
-                        iniciando = false;
+                    //Pausar el programa por un segundo
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }.start();
+
+                    //Validar que el usuario realmente exista
+                    //en la base de datos
+                    if (validarUsuario()) {
+                        //Cerrar el login
+                        Run.cerrarLogin();
+
+                        //Vaciar los campos del inicio
+                        vaciarCampos();
+
+                        //Cerrar el glasPane
+                        Frame.openGlass(false);
+
+                        //Abrir el splash screen
+                        IniciarPrograma iniciar = new IniciarPrograma(identificacion, rol, nombre);
+                    }
+                }
             }
-        }
+        }.start();
+
     }
 
     /**
@@ -107,36 +117,36 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      * @return TRUE en caso de que estén correctos
      */
     private boolean validarCampos() {
+        //Mensaje de error
+        String msj;
+
         //Obtener el usuario
         identificacion = txtUsuario.getText().trim().toUpperCase();
 
-        //Obtener la contraseña
-        clave = String.valueOf(txtClave.getPassword()).hashCode();
+        //Encriptar la contraseña
+        clave = Encript.encriptar(txtClave.getPassword());
 
         //Validar que el usuario NO esté vacío
         if (!identificacion.isEmpty()) {
 
             //Validar que la contraseña NO esté vacío
-            if (clave != 0) {
+            if (!clave.isEmpty()) {
 
                 return true;
 
             } else {
-                msjError(
-                        "La contraseña no puede estár vacía.\n"
-                        + "Por favor, ingrese sus datos."
-                );
-                //Enfocar la clave
-                txtClave.requestFocus();
+                //Mensaje de error
+                msj = "La contraseña no puede estár vacía.\nPor favor, ingrese sus datos.";
             }
         } else {
-            msjError(
-                    "El usuario no puede estár vacío.\n"
-                    + "Por favor, ingrese sus datos."
-            );
-            //Enfocar el usuario
-            txtUsuario.requestFocus();
+            //Mensaje de error
+            msj = "El usuario no puede estár vacío.\nPor favor, ingrese sus datos.";
         }
+
+        //Cerrar el GlassPane
+        Frame.openGlass(false);
+        //Mostrar mensaje de error
+        msjError(msj);
 
         //Siempre retornará false, si no retorna true antes.
         return false;
@@ -146,9 +156,8 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     private static int intentos = 0;
     private static String identificacion;
     private static String nombre;
-    private static int clave;
+    private static String clave;
     private static int rol;
-    private static boolean iniciando;
 
     // ========== FRONTEND ==========
     /**

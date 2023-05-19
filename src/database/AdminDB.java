@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import main.Frame;
 import main.Run;
+import properties.Encript;
 import static properties.Mensaje.msjError;
 
 public class AdminDB implements properties.Constantes {
@@ -82,10 +83,8 @@ public class AdminDB implements properties.Constantes {
             //Validar que se presionó ACEPTAR
             if (opcion == 0) {
 
-                //Obtener la clave ingresada
-                char[] charPass = clave.getPassword();
-                //Convertir la clave en hashcode
-                int password = String.valueOf(charPass).hashCode();
+                //Encriptar la clave obtenida
+                String password = Encript.encriptar(clave.getPassword());
 
                 //Validar que coincida la clave ingresada con el usuario que 
                 //tiene la sesión iniciada

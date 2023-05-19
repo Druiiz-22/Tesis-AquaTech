@@ -1,11 +1,22 @@
 package login;
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import static properties.Mensaje.msjAdvertencia;
@@ -33,8 +44,29 @@ public class Frame extends JFrame implements properties.Constantes {
         this.setMinimumSize(DIMENSION);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+        
+        initComponents();
+        listener();
+    }
 
-        //Asignarle al panel contenedor el tamaño ajustado al frame
+    private void initComponents(){
+        //GLASSPANE 
+        this.setGlassPane(new JComponent() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                //Pinter un fondo oscuro en el contenedor
+                g.setColor(new java.awt.Color(0, 0, 0, 0.05f));
+                //Rellenar un rectangulo del tamaño del panel contenedor
+                g.fillRect(0, 0, getContentPane().getWidth(), getContentPane().getHeight());
+            }
+        });
+        //Obtener el GlassPane
+        glass = (Container) (this.getGlassPane());
+        glass.setLayout(new GridLayout());
+        glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        
+        
+        //PANELES CONTENEDORES
         panelContenedor.setSize(this.getContentPane().getSize());
 
         //Iniciar los componentes de los paneles
@@ -42,17 +74,28 @@ public class Frame extends JFrame implements properties.Constantes {
         panelRegistro.initComponents();
         panelRecuperacion.initComponents();
 
-        //Añadir el inicio
+        //Añadir los componentes
+        this.add(panelContenedor);
         panelContenedor.add(panelInicio);
 
         //Agregar el panel contenedor como panel principal al frame
-        this.setContentPane(panelContenedor);
 
         //Recargar el panel
         panelContenedor.revalidate();
         panelContenedor.repaint();
     }
-
+    
+    private void listener(){
+        glass.addMouseListener(new MouseAdapter() {
+            //MouseAdapter vacío para evitar cualquier acción al presionar
+            //el glassPane
+        });
+    }
+    
+    public static void openGlass(boolean visible){
+        glass.setVisible(visible);
+    }
+    
     /**
      * Función para obtener el tamaño del panel contenedor.
      *
@@ -129,6 +172,7 @@ public class Frame extends JFrame implements properties.Constantes {
     
     
     //COMPONENTES
+    private static Container glass;
     private static final JPanel panelContenedor = new JPanel(null);
     private static final Inicio panelInicio = new Inicio();
     private static final Registro panelRegistro = new Registro();

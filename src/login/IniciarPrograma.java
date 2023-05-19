@@ -15,7 +15,7 @@ public class IniciarPrograma extends JFrame {
 
     //ATRIBUTOS
     private static boolean activo;
-    private static Dimension DIMENSION = new Dimension(450, 450);
+    private static Dimension DIMENSION = new Dimension(480, 430);
 
     public IniciarPrograma(String identificacion, int rol, String nombre) {
         //Propiedades básicas
@@ -39,8 +39,6 @@ public class IniciarPrograma extends JFrame {
 
         //Intentar actualizar TODOS los datos del software        
         if (Run.actualizarPrograma()) {
-            
-            
             //Cerrar la ventana de carga
             dispose();
 
@@ -63,14 +61,13 @@ public class IniciarPrograma extends JFrame {
 
     private void initComponents() {
         //Propiedades básicas del logo
-        logo.setText("Cargando programa");
+        logo.setText("Iniciando el programa");
         logo.setForeground(properties.Colores.CELESTE);
         logo.setSize(logo.getPreferredSize());
 
         //Propiedades básicas del gif de cargando
         gif.setHorizontalAlignment(JLabel.CENTER);
         gif.setVerticalAlignment(JLabel.CENTER);
-        gif.setToolTipText("Cargando el programa...");
 
         //Buscar la imágen
         try {
@@ -94,7 +91,7 @@ public class IniciarPrograma extends JFrame {
         int width = this.getContentPane().getWidth();
         int padding = 20;
 
-        int x = width / 2 - logo.getWidth() / 2;
+        int x = width / 2 - logo.getWidth() / 2 - 10;
         logo.setLocation(x, padding);
 
         x = width / 2 - gif.getWidth() / 2;
