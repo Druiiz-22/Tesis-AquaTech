@@ -8,6 +8,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import login.Frame;
 import static login.Frame.replacePanel;
 import login.Recuperacion;
 import static login.Recuperacion.getContentSize;
@@ -26,14 +29,30 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
      * Función para guardar la clave nueva
      */
     private void cambiarClave() {
-        if (validarCampos()) {
+        new Thread(){
+            @Override
+            public void run() {
+                Frame.openGlass(true);
+                if (validarCampos()) {
 
-            //Guardar la contraseña del usuario
-            Recuperacion.setClaveNueva(String.valueOf(claveRepetida));
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ClaveNueva.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    //Guardar la contraseña del usuario
+                    Recuperacion.setClaveNueva(String.valueOf(claveRepetida));
 
-            //Crear el usuario
-            Recuperacion.cambiarClave();
-        }
+                    //Crear el usuario
+                    Recuperacion.cambiarClave();
+                    
+                    //Cerrar el GlassPane
+                    Frame.openGlass(false);
+                }
+            }
+        }.start();
+        
     }
 
     /**
@@ -43,6 +62,8 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
      */
     private boolean validarCampos() {
 
+        String msj;
+        
         //Obtener la contraseña nueva y repetida
         char nueva[] = txtNueva.getPassword();
         char repetida[] = txtRepetida.getPassword();
@@ -63,26 +84,22 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
                     return true;
 
                 } else {
-                    msjError(
-                            "Las claves no coindicen.\n"
-                            + "Por favor, revise sus datos."
-                    );
+                    msj = "Las claves no coindicen.\nPor favor, revise sus datos.";
                 }
             } else {
-                msjError(
-                        "La clave repetida debe tener mínimo 8 carácteres.\n"
-                        + "Por favor, revise sus datos."
-                );
-                txtRepetida.requestFocus();
+                msj = "La clave repetida debe tener mínimo 8 carácteres.\n"
+                        + "Por favor, revise sus datos.";
             }
         } else {
-            msjError(
-                    "La clave nueva debe tener mínimo 8 carácteres.\n"
-                    + "Por favor, revise sus datos."
-            );
-            txtNueva.requestFocus();
+            msj = "La clave nueva debe tener mínimo 8 carácteres.\nPor favor, "
+                    + "revise sus datos.";
         }
 
+        //Cerrar el glassPane
+        Frame.openGlass(false);
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         return false;
     }
 

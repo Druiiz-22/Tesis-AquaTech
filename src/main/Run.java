@@ -1,6 +1,5 @@
 package main;
 
-
 public class Run {
 
     /**
@@ -10,8 +9,8 @@ public class Run {
     private static main.Frame mainFrame;
 
     public static void main(String[] args) {
-        iniciarLogin();
         
+//        iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
 
@@ -56,7 +55,7 @@ public class Run {
             mainFrame.setVisible(visible);
         }
     }
-    
+
     /**
      * Función para cerrar el frame del programa principal
      */

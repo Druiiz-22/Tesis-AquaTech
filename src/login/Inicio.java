@@ -41,7 +41,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
             Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
-            
+
             //Reiniciar los intentos
             intentos = 0;
 
@@ -106,9 +106,11 @@ public final class Inicio extends JPanel implements properties.Colores, properti
                         IniciarPrograma iniciar = new IniciarPrograma(identificacion, rol, nombre);
                     }
                 }
+
+                //Determinar que ya NO se está logeando
+                logeando = false;
             }
         }.start();
-
     }
 
     /**
@@ -125,7 +127,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
         //Encriptar la contraseña
         clave = Encript.encriptar(txtClave.getPassword());
-
+        
         //Validar que el usuario NO esté vacío
         if (!identificacion.isEmpty()) {
 
@@ -158,6 +160,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     private static String nombre;
     private static String clave;
     private static int rol;
+    private static boolean logeando = false;
 
     // ========== FRONTEND ==========
     /**
@@ -264,7 +267,11 @@ public final class Inicio extends JPanel implements properties.Colores, properti
         txtClave.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == TECLA_ENTER) {
+                //Validar que se haya presionado la tecla enter y que NO se
+                //esté logeando al momento de presionar la tecla (para evitar
+                //peticones masivas)
+                if (e.getKeyChar() == TECLA_ENTER && !logeando) {
+                    logeando = true;
                     logear();
                 }
             }

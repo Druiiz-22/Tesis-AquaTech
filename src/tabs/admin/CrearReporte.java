@@ -1045,9 +1045,6 @@ public class CrearReporte {
         Calendar calendario = new java.util.GregorianCalendar();
         //Asignar la fecha actual
         calendario.setTime(date);
-
-        System.out.println("Calendar = "+calendario);
-        System.out.println("Calendar Moth = "+calendario.get(Calendar.MONTH));
         
         //Dividir la información de la fecha
         int year = calendario.get(Calendar.YEAR);

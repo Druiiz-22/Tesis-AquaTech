@@ -64,7 +64,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         btnWeb.setVerticalAlignment(CENTER);
         btnWeb.setCursor(new Cursor(HAND_CURSOR));
         btnWeb.setToolTipText("Ir al sitio web");
-        
+
         //Ajustar el botón para actualizar los datos
         btnRefresh.setHorizontalAlignment(CENTER);
         btnRefresh.setVerticalAlignment(CENTER);
@@ -319,30 +319,12 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 Frame.openGlass(1);
             }
         });
+        
         //ACTUALIZAR
         btnRefresh.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                new Thread(){
-                    @Override
-                    public void run() {
-                        //Abrir el GlassPane cargando
-                        Frame.openGlass(0);
-                       
-                        //Pausar el programa por un segundo
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(MenuSuperior.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
-                        //Actualizar todos los datos
-                        Contenedor.actualizarDatos();
-                        
-                        //Cerrar el glassPane
-                        Frame.closeGlass();
-                    }
-                }.start();
+                refresh();
             }
         });
         //NOTIFICACIONES
@@ -374,7 +356,11 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 ppDespliegue.show(btnDesplegar, e.getX(), e.getY());
             }
         });
+
         //ITEMS DEL POPUP MENÚ
+        itemRefresh.addActionListener((ActionEvent e) -> {
+            refresh();
+        });
         itemNotif.addActionListener((ActionEvent e) -> {
             Frame.openGlass(2);
         });
@@ -386,11 +372,34 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         });
     }
 
+    private static void refresh() {
+        new Thread() {
+            @Override
+            public void run() {
+                //Abrir el GlassPane cargando
+                Frame.openGlass(0);
+
+                //Pausar el programa por un segundo
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MenuSuperior.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                //Actualizar todos los datos
+                Contenedor.actualizarDatos();
+
+                //Cerrar el glassPane
+                Frame.closeGlass();
+            }
+        }.start();
+    }
+
     /**
      * Función para abrir el sitio web del programa
      */
     public static void abrirWeb() {
-        
+
     }
 
     /**
@@ -398,7 +407,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
      * web
      */
     private void perfil() {
-        
+
     }
 
     /**
@@ -419,7 +428,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
     public static void setNotificationCount(int count) {
         //Guardar el número de notificaciones
         notificaciones = count;
-        
+
         //Obtener el tamaño mínimo del frame
         int mh = Frame.getMinSize().height;
 
@@ -429,7 +438,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             //Objeto ImageIcon para convertir las imagenes escaladas (Imagen)
             ImageIcon icono;
             int size;
-            
+
             //Validar si hay alguna notificación
             if (notificaciones == 0) {
                 //Tamaño del botón de notificaciones
@@ -445,11 +454,11 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 icono = new ImageIcon(imgBotonDesplegar.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
                 //Asignar la imagen escalada
                 btnDesplegar.setIcon(icono);
-                
+
                 //El botón de notificaciones en el menú desplegable, siempre 
                 //mantiene su mismo tamaño
                 itemNotif.setIcon(imgMenuNotif);
-                
+
             } else {
                 //Tamaño del botón de notificaciones con alerta
                 size = 28;
@@ -464,7 +473,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 icono = new ImageIcon(imgBotonDesplegar_Alert.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
                 //Asignar la imagen escalada
                 btnDesplegar.setIcon(icono);
-                
+
                 //El botón de notificaciones en el menú desplegable, siempre 
                 //mantiene su mismo tamaño
                 itemNotif.setIcon(imgMenuNotif_Alert);
@@ -472,13 +481,13 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
 
         } else {
             //Si el frame es mayor a 600px, asignar el tamaño predeterminado
-            
+
             //Validar si hay alguna notificacion
             if (notificaciones == 0) {
                 btnNotificacion.setIcon(imgBotonNotif);
                 btnDesplegar.setIcon(imgBotonDesplegar);
                 itemNotif.setIcon(imgMenuNotif);
-                
+
             } else {
                 //Imagenes con alerta de notificación
                 btnNotificacion.setIcon(imgBotonNotif_Alert);

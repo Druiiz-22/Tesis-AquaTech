@@ -11,6 +11,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import login.Frame;
 import login.Recuperacion;
 import static login.Frame.replacePanel;
 import static login.Recuperacion.getContentSize;
@@ -28,46 +31,64 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
      * Función para enviar el código al correo y cambiar el panel
      */
     private void enviarCodigo() {
+        new Thread() {
+            @Override
+            public void run() {
+                Frame.openGlass(true);
+                //Validar el campo de texto
+                if (validarCampo()) {
+                    
+                    //Pausar el programa por un segundo
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Correo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    //Validar que el correo SÍ exista en la base de datos
+                    if (ReadDB.emailExists(correoUsuario) == 1) {
 
-        //Validar el campo de texto
-        if (validarCampo()) {
+                        //Generar un número aleatorio de 6 dígitos
+                        int codigoSeguridad = (int) (Math.random() * (999999 - 100000) + 100000);
 
-            //Validar que el correo SÍ exista en la base de datos
-            if (ReadDB.emailExists(correoUsuario) == 1) {
+                        //Validar si se pudo enviar el correo o no
+                        if (EmailCode.recuperarCuenta(correoUsuario, codigoSeguridad)) {
+                            //Obtener la fecha actual
+                            java.util.Date actual = new java.util.Date();
+                            Calendar fechaSalida = new java.util.GregorianCalendar();
+                            fechaSalida.setTime(actual);
+                            //Sumar 10 minutos a la fecha
+                            fechaSalida.add(Calendar.MINUTE, 30);
 
-                //Generar un número aleatorio de 6 dígitos
-                int codigoSeguridad = (int) (Math.random() * (999999 - 100000) + 100000);
+                            //Obtener la fecha máxima de validación del código de seguridad
+                            Calendar fechaExpiracion = new java.util.GregorianCalendar();
+                            fechaExpiracion.setTime(fechaSalida.getTime());
 
-                //Validar si se pudo enviar el correo o no
-                if (EmailCode.recuperarCuenta(correoUsuario, codigoSeguridad)) {
-                    //Obtener la fecha actual
-                    java.util.Date actual = new java.util.Date();
-                    Calendar fechaSalida = new java.util.GregorianCalendar();
-                    fechaSalida.setTime(actual);
-                    //Sumar 10 minutos a la fecha
-                    fechaSalida.add(Calendar.MINUTE, 30);
+                            //Reasignar la fecha actual
+                            fechaSalida.setTime(actual);
 
-                    //Obtener la fecha máxima de validación del código de seguridad
-                    Calendar fechaExpiracion = new java.util.GregorianCalendar();
-                    fechaExpiracion.setTime(fechaSalida.getTime());
+                            //Guardar el correo en la clase de registro
+                            Recuperacion.setCorreo(correoUsuario);
 
-                    //Reasignar la fecha actual
-                    fechaSalida.setTime(actual);
+                            //Mostrar el código en la pestaña del código
+                            Codigo.setDatos(correoUsuario, codigoSeguridad, fechaSalida, fechaExpiracion);
 
-                    //Guardar el correo en la clase de registro
-                    Recuperacion.setCorreo(correoUsuario);
-
-                    //Mostrar el código en la pestaña del código
-                    Codigo.setDatos(correoUsuario, codigoSeguridad, fechaSalida, fechaExpiracion);
-
-                    //Avanzar a la pestaña de validación de código
-                    replaceContainer(CODIGO);
+                            //Avanzar a la pestaña de validación de código
+                            replaceContainer(CODIGO);
+                            
+                            //Cerrar el GlassPane
+                            Frame.openGlass(false);
+                        }
+                    } else {
+                        //Cerrar el GlassPane
+                        Frame.openGlass(false);
+                        //Mensaje de error
+                        msjError("El correo no se encuentra registrado."
+                                + "\nPor favor, revise sus datos.");
+                    }
                 }
-            } else {
-                msjError("El correo no se encuentra registrado."
-                        + "\nPor favor, revise sus datos.");
             }
-        }
+        }.start();
     }
 
     /**
@@ -76,8 +97,10 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
      * @return TRUE en caso de que el correo sea válido.
      */
     private boolean validarCampo() {
-        correoUsuario = txtCorreo.getText().trim().toUpperCase();
+        String msj;
 
+        correoUsuario = txtCorreo.getText().trim().toUpperCase();
+        
         //Validar que el campo no esté vacío
         if (!correoUsuario.isEmpty()) {
 
@@ -87,21 +110,17 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
                 return true;
 
             } else {
-                msjError(
-                        "El correo es inválido.\n"
-                        + "Por favor, revise sus datos."
-                );
-                txtCorreo.requestFocus();
+                msj = "El correo es inválido.\nPor favor, revise sus datos.";
             }
-
         } else {
-            msjError(
-                    "El correo no puede estár vacío.\n"
-                    + "Por favor, ingrese sus datos."
-            );
-            txtCorreo.requestFocus();
+            msj = "El correo no puede estár vacío.\nPor favor, ingrese sus datos.";
         }
-
+        
+        //Cerrar el glassPane
+        Frame.openGlass(false);
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso, en caso de no retornar true antes.
         return false;
     }
@@ -126,7 +145,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
      */
     public void initComponents() {
         this.setSize(getContentSize());
-        
+
         //Punto medio
         int middleX = this.getWidth() / 2;
         //Margen interno al comienzo (izquierda)
@@ -144,7 +163,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
         lblCorreo.setLocation(paddingStart, labelY);
         txtCorreo.setLocation(paddingStart, correoY);
         txtCorreo.setSize(fieldSize);
-        
+
         //LABEL PARA LA INFORMACIÓN DEL PANEL
         String info = "<html>¿Has perdido tu contraseña? <b>ingrese su correo<br>"
                 + "electrónico</b> afiliado a su cuenta. Recibirá un "
@@ -154,7 +173,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
         lblInfo.setVerticalAlignment(javax.swing.JLabel.TOP);
         lblInfo.setLocation(paddingStart, 0);
         lblInfo.setSize(fieldWidth, labelY);
-        
+
         //LABEL PARA IR AL INICIO
         int iniciarY = this.getHeight() - paddingBottom - lblIniciar.getHeight();
         int iniciarX = middleX - (lblIniciar.getWidth() + btnIniciar.getWidth()) / 2;

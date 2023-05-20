@@ -2,6 +2,8 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import properties.Mensaje;
 
 /**
@@ -27,20 +29,26 @@ public class ReadDB implements properties.Constantes {
         ResultSet r = bdd.ejecutarQuery(sql);
 
         try {
-            //Validar que la respuesta NO sea null y que tenga, al menos, un dato
-            //obtenido que se pueda avanzar.
-            if (r != null && r.next()) {
-                //Obtener el precio
-                Double precio = r.getDouble(1);
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener el precio
+                    Double precio = r.getDouble(1);
 
-                //Terminar la conexión con la base de datos
-                bdd.desconectar();
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
 
-                //Retornar el precio
-                return precio;
+                    //Retornar el precio
+                    return precio;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el precio como el valor de 0
+                return 0;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.Error: " + e);
         }
 
         //Terminar la conexión con la base de datos
@@ -69,18 +77,25 @@ public class ReadDB implements properties.Constantes {
         try {
             //Validar que la respuesta NO sea null y que tenga, al menos, un dato
             //obtenido que se pueda avanzar.
-            if (r != null && r.next()) {
-                //Obtener el precio
-                Double precio = r.getDouble(1);
+            if (r != null) {
+                if (r.next()) {
 
-                //Terminar la conexión con la base de datos
-                bdd.desconectar();
+                    //Obtener el precio
+                    Double precio = r.getDouble(1);
 
-                //Retornar el precio
-                return precio;
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return precio;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el precio como el valor de 0
+                return 0;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio de venta del botellón.\nError: " + e);
+            Mensaje.msjError("No se pudo obtener el precio de venta del botellón.Error: " + e);
         }
 
         //Terminar la conexión con la base de datos
@@ -167,13 +182,13 @@ public class ReadDB implements properties.Constantes {
                 return count;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.Error: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
-        return -1;
+        return ERROR_NUMBER;
     }
 
     /**
@@ -222,13 +237,14 @@ public class ReadDB implements properties.Constantes {
                     return new Object[]{rol, name};
                 } else {
                     Mensaje.msjError(
-                            "El usuario o contraseña es incorrecto.\n"
+                            "El usuario o contraseña es incorrecto."
                             + "Por favor, verifique sus datos"
                     );
                 }
             }
         } catch (NumberFormatException | SQLException e) {
-            System.out.println("Error getUser = " + e);
+            Mensaje.msjError("No se pudo buscar el usuario en la base de datos."
+                    + "Error: " + e);
         }
 
         //Terminar la conexión con la base de datos
@@ -244,87 +260,70 @@ public class ReadDB implements properties.Constantes {
      * @return Clientes registrados
      */
     public static Object[][] getClientes() {
-        //ID, Cedula, Nombre, Apellido, Telefono, Direccion
+        //ID, Cedula, Nombre, Apellido, Telefono
 
-        //Cédula minima y máxima
-        int ci_min = 5000000;
-        int ci_max = 35000000;
-        int id = 1;
+        //Preparar la sentencia SQL para obtener la cantidad de clientes
+        String sql = "SELECT COUNT(*) FROM Cliente ORDER BY id DESC";
 
-        Object[][] clientes = {
-            {id++, "27909011", "DIEGO", "RUIZ", "04120268484"},
-            {id++, "30445134", "JESUS", "GONZALES", "04246451278"},
-            {id++, "20154005", "HECTOR", "LOPEZ", "04160884512"},
-            {id++, "25451987", "MARIA", "JIMENEZ", "04146451277"},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "ANGEL", "DE LA CRUZ", "0412" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "CARLOS", "ALVAREZ", "0424" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)},
-            {id++, (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), "OSCAR", "MEDINA", "0416" + (int) (Math.random() * (ci_max - ci_min + 1) + ci_min)}
-        };
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
 
-        return clientes;
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+
+                        //Sentencia SQL para obtener todos los clientes
+                        sql = "SELECT * FROM Cliente";
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object clientes[][] = new Object[count][5];
+                            int i = 0;
+
+                            while (r.next()) {
+                                clientes[i][0] = r.getInt(1);
+                                clientes[i][1] = r.getInt(2);
+                                clientes[i][2] = r.getString(3);
+                                clientes[i][3] = r.getString(4);
+                                clientes[i][4] = r.getString(5);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return clientes;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los clientes de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -335,59 +334,67 @@ public class ReadDB implements properties.Constantes {
     public static Object[][] getProveedores() {
         //RIF, Nombre, Telefono, Direccion
 
-        int id = 1;
+        //Preparar la sentencia SQL para obtener la cantidad de proveedores
+        String sql = "SELECT COUNT(*) FROM Proveedores;";
 
-        Object[][] proveedores = {
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},
-            {id++, "J-516513", "AGUA RICA", "04120268754"},
-            {id++, "J-516510", "AGUA BLANCA", "04166484512"},
-            {id++, "J-516671", "LA CATEDRAL", "04241349765"},
-            {id++, "J-671164", "MANANTIAL", "041231645077"},};
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
 
-        return proveedores;
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de proveedores y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+
+                        //Sentencia SQL para obtener todos los proveedores
+                        sql = "SELECT * FROM Proveedores ORDER BY id DESC";
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object proveedores[][] = new Object[count][4];
+                            int i = 0;
+
+                            while (r.next()) {
+                                proveedores[i][0] = r.getInt(1);
+                                proveedores[i][1] = r.getString(2);
+                                proveedores[i][2] = r.getString(3);
+                                proveedores[i][3] = r.getString(4);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return proveedores;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los proveedores de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -396,277 +403,79 @@ public class ReadDB implements properties.Constantes {
      * @return Historial de los trasvasos
      */
     public static Object[][] getTrasvasos() {
-        //ID, Cedula, Pagados, Entregados, Pago, Delivery, Monto total, Fecha
+        //ID, Cedula, Pagados, Entregados, TipoPago, Delivery, Monto total, Fecha
 
-        int i = 0;
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Trasvaso;";
 
-        Object[][] historial = {
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {974, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {984, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {990, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},
-            {i++, "27909011", "2", "2", "EFECT", "NO", "28.0", "16-3-2023 10:08 AM"},
-            {i++, "20154005", "1", "2", "EFECT", "SI", "28.0", "16-3-2023 10:24 AM"},
-            {i++, "30445134", "4", "0", "DOLAR", "NO", "28.0", "16-3-2023 12:19 PM"},
-            {i++, "25451987", "0", "4", "TRNSF", "SI", "28.0", "17-3-2023 3:57 PM"},};
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
 
-        return historial;
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Trasvaso.id, cedula, cant_pagada, "
+                                + "cant_entregada, tipo_pago, delivery, "
+                                + "monto, fecha "
+                                + "FROM Trasvaso "
+                                + "INNER JOIN Cliente "
+                                + "ON id_cliente = Cliente.id "
+                                + "ORDER BY Trasvaso.id DESC";
+
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object trasvasos[][] = new Object[count][8];
+                            int i = 0;
+
+                            while (r.next()) {
+                                trasvasos[i][0] = r.getInt(1);
+                                trasvasos[i][1] = r.getInt(2);
+                                trasvasos[i][2] = r.getInt(3);
+                                trasvasos[i][3] = r.getInt(4);
+                                trasvasos[i][4] = r.getString(5);
+                                trasvasos[i][5] = r.getBoolean(6);
+                                trasvasos[i][6] = r.getDouble(7);
+                                trasvasos[i][7] = r.getString(8);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return trasvasos;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los trasvasos de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -677,13 +486,95 @@ public class ReadDB implements properties.Constantes {
     public static Object[][] getDeudas() {
         //ID, Factura, Cedula, Debe Pagar, Debemos Dar, Fecha
 
-        Object[][] historial = {
-            {"7", "974", "20154005", "1", "0", "16-3-2023 10:24 AM"},
-            {"13", "984", "30445134", "0", "4", "16-3-2023 12:19 PM"},
-            {"15", "990", "25451987", "4", "0", "17-3-2023 3:57 PM"}
-        };
+        //Preparar la sentencia SQL para obtener las deudas activas
+        String sql = "SELECT COUNT(*) "
+                + "FROM Deuda "
+                + "INNER JOIN Trasvaso "
+                + "INNER JOIN Cliente "
+                + "	ON id_trasvaso = Trasvaso.id "
+                + "	AND id_cliente = Cliente.id "
+                + "	AND id_trasvaso IN (SELECT MAX(id) "
+                + "         FROM Trasvaso "
+                + "         WHERE id_cliente = Cliente.id)";
 
-        return historial;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        /*
+                        Sentencia SQL para obtener las deudas pendientes:
+                            Seleccioname las deudas DONDE su id de trasvaso, sea
+                            el id del ÚLTIMO trasvaso REGISTRADO por el cliente.
+                         */
+                        sql = "SELECT Deuda.id, "
+                                + "     id_trasvaso, "
+                                + "     cedula, "
+                                + "     pago_pendiente, "
+                                + "     entrega_pendiente, "
+                                + "     fecha "
+                                + "FROM Deuda "
+                                + "INNER JOIN Trasvaso "
+                                + "INNER JOIN Cliente "
+                                + "     ON id_trasvaso = Trasvaso.id "
+                                + "     AND id_cliente = Cliente.id "
+                                + "     AND id_trasvaso IN (SELECT MAX(Trasvaso.id) "
+                                + "         FROM Trasvaso "
+                                + "         WHERE id_cliente = Cliente.id) "
+                                + "ORDER BY Deuda.id DESC";
+
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object deudas[][] = new Object[count][6];
+                            int i = 0;
+
+                            while (r.next()) {
+                                deudas[i][0] = r.getInt(1);
+                                deudas[i][1] = r.getInt(2);
+                                deudas[i][2] = r.getInt(3);
+                                deudas[i][3] = r.getInt(4);
+                                deudas[i][4] = r.getInt(5);
+                                deudas[i][5] = r.getString(6);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return deudas;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las deudas de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -694,14 +585,73 @@ public class ReadDB implements properties.Constantes {
     public static Object[][] getRecargas() {
         //ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
-        Object[][] historial = {
-            {"1", "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {"2", "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {"3", "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {"4", "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"}
-        };
+        //Preparar la sentencia SQL para obtener la cantidad de recargas
+        String sql = "SELECT COUNT(*) FROM Recarga";
 
-        return historial;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Recarga.id, Proveedores.nombre, "
+                                + "cantidad, monto, fecha "
+                                + "FROM Recarga "
+                                + "INNER JOIN Proveedores "
+                                + "ON id_prov = Proveedores.id "
+                                + "ORDER BY Recarga.id DESC";
+
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object recargas[][] = new Object[count][5];
+                            int i = 0;
+
+                            while (r.next()) {
+                                recargas[i][0] = r.getInt(1);
+                                recargas[i][1] = r.getString(2);
+                                recargas[i][2] = r.getInt(3);
+                                recargas[i][3] = r.getDouble(4);
+                                recargas[i][4] = r.getString(5);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return recargas;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las recargas de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -710,13 +660,77 @@ public class ReadDB implements properties.Constantes {
      * @return Historial de las ventas
      */
     public static Object[][] getVentas() {
-        //ID, Cedula, Cantidad, Tipo pago, Monto Total, Fecha
+        //ID, Cedula, Cantidad, Tipo pago, Delivery, Monto Total, Fecha
 
-        Object[][] historial = {
-            {"1", "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {"2", "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},};
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Venta;";
 
-        return historial;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Venta.id, Cliente.cedula, cantidad, "
+                                + "tipo_pago, delivery, monto, fecha "
+                                + "FROM Venta "
+                                + "INNER JOIN Cliente "
+                                + "ON id_cliente = Cliente.id "
+                                + "ORDER BY Venta.id DESC";
+
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object ventas[][] = new Object[count][7];
+                            int i = 0;
+
+                            while (r.next()) {
+                                ventas[i][0] = r.getInt(1);
+                                ventas[i][1] = r.getInt(2);
+                                ventas[i][2] = r.getInt(3);
+                                ventas[i][3] = r.getString(4);
+                                ventas[i][4] = r.getBoolean(5);
+                                ventas[i][5] = r.getDouble(6);
+                                ventas[i][6] = r.getString(7);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return ventas;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las ventas de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -727,11 +741,73 @@ public class ReadDB implements properties.Constantes {
     public static Object[][] getCompras() {
         //ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
-        Object[][] historial = {
-            {"1", "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {"2", "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},};
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Compra;";
 
-        return historial;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Compra.id, Proveedores.nombre, cantidad, "
+                                + "monto, fecha "
+                                + "FROM Compra "
+                                + "INNER JOIN Proveedores "
+                                + "ON id_prov = Proveedores.id "
+                                + "ORDER BY Compra.id DESC";
+
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object compras[][] = new Object[count][5];
+                            int i = 0;
+
+                            while (r.next()) {
+                                compras[i][0] = r.getInt(1);
+                                compras[i][1] = r.getString(2);
+                                compras[i][2] = r.getInt(3);
+                                compras[i][3] = r.getDouble(4);
+                                compras[i][4] = r.getString(5);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return compras;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las recargas de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -742,114 +818,165 @@ public class ReadDB implements properties.Constantes {
     public static Object[][] getPedidos() {
         //ID, cedula, servicio, cantidad, tipo_pago, fecha, latitud, longitud
 
-        int rows = 15;
-        Object lista[][] = new Object[rows][8];
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Pedido WHERE id NOT IN (SELECT id FROM Pedido_Entregado)";
 
-        //Variables para las fechas
-        int dia = 1;
-        int hora = 9;
-        int minuto = 0;
-        int mes = 3;
-        int anio = 2023;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
 
-        //Cédula minima y máxima
-        int ci_min = 5000000;
-        int ci_max = 35000000;
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
 
-        double posiciones[][] = {
-            {10.585293809414747, -71.65681002383909},
-            {10.586411214531502, -71.6600759296157},
-            {10.587085202950155, -71.65502369968503},
-            {10.583644299163073, -71.64740926727356},
-            {10.587635034534275, -71.65475304444573},
-            {10.582846145861863, -71.65919178937048},
-            {10.58265104140613, -71.6564671939436},
-            {10.588007500522133, -71.6574235090139},
-            {10.5879542911241, -71.6590113527064},
-            {10.585617897584934, -71.65977969023554},
-            {10.581527153778518, -71.64728569103546},
-            {10.583549146810844, -71.64609480818609},
-            {10.583134169541635, -71.65784095293495},
-            {10.585253703446991, -71.6576966035375},
-            {10.587116043330223, -71.65775073450976}
-        };
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        /*
+                            Sentencia SQL para obtener los pedidos activos:
+                                Seleccioname los pedidos CUANDO su id NO esté
+                                dentro de la tabla de los pedidos pagados
+                        */
+                        sql = "SELECT Pedido.id, Cliente.cedula, servicio, "
+                                + "cantidad, tipo_pago, fecha, direccion "
+                                + "FROM Pedido "
+                                + "INNER JOIN Usuario "
+                                + "ON id_usuario = Usuario.id "
+                                + "INNER JOIN Cliente "
+                                + "ON id_cliente = Cliente.id "
+                                + "INNER JOIN Pedido_Entregado "
+                                + "ON Pedido.id NOT IN (SELECT id FROM Pedido_Entregado) "
+                                + "ORDER BY Pedido.id DESC";
 
-        lista[0] = new Object[]{1, 27909011, "COMPRA", 2, "TRNSF", "27-2-2023 12:08", 10.585293809414747, -71.65681002383909};
-        lista[1] = new Object[]{2, 30445134, "RECARGA", 4, "TRNSF", "27-2-2023 12:57", 10.586411214531502, -71.6600759296157};
-        lista[2] = new Object[]{3, 20154005, "RECARGA", 2, "TRNSF", "27-2-2023 14:22", 10.587085202950155, -71.65502369968503};
-        lista[3] = new Object[]{4, 25451987, "COMPRA", 1, "TRNSF", "27-2-2023 16:12", 10.583644299163073, -71.64740926727356};
+                        r = bdd.ejecutarQuery(sql);
 
-        for (int i = 4; i < rows; i++) {
-            int servicio = (int) (Math.random() * (10 - 1 + 1) + 1);
-            int cantidad = (int) (Math.random() * (30 - 1 + 1) + 1);
-            int tipoPago = (int) (Math.random() * (3 - 1 + 1) + 1);
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object pedidos[][] = new Object[count][8];
+                            int i = 0;
 
-            //Los clientes vienen entre 2 a 30 minutos de diferencia
-            minuto += (int) (Math.random() * (30 - 2 + 1) + 2);
+                            while (r.next()) {
+                                pedidos[i][0] = r.getInt(1);
+                                pedidos[i][1] = r.getInt(2);
+                                pedidos[i][3] = r.getInt(4);
+                                pedidos[i][4] = r.getString(5);
+                                pedidos[i][5] = r.getString(6);
 
-            //Si los minutos superan los 59min
-            if (minuto > 59) {
-                //Aumentar una hora
-                hora++;
-                //Obtener los minutos de esa siguiente hora
-                minuto = minuto - 59;
+                                //Si es TRUE (1) es compra, si es FALSE (0) es recarga
+                                boolean servicio = r.getBoolean(3);
+                                pedidos[i][2] = servicio ? "COMPRA" : "RECARGA";
 
-                //Si la hora supera las 19 (7 pm)
-                if (hora > 19) {
-                    //Aumentar un día
-                    dia++;
-                    //Reiniciar la hora
-                    hora = 9;
+                                //Dividir la dirección por su latitud y longitud
+                                String direccion = r.getString(7);
+                                String split[] = direccion.split(", ");
+                                pedidos[i][6] = split[0];
+                                pedidos[i][7] = split[1];
 
-                    //Si el día supera los 30 días
-                    if (dia > 30) {
-                        //Avanzar de mes
-                        mes++;
-                        //Reinicar los días
-                        dia = 1;
+                                i++;
+                            }
 
-                        //Si los meses superan el mes 12
-                        if (mes > 12) {
+                            //Desconectar la base de datos
+                            bdd.desconectar();
 
-                            //Avanzar de año
-                            anio++;
-                            //Reiniciar el mes
-                            mes = 1;
+                            return pedidos;
                         }
                     }
                 }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
             }
-            //Obtener la feha
-            String fecha = dia + "-" + mes + "-" + anio + " " + hora + ":" + minuto;
-
-            int ci = (int) (Math.random() * (ci_max - ci_min + 1) + ci_min);
-
-            lista[i] = new Object[]{
-                i + 1,
-                ci,
-                ((servicio == 10) ? "COMPRA" : "RECARGA"),
-                cantidad,
-                ((tipoPago == 1) ? "EFECT" : (tipoPago == 2) ? "TRNSF" : "DOLAR"),
-                fecha,
-                posiciones[i][0],
-                posiciones[i][1]
-            };
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los pedidos de la base de"
+                    + "datos. Error: " + ex);
         }
 
-        return lista;
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
+    /**
+     * Función para obtener todos los datos de las transferencias realizadas en
+     * los pedidos.
+     *
+     * @return
+     */
     public static Object[][] getTransferencias() {
         //ID, Pedido, Referencia, Banco, Fecha
 
-        Object[][] transf = {
-            {157, 1, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "BANESCO", "27-2-2023 12:06"},
-            {156, 2, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "PROVINCIAL", "27-2-2023 12:54"},
-            {158, 3, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "MERCANTIL", "27-2-2023 14:15"},
-            {159, 4, (int) (Math.random() * (999999999 - 10000 + 1) + 10000), "VENEZUELA", "27-2-2023 16:06"}
-        };
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Transferencia;";
 
-        return transf;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT * FROM Transferencia ORDER BY id DESC";
+
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object transferencias[][] = new Object[count][5];
+                            int i = 0;
+
+                            while (r.next()) {
+                                transferencias[i][0] = r.getInt(1);
+                                transferencias[i][1] = r.getInt(2);
+                                transferencias[i][2] = r.getString(3);
+                                transferencias[i][3] = r.getString(4);
+                                transferencias[i][4] = r.getString(5);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return transferencias;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las transferencias de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -860,7 +987,44 @@ public class ReadDB implements properties.Constantes {
      * @return ID del cliente
      */
     public static int getClienteID(String cedula) {
-        return 1;
+        //Preparar la sentencia SQL para obtener el id del cliente
+        String sql = "SELECT id FROM Cliente WHERE cedula = \"" + cedula + "\"";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener el id
+                    int id = r.getInt(1);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return id;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el id como -1
+                return -1;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el id del cliente. Error: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_NUMBER;
     }
 
     /**
@@ -871,7 +1035,44 @@ public class ReadDB implements properties.Constantes {
      * @return ID del proveedor
      */
     public static int getProveedorID(String rif) {
-        return 1;
+        //Preparar la sentencia SQL para obtener el id del proveedor
+        String sql = "SELECT id FROM Proveedores WHERE rif = \"" + rif + "\"";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener el id
+                    int id = r.getInt(1);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return id;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el id como -1
+                return -1;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el id del proveedor. Error: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_NUMBER;
     }
 
     // ========== ADMINISTRADOR ==========
@@ -881,14 +1082,82 @@ public class ReadDB implements properties.Constantes {
      * @return
      */
     public static Object[][] getUsers() {
-        //ID, Cedula, Rol, Correo
+        //"ID", "Cedula", "Rol", "Nombre", "Apellido", "Telefono", "Correo"
 
-        Object[][] usuarios = {
-            {1, "25467109", "ADMIN", "ADMIN", "ADMIN", "0", "administrador@aquatech.com"},
-            {2, "21545987", "EMPLEADO", "DIEGO", "RUIZ", "04120268484", "segundo_correo@aquatech.com"},
-            {3, "12445781", "ADMIN", "KEVIN", "DUARTE", "04245620012", "kevinduarte59@gmail.com"},};
+        //Preparar la sentencia SQL para obtener la cantidad de clientes
+        String sql = "SELECT COUNT(*) FROM Usuario";
 
-        return usuarios;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+
+                        //Sentencia SQL para obtener todos los clientes
+                        sql = "SELECT Usuario.id, cedula, rol, nombre, "
+                                + "apellido, telefono, correo "
+                                + "FROM Usuario "
+                                + "INNER JOIN Cliente "
+                                + "ON id_cliente = Cliente.id "
+                                + "ORDER BY Usuario.id DESC";
+                        r = bdd.ejecutarQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object usuarios[][] = new Object[count][7];
+                            int i = 0;
+
+                            while (r.next()) {
+                                usuarios[i][0] = r.getInt(1);
+                                usuarios[i][1] = r.getInt(2);
+                                usuarios[i][3] = r.getString(4);
+                                usuarios[i][4] = r.getString(5);
+                                usuarios[i][6] = r.getString(6);
+                                usuarios[i][7] = r.getString(7);
+                                //Determinar el rol
+                                int rol = r.getInt(3);
+                                usuarios[i][2] = (rol == EMPLEADO) ? "EMPLEADO"
+                                        : (rol == ADMINISTRADOR) ? "ADMIN"
+                                                : "CLIENTE";
+
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return usuarios;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los clientes de la base de"
+                    + "datos. Error: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
     }
 
     /**
@@ -898,7 +1167,48 @@ public class ReadDB implements properties.Constantes {
      * @return
      */
     public static int getUserID(String cedula) {
-        return 1;
+        //Preparar la sentencia SQL para obtener el id del cliente
+        String sql = "SELECT Usuario.id "
+                + "FROM Usuario "
+                + "INNER JOIN Cliente "
+                + "ON cedula = \"" + cedula + "\" "
+                + "AND id_cliente = Cliente.id";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.ejecutarQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener el id
+                    int id = r.getInt(1);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return id;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el id como -1
+                return -1;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el id del usuario. Error: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_NUMBER;
     }
 
     // ========== REPORTES ==========
@@ -1021,10 +1331,11 @@ public class ReadDB implements properties.Constantes {
      *
      * @param initDate Fecha inicial
      * @param finalDate Fecha final
+     * @param sucursal
      *
      * @return Registro de los trasvasos
      */
-    public static Object[][] getTrasvasos(String initDate, String finalDate) {
+    public static Object[][] getTrasvasos(String initDate, String finalDate, int sucursal) {
         //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, MontoPago, MontoEntr, Fecha
         String[] header = new String[]{"#", "ID", "Cedula", "Pagos", "Entregados", "Tipo pago", "Delivery", "Monto pago", "Monto entre", "Fecha"};
 
@@ -1146,10 +1457,11 @@ public class ReadDB implements properties.Constantes {
      *
      * @param initDate Fecha inicial
      * @param finalDate Fecha final
+     * @param sucursal
      *
      * @return Registro de las recargas
      */
-    public static Object[][] getRecargas(String initDate, String finalDate) {
+    public static Object[][] getRecargas(String initDate, String finalDate, int sucursal) {
         //ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
         String[] header = new String[]{"#", "ID", "RIF", "Proveedor", "Cantidad", "Monto Total", "Fecha"};
@@ -1477,10 +1789,11 @@ public class ReadDB implements properties.Constantes {
      *
      * @param initDate Fecha inicial
      * @param finalDate Fecha final
+     * @param sucursal
      *
      * @return Registro de las ventas
      */
-    public static Object[][] getVentas(String initDate, String finalDate) {
+    public static Object[][] getVentas(String initDate, String finalDate, int sucursal) {
         //ID, Cedula, Cantidad, Tipo pago, Monto Total, Fecha
 
         String[] header = new String[]{"#", "ID", "Cedula", "Cantidad", "Tipo Pago", "Monto Total", "Fecha"};
@@ -1749,10 +2062,11 @@ public class ReadDB implements properties.Constantes {
      *
      * @param initDate Fecha inicial
      * @param finalDate Fecha final
+     * @param sucursal
      *
      * @return Registro de las compras
      */
-    public static Object[][] getCompras(String initDate, String finalDate) {
+    public static Object[][] getCompras(String initDate, String finalDate, int sucursal) {
         //ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
         String[] header = new String[]{"#", "ID", "RIF", "Proveedor", "Cantidad", "Monto Total", "Fecha"};
