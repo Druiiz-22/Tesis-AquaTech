@@ -78,7 +78,7 @@ public class ConexionDB {
         return null;
     }
     
-    public int insertQuery(String sql){
+    public int executeQuery(String sql){
         try {
             if(cx != null){
                 PreparedStatement pst = cx.prepareStatement(sql);
@@ -93,8 +93,8 @@ public class ConexionDB {
             }
             
             //Si no, mostrar con detalles el error
-            Mensaje.msjError("No se pudo ejecutar la sentencia SQL para agregar "
-                    + "en la base de datos.\nError: " + e);
+            Mensaje.msjError("No se pudo ejecutar la sentencia SQL en la base de"
+                    + " datos.\nError: " + e);
         }
         return properties.Constantes.ERROR_VALUE;
     }

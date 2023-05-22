@@ -2,8 +2,6 @@ package login;
 
 import components.Logo;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -34,14 +32,18 @@ public class IniciarPrograma extends JFrame {
         this.setVisible(true);
         this.getContentPane().setBackground(properties.Colores.BLANCO);
 
-        this.activo = true;
+        IniciarPrograma.activo = true;
 
         initComponents();
         relocate();
         listener();
         
+        //Actualizar el frame
+        this.revalidate();
+        this.repaint();
+        
         //Iniciar el programa SIN cargar los datos
-        Run.iniciarPrograma(identificacion, rol, nombre);
+        Run.instanciarMain(identificacion, rol, nombre);
 
         //Intentar actualizar TODOS los datos del software        
         if (Run.actualizarPrograma()) {
@@ -62,8 +64,9 @@ public class IniciarPrograma extends JFrame {
             Run.iniciarLogin();
         }
 
-        this.activo = false;
+        IniciarPrograma.activo = false;
         IniciarPrograma.percent = 0;
+        IniciarPrograma.cargando.setText("0%");
     }
 
     private void initComponents() {
@@ -154,7 +157,7 @@ public class IniciarPrograma extends JFrame {
     
     public static void setPercent(int percent){
         IniciarPrograma.percent += percent;
-        cargando.setText(IniciarPrograma.percent + "%");
+        cargando.setText(IniciarPrograma.percent+"%");
     }
     
     //COMPONENTES

@@ -99,6 +99,10 @@ public class HistorialTrasvasos extends JPanel implements properties.Constantes,
         tabla.enfocarFila(factura);
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Trasvaso", CUALQUIER);
     private static final Tabla tabla = new Tabla(HISTORIAL_TRASVASO);

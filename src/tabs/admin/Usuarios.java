@@ -208,7 +208,11 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     public static void editUsuario(String cedula, String rol, String nombre, String apellido, String telefono, String correo) {
         nuevo.editar(cedula, rol, nombre, apellido, telefono, correo);
     }
-
+    
+    protected void habilitarComponents(boolean estado){
+        txtBuscar.setEnabled(estado);
+    }
+    
     //ATRIBUTOS
     private static int width, panelHeight;
     private static final int padding = 20;

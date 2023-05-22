@@ -240,6 +240,10 @@ public class Codigo extends javax.swing.JPanel implements properties.Colores, pr
         lblInfo.setText(info);
     }
 
+    public void habilitarComponentes(boolean estado){
+        txtCodigo.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblCodigo = new Label("Código de seguridad", PLANO, 15);

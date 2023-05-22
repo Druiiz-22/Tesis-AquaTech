@@ -12,8 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static javax.swing.SwingConstants.VERTICAL;
 import static login.Frame.getParentSize;
 import static login.Frame.replacePanel;
@@ -41,8 +39,8 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
             Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
-
-            if(rol == EMPLEADO || rol == ADMINISTRADOR){
+            
+            if(rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO){
                 //Reiniciar los intentos
                 intentos = 0;
 
@@ -302,6 +300,11 @@ public final class Inicio extends JPanel implements properties.Colores, properti
         txtClave.hidePassword();
     }
 
+    protected void habilitarComponentes(boolean estado){
+        txtUsuario.setEnabled(estado);
+        txtClave.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Logo lblLogo = new Logo(VERTICAL);
     private static final Label lblIniciar = new Label("Iniciar Sesion", TITULO, 20);

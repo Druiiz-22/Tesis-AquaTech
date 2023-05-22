@@ -132,6 +132,10 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
         nuevo.editar(rif, nombre, telefono);
     }
 
+    public static void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Proveedor", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Proveedor", VERDE);

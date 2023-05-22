@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import properties.Constantes;
 import properties.Mensaje;
 
 public class CrearReporte {
@@ -430,12 +431,8 @@ public class CrearReporte {
                 //Variable para la cantidad de botellones 
                 //entregados a los clientes
                 int cantidadEntregada = 0;
-                //Variable para el monto total de botellones 
-                //pagados por los clientes
-                int gananciasPago = 0;
-                //Variable para el monto total por los 
-                //botellones entregados a los clientes
-                int gananciasEntrega = 0;
+                //Variable para el monto total
+                int montoTotal = 0;
 
                 //Ciclo para recorrer todos los datos de la tabla
                 for (int i = 1; i < datos.length; i++) {
@@ -444,18 +441,16 @@ public class CrearReporte {
                     //Sumar la cantidad de botellones entergados
                     cantidadEntregada += Integer.valueOf(datos[i][4].toString());
 
-                    //Monto total por los botellones pagados
-                    gananciasPago += Float.valueOf(datos[i][7].toString());
-                    //Monto total por los botellones entregados
-                    gananciasEntrega += Float.valueOf(datos[i][8].toString());
+                    //Monto total por los botellones
+                    montoTotal += Float.valueOf(datos[i][7].toString());
                 }
 
                 //Texto para los botellones pagados
-                Text pagados = new Text(cantidadPagada + "\t (" + gananciasPago + " Bs)");
+                Text pagados = new Text(cantidadPagada + "\t (" + montoTotal + " Bs)");
                 pagados.addStyle(titleStyle).setFontColor(verde);
 
                 //Texto para los botellones entregados
-                Text entregados = new Text(cantidadEntregada + "\t (" + gananciasEntrega + " Bs)");
+                Text entregados = new Text(String.valueOf(cantidadEntregada));
                 entregados.addStyle(titleStyle).setFontColor(verde);
 
                 //Validar si se entregaron MAS botellones de los que se pagaron
@@ -505,7 +500,7 @@ public class CrearReporte {
      *
      * @return Matriz con los datos y cabecera
      */
-    private static boolean getDatos() {
+    private static int getDatos() {
         switch (type) {
             case REP_TRASVASOS:
                 datos = ReadDB.getTrasvasos(initialDate, finalDate, sucursal);
@@ -567,7 +562,7 @@ public class CrearReporte {
         }
 
         //Comprobar si los datos NO están vacíos y retornar el resultado
-        return datos != null;
+        return (datos == null)? Constantes.ERROR_VALUE : datos.length;
     }
 
     //ATRIBUTOS BACKEND
@@ -827,32 +822,29 @@ public class CrearReporte {
                 //Variable para la cantidad de botellones 
                 //entregados a los clientes
                 int cantidadEntregada = 0;
-                //Variable para el monto total de botellones 
-                //pagados por los clientes
-                int gananciasPago = 0;
-                //Variable para el monto total por los 
-                //botellones entregados a los clientes
-                int gananciasEntrega = 0;
-
+                //Variable para el monto total
+                int ganacias = 0;
+        
+                
+                
                 //Ciclo para recorrer los datos de la tabla
                 for (int i = 1; i < datos.length; i++) {
+                    
                     //Sumar la cantidad de botellones pagados
                     cantidadPagada += Integer.valueOf(datos[i][3].toString());
                     //Sumar la cantidad de botellones entergados
                     cantidadEntregada += Integer.valueOf(datos[i][4].toString());
 
                     //Monto total por los botellones pagados
-                    gananciasPago += Float.valueOf(datos[i][7].toString());
-                    //Monto total por los botellones entregados
-                    gananciasEntrega += Float.valueOf(datos[i][8].toString());
+                    ganacias += Float.valueOf(datos[i][7].toString());
                 }
 
                 //Texto para mostrar los botellones pagados
-                Text pagados = new Text(cantidadPagada + " (" + gananciasPago + " Bs)");
+                Text pagados = new Text(cantidadPagada + " (" + ganacias + " Bs)");
                 pagados.addStyle(plainStyle).setFontColor(verde);
 
                 //Texto para mostrar los botellones entregados
-                Text entregados = new Text(cantidadEntregada + " (" + gananciasEntrega + " Bs)");
+                Text entregados = new Text(String.valueOf(cantidadEntregada));
                 entregados.addStyle(plainStyle).setFontColor(verde);
 
                 //Validar si se entregaron MAS de lo que pagaron
@@ -1096,7 +1088,7 @@ public class CrearReporte {
             //los conceptos y sintaxis de un PDF real, solo es el lugar donde 
             //se crea el contenido de un documento que será convertido a PDF.
             documento = new Document(pdfDoc);
-
+            
             //Asignar los márgenes del documento, teniendo en cuenta que iText
             //maneja el tamaño en UnitValu, siendo 72 UnitValue = 1 Inch.
             //Para asignar el margen a centímetros, se aplicó la formula:
@@ -1154,12 +1146,17 @@ public class CrearReporte {
         CrearReporte.fileName = getDefaultName();
         CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
 
-        if (getDatos()) {
+        int result = getDatos();
+        
+        if (result > 0) {
             crearPDF();
+        } else if (result == 0){
+            Mensaje.msjError("No existe ningún dato en el rango de fecha "
+                    + "seleccionado, \npor lo que no se generó el reporte.");
         } else {
             Mensaje.msjError("No se pudo extraer los registros de la base de "
-                    + "datos\npara la generación del reporte."
-                    + "\nPor favor, verifique su conexión con la base de datos.");
+                    + "datos\npara la generación del reporte.\n"
+                    + "Por favor, verifique su conexión con la base de datos.");
         }
 
         vaciarDatos();
@@ -1187,16 +1184,17 @@ public class CrearReporte {
         CrearReporte.finalDate = finalDate;
         CrearReporte.sucursal = sucursal;
 
-        //Buscar los datos en la BD y comprobar que se encontró alguno
-        if (getDatos()) {
-
-            //Crear el PDF con los datos
+        int result = getDatos();
+        
+        if (result > 0) {
             crearPDF();
-
+        } else if (result == 0){
+            Mensaje.msjError("No existe ningún dato en el rango de fecha "
+                    + "seleccionado, \npor lo que no se generó el reporte.");
         } else {
             Mensaje.msjError("No se pudo extraer los registros de la base de "
-                    + "datos\npara la generación del reporte."
-                    + "\nPor favor, verifique su conexión con la base de datos.");
+                    + "datos\npara la generación del reporte.\n"
+                    + "Por favor, verifique su conexión con la base de datos.");
         }
 
         vaciarDatos();

@@ -78,7 +78,7 @@ public class EmailCode {
                 + "<div style='margin:auto;width:70%;padding:10px;font-family:Arial,Helvetica,sans-serif;'>"
                 + "<center>"
                 + "<h1>código de verificación:</h1>"
-                + "<h2>" + EmailCode.codigo + "</h2>"
+                + "<h1>" + EmailCode.codigo + "</h1>"
                 + "</center>"
                 + "<p>"
                 + "Bienvenido a AquaTech, se acaba de enviar un código de "

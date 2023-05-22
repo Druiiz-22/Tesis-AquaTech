@@ -111,6 +111,12 @@ public class Ajustes extends JPanel implements properties.Constantes, properties
     protected static void vaciarCampos() {
     }
 
+    protected void habilitarComponents(boolean estado){
+        general.habilitarComponents(estado);
+        sucursales.habilitarComponents(estado);
+        dispositivos.habilitarComponents(estado);
+    }
+    
     //ATRIBUTOS
     private static final int padding = 20;
     private static int width, height;

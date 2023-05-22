@@ -32,6 +32,9 @@ public class AjustesDispositivos extends JPanel{
     protected void vaciarCampos(){
         
     }
+    protected void habilitarComponents(boolean estado){
+    
+    }
     
     //COMPONENTES
     

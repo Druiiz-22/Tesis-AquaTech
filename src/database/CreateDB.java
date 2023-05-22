@@ -1,10 +1,8 @@
 package database;
 
-import static database.ReadDB.getPrecioVenta;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import properties.Mensaje;
-import static properties.Mensaje.msjInformativo;
 
 /**
  * Clase contenedora de los métodos para intentar insertar datos nuevos a la
@@ -28,7 +26,7 @@ public class CreateDB implements properties.Constantes {
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
         //o si se está creando un usuario desde el login
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || login.Registro.isCreatingUser()) {
+        if ( rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
             //Preparar la sentencia SQL para obtener el trasvaso
             String sql = "INSERT INTO Cliente"
                     + "     (cedula, nombre, apellido, telefono)"
@@ -40,7 +38,7 @@ public class CreateDB implements properties.Constantes {
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
-            int status = bdd.insertQuery(sql);
+            int status = bdd.executeQuery(sql);
 
             //Terminar la conexión con la base de datos
             bdd.desconectar();
@@ -85,7 +83,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+        if ( rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
             //Preparar la sentencia SQL para obtener el trasvaso
             String sql = "INSERT INTO Proveedores"
                     + "     (rif, nombre, telefono)"
@@ -97,7 +95,7 @@ public class CreateDB implements properties.Constantes {
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
-            int status = bdd.insertQuery(sql);
+            int status = bdd.executeQuery(sql);
 
             //Terminar la conexión con la base de datos
             bdd.desconectar();
@@ -147,32 +145,54 @@ public class CreateDB implements properties.Constantes {
      */
     public static boolean createUsuario(int cedula, String nombre, String apellido, String telefono, String correo, String clave, int rol) {
         //Preparar la sentencia SQL para crear el usuario
-        String sql = "SELECT REGISTRAR_USUARIO ("+cedula+", \""+nombre+"\", "
-                + "\""+apellido+"\", \""+telefono+"\", \""+correo+"\", "
-                + "\""+clave+"\", "+rol+");";
+        String sql = "SELECT REGISTRAR_USUARIO(" + cedula + ", \"" + nombre + "\", "
+                + "\"" + apellido + "\", \"" + telefono + "\", \"" + correo + "\", "
+                + "\"" + clave + "\", " + rol + ");";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        int status = bdd.insertQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Avanzar en el resultado
+                r.next();
+
+                //Obtener el mensaje
+                String msj = r.getString(1).toUpperCase();
+
+                //Comprobar si fue exitoso o no
+                if (msj.contains("ÉXITO")) {
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Mensaje de éxito
+                    Mensaje.msjInformativo(msj);
+
+                    return true;
+
+                } else {
+                    Mensaje.msjError(msj);
+                }
+                
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+                
+                
+                return false;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+        }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
-        //Si el status es mayor que 0, entonces la conexión y ejecución 
-        //fue exitosa
-        if (status > 0) {
-
-            return true;
-
-        } else {
-            //Mensaje de error
-            Mensaje.msjError("No se pudo registrar el usuario.\nPor favor, verifique su "
-                    + "conexión.");
-        }
-
+        //En caso de NO obtener ningún dato, retornar el número de error
         return false;
     }
 
@@ -192,7 +212,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+        if ( rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
 
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_TRASVASO"
@@ -214,10 +234,10 @@ public class CreateDB implements properties.Constantes {
                     r.next();
 
                     //Obtener el mensaje
-                    String msj = r.getString(1).toUpperCase();
+                    String msj = r.getString(1);
 
                     //Comprobar si fue exitoso o no
-                    if (msj.contains("ÉXITO")) {
+                    if (msj.toUpperCase().contains("ÉXITO")) {
                         //Terminar la conexión con la base de datos
                         bdd.desconectar();
 
@@ -275,7 +295,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+        if ( rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_VENTA"
                     + "(" + cedula + ", 1, " + cantidad + ", \"" + tipoPago
@@ -355,7 +375,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+        if ( rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_RECARGA"
                     + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";
@@ -434,7 +454,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+        if ( rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_COMPRA"
                     + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";

@@ -5,6 +5,8 @@ import components.CampoTexto;
 import components.Label;
 import database.ReadDB;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import login.Frame;
@@ -262,6 +264,31 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
                 guardarDatos();
             }
         });
+        
+        txtNombre.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                txtApellido.requestFocus();
+            }
+        });
+        txtApellido.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                txtCedula.requestFocus();
+            }
+        });
+        txtCedula.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                txtTelefono.requestFocus();
+            }
+        });
+        txtTelefono.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                guardarDatos();
+            }
+        });
     }
 
     /**
@@ -274,6 +301,13 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
         txtTelefono.setText("");
     }
 
+    public void habilitarComponentes(boolean estado){
+        txtNombre.setEnabled(estado);
+        txtApellido.setEnabled(estado);
+        txtCedula.setEnabled(estado);
+        txtTelefono.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblNombre = new Label("Nombre", PLANO, 16);

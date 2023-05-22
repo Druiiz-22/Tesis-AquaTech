@@ -115,7 +115,8 @@ public class Contenedor extends JPanel implements properties.Constantes {
                 panelProv.relocateComponents(this.getSize());
                 break;
             case ADMIN:
-                if (main.Frame.getUserRol() == ADMINISTRADOR) {
+                int rol = main.Frame.getUserRol();
+                if (rol == ADMINISTRADOR || rol == ENCARGADO) {
                     this.add(panelAdmin, BorderLayout.CENTER);
                     panelAdmin.relocateComponents(this.getSize());
                 } else {
@@ -139,8 +140,9 @@ public class Contenedor extends JPanel implements properties.Constantes {
         Proveedores.vaciarCampos();
         Ventas.vaciarCampos();
         Compras.vaciarCampos();
-
-        if (main.Frame.getUserRol() == ADMINISTRADOR) {
+        
+        int rol = main.Frame.getUserRol();
+        if (rol == ADMINISTRADOR || rol == ENCARGADO) {
             Admin.vaciarCampos();
         }
     }
@@ -160,7 +162,8 @@ public class Contenedor extends JPanel implements properties.Constantes {
         
         //Comprobar que el usuario sea administrador y que se hayan completado
         //TODAS las busquedas, hasta este punto
-        if (busquedas && Frame.getUserRol() == ADMINISTRADOR) {
+        int rol = Frame.getUserRol();
+        if (busquedas && rol == ADMINISTRADOR || rol == ENCARGADO) {
             busquedas = Admin.actualizarDatos();
         }
         
@@ -171,6 +174,15 @@ public class Contenedor extends JPanel implements properties.Constantes {
         return busquedas;
     }
 
+    protected static void habilitarComponents(boolean estado){
+        Clientes.habilitarComponents(estado);
+        Ventas.habilitarComponents(estado);
+        Historial.habilitarComponents(estado);
+        Compras.habilitarComponents(estado);
+        Proveedores.habilitarComponents(estado);
+        Admin.habilitarComponents(estado);
+    }
+    
     //COMPONENTES
     private static final Inicio panelInicio = new Inicio();
     private static final Clientes panelClientes = new Clientes();

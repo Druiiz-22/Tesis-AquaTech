@@ -36,7 +36,7 @@ public class AdminDB implements properties.Constantes {
         int rol = Frame.getUserRol();
 
         //Validar que el rol del usuario SEA administrador
-        if (rol == ADMINISTRADOR) {
+        if (rol == ADMINISTRADOR || rol == ENCARGADO) {
 
             //Panel de ingreso de contraseña para el JOptionPane
             JPanel panel = new JPanel();
@@ -94,9 +94,12 @@ public class AdminDB implements properties.Constantes {
 
                 //Validar que se haya obtenido respuesta
                 if (cuenta != null) {
-
+                    
+                    //Guardar el rol obtenido de la base de datos
+                    int rol_2 = (int) (cuenta[0]);
+                    
                     //Validar que el usuario obtenido REALMENTE sea administrador
-                    if ((int) (cuenta[0]) == ADMINISTRADOR) {
+                    if (rol_2 == ADMINISTRADOR || rol_2 == EMPLEADO) {
                         intentos = 0;
                         return true;
 

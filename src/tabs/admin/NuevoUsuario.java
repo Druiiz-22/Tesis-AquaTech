@@ -112,8 +112,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                                         //de la tabla con la base de datos
                                         Usuarios.actualizarDatos();
 
-                                        msjInformativo("Se creó el nuevo usuario con éxito.");
-
                                         dispose();
                                         vaciarCampos();
 
@@ -192,8 +190,8 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         nombre = txtNombre.getText().trim().toUpperCase();
         apellido = txtApellido.getText().trim().toUpperCase();
         telefono = txtTelefono.getText().trim();
-        rol = boxRoles.getSelectedIndex();
-
+        rol = boxRoles.getSelectedIndex() - 1;
+        
         //Validar que los campos NO estén vacíos
         if (correo.isEmpty()) {
             msj = "El correo no puede estár vacío." + msj;
@@ -209,7 +207,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         } else if (ci.isEmpty()) {
             msj = "La cédula no puede estár vacía." + msj;
 
-        } else if (rol <= 0) {
+        } else if (rol < 0 || rol > 3) {
             msj = "Debe seleccionar un rol para el usuario." + msj;
 
         } else if (crearUsuario) {
@@ -518,7 +516,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
     private static String nombre;
     private static String apellido;
     private static String telefono;
-    private static int id_usuario, id_cliente, rol = -99;
+    private static int id_usuario, id_cliente, rol = 0;
 
     // ========== FRONTEND ==========
     /**
@@ -705,7 +703,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
         correo = null;
         correoViejo = null;
-        rol = -99;
+        rol = 0;
 
         nombre = null;
         apellido = null;
@@ -761,8 +759,11 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
             case "EMPLEADO":
                 NuevoUsuario.rol = 2;
                 break;
-            case "ADMIN":
+            case "ENCARGADO":
                 NuevoUsuario.rol = 3;
+                break;
+            case "ADMIN":
+                NuevoUsuario.rol = 4;
                 break;
             default:
                 NuevoUsuario.rol = 1;
@@ -854,7 +855,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
     private static final CampoTexto txtTelefono = new CampoTexto("Telefono del usuario", NUMERO);
 
     private static final Label lblRol = new Label("Rol del usuario", PLANO, 16);
-    private static final String[] opciones = {"Seleccionar", "Cliente", "Empleado", "Administrador"};
+    private static final String[] opciones = {"Seleccionar", "Cliente", "Empleado", "Encargado", "Administrador"};
     private static final JComboBox boxRoles = new JComboBox(opciones);
 
     private static final Label lblClave = new Label("Clave nueva", PLANO, 16);

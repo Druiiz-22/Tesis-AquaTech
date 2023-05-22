@@ -192,6 +192,11 @@ public class Compras extends JPanel implements properties.Constantes, properties
         return status;
     }
 
+    public static void habilitarComponents(boolean estado){
+        panelCompras.habilitarComponents(estado);
+        panelRecargas.habilitarComponents(estado);
+    }
+    
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
@@ -715,6 +720,11 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         provNombre = "";
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtCantidad.setEnabled(estado);
+        txtPrecio.setEnabled(estado);
+    }
+    
     //ATRIBUTOS FRONTEND
     private int width, facHeight, compraHeight, facY;
     private final int padding = 20;

@@ -33,6 +33,10 @@ public class AjustesGenerales extends JPanel{
         
     }
     
+    protected void habilitarComponents(boolean estado){
+    
+    }
+    
     //COMPONENTES
     
 }

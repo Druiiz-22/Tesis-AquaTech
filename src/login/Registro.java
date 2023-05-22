@@ -186,8 +186,6 @@ public class Registro extends JPanel implements properties.Colores, properties.C
             if (!correo.isEmpty()) {
                 if (!clave.isEmpty()) {
 
-                    crearUsuario = true;
-
                     //Intentar crear el usuario
                     if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, clave, EMPLEADO)) {
                         //Mensaje de éxito
@@ -198,7 +196,6 @@ public class Registro extends JPanel implements properties.Colores, properties.C
                         replaceContainer(DATOS);
                     }
 
-                    crearUsuario = false;
                 } else {
                     msjError("El usuario no tiene una clave asignada." + error);
                 }
@@ -210,17 +207,14 @@ public class Registro extends JPanel implements properties.Colores, properties.C
         }
     }
 
-    /**
-     * Función para saber si la clase está creando un usuario.
-     *
-     * @return TRUE si se está creando un usuario, FALSO de lo contrario.
-     */
-    public static boolean isCreatingUser() {
-        return crearUsuario;
+    protected void habilitarComponentes(boolean estado){
+        panelDatosPersonales.habilitarComponentes(estado);
+        panelClaveNueva.habilitarComponentes(estado);
+        panelCodigo.habilitarComponentes(estado);
+        panelCorreo.habilitarComponentes(estado);
     }
-
+    
     //COMPONENTES
-    private static boolean crearUsuario = false;
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final JPanel panelContenedor = new JPanel(null);
     private static final DatosPersonales panelDatosPersonales = new DatosPersonales();

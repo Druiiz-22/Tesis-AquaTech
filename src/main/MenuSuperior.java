@@ -17,8 +17,6 @@ import static javax.swing.SwingConstants.CENTER;
 import static java.awt.Cursor.HAND_CURSOR;
 import java.awt.Dimension;
 import static java.awt.Font.PLAIN;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static properties.Mensaje.msjError;
 import static properties.Fuentes.segoe;
 
@@ -71,12 +69,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
         btnRefresh.setCursor(new Cursor(HAND_CURSOR));
         btnRefresh.setToolTipText("Actualizar los datos");
 
-        //Ajustar el botón del perfil
-        btnPerfil.setHorizontalAlignment(CENTER);
-        btnPerfil.setVerticalAlignment(CENTER);
-        btnPerfil.setCursor(new Cursor(HAND_CURSOR));
-        btnPerfil.setToolTipText("Ir a la información de tu cuenta");
-
         //Ajustare el botón de despliegue de los botones
         btnDesplegar.setHorizontalAlignment(CENTER);
         btnDesplegar.setVerticalAlignment(CENTER);
@@ -94,7 +86,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             //Imagenes del menú de la derecha
             imgBotonRefresh = getImageIcon("actualizar");
             imgBotonWeb = getImageIcon("web");
-            imgBotonPerfil = getImageIcon("profile");
 
             imgBotonNotif = getImageIcon("bell");
             imgBotonNotif_Alert = getImageIcon("bell_alert");
@@ -105,7 +96,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             //Imagenes del menú desplegable
             imgMenuRefresh = getImageIcon("popup/actualizar");
             imgMenuWeb = getImageIcon("popup/web");
-            imgMenuPerfil = getImageIcon("popup/profile");
             imgMenuNotif = getImageIcon("popup/bell");
             imgMenuNotif_Alert = getImageIcon("popup/bell_alert");
 
@@ -114,13 +104,11 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
 
             btnRefresh.setIcon(imgBotonRefresh);
             btnWeb.setIcon(imgBotonWeb);
-            btnPerfil.setIcon(imgBotonPerfil);
             btnNotificacion.setIcon(imgBotonNotif);
             btnDesplegar.setIcon(imgBotonDesplegar);
 
             itemRefresh.setIcon(imgMenuRefresh);
             itemWeb.setIcon(imgMenuWeb);
-            itemPerfil.setIcon(imgMenuPerfil);
             itemNotif.setIcon(imgMenuNotif);
 
         } catch (Exception e) {
@@ -207,9 +195,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 icono = new ImageIcon(imgBotonWeb.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
                 btnWeb.setIcon(icono);
 
-                icono = new ImageIcon(imgBotonPerfil.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
-                btnPerfil.setIcon(icono);
-
                 //Validar que no hayan notificaciones
                 if (notificaciones == 0) {
                     icono = new ImageIcon(imgBotonNotif.getImage().getScaledInstance(size, size, ESCALA_SUAVE));
@@ -235,7 +220,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 //Asignar a cada uno su imagen con el tamaño original
                 btnMenuLateral.setIcon(imgBotonLateral);
                 btnWeb.setIcon(imgBotonWeb);
-                btnPerfil.setIcon(imgBotonPerfil);
 
                 //Validar que no hayan notificaciones
                 if (notificaciones == 0) {
@@ -272,7 +256,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             panelEnd.remove(btnRefresh);
             panelEnd.remove(btnNotificacion);
             panelEnd.remove(btnWeb);
-            panelEnd.remove(btnPerfil);
             panelEnd.remove(gapEnd);
 
             panelEnd.add(btnDesplegar);
@@ -298,7 +281,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             panelEnd.add(btnRefresh);
             panelEnd.add(btnNotificacion);
             panelEnd.add(btnWeb);
-            panelEnd.add(btnPerfil);
             panelEnd.add(gapEnd);
         }
 
@@ -339,13 +321,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
             @Override
             public void mouseReleased(MouseEvent e) {
                 abrirWeb();
-            }
-        });
-        //PERFIL
-        btnPerfil.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                perfil();
             }
         });
         //DESPLIEGUE
@@ -510,7 +485,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
     private static final JLabel btnNotificacion = new JLabel();
     private static final JLabel btnRefresh = new JLabel();
     private static final JLabel btnWeb = new JLabel();
-    private static final JLabel btnPerfil = new JLabel();
     private static final JLabel btnDesplegar = new JLabel();
     private static final JLabel gapEnd = new JLabel("");
 
@@ -520,7 +494,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
     //Imágenes de los botones de la derech
     private static ImageIcon imgBotonRefresh;
     private static ImageIcon imgBotonWeb;
-    private static ImageIcon imgBotonPerfil;
     private static ImageIcon imgBotonNotif;
     private static ImageIcon imgBotonNotif_Alert;
     private static ImageIcon imgBotonDesplegar;
@@ -529,7 +502,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
     //Imagenes para los botones dentro del menú desplegable
     private static ImageIcon imgMenuRefresh;
     private static ImageIcon imgMenuWeb;
-    private static ImageIcon imgMenuPerfil;
     private static ImageIcon imgMenuNotif;
     private static ImageIcon imgMenuNotif_Alert;
 

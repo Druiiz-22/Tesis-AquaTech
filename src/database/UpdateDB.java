@@ -1,10 +1,12 @@
 package database;
 
+import properties.Mensaje;
+
 /**
  *
  * @author diego
  */
-public class UpdateDB {
+public class UpdateDB implements properties.Constantes{
 
     /**
      * Función para editar los datos de un cliente registrado
@@ -17,15 +19,54 @@ public class UpdateDB {
      * @return
      */
     public static boolean updateCliente(int id, int cedula, String nombre, String apellido, String telefono) {
+        
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-//        Mensaje por si no se puede conectar con la base de datos
-//        msjError("No se pudo crear el cliente en la base de datos."
-//                + "\nPor favor, verifique su conexión.");
-//        
-//        Mensaje por si el usuario no coincide
-//        msjError("<html>Su contraseña es incorrecta. <b>No se creará el cliente</b> "
-//        + "hasta que valide sus datos.</html>");
-        return true;
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        //o si se está creando un usuario desde el login
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+            //Preparar la sentencia SQL para obtener el trasvaso
+            String sql = "INSERT INTO Cliente"
+                    + "     (cedula, nombre, apellido, telefono)"
+                    + "VALUES "
+                    + "     (" + cedula + ", \"" + nombre + "\", \"" + apellido + "\", \"" + telefono + "\")";
+
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            int status = bdd.executeQuery(sql);
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+            //Si el status es mayor que 0, entonces la conexión y ejecución 
+            //fue exitosa
+            if (status > 0) {
+
+                return true;
+
+                //Comprobar si fue un error de duplicación
+            } else if (status == DUPLICATE_ERROR) {
+                Mensaje.msjError("La cédula ingresada ya se encuentra registrada"
+                        + " en el sistema.\nPor favor, verifique sus datos.");
+            }
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
+        
+        return false;
     }
 
     /**

@@ -25,7 +25,6 @@ import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static main.MenuLateral.clickButton;
-import properties.Mensaje;
 import tabs.clientes.Deudas;
 import tabs.historial.Historial;
 
@@ -701,7 +700,14 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         cedula = "";
         apellido = "";
     }
-
+    
+    protected void habilitarComponents(boolean estado){
+        txtEntregados.setEnabled(estado);
+        txtPagados.setEnabled(estado);
+        boxTipoPago.setEnabled(estado);
+        checkDelivery.setEnabled(estado);
+    }
+    
     //ATRIBUTOS FRONTEND
     private int width, facHeight, trasvHeight, facY;
     private final int padding = 20;

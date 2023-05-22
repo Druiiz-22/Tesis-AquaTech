@@ -172,6 +172,13 @@ public class Historial extends JPanel implements properties.Constantes, properti
         return status;
     }
 
+    public static void habilitarComponents(boolean estado){
+        panelTrasvasos.habilitarComponents(estado);
+        panelRecargas.habilitarComponents(estado);
+        panelVentas.habilitarComponents(estado);
+        panelCompras.habilitarComponents(estado);
+    }
+    
     //COMPONENTES
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
     private static final JPanel contenedor = new JPanel();

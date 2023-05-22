@@ -220,6 +220,10 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         return row;
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Tabla tabla = new Tabla(VENTAS_PEDIDOS);

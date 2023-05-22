@@ -247,9 +247,10 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT nombre, apellido, rol "
                 + "FROM Usuario "
                 + "INNER JOIN Cliente "
-                + "ON (correo = \"" + user + "\""
-                + "OR cedula = \"" + user + "\")"
-                + "AND contraseña = \"" + pass + "\"";
+                + "ON (correo = \"" + user + "\" "
+                + "OR cedula = " + user + ") "
+                + "AND contraseña = \"" + pass + "\" "
+                + "AND id_cliente = Cliente.id";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1172,9 +1173,11 @@ public class ReadDB implements properties.Constantes {
                                 usuarios[i][6] = r.getString(7);
                                 //Determinar el rol
                                 int rol = r.getInt(3);
-                                usuarios[i][2] = (rol == EMPLEADO) ? "EMPLEADO"
-                                        : (rol == ADMINISTRADOR) ? "ADMIN"
-                                                : "CLIENTE";
+                                usuarios[i][2]
+                                        = (rol == EMPLEADO) ? "EMPLEADO"
+                                                : (rol == ENCARGADO) ? "ENCARGADO"
+                                                        : (rol == ADMINISTRADOR) ? "ADMIN"
+                                                                : "CLIENTE";
 
                                 i++;
                             }
@@ -1427,119 +1430,108 @@ public class ReadDB implements properties.Constantes {
      * @return Registro de los trasvasos
      */
     public static Object[][] getTrasvasos(String initDate, String finalDate, int sucursal) {
-        //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, MontoPago, MontoEntr, Fecha
-        String[] header = new String[]{"#", "ID", "Cedula", "Pagos", "Entregados", "Tipo pago", "Delivery", "Monto pago", "Monto entre", "Fecha"};
+        //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, Monto, Fecha
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Trasvaso "
+                + "INNER JOIN Cliente "
+                + "     ON id_cliente = Cliente.id "
+                + "INNER JOIN Almacen "
+                + "     ON id_almacen = Almacen.id "
+                + "INNER JOIN Sucursal "
+                + "     ON id_sucursal = Sucursal.id "
+                + "     AND Sucursal.id = " + sucursal + " "
+                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                + "     AND fecha <= '" + finalDate + " 23:59:59'"
+                + "ORDER BY Trasvaso.id DESC";
 
-        int rows = 41;
-        //numero del id
-        int id = 5403;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
 
-        //Variables para las fechas
-        int dia = 1;
-        int hora = 9;
-        int minuto = 0;
-        int mes = 3;
-        int anio = 2023;
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
 
-        //Cédula minima y máxima
-        int min = 5000000;
-        int max = 35000000;
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Trasvaso.id, cedula, cant_pagada, "
+                                + "cant_entregada, tipo_pago, delivery, "
+                                + "monto, fecha "
+                                + "FROM Trasvaso "
+                                + "INNER JOIN Cliente "
+                                + "     ON id_cliente = Cliente.id "
+                                + "INNER JOIN Almacen "
+                                + "     ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "     ON id_sucursal = Sucursal.id "
+                                + "     AND Sucursal.id = " + sucursal + " "
+                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                + "AND fecha <= '" + finalDate + " 23:59:59' "
+                                + "ORDER BY Trasvaso.id DESC";
 
-        //Lista de trasvasos que será retornado
-        Object[][] trasvasos = new Object[rows + 1][header.length];
+                        r = bdd.selectQuery(sql);
 
-        //Cabecera
-        trasvasos[0] = header;
-        //Variable para agregar cada fila
-        Object[] row;
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object trasvasos[][] = new Object[count + 1][9];
+                            //Header de los trasvasos
+                            trasvasos[0][0] = "#";
+                            trasvasos[0][1] = "ID";
+                            trasvasos[0][2] = "Cedula";
+                            trasvasos[0][3] = "Pagados";
+                            trasvasos[0][4] = "Entregados";
+                            trasvasos[0][5] = "Tipo Pago";
+                            trasvasos[0][6] = "Delivery";
+                            trasvasos[0][7] = "Monto";
+                            trasvasos[0][8] = "Fecha";
 
-        //Ciclo del tamaño de la lista de trasvasos
-        for (int i = 1; i < trasvasos.length; i++) {
+                            int i = 1;
+                            while (r.next()) {
+                                //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, Monto, Fecha
+                                trasvasos[i][0] = i;
+                                trasvasos[i][1] = r.getInt(1);
+                                trasvasos[i][2] = r.getInt(2);
+                                trasvasos[i][3] = r.getInt(3);
+                                trasvasos[i][4] = r.getInt(4);
+                                trasvasos[i][5] = r.getString(5);
+                                trasvasos[i][6] = (r.getBoolean(6)) ? "SÍ" : "NO";
+                                trasvasos[i][7] = r.getDouble(7);
+                                trasvasos[i][8] = r.getString(8);
+                                i++;
+                            }
 
-            //Obtener numeros aleatorios
-            int cedula = (int) (Math.random() * (max - min + 1) + min);
-            int tipoPago = (int) (Math.random() * 3 + 1);
-            int delivery = (int) (Math.random() * 2 + 1);
+                            //Desconectar la base de datos
+                            bdd.desconectar();
 
-            //Los clientes vienen entre 2 a 30 minutos de diferencia
-            minuto += (int) (Math.random() * (30 - 2 + 1) + 2);
-
-            //Si los minutos superan los 59min
-            if (minuto > 59) {
-                //Aumentar una hora
-                hora++;
-                //Obtener los minutos de esa siguiente hora
-                minuto = minuto - 59;
-
-                //Si la hora supera las 19 (7 pm)
-                if (hora > 19) {
-                    //Aumentar un día
-                    dia++;
-                    //Reiniciar la hora
-                    hora = 9;
-
-                    //Si el día supera los 30 días
-                    if (dia > 30) {
-                        //Avanzar de mes
-                        mes++;
-                        //Reinicar los días
-                        dia = 1;
-
-                        //Si los meses superan el mes 12
-                        if (mes > 12) {
-
-                            //Avanzar de año
-                            anio++;
-                            //Reiniciar el mes
-                            mes = 1;
+                            return trasvasos;
                         }
                     }
                 }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
             }
-            //Obtener la feha
-            String fecha = dia + "-" + mes + "-" + anio + " " + hora + ":" + minuto;
-
-            int entregados = (int) (Math.random() * 12 + 1);
-            int montoEntregados = entregados * 7;
-            int pagos;
-            int montoPago;
-
-            //Un cliente hará un pago distinto al monto entregado con una
-            //probabilidad de 1/10
-            if (((int) (Math.random() * 10 + 1)) == 10) {
-
-                pagos = (int) (Math.random() * 20 + 1);
-                montoPago = pagos * 7;
-
-            } else {
-                pagos = entregados;
-                montoPago = montoEntregados;
-            }
-
-            //Guardar el trasvaso
-            //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, MontoPago, MontoEntr, Fecha
-            row = new Object[]{
-                i,
-                id,
-                cedula,
-                pagos,
-                entregados,
-                (tipoPago == 1) ? "EFECT" : (tipoPago == 2) ? "TRNSF" : "DOLAR",
-                (delivery == 1) ? "SI" : "NO",
-                montoPago,
-                montoEntregados,
-                fecha
-            };
-
-            //Agregar el trasvaso
-            trasvasos[i] = row;
-
-            //Aumentar el ID
-            id++;
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los trasvasos de la base de "
+                    + "datos.\nError: " + ex);
         }
 
+        //Desconectar la base de datos
+        bdd.desconectar();
+
         //Retornar la lista
-        return trasvasos;
+        return null;
     }
 
     /**

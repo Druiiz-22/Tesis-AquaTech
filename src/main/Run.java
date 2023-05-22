@@ -1,5 +1,7 @@
 package main;
 
+import login.IniciarPrograma;
+
 public class Run {
 
     /**
@@ -7,9 +9,9 @@ public class Run {
      */
     private static login.Frame login;
     private static main.Frame mainFrame;
+    private static login.IniciarPrograma iniciar;
 
     public static void main(String[] args) {
-        
         iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
@@ -37,7 +39,7 @@ public class Run {
      * @param rol Rol del usuario
      * @param nombre Nombre del usuario
      */
-    public static void iniciarPrograma(String identificacion, int rol, String nombre) {
+    public static void instanciarMain(String identificacion, int rol, String nombre) {
         mainFrame = new main.Frame(identificacion, rol, nombre);
     }
 

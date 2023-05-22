@@ -77,6 +77,10 @@ public class HistorialRecargas extends JPanel implements properties.Constantes, 
         });
     }
     
+    protected void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Tabla tabla = new Tabla(HISTORIAL_RECARGA);
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Recarga", CUALQUIER);

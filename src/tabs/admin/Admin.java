@@ -214,6 +214,13 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         return status;
     }
     
+    public static void habilitarComponents(boolean estado){
+        panelAjustes.habilitarComponents(estado);
+        panelUsuarios.habilitarComponents(estado);
+        panelReportes.habilitarComponents(estado);
+        panelRespaldo.habilitarComponents(estado);
+    }
+    
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));

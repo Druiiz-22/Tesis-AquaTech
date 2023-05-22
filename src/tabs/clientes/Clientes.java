@@ -144,6 +144,11 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
         return status;
     }
 
+    public static void habilitarComponents(boolean estado){
+        panelClientes.habilitarComponents(estado);
+        panelDeudas.habilitarComponents(estado);        
+    }
+    
     //COMPONENTES
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
     private static final JPanel contenedor = new JPanel();

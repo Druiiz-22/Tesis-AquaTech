@@ -534,6 +534,11 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
         provNombre = "";
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtCantidad.setEnabled(estado);
+        txtPrecio.setEnabled(estado);
+    }
+    
     //Atributos
     private int width, facHeight, recarHeight, facY;
     private final int padding = 20;

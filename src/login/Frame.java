@@ -89,6 +89,9 @@ public class Frame extends JFrame implements properties.Constantes {
     
     public static void openGlass(boolean visible){
         glass.setVisible(visible);
+        panelInicio.habilitarComponentes(!visible);
+        panelRegistro.habilitarComponentes(!visible);
+        panelRecuperacion.habilitarComponentes(!visible);
     }
     
     /**

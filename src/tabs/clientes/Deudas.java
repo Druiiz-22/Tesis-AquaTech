@@ -104,6 +104,10 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
         txtBusqueda.setText("");
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Tabla tabla = new Tabla(DEUDAS);

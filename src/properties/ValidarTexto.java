@@ -168,8 +168,7 @@ public class ValidarTexto {
      * <b>FALSE</b> en el caso de que la fecha final sea menor a la fecha de
      * inicio.
      */
-    public static boolean cronologia(String inicio, String fin) {
-
+    public static boolean cronologia(String inicio, String fin) {        
         return fin.compareTo(inicio) >= 0;
     }
 
@@ -187,16 +186,16 @@ public class ValidarTexto {
     public static boolean rangoFecha(String fecha) {
         try {
             //Formato de las fechas
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
             //Hacer la conversión de String a fecha, de forma estricta.
             formatoFecha.setLenient(false);
 
             //Intentar convertir el String a fecha
             java.util.Date date = formatoFecha.parse(fecha);
-
+            
             //Rango de fechas mínima y máxima
-            java.util.Date min = formatoFecha.parse("01-01-1900");
-            java.util.Date max = formatoFecha.parse("01-01-2100");
+            java.util.Date min = formatoFecha.parse("1900-01-01");
+            java.util.Date max = formatoFecha.parse("2100-01-01");
 
             //Retornar el rango de la fecha
             return date.compareTo(min) >= 0 && date.compareTo(max) < 0;
@@ -303,7 +302,7 @@ public class ValidarTexto {
     public static boolean formatoFecha(String fecha) {
         try {
             //Formato de las fechas
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
             //Hacer la conversión de String a fecha, de forma estricta.
             formatoFecha.setLenient(false);
 

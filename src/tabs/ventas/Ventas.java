@@ -236,6 +236,12 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
         return status;
     }
 
+    public static void habilitarComponents(boolean estado){
+        panelTrasvasos.habilitarComponents(estado);
+        panelVentas.habilitarComponents(estado);
+        panelPedidos.habilitarComponents(estado);
+    }
+    
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 5));
@@ -839,6 +845,12 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         apellido = "";
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtCantidad.setEnabled(estado);
+        boxTipoPago.setEnabled(estado);
+        checkDelivery.setEnabled(estado);
+    }
+    
     //Atributos
     private int width, facHeight, ventaHeight, facY;
     private final int padding = 20;

@@ -238,6 +238,10 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
         });
     }
 
+    public void habilitarComponentes(boolean estado){
+        txtCorreo.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblCorreo = new Label("Correo electrónico", PLANO, 16);

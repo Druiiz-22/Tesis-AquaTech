@@ -166,6 +166,12 @@ public class Recuperacion extends JPanel implements properties.Colores, properti
         panelClave.vaciarCampos();
     }
 
+    public void habilitarComponentes(boolean estado){
+        panelCorreo.habilitarComponentes(estado);
+        panelCodigo.habilitarComponentes(estado);
+        panelClave.habilitarComponentes(estado);
+    }
+    
     //COMPONENTES
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final JPanel panelContenedor = new JPanel(null);

@@ -137,6 +137,10 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
         return tabla.getClienteApellido(cedula);
     }
 
+    public void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar Cliente", VERDE);

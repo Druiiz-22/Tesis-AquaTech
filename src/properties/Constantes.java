@@ -257,7 +257,11 @@ public interface Constantes {
     /**
      * Constante con el valor del rol de administrador para el usuario
      */
-    public static final int ADMINISTRADOR = 2;
+    public static final int ENCARGADO = 2;
+    /**
+     * Constante con el valor del rol de administrador para el usuario
+     */
+    public static final int ADMINISTRADOR = 3;
 
     //CONSTANTES EXTRAÍDOS
     /**

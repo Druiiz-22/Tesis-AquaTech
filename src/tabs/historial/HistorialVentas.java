@@ -78,6 +78,10 @@ public class HistorialVentas extends JPanel implements properties.Constantes, pr
         });
     }
     
+    protected void habilitarComponents(boolean estado){
+        txtBusqueda.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Tabla tabla = new Tabla(HISTORIAL_VENTA);
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Venta", CUALQUIER);

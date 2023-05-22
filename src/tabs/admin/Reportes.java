@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import properties.Fuentes;
 import javax.swing.JFileChooser;
 import static javax.swing.BorderFactory.createLineBorder;
+import main.Frame;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 import static properties.ValidarTexto.formatoFecha;
@@ -33,33 +34,41 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      *
      */
     private void generarReporte() {
-        
+
         int index = boxTipoReporte.getSelectedIndex();
-        
+
         if (validarCampos()) {
-            
+
             //Validar de fechas en caso de que el tipo de reporte seleccionado
             //sea DISTINTO al de clientes, proveedores o deudas
-            if ((index == REP_CLIENTES || index  == REP_PROVEEDORES || index == REP_DEUDAS) ?  true : validarFechas()) {
-                
+            if ((index == REP_CLIENTES || index == REP_PROVEEDORES || index == REP_DEUDAS) ? true : validarFechas()) {
+
                 if (msjYesNo("¿Está seguro de realizar el reporte?")) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            Frame.openGlass(0);
 
-                    int type = boxTipoReporte.getSelectedIndex();
-                    String path = txtUbicacion.getText();
+                            int type = boxTipoReporte.getSelectedIndex();
+                            String path = txtUbicacion.getText();
 
-                    //Validar si la ubicación es predeterminada o personalizada
-                    path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
+                            //Validar si la ubicación es predeterminada o personalizada
+                            path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
 
-                    if (index == REP_CLIENTES || index  == REP_PROVEEDORES || index == REP_DEUDAS) {
-                        CrearReporte.crear(type, path);
-                        
-                    } else{
-                        String initialDate = fechaInicio.getSelectedDate();
-                        String finalDate = fechaFin.getSelectedDate();
+                            if (index == REP_CLIENTES || index == REP_PROVEEDORES || index == REP_DEUDAS) {
+                                CrearReporte.crear(type, path);
 
-                        //Crear el reporte con los datos ingresados
-                        //CrearReporte.crear(type, path, initialDate, finalDate);
-                    }
+                            } else {
+                                String initialDate = fechaInicio.getSelectedDate();
+                                String finalDate = fechaFin.getSelectedDate();
+
+                                //Crear el reporte con los datos ingresados
+                                CrearReporte.crear(type, path, initialDate, finalDate, 1);
+                            }
+                            //Cerrar el GlassPane
+                            Frame.closeGlass();
+                        }
+                    }.start();
                 }
             }
         }
@@ -430,18 +439,18 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private void panelPequenio() {
         //Ancho de los paneles
         int w = Reportes.width - padding * 2;
-        
+
         int infoH;
-        if(w < 410){
+        if (w < 410) {
             infoH = 260;
-            
-        } else if (w < 548){
+
+        } else if (w < 548) {
             infoH = 230;
-            
+
         } else {
             infoH = 200;
         }
-        
+
         informacion.setSize(w, infoH);
 
         //Posición del panel de reportes
@@ -594,7 +603,21 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         fechaInicio.vaciarCampos();
         fechaFin.vaciarCampos();
         boxTipoReporte.setSelectedIndex(0);
-        txtUbicacion.setText("");
+        txtUbicacion.setText("Predeterminado");
+    }
+
+    protected void habilitarComponents(boolean estado) {
+        boxTipoReporte.setEnabled(estado);
+        txtUbicacion.setEnabled(estado);
+        
+        int box = boxTipoReporte.getSelectedIndex();
+        if(box != REP_CLIENTES && box != REP_PROVEEDORES){
+            fechaInicio.habilitar(estado);
+            fechaFin.habilitar(estado);
+        } else {
+            fechaInicio.habilitar(false);
+            fechaFin.habilitar(false);
+        }
     }
 
     //ATRIBUTOS
@@ -719,15 +742,15 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
         /**
          * Función para habilitar o deshabilitar los componentes del panel
+         *
          * @param estado Booleano para el estado de los componentes
          */
         protected void habilitar(boolean estado) {
             this.txtFecha.setEnabled(estado);
-            this.dateChooser.setEnabled(estado);
         }
 
         //ATRIBUTOS
-        private static final java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd-MM-yyyy");
+        private static final java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
         //COMPONENTES
         private final Label lblTitulo = new Label("", TITULO, 22);
         private final CampoTexto txtFecha = new CampoTexto("99-99-9999", FECHA);

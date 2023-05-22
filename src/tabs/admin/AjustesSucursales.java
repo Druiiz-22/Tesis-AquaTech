@@ -33,6 +33,10 @@ public class AjustesSucursales extends JPanel{
         
     }
     
+    protected void habilitarComponents(boolean estado){
+    
+    }
+    
     //COMPONENTES
     
 }

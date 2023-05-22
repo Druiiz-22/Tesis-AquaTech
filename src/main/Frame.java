@@ -53,7 +53,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Presionar el botón de inicio
         clickButton(INICIO);
 
-        if (rol == ADMINISTRADOR) {
+        if (rol == ADMINISTRADOR || rol == ENCARGADO) {
             lateral.addAdminButton();
         } else {
             lateral.removeAdminButton();
@@ -146,7 +146,7 @@ public class Frame extends JFrame implements properties.Constantes {
                 int mouseY = e.getY();
 
                 //Variables para la osicion y tamaño del panel que esté visible
-                int panelX = 0, panelY = 0, panelW = 0, panelH = 0;
+                int panelX, panelY, panelW, panelH;
 
                 //Comprobar si el menú lateral está siendo visible
                 if (lateral.isVisible()) {
@@ -174,10 +174,10 @@ public class Frame extends JFrame implements properties.Constantes {
                 //Validar que el cursor activo en el GlassPane NO sea el cursor 
                 //de cargando.
                 if (!glass.getCursor().equals(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR))) {
-                    //Si se va a cerrar (true), el glass no será visible (false).
-                    //Si NO se va a cerrar (false), el glass sigue visible (true).
-                    glass.setVisible(!cerrar);
-
+                    //Comprobar si se debe cerrar, o no, el GlassPane
+                    if(cerrar){
+                        Frame.closeGlass();
+                    }
                 }
             }
         });
@@ -353,12 +353,16 @@ public class Frame extends JFrame implements properties.Constantes {
                     glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     break;
             }
-
+            
+            //Deshabilitar los campos
+            Contenedor.habilitarComponents(false);
+            
             glass.setVisible(true);
         }
     }
     
     public static void closeGlass(){
+        Contenedor.habilitarComponents(true);
         glass.setVisible(false);
     }
 

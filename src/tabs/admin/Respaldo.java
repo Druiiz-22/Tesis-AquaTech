@@ -748,6 +748,12 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         txtArchivo.setText("");
     }
 
+    protected void habilitarComponents(boolean estado){
+        txtUbicacion.setEnabled(estado);
+        txtNombre.setEnabled(estado);
+        txtArchivo.setEnabled(estado);
+    }
+    
     //ATRIBUTOS
     private static int width, infoHeight, expH, impH;
     private static final int padding = 20;

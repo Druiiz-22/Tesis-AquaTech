@@ -8,8 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import login.Frame;
 import static properties.Mensaje.msjYesNo;
 import static login.Frame.replacePanel;
@@ -226,6 +224,11 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
         });
     }
 
+    public void habilitarComponentes(boolean estado){
+        txtNueva.setEnabled(estado);
+        txtRepetida.setEnabled(estado);
+    }
+    
     //COMPONENTES
     private static final Label lblInfo = new Label("", PLANO, 14);
     private static final Label lblNueva = new Label("Contraseña nueva", PLANO, 16);
