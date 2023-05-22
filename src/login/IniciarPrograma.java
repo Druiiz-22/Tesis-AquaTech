@@ -2,13 +2,18 @@ package login;
 
 import components.Logo;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import main.Run;
+import properties.Fuentes;
 import properties.Mensaje;
 
 public class IniciarPrograma extends JFrame {
@@ -33,6 +38,7 @@ public class IniciarPrograma extends JFrame {
 
         initComponents();
         relocate();
+        listener();
         
         //Iniciar el programa SIN cargar los datos
         Run.iniciarPrograma(identificacion, rol, nombre);
@@ -57,6 +63,7 @@ public class IniciarPrograma extends JFrame {
         }
 
         this.activo = false;
+        IniciarPrograma.percent = 0;
     }
 
     private void initComponents() {
@@ -66,24 +73,28 @@ public class IniciarPrograma extends JFrame {
         logo.setSize(logo.getPreferredSize());
 
         //Propiedades básicas del gif de cargando
-        gif.setHorizontalAlignment(JLabel.CENTER);
-        gif.setVerticalAlignment(JLabel.CENTER);
-
+        cargando.setHorizontalTextPosition(JLabel.CENTER);
+        cargando.setHorizontalAlignment(JLabel.CENTER);
+        cargando.setVerticalTextPosition(JLabel.CENTER);
+        cargando.setVerticalAlignment(JLabel.CENTER);
+        cargando.setForeground(properties.Colores.CELESTE);
+        cargando.setFont(Fuentes.segoeSemibold(48));
+        
         //Buscar la imágen
         try {
             //Buscar el gif de carga
-            gif.setIcon(new ImageIcon(getClass().getResource("/icons/cargando.gif")));
+            cargando.setIcon(new ImageIcon(getClass().getResource("/icons/cargando.gif")));
             //Redimensionar el label
-            gif.setSize(gif.getPreferredSize());
+            cargando.setSize(cargando.getPreferredSize());
 
         } catch (Exception e) {
             Mensaje.msjAdvertencia("No se encontró la imagen del cargando.\n"
                     + "El software seguirá ejecutandose normalmente sin el ícono.");
 
-            gif.setSize(256, 256);
+            cargando.setSize(256, 256);
         }
 
-        this.add(gif);
+        this.add(cargando);
         this.add(logo);
     }
 
@@ -94,11 +105,26 @@ public class IniciarPrograma extends JFrame {
         int x = width / 2 - logo.getWidth() / 2 - 10;
         logo.setLocation(x, padding);
 
-        x = width / 2 - gif.getWidth() / 2;
+        x = width / 2 - cargando.getWidth() / 2;
         int y = logo.getHeight() + padding * 2;
-        gif.setLocation(x, y);
+        cargando.setLocation(x, y);
     }
 
+    private void listener(){
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(Mensaje.msjYesNo("¿Está seguro de salir?")){
+                    dispose();
+                    Run.cerrarPrograma();
+                    Run.cerrarLogin();
+                    //Terminar de ejecutar el programa
+                    System.exit(0);
+                }
+            }
+        });
+    }
+    
     /**
      * Función para colocarle el ícono del software al frame.
      */
@@ -124,8 +150,15 @@ public class IniciarPrograma extends JFrame {
     public static boolean isActivated() {
         return activo;
     }
-
+    
+    
+    public static void setPercent(int percent){
+        IniciarPrograma.percent += percent;
+        cargando.setText(IniciarPrograma.percent + "%");
+    }
+    
     //COMPONENTES
-    private final JLabel gif = new JLabel();
-    private final Logo logo = new Logo(SwingConstants.HORIZONTAL);
+    private static int percent;
+    private static final JLabel cargando = new JLabel("0%");
+    private static final Logo logo = new Logo(SwingConstants.HORIZONTAL);
 }

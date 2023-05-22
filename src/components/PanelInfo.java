@@ -44,7 +44,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
         int almacen = getBotellonesAlmacen();
 
         //Validar que la busqueda de los datos haya sido exitosa
-        if (trasvaso != ERROR_NUMBER && venta != ERROR_NUMBER && almacen != ERROR_NUMBER) {
+        if (trasvaso != ERROR_VALUE && venta != ERROR_VALUE && almacen != ERROR_VALUE) {
             //Precio del travaso
             lblDatos[0][1].setText(trasvaso + " Bs");
             //Precio de venta del botellón
@@ -74,7 +74,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
         int entregar = getClientesEntregar();
 
         //Validar que la busqueda de los datos haya sido exitosa
-        if (venta != ERROR_NUMBER && almacen != ERROR_NUMBER && pagar != ERROR_NUMBER && entregar != ERROR_NUMBER) {
+        if (venta != ERROR_VALUE && almacen != ERROR_VALUE && pagar != ERROR_VALUE && entregar != ERROR_VALUE) {
             //Precio del botellón
             lblDatos[0][1].setText(venta + " Bs");
             //Botellones en el almacen
@@ -106,9 +106,9 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
         int pagar = getClientesPagar();
         int entregar = getClientesEntregar();
 
-        if (trasvaso != ERROR_NUMBER && llenos != ERROR_NUMBER
-                && vacios != ERROR_NUMBER && almacen != ERROR_NUMBER
-                && pagar != ERROR_NUMBER && entregar != ERROR_NUMBER) 
+        if (trasvaso != ERROR_VALUE && llenos != ERROR_VALUE
+                && vacios != ERROR_VALUE && almacen != ERROR_VALUE
+                && pagar != ERROR_VALUE && entregar != ERROR_VALUE) 
         {
             //Precio del trasvaso
             lblDatos[0][1].setText(trasvaso + " Bs");

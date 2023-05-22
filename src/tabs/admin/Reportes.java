@@ -58,7 +58,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                         String finalDate = fechaFin.getSelectedDate();
 
                         //Crear el reporte con los datos ingresados
-                        CrearReporte.crear(type, path, initialDate, finalDate);
+                        //CrearReporte.crear(type, path, initialDate, finalDate);
                     }
                 }
             }

@@ -379,13 +379,6 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 //Abrir el GlassPane cargando
                 Frame.openGlass(0);
 
-                //Pausar el programa por un segundo
-                try {
-                    sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MenuSuperior.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
                 //Actualizar todos los datos
                 Contenedor.actualizarDatos();
 

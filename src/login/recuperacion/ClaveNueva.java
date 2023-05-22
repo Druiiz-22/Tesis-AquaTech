@@ -33,14 +33,7 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
             @Override
             public void run() {
                 Frame.openGlass(true);
-                if (validarCampos()) {
-
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(ClaveNueva.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
+                if (validarCampos()) {                    
                     //Guardar la contraseña del usuario
                     Recuperacion.setClaveNueva(String.valueOf(claveRepetida));
 

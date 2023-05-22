@@ -38,13 +38,6 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
                 //Validar que los campos sean válidos
                 if (validarCampos()) {
                     
-                    //Pausar el programa por un segundo
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(ClaveNueva.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
                     //Guardar la contraseña del usuario
                     Registro.setClave(String.valueOf(claveRepetida));
 

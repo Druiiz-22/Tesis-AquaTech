@@ -17,12 +17,14 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.BorderFactory.createLineBorder;
+import main.Frame;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static properties.ValidarTexto.teclaSueltaDoble;
 import static main.MenuLateral.clickButton;
+import tabs.historial.Historial;
 
 /**
  * Función para la creación del apartado de las compras, esta clase contiene el
@@ -174,12 +176,20 @@ public class Compras extends JPanel implements properties.Constantes, properties
 
     /**
      * Función para actualizar todos los datos de la pestaña
-     * @return 
+     *
+     * @return
      */
     public static boolean actualizarDatos() {
+        boolean status = panelCompras.actualizarDatos() && panelRecargas.actualizarDatos();
+
+        //Comprobar si se están actualizando desde la ventana de cargando
+        if (status && login.IniciarPrograma.isActivated()) {
+            //Enviar el porcentaje de carga
+            login.IniciarPrograma.setPercent((main.Frame.getUserRol() == EMPLEADO) ? 20 : 17);
+        }
         //retornar como busqueda exitosa cuando todas las actualizaciones
         //se hayan completado.
-        return panelCompras.actualizarDatos() && panelRecargas.actualizarDatos();
+        return status;
     }
 
     //COMPONENTES
@@ -200,31 +210,43 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
 
     // ========== BACKEND ==========
     private void registrar() {
-        //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de realizar el registro de la compra?")) {
-
-            if (validarCampos()) {
-                if (validarDatos()) {
-
-                    //Validar que el registro NO sea de números más grandes de 100
-                    if (cantidad > 100) {
-
-                        //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
-                        String msj = "Está apunto de realizar un registro con una alta\n"
-                                + "cantidad de botellones, ¿Está seguro de realizar el registro?";
-
-                        if (msjYesNoWarning(msj)) {
-                            CreateDB.createCompra(cantidad, precio, provRIF);
+        new Thread() {
+            @Override
+            public void run() {
+                Frame.openGlass(0);
+                //Validar los campos y sus datos
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de realizar el registro de la compra?")) {
+                            //Booleano auxiliar
+                            boolean realizar = true;
+                            
+                            //Validar que el registro NO sea de números más grandes de 100
+                            if (cantidad > 100) {
+                                //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
+                                String msj = "Está apunto de realizar un registro con una alta\n"
+                                        + "cantidad de botellones, ¿Está seguro de realizar el registro?";
+                                realizar = msjYesNoWarning(msj);
+                            } 
+                            
+                            //Validar si se realizará o no
+                            if(realizar){
+                                if(CreateDB.createCompra(cantidad, cantidad*precio, provRIF)){
+                                    //Actualizar los datos con la base de datos
+                                    Compras.actualizarDatos();
+                                    Historial.actualizarDatos();
+                                    
+                                    vaciarCampos();
+                                }
+                            }
                         }
-                    } else {
-                        CreateDB.createCompra(cantidad, precio, provRIF);
+                        //Cerrar el glassPane, se realice o no la compra
+                        Frame.closeGlass();
                     }
-
-                    vaciarCampos();
                 }
             }
-        }
-
+        }.start();
     }
 
     /**
@@ -234,26 +256,31 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
      * @return TRUE en caso de que todos los campos estén validos
      */
     private boolean validarCampos() {
-
+        String msj;
+        
         //Validar que los campos NO estén vacíos y que 
         //se haya seleccionado un tipo de pago
         if (!txtCantidad.getText().trim().isEmpty()) {
             if (!txtPrecio.getText().trim().isEmpty()) {
                 if (!provRIF.isEmpty() && !provNombre.isEmpty()) {
+                    
                     return true;
 
                 } else {
-                    msjError("Debe seleccionar un proveedor");
+                    msj = "Debe seleccionar un proveedor";
                 }
             } else {
-                msjError("El precio de cada botellón no puede estár vacío.");
-                txtPrecio.requestFocus();
+                msj = "El precio de cada botellón no puede estár vacío.";
             }
         } else {
-            msjError("La cantidad de botellones a comprar no puede estár vacío.");
-            txtCantidad.requestFocus();
+            msj = "La cantidad de botellones a comprar no puede estár vacío.";
         }
 
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no retornar true anteriormente
         return false;
     }
@@ -264,7 +291,8 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
      * @return TRUE en caso de que los datos sean válidos
      */
     private boolean validarDatos() {
-
+        String msj;
+        
         //Validar que la cantidad de botellones esté dentro del rango correcto
         if (cantidad > 0 && cantidad < 8388607) {
 
@@ -275,17 +303,20 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
                 return true;
 
             } else {
-                msjError("El precio por cada botellón es inválido."
-                        + "\nPor favor, verifique el precio.");
-                txtPrecio.requestFocus();
+                msj = "El precio por cada botellón es inválido."
+                        + "\nPor favor, verifique el precio.";
             }
 
         } else {
-            msjError("La cantidad de botellones a comprar es inválido."
-                    + "\nPor favor, verifique la cantidad.");
-            txtCantidad.requestFocus();
+            msj = "La cantidad de botellones a comprar es inválido."
+                    + "\nPor favor, verifique la cantidad.";
         }
 
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no haber retornado true anteriormente
         return false;
     }
@@ -352,7 +383,8 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
-     * @return 
+     *
+     * @return
      */
     protected boolean actualizarDatos() {
         //Validar que el panel informativo se haya actualizado de manera correcta

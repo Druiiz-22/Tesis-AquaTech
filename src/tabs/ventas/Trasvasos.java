@@ -18,12 +18,16 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import static javax.swing.BorderFactory.createLineBorder;
+import main.Frame;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static main.MenuLateral.clickButton;
+import properties.Mensaje;
+import tabs.clientes.Deudas;
+import tabs.historial.Historial;
 
 /**
  * Clase para la creación del panel para el registro de trasvases de botellones
@@ -37,29 +41,48 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * base de datos
      */
     private void registrar() {
-        if (validarCampos()) {
-            if (validarDatos()) {
+        new Thread(){
+            @Override
+            public void run() {
+                Frame.openGlass(0);
+                //Validar los campos y sus datos
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de seguridad
+                        if (msjYesNo("¿Está seguro de realizar el registro del trasvaso?")) {
 
-                if (msjYesNo("¿Está seguro de realizar el registro del trasvaso?")) {
+                            //Booleano auxiliar
+                            boolean realizar = true;
+                            
+                            //Validar que el registro NO sea de números más grandes de 100
+                            if (entregados > 100 || pagados > 100) {
+                                //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
+                                String msj = "<html>Está apunto de realizar un registro con una <b>alta</b><br>"
+                                        + "<b>cantidad de botellones</b>, ¿Está seguro de realizar el registro?</html>";
 
-                    //Validar que el registro NO sea de números más grandes de 100
-                    if (entregados > 100 || pagados > 100) {
-
-                        //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
-                        String msj = "<html>Está apunto de realizar un registro con una <b>alta</b><br>"
-                                + "<b>cantidad de botellones</b>, ¿Está seguro de realizar el registro?</html>";
-
-                        if (msjYesNoWarning(msj)) {
-                            CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula);
+                                realizar = msjYesNoWarning(msj);
+                            }
+                            
+                            //Validar si se realizará o no
+                            if(realizar){
+                                //Intentar crear el registro
+                                if(CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula)){
+                                    //Actualizar los datos con la base de datos
+                                    Ventas.actualizarDatos();
+                                    Historial.actualizarDatos();
+                                    Deudas.actualizarDatos();
+                                    Pedidos.actualizarDatos();
+                                    
+                                    vaciarCampos();
+                                }
+                            }
                         }
-                    } else {
-                        CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula);
+                        //Cerrar el glassPane, se realice o no el trasvaso
+                        Frame.closeGlass();
                     }
-
-                    vaciarCampos();
                 }
             }
-        }
+        }.start();
     }
 
     /**
@@ -69,7 +92,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * @return TRUE en caso de que todos los campos estén validos
      */
     private boolean validarCampos() {
-
+        String msj;
+        
         //Validar que los campos NO estén vacíos y que 
         //se haya seleccionado un tipo de pago
         if (!txtEntregados.getText().trim().isEmpty()) {
@@ -79,21 +103,25 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
                         return true;
 
                     } else {
-                        msjError("Debe seleccionar un cliente");
+                        msj = "Debe seleccionar un cliente";
                     }
                 } else {
-                    msjError("Debe seleccionar un tipo de pago");
+                    msj = "Debe seleccionar un tipo de pago";
                     boxTipoPago.requestFocus();
                 }
             } else {
-                msjError("La cantidad de botellones pagados no puede estár vacía.");
+                msj = "La cantidad de botellones pagados no puede estár vacía.";
                 txtPagados.requestFocus();
             }
         } else {
-            msjError("La cantidad de botellones entregados no puede estár vacío.");
-            txtEntregados.requestFocus();
+            msj = "La cantidad de botellones entregados no puede estár vacío.";
         }
-
+        
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no retornar true anteriormente
         return false;
     }
@@ -104,7 +132,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * @return TRUE en caso de que los datos sean válidos
      */
     private boolean validarDatos() {
-
+        String msj;
+        
         //Validar que alguno de los dos tenga un valor
         if (entregados > 0 || pagados > 0) {
 
@@ -115,20 +144,23 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
                     return true;
 
                 } else {
-                    msjError("La cantidad de botellones pagados es inválido."
-                            + "\nPor favor, verifique la cantidad.");
-                    txtPagados.requestFocus();
+                    msj = "La cantidad de botellones pagados es inválido."
+                            + "\nPor favor, verifique la cantidad.";
                 }
             } else {
-                msjError("La cantidad de botellones entregados es inválido."
-                        + "\nPor favor, verifique la cantidad.");
-                txtEntregados.requestFocus();
+                msj = "La cantidad de botellones entregados es inválido."
+                        + "\nPor favor, verifique la cantidad.";
             }
         } else {
-            msjError("Los dos campos de entregados y pagados no pueden estar vacíos."
-                    + "\nPor favor, verifique la cantidad.");
-            txtEntregados.requestFocus();
+            msj = "Los dos campos de entregados y pagados no pueden estar vacíos."
+                    + "\nPor favor, verifique la cantidad.";
         }
+        
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no haber retornado true anteriormente
         return false;
     }
@@ -234,7 +266,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
         //Validar que el precio y el panel informativo, hayan buscado sus datos
         //en la base de datos exitosamente
-        if (informacion.actualizarDatos() && precio != ERROR_NUMBER) {
+        if (informacion.actualizarDatos() && precio != ERROR_VALUE) {
             //Reposicionar el panel de información, según el 
             //ancho del contenedor
             if (width < 600) {

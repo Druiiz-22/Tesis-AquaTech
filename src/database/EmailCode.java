@@ -75,24 +75,21 @@ public class EmailCode {
 
         asunto = "Verificación de correo AquaTech";
         contenido = "<html>"
-                + "<div style='margin: auto; width: 50%; padding: 10px; font-family: Arial, Helvetica, sans-serif;'>"
-                + "<h1>Validación del correo</h1>"
-                + "<p>"
-                + "Bienvenido a AquaTech, se acaba de enviar un código de seguridad y debe completar este paso para crear su cuenta. Confirme que esta sea su dirección de correo electrónica correcta para ser usada en su nueva cuenta."
-                + "</p>"
+                + "<div style='margin:auto;width:70%;padding:10px;font-family:Arial,Helvetica,sans-serif;'>"
                 + "<center>"
-                + "<p>"
-                + "Ingrese el <b>código de seguridad</b> de verificación:"
-                + "</p>"
-                + "<h1>" + EmailCode.codigo + "</h1>"
-                + "<p>"
-                + "Los código de verificación caducan después de 30 minutos."
-                + "</p>"
+                + "<h1>código de verificación:</h1>"
+                + "<h2>" + EmailCode.codigo + "</h2>"
                 + "</center>"
                 + "<p>"
-                + "Gracias,<br>"
-                + "AquaTech."
+                + "Bienvenido a AquaTech, se acaba de enviar un código de "
+                + "seguridad y debe completar este paso para crear su cuenta. "
+                + "Confirme que esta sea su dirección de correo electrónico "
+                + "correcto para ser usada en su nueva cuenta."
                 + "</p>"
+                + "<p><i>"
+                + "Los código de verificación <b>caducan después de 30 minutos.</b>"
+                + "</i></p>"
+                + "<p>Gracias,<br> AquaTech.</p>"
                 + "</div>"
                 + "</html>";
         
@@ -102,7 +99,7 @@ public class EmailCode {
             enviarCorreo();
             return true;
             
-        } catch (Exception e) {
+        } catch (MessagingException e) {
             Mensaje.msjError("Hubo un error al crear el correo.\nPor favor, verifique su conexión con internet y los datos ingresados.");
             return false;
         }

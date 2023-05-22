@@ -156,12 +156,20 @@ public class Historial extends JPanel implements properties.Constantes, properti
     }
 
     public static boolean actualizarDatos() {
-        //retornar como busqueda exitosa cuando todas las actualizaciones
-        //se hayan completado.
-        return HistorialTrasvasos.actualizarDatos() 
+        boolean status = HistorialTrasvasos.actualizarDatos() 
                 && HistorialRecargas.actualizarDatos()
                 && HistorialVentas.actualizarDatos()
                 && HistorialCompras.actualizarDatos();
+        
+        //Comprobar si se están actualizando desde la ventana de cargando
+        if(status && login.IniciarPrograma.isActivated()){
+            //Enviar el porcentaje de carga
+            login.IniciarPrograma.setPercent((main.Frame.getUserRol() == EMPLEADO)? 20 : 17);
+        }
+        
+        //retornar como busqueda exitosa cuando todas las actualizaciones
+        //se hayan completado.
+        return status;
     }
 
     //COMPONENTES

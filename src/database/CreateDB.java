@@ -1,6 +1,9 @@
 package database;
 
 import static database.ReadDB.getPrecioVenta;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import properties.Mensaje;
 import static properties.Mensaje.msjInformativo;
 
 /**
@@ -8,7 +11,7 @@ import static properties.Mensaje.msjInformativo;
  * base de datos y retornar un booleano en caso de que se realicen con o sin
  * éxito
  */
-public class CreateDB {
+public class CreateDB implements properties.Constantes {
 
     /**
      * Función para crear un nuevo cliente en la base de datos
@@ -20,15 +23,53 @@ public class CreateDB {
      * @return
      */
     public static boolean createCliente(int cedula, String nombre, String apellido, String telefono) {
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-//        Mensaje por si no se puede conectar con la base de datos
-//        msjError("No se pudo crear el cliente en la base de datos."
-//                + "\nPor favor, verifique su conexión.");
-//        
-//        Mensaje por si el usuario no coincide
-//        msjError("<html>Su contraseña es incorrecta. <b>No se creará el cliente</b> "
-//        + "hasta que valide sus datos.</html>");
-        return true;
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        //o si se está creando un usuario desde el login
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || login.Registro.isCreatingUser()) {
+            //Preparar la sentencia SQL para obtener el trasvaso
+            String sql = "INSERT INTO Cliente"
+                    + "     (cedula, nombre, apellido, telefono)"
+                    + "VALUES "
+                    + "     (" + cedula + ", \"" + nombre + "\", \"" + apellido + "\", \"" + telefono + "\")";
+
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            int status = bdd.insertQuery(sql);
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+            //Si el status es mayor que 0, entonces la conexión y ejecución 
+            //fue exitosa
+            if (status > 0) {
+
+                return true;
+
+                //Comprobar si fue un error de duplicación
+            } else if (status == DUPLICATE_ERROR) {
+                Mensaje.msjError("La cédula ingresada ya se encuentra registrada"
+                        + " en el sistema.\nPor favor, verifique sus datos.");
+            }
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
+
+        return false;
     }
 
     /**
@@ -40,13 +81,60 @@ public class CreateDB {
      * @return
      */
     public static boolean createProveedor(String rif, String nombre, String telefono) {
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-        return true;
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+            //Preparar la sentencia SQL para obtener el trasvaso
+            String sql = "INSERT INTO Proveedores"
+                    + "     (rif, nombre, telefono)"
+                    + "VALUES "
+                    + "     (\"" + rif + "\", \"" + nombre + "\", \"" + telefono + "\")";
+
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            int status = bdd.insertQuery(sql);
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+            //Si el status es mayor que 0, entonces la conexión y ejecución 
+            //fue exitosa
+            if (status > 0) {
+
+                return true;
+            } else if (status == DUPLICATE_ERROR) {
+                //Mensaje de error
+                Mensaje.msjError("El RIF ingresado ya se encuentra registrado en"
+                        + "el sistema.\nPor favor, verifique sus datos.");
+            } else {
+                //Mensaje de error
+                Mensaje.msjError("No se pudo registrar el proveedor.\nPor favor, verifique su "
+                        + "conexión.");
+            }
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
+
+        return false;
     }
-    
+
     /**
-     * Función para crear un usuario operativo nuevo en el sistema 
-     * 
+     * Función para crear un usuario operativo nuevo en el sistema
+     *
      * @param cedula
      * @param nombre
      * @param apellido
@@ -54,17 +142,38 @@ public class CreateDB {
      * @param correo
      * @param clave
      * @param rol
-     * 
-     * @return 
+     *
+     * @return
      */
-    public static boolean createUsuario(int cedula, String nombre, String apellido, String telefono, String correo, String clave, int rol){
-     
-        //Crear un cliente, con los mismos datos del usuario, en el sistema
-        if(createCliente(cedula, nombre, apellido, telefono)){
-            
+    public static boolean createUsuario(int cedula, String nombre, String apellido, String telefono, String correo, String clave, int rol) {
+        //Preparar la sentencia SQL para crear el usuario
+        String sql = "SELECT REGISTRAR_USUARIO ("+cedula+", \""+nombre+"\", "
+                + "\""+apellido+"\", \""+telefono+"\", \""+correo+"\", "
+                + "\""+clave+"\", "+rol+");";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        int status = bdd.insertQuery(sql);
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //Si el status es mayor que 0, entonces la conexión y ejecución 
+        //fue exitosa
+        if (status > 0) {
+
+            return true;
+
+        } else {
+            //Mensaje de error
+            Mensaje.msjError("No se pudo registrar el usuario.\nPor favor, verifique su "
+                    + "conexión.");
         }
-        
-        return true;
+
+        return false;
     }
 
     /**
@@ -79,16 +188,76 @@ public class CreateDB {
      * @return
      */
     public static boolean createTravaso(int entregados, int pagados, String tipoPago, boolean delivery, String cedula) {
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-        //Obtener el precio de los botellones
-        double precio = getPrecioVenta();
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
 
-        if (precio > 0) {
+            //Preparar la sentencia SQL para registrar el trasvaso
+            String sql = "SELECT REGISTRAR_TRASVASO"
+                    + "(" + cedula + ", 1, " + pagados + ", " + entregados + ", "
+                    + "\"" + tipoPago + "\", " + delivery + ")";
 
-            msjInformativo("Se hizo el registro del trasvaso exitosamente!");
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            ResultSet r = bdd.selectQuery(sql);
+
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+
+                    //Avanzar en el resultado
+                    r.next();
+
+                    //Obtener el mensaje
+                    String msj = r.getString(1).toUpperCase();
+
+                    //Comprobar si fue exitoso o no
+                    if (msj.contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
+
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                    } else {
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Si el result NO fue null, implica que SÍ se estableció una 
+                    //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                    //caso, se retornará el precio como el valor de 0
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo registrar el trasvaso.\nError: " + e);
+            }
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -102,47 +271,233 @@ public class CreateDB {
      * @return
      */
     public static boolean createVenta(int cantidad, String tipoPago, boolean delivery, String cedula) {
-        //Obtener el precio de los botellones
-        double precio = getPrecioVenta();
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-        //Realizar el registro SOLO si el precio es mayor a 0
-        if (precio > 0) {
-            double total = cantidad * precio;
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+            //Preparar la sentencia SQL para registrar el trasvaso
+            String sql = "SELECT REGISTRAR_VENTA"
+                    + "(" + cedula + ", 1, " + cantidad + ", \"" + tipoPago
+                    + "\", " + delivery + ")";
 
-            msjInformativo("Se hizo el registro de la venta exitosamente!");
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            ResultSet r = bdd.selectQuery(sql);
+
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+
+                    //Avanzar en el resultado
+                    r.next();
+
+                    //Obtener el mensaje
+                    String msj = r.getString(1).toUpperCase();
+
+                    //Comprobar si fue exitoso o no
+                    if (msj.contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
+
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                    } else {
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Si el result NO fue null, implica que SÍ se estableció una 
+                    //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                    //caso, se retornará el precio como el valor de 0
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo registrar la venta.\nError: " + e);
+            }
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
         }
 
-        return true;
+        return false;
     }
 
     /**
      * Función para registrar una compra de botellones en la base de datos
      *
      * @param cantidad Cantidad de botellones comprados
-     * @param precio Precio de cada uno de los botellones
+     * @param monto Precio de cada uno de los botellones
      * @param rif RIF del proveedor
      * @return
      */
-    public static boolean createRecarga(int cantidad, double precio, String rif) {
+    public static boolean createRecarga(int cantidad, double monto, String rif) {
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-        msjInformativo("Se hizo el registro de la recarga exitosamente!");
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+            //Preparar la sentencia SQL para registrar el trasvaso
+            String sql = "SELECT REGISTRAR_RECARGA"
+                    + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";
 
-        return true;
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            ResultSet r = bdd.selectQuery(sql);
+
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+
+                    //Avanzar en el resultado
+                    r.next();
+
+                    //Obtener el mensaje
+                    String msj = r.getString(1).toUpperCase();
+
+                    //Comprobar si fue exitoso o no
+                    if (msj.contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
+
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                    } else {
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Si el result NO fue null, implica que SÍ se estableció una 
+                    //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                    //caso, se retornará el precio como el valor de 0
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo registrar la recarga.\nError: " + e);
+            }
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
+
+        return false;
     }
 
     /**
      * Función para registrar una recarga de botellones en la base de datos
      *
      * @param cantidad Cantidad de los botellones recargados
-     * @param precio Precio de cada una de las recargas
+     * @param monto Precio de cada una de las recargas
      * @param rif RIF del proveedor
      * @return
      */
-    public static boolean createCompra(int cantidad, double precio, String rif) {
+    public static boolean createCompra(int cantidad, double monto, String rif) {
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
-        msjInformativo("Se hizo el registro de la compra exitosamente!");
+        //Validar que el usuario que realiza la acción, cuente con los permisos
+        if (rol == EMPLEADO || rol == ADMINISTRADOR) {
+            //Preparar la sentencia SQL para registrar el trasvaso
+            String sql = "SELECT REGISTRAR_COMPRA"
+                    + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";
 
-        return true;
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
+
+            //Obtener el resultado de la sentencia
+            ResultSet r = bdd.selectQuery(sql);
+
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+
+                    //Avanzar en el resultado
+                    r.next();
+
+                    //Obtener el mensaje
+                    String msj = r.getString(1).toUpperCase();
+
+                    //Comprobar si fue exitoso o no
+                    if (msj.contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
+
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                    } else {
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Si el result NO fue null, implica que SÍ se estableció una 
+                    //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                    //caso, se retornará el precio como el valor de 0
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo registrar la compra.\nError: " + e);
+            }
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
+
+        return false;
     }
 
 }

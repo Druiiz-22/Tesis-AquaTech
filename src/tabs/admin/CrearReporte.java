@@ -508,7 +508,7 @@ public class CrearReporte {
     private static boolean getDatos() {
         switch (type) {
             case REP_TRASVASOS:
-                datos = ReadDB.getTrasvasos(initialDate, finalDate);
+                datos = ReadDB.getTrasvasos(initialDate, finalDate, sucursal);
                 break;
 
             case REP_DEUDAS:
@@ -516,15 +516,15 @@ public class CrearReporte {
                 break;
 
             case REP_RECARGAS:
-                datos = ReadDB.getRecargas(initialDate, finalDate);
+                datos = ReadDB.getRecargas(initialDate, finalDate, sucursal);
                 break;
 
             case REP_COMPRAS:
-                datos = ReadDB.getCompras(initialDate, finalDate);
+                datos = ReadDB.getCompras(initialDate, finalDate, sucursal);
                 break;
 
             case REP_VENTAS:
-                datos = ReadDB.getVentas(initialDate, finalDate);
+                datos = ReadDB.getVentas(initialDate, finalDate, sucursal);
                 break;
 
             case REP_CLIENTES:
@@ -572,6 +572,9 @@ public class CrearReporte {
 
     //ATRIBUTOS BACKEND
     private static Object[][] datos;
+    private static String initialDate;
+    private static String finalDate;
+    private static int sucursal;
 
     // ========== FRONTEND ==========
     /**
@@ -1171,8 +1174,9 @@ public class CrearReporte {
      * @param path Ruta en que será generado el PDF (sin el nombre del archivo)
      * @param initialDate Fecha desde donde será filtrado los registros
      * @param finalDate Fecha final hasta donde se mostrarán los registros
+     * @param Sucursal
      */
-    public static void crear(int type, String path, String initialDate, String finalDate) {
+    public static void crear(int type, String path, String initialDate, String finalDate, int sucursal) {
 
         //Almacenar los datos enviados a los atributos de la clase
         CrearReporte.type = type;
@@ -1181,6 +1185,7 @@ public class CrearReporte {
         CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
         CrearReporte.initialDate = initialDate;
         CrearReporte.finalDate = finalDate;
+        CrearReporte.sucursal = sucursal;
 
         //Buscar los datos en la BD y comprobar que se encontró alguno
         if (getDatos()) {
@@ -1207,6 +1212,7 @@ public class CrearReporte {
         initialDate = null;
         finalDate = null;
         datos = null;
+        sucursal = -1;
     }
 
     /**
@@ -1267,8 +1273,6 @@ public class CrearReporte {
     private static String path;
     private static String fileName;
     private static String absolutePath;
-    private static String initialDate;
-    private static String finalDate;
     private static PageSize defaultSize;
     private static PdfDocument pdfDoc;
     private static PdfWriter pdfWriter;

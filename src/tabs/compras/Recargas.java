@@ -13,12 +13,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import static javax.swing.BorderFactory.createLineBorder;
+import main.Frame;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static properties.ValidarTexto.teclaSueltaDoble;
 import static main.MenuLateral.clickButton;
+import tabs.historial.Historial;
 
 /**
  * Clase para la creación del panel para el registro de recargas de botellones a
@@ -28,31 +30,44 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
 
     // ========== BACKEND ==========
     private void registrar() {
-        //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de realizar el registro de la recarga?")) {
+        new Thread() {
+            @Override
+            public void run() {
+                Frame.openGlass(0);
+                //Validar los campos y sus datos
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de realizar el registro de la recarga?")) {
+                            //Booleano auxiliar
+                            boolean realizar = true;
+                            
+                            //Validar que el registro NO sea de números más grandes de 100
+                            if (cantidad > 100) {
+                                //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
+                                String msj = "Está apunto de realizar un registro con una alta\n"
+                                        + "cantidad de botellones, ¿Está seguro de realizar el registro?";
+                                realizar = msjYesNoWarning(msj);
 
-            if (validarCampos()) {
-                if (validarDatos()) {
-
-                    //Validar que el registro NO sea de números más grandes de 100
-                    if (cantidad > 100) {
-
-                        //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
-                        String msj = "Está apunto de realizar un registro con una alta\n"
-                                + "cantidad de botellones, ¿Está seguro de realizar el registro?";
-
-                        if (msjYesNoWarning(msj)) {
-                            CreateDB.createRecarga(cantidad, precio, provRIF);
+                            }
+                            
+                            //Validar si se realizará o no
+                            if(realizar){
+                                if(CreateDB.createRecarga(cantidad, cantidad*precio, provRIF)){
+                                    //Actualizar los datos con la base de datos
+                                    Compras.actualizarDatos();
+                                    Historial.actualizarDatos();
+                                    
+                                    vaciarCampos();
+                                }
+                            }
                         }
-
-                    } else {
-                        CreateDB.createRecarga(cantidad, precio, provRIF);
+                        //Cerrar el glassPane, se realice o no la recarga
+                        Frame.closeGlass();
                     }
-                    
-                    vaciarCampos();
                 }
             }
-        }
+        }.start();
 
     }
 
@@ -63,7 +78,8 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
      * @return TRUE en caso de que todos los campos estén validos
      */
     private boolean validarCampos() {
-
+        String msj;
+        
         //Validar que los campos NO estén vacíos y que 
         //se haya seleccionado un tipo de pago
         if (!txtCantidad.getText().trim().isEmpty()) {
@@ -72,17 +88,20 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
                     return true;
 
                 } else {
-                    msjError("Debe seleccionar un proveedor");
+                    msj = "Debe seleccionar un proveedor";
                 }
             } else {
-                msjError("El precio de cada botellón no puede estár vacío.");
-                txtPrecio.requestFocus();
+                msj = "El precio de cada botellón no puede estár vacío.";
             }
         } else {
-            msjError("La cantidad de botellones a recargar no puede estár vacío.");
-            txtCantidad.requestFocus();
+            msj = "La cantidad de botellones a recargar no puede estár vacío.";
         }
 
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no retornar true anteriormente
         return false;
     }
@@ -93,6 +112,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
      * @return TRUE en caso de que los datos sean válidos
      */
     private boolean validarDatos() {
+        String msj;
 
         //Validar que la cantidad de botellones esté dentro del rango correcto
         if (cantidad > 0 && cantidad < 8388607) {
@@ -104,17 +124,20 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
                 return true;
 
             } else {
-                msjError("El precio por cada botellón es inválido."
-                        + "\nPor favor, verifique el precio.");
-                txtPrecio.requestFocus();
+                msj = "El precio por cada botellón es inválido."
+                        + "\nPor favor, verifique el precio.";
             }
 
         } else {
-            msjError("La cantidad de botellones a comprar es inválido."
-                    + "\nPor favor, verifique la cantidad.");
-            txtCantidad.requestFocus();
+            msj = "La cantidad de botellones a comprar es inválido."
+                    + "\nPor favor, verifique la cantidad.";
         }
 
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no haber retornado true anteriormente
         return false;
     }
@@ -157,7 +180,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
 
                 //Actualizar la cantidad en la factura
                 factura.setBotellonesTotal(cantidad);
-                
+
                 //Actualizar el monto total en la factura
                 factura.setMontoTotal(precio * cantidad);
             }
@@ -171,7 +194,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
 
                 //Actualizar el precio en la factura
                 factura.setPrecioCadaUno(precio);
-                
+
                 //Actualizar el monto total en la factura
                 factura.setMontoTotal(precio * cantidad);
             }
@@ -181,7 +204,8 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
-     * @return 
+     *
+     * @return
      */
     protected boolean actualizarDatos() {
         //Validar que el panel informativo se haya actualizado de manera correcta
@@ -297,7 +321,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
 
         //PANEL PEQUEÑO
         if (width < 600) {
-            
+
             //Cambiar el tamaño de la factura
             facHeight = 280;
             //Cambiar el tamaño de la recarga
@@ -369,7 +393,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
     private void panelMediano() {
         this.facHeight += 20;
         this.recarHeight += 20;
-        
+
         btnProv.setSize(facMaxWidth, btnHeight);
         factura.setSize(facMaxWidth, facHeight);
 
@@ -450,7 +474,7 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
         txtPrecio.setSize(txtWidth, txtHeight);
 
         //Posición del título del panel para los datos
-        lblTitulo.setLocation(padding, padding/2);
+        lblTitulo.setLocation(padding, padding / 2);
 
         //Para posicionar los campos en el centro vertical del panel
         //primero se obtiene le punto medio del panel

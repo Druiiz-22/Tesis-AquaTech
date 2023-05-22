@@ -1,4 +1,4 @@
-package tabs;
+package tabs.proveedores;
 
 import components.Boton;
 import components.CampoTexto;
@@ -108,8 +108,16 @@ public class Proveedores extends JPanel implements properties.Constantes, proper
      * @return 
      */
     public static boolean actualizarDatos() {
+        boolean status = tabla.actualizarDatos();
+        
+        //Comprobar si se están actualizando desde la ventana de cargando
+        if(status && login.IniciarPrograma.isActivated()){
+            //Enviar el porcentaje de carga
+            login.IniciarPrograma.setPercent((main.Frame.getUserRol() == EMPLEADO)? 20 : 16);
+        }
         txtBusqueda.setText("");
-        return tabla.actualizarDatos();
+        
+        return status;
     }
 
     /**

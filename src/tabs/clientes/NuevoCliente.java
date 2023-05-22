@@ -7,7 +7,10 @@ import components.Logo;
 import database.CreateDB;
 import database.ReadDB;
 import database.UpdateDB;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
@@ -16,10 +19,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import properties.Mensaje;
 import tabs.ventas.Ventas;
 import static javax.swing.SwingConstants.HORIZONTAL;
+import main.Frame;
 import static properties.Constantes.ESCALA_SUAVE;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
@@ -120,64 +125,81 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      * Función para crear un nuevo cliente en la base de datos
      */
     private void crear() {
-        if (validarCampos()) {
-            if (validarDatos()) {
-                //Mensaje de confirmación
-                if (msjYesNo("¿Está seguro de realizar el registro del nuevo cliente?")) {
+        new Thread() {
+            @Override
+            public void run() {
+                glass.setVisible(true);
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de realizar el registro del nuevo cliente?")) {
 
-                    //Intentar crear el cliente en la base de datos
-                    if (CreateDB.createCliente(cedula, nombre, apellido, telefono)) {
+                            //Intentar crear el cliente en la base de datos
+                            if (CreateDB.createCliente(cedula, nombre, apellido, telefono)) {
 
-                        //Ya que puede dar muchos problemas el alterar o agregar
-                        //un dato a una tabla (y no a su Model), la forma de 
-                        //visualizar los cambios será actualizando los datos 
-                        //de la tabla con la base de datos
-                        PanelClientes.actualizarDatos();
+                                //Ya que puede dar muchos problemas el alterar o agregar
+                                //un dato a una tabla (y no a su Model), la forma de 
+                                //visualizar los cambios será actualizando los datos 
+                                //de la tabla con la base de datos
+                                PanelClientes.actualizarDatos();
 
-                        Mensaje.msjInformativo("Se creó el nuevo cliente con éxito.");
+                                Mensaje.msjInformativo("Se creó el nuevo cliente con éxito.");
 
-                        dispose();
-                        vaciarCampos();
+                                dispose();
+                                vaciarCampos();
 
-                        Ventas.vaciarCampos();
+                                Ventas.vaciarCampos();
+                            }
+                        }
+                        //Cerrar el glassPane, se registre el cliente o no
+                        glass.setVisible(false);
                     }
                 }
             }
-        }
+        }.start();
     }
 
     /**
      * Función para actualizar un cliente en la base de datos
      */
     private void actualizar() {
-        //Validar la existencia del cliente
-        if (validarCliente()) {
-            //Validar que los campos no estén vacíos
-            if (validarCampos()) {
-                //Validar que los datos estén correctos
-                if (validarDatos()) {
-                    //Mensaje de confirmación
-                    if (msjYesNo("¿Está seguro de actualizar los datos del cliente?")) {
-                        //Intentar editar el cliente en la base de datos
-                        if (UpdateDB.updateCliente(id, cedula, nombre, apellido, telefono)) {
+        new Thread() {
+            @Override
+            public void run() {
+                glass.setVisible(true);
+                //Validar la existencia del cliente
+                if (validarCliente()) {
+                    //Validar que los campos no estén vacíos
+                    if (validarCampos()) {
+                        //Validar que los datos estén correctos
+                        if (validarDatos()) {
+                            //Mensaje de confirmación
+                            if (msjYesNo("¿Está seguro de actualizar los datos del cliente?")) {
+                                //Intentar editar el cliente en la base de datos
+                                if (UpdateDB.updateCliente(id, cedula, nombre, apellido, telefono)) {
 
-                            //Ya que puede dar muchos problemas el alterar o agregar
-                            //un dato a una tabla (y no a su Model), la forma de 
-                            //visualizar los cambios será actualizando los datos 
-                            //de la tabla con la base de datos
-                            PanelClientes.actualizarDatos();
+                                    //Ya que puede dar muchos problemas el alterar o agregar
+                                    //un dato a una tabla (y no a su Model), la forma de 
+                                    //visualizar los cambios será actualizando los datos 
+                                    //de la tabla con la base de datos
+                                    PanelClientes.actualizarDatos();
 
-                            Mensaje.msjInformativo("Se actualizaron los datos del cliente con éxito.");
+                                    Mensaje.msjInformativo("Se actualizaron los datos del cliente con éxito.");
 
-                            dispose();
-                            vaciarCampos();
+                                    dispose();
+                                    vaciarCampos();
 
-                            Ventas.vaciarCampos();
+                                    Ventas.vaciarCampos();
+                                }
+                            }
+                            //Cerrar el glassPane, se actualice el usuario o no
+                            glass.setVisible(false);
                         }
                     }
                 }
             }
-        }
+        }.start();
+
     }
 
     /**
@@ -215,6 +237,9 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
             msj = "El nombre no puede estar vacío." + msj;
         }
 
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
         msjError(msj);
 
         return false;
@@ -232,6 +257,12 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
         if (formatoNombre(nombre)) {
             if (formatoNombre(apellido)) {
                 if (formatoTelefono(telefono)) {
+
+                    //Asignar un '0' al comienzo del teléfono si este 
+                    //NO empieza con cero.
+                    if (!telefono.startsWith("0")) {
+                        telefono = "0" + telefono;
+                    }
 
                     //Validar que la cédula se pueda convertir a un entero
                     //y que esté dentro del rango correcto
@@ -260,6 +291,9 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
             msj = "El nombre debe tener un rango de 2 a 25 letras." + msj;
         }
 
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
         msjError(msj);
 
         return false;
@@ -272,7 +306,7 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      * @return
      */
     private boolean validarCliente() {
-
+        String msj;
         id = ReadDB.getClienteID(cedulaVieja);
 
         //Validar que el ID sea mayor a 0
@@ -281,10 +315,15 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
             return true;
 
         } else {
-            msjError("No se encontró registro del cliente a editar en la base de datos.\n"
+            msj = "No se encontró registro del cliente a editar en la base de datos.\n"
                     + "Por favor, actualice la tabla de los clientes registrados\n"
-                    + "y verifique su registro en la tabla.");
+                    + "y verifique su registro en la tabla.";
         }
+
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
+        msjError(msj);
 
         return false;
     }
@@ -298,9 +337,6 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un cliente
-     *
-     * @param parent
-     * @param modal
      */
     public NuevoCliente() {
         super(main.Run.getFrameRoot(), true);
@@ -319,10 +355,26 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      * Función para iniciar los componentes de la ventana
      */
     private void initComponents() {
+        //GlassPane para cargar
+        this.setGlassPane(new JComponent() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                //Pinter un fondo oscuro en el contenedor
+                g.setColor(new java.awt.Color(0, 0, 0, 0.1f));
+                g.fillRect(0, 0, getContentPane().getWidth(), getContentPane().getHeight());
+            }
+        });
+        //Obtener el glassPane
+        glass = (Container) (this.getGlassPane());
+        glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        glass.addMouseListener(new MouseAdapter() {
+        });
 
+        //Propiedades del logo
         logo.setForeground(CELESTE);
         logo.setSize(logo.getPreferredSize());
 
+        //Propiedades del título
         lblTitulo.setVerticalAlignment(javax.swing.JLabel.TOP);
 
         this.add(logo);
@@ -516,6 +568,7 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     }
 
     //COMPONENTES
+    private static Container glass;
     private static final Dimension paneSize = new Dimension(425, 440);
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final Label lblTitulo = new Label("", TITULO, 16);

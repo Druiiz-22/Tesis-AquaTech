@@ -42,34 +42,41 @@ public final class Inicio extends JPanel implements properties.Colores, properti
             Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
 
-            //Reiniciar los intentos
-            intentos = 0;
+            if(rol == EMPLEADO || rol == ADMINISTRADOR){
+                //Reiniciar los intentos
+                intentos = 0;
 
-            return true;
-
-        } else {
-            //Sumar un intento fallido
-            intentos++;
-
-            if (intentos == 3) {
-                //Mostrar un mensaje de error
+                return true;
+                
+            } else{
                 msjError(
-                        "Ha superado el límite de intentos de inicio.\n"
-                        + "El programa se cerrará."
+                    "Usted no cuenta con los permisos necesarios para acceder"
+                            + "al programa."
                 );
-
-                //Cerrar la ventana del login
-                Run.cerrarLogin();
-
-                //Terminar de ejecutar el programa
-                System.exit(0);
             }
-
-            //Cerrar el GlassPane
-            Frame.openGlass(false);
-
-            return false;
         }
+        
+        //Sumar un intento fallido
+        intentos++;
+
+        if (intentos == 3) {
+            //Mostrar un mensaje de error
+            msjError(
+                    "Ha superado el límite de intentos de inicio.\n"
+                    + "El programa se cerrará."
+            );
+
+            //Cerrar la ventana del login
+            Run.cerrarLogin();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
+
+        //Cerrar el GlassPane
+        Frame.openGlass(false);
+
+        return false;
     }
 
     /**
@@ -82,14 +89,6 @@ public final class Inicio extends JPanel implements properties.Colores, properti
                 Frame.openGlass(true);
                 //Validar que los campos estén correctos
                 if (validarCampos()) {
-
-                    //Pausar el programa por un segundo
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
                     //Validar que el usuario realmente exista
                     //en la base de datos
                     if (validarUsuario()) {

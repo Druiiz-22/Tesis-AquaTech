@@ -6,7 +6,7 @@ import java.awt.Component;
 import javax.swing.JPanel;
 import static properties.Mensaje.msjError;
 import tabs.Inicio;
-import tabs.Proveedores;
+import tabs.proveedores.Proveedores;
 import tabs.admin.Admin;
 import tabs.clientes.Clientes;
 import tabs.compras.Compras;

@@ -24,6 +24,12 @@ public class AdminDB implements properties.Constantes {
         return true;
     }
 
+    /**
+     * Función para pedir la contraseña del usuario administrador iniciado
+     * sesión
+     *
+     * @return
+     */
     public static boolean validateAdminUser() {
 
         //Obtener el rol del usuario de la sesión iniciada
@@ -31,11 +37,7 @@ public class AdminDB implements properties.Constantes {
 
         //Validar que el rol del usuario SEA administrador
         if (rol == ADMINISTRADOR) {
-            
-            //Obtener el nombre del usuario de la sesión iniciada
-            String name = Frame.getUserIdentified();
-            
-            
+
             //Panel de ingreso de contraseña para el JOptionPane
             JPanel panel = new JPanel();
             JLabel titulo = new JLabel("Ingrese su contraseña");
@@ -89,55 +91,56 @@ public class AdminDB implements properties.Constantes {
                 //Validar que coincida la clave ingresada con el usuario que 
                 //tiene la sesión iniciada
                 Object[] cuenta = ReadDB.getUser(Frame.getUserIdentified(), password);
-                
+
+                //Validar que se haya obtenido respuesta
                 if (cuenta != null) {
-                    intentos = 0;
-                    return true;
 
-                } else {
-                    intentos++;
-
-                    if (intentos < 3) {
-                        //Mostrar un mensaje de error si NO ha superado el límite 
-                        //de intentos permitidos para iniciar sesión
-                        msjError(
-                                "La contraseña no coincide con el usuario.\n"
-                                + "Por favor, revise sus datos."
-                        );
+                    //Validar que el usuario obtenido REALMENTE sea administrador
+                    if ((int) (cuenta[0]) == ADMINISTRADOR) {
+                        intentos = 0;
+                        return true;
 
                     } else {
-                        //Mostrar un mensaje de error
-                        msjError(
-                                "La contraseña no coincide con el usuario.\n"
-                                + "Ha superado el límite de intentos de inicio.\n"
-                                + "El programa se cerrará."
-                        );
-
-                        //Cerrar la ventana del login
+                        msjError("Su usuario no cuenta con los permisos para "
+                                + "realizar esta acción.\nPor seguridad, el "
+                                + "programa se cerrará.");
+                        //Cerrar el programa
                         Run.cerrarPrograma();
 
                         //Terminar de ejecutar el programa
                         System.exit(0);
                     }
+                } else {
+                    //Sumar un intento fallido 
+                    intentos++;
 
-                    return false;
+                    if (intentos >= 3) {
+                        //Mostrar un mensaje de error
+                        msjError(
+                                "Ha superado el límite de intentos de verificación.\n"
+                                + "El programa se cerrará."
+                        );
+
+                        //Cerrar el programa
+                        Run.cerrarPrograma();
+
+                        //Terminar de ejecutar el programa
+                        System.exit(0);
+                    }
                 }
-
-            } else {
-                return false;
             }
         } else {
+            msjError("Su usuario no cuenta con los permisos para realizar esta "
+                    + "acción.\nPor seguridad, el programa se cerrará.");
             
-            msjError("Usted no tiene los permisos para realizar esta acción.");
-            return false;
+            //Cerrar el programa
+            Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
         }
+        return false;
     }
 
     private static int intentos = 0;
-
-//    public static boolean generateReport(int type, String path, String initialDate, String finalDate){
-//        return true;
-//    }
-//    private static String getReportName(){
-//    }
 }

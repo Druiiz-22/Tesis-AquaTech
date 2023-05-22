@@ -203,7 +203,15 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
     }
     
     public static boolean actualizarDatos(){
-        return Usuarios.actualizarDatos();
+        boolean status = Usuarios.actualizarDatos();
+        
+        //Comprobar si se están actualizando desde la ventana de cargando
+        if(status && login.IniciarPrograma.isActivated()){
+            //Enviar el porcentaje de carga
+            login.IniciarPrograma.setPercent(16);
+        }
+        
+        return status;
     }
     
     //COMPONENTES

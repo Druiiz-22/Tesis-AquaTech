@@ -2,8 +2,6 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import properties.Mensaje;
 
 /**
@@ -22,11 +20,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT trasvaso_bs FROM Precios WHERE id=1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea null
@@ -48,14 +46,14 @@ public class ReadDB implements properties.Constantes {
                 return 0;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.Error: " + e);
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
         //En caso de NO obtener ningún dato, retornar el número de error
-        return ERROR_NUMBER;
+        return ERROR_VALUE;
     }
 
     /**
@@ -68,11 +66,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT venta_bs FROM Precios WHERE id=1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea null y que tenga, al menos, un dato
@@ -95,14 +93,14 @@ public class ReadDB implements properties.Constantes {
                 return 0;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio de venta del botellón.Error: " + e);
+            Mensaje.msjError("No se pudo obtener el precio de venta del botellón.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
         //En caso de NO obtener ningún dato, retornar el número de error
-        return ERROR_NUMBER;
+        return ERROR_VALUE;
     }
 
     /**
@@ -164,11 +162,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Usuario WHERE correo = \"" + correo + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea null y que tenga, al menos, un dato
@@ -182,13 +180,59 @@ public class ReadDB implements properties.Constantes {
                 return count;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.Error: " + e);
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
-        return ERROR_NUMBER;
+        return ERROR_VALUE;
+    }
+
+    /**
+     * Función para comprobar la existencia de un usuario con una cédula
+     * determinada
+     *
+     * @param cedula TRUE si existe, al menos, un usuario con la cédula enviada.
+     * FALSE si no hay ningún usuario con esa cédula.
+     * @return
+     */
+    public static int cedulaExists(int cedula) {
+        //Preparar la sentencia SQL para comprobar la existencia de un usuario
+        //con una cédula determinada
+        String sql = "SELECT COUNT(*) FROM Usuario "
+                + "INNER JOIN Cliente "
+                + "ON Cliente.cedula = " + cedula + " "
+                + "AND id_cliente = Cliente.id";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null y que tenga, al menos, un dato
+            //obtenido que se pueda avanzar.
+            if (r != null && r.next()) {
+                int count = r.getInt(1);
+
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+
+                //Comprobar si hay, al menos, un usuario con determinada
+                //cédula y retornar su resultado
+                return count;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo buscar la cédula en la base de datos.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        return ERROR_VALUE;
     }
 
     /**
@@ -203,16 +247,16 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT nombre, apellido, rol "
                 + "FROM Usuario "
                 + "INNER JOIN Cliente "
-                + "ON (Usuario.correo = \"" + user + "\""
-                + "OR Cliente.cedula = \"" + user + "\")"
-                + "AND Usuario.contraseña = \"" + pass + "\"";
+                + "ON (correo = \"" + user + "\""
+                + "OR cedula = \"" + user + "\")"
+                + "AND contraseña = \"" + pass + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que se haya obtenido una respuesta
@@ -237,13 +281,13 @@ public class ReadDB implements properties.Constantes {
                     return new Object[]{rol, name};
                 } else {
                     Mensaje.msjError(
-                            "El usuario o contraseña es incorrecto."
+                            "El usuario o contraseña es incorrecto.\n"
                             + "Por favor, verifique sus datos"
                     );
                 }
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo buscar el usuario en la base de datos."
+            Mensaje.msjError("No se pudo buscar el usuario en la base de datos.\n"
                     + "Error: " + e);
         }
 
@@ -266,11 +310,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Cliente ORDER BY id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -283,7 +327,7 @@ public class ReadDB implements properties.Constantes {
 
                         //Sentencia SQL para obtener todos los clientes
                         sql = "SELECT * FROM Cliente";
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -316,8 +360,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener los clientes de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener los clientes de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -338,11 +382,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Proveedores;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -355,7 +399,7 @@ public class ReadDB implements properties.Constantes {
 
                         //Sentencia SQL para obtener todos los proveedores
                         sql = "SELECT * FROM Proveedores ORDER BY id DESC";
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -387,8 +431,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener los proveedores de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener los proveedores de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -409,11 +453,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Trasvaso;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -432,7 +476,7 @@ public class ReadDB implements properties.Constantes {
                                 + "ON id_cliente = Cliente.id "
                                 + "ORDER BY Trasvaso.id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -445,7 +489,7 @@ public class ReadDB implements properties.Constantes {
                                 trasvasos[i][2] = r.getInt(3);
                                 trasvasos[i][3] = r.getInt(4);
                                 trasvasos[i][4] = r.getString(5);
-                                trasvasos[i][5] = r.getBoolean(6);
+                                trasvasos[i][5] = (r.getBoolean(6)) ? "SÍ" : "NO";
                                 trasvasos[i][6] = r.getDouble(7);
                                 trasvasos[i][7] = r.getString(8);
                                 i++;
@@ -468,8 +512,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener los trasvasos de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener los trasvasos de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -498,11 +542,11 @@ public class ReadDB implements properties.Constantes {
                 + "         WHERE id_cliente = Cliente.id)";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -533,7 +577,7 @@ public class ReadDB implements properties.Constantes {
                                 + "         WHERE id_cliente = Cliente.id) "
                                 + "ORDER BY Deuda.id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -567,8 +611,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener las deudas de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener las deudas de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -589,11 +633,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Recarga";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -604,26 +648,27 @@ public class ReadDB implements properties.Constantes {
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT Recarga.id, Proveedores.nombre, "
-                                + "cantidad, monto, fecha "
+                        sql = "SELECT Recarga.id, Proveedores.rif, "
+                                + "Proveedores.nombre, cantidad, monto, fecha "
                                 + "FROM Recarga "
                                 + "INNER JOIN Proveedores "
                                 + "ON id_prov = Proveedores.id "
                                 + "ORDER BY Recarga.id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
-                            Object recargas[][] = new Object[count][5];
+                            Object recargas[][] = new Object[count][6];
                             int i = 0;
 
                             while (r.next()) {
                                 recargas[i][0] = r.getInt(1);
                                 recargas[i][1] = r.getString(2);
-                                recargas[i][2] = r.getInt(3);
-                                recargas[i][3] = r.getDouble(4);
-                                recargas[i][4] = r.getString(5);
+                                recargas[i][2] = r.getString(3);
+                                recargas[i][3] = r.getInt(4);
+                                recargas[i][4] = r.getDouble(5);
+                                recargas[i][5] = r.getString(6);
                                 i++;
                             }
 
@@ -644,8 +689,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener las recargas de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener las recargas de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -666,11 +711,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Venta;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -688,7 +733,7 @@ public class ReadDB implements properties.Constantes {
                                 + "ON id_cliente = Cliente.id "
                                 + "ORDER BY Venta.id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -700,7 +745,7 @@ public class ReadDB implements properties.Constantes {
                                 ventas[i][1] = r.getInt(2);
                                 ventas[i][2] = r.getInt(3);
                                 ventas[i][3] = r.getString(4);
-                                ventas[i][4] = r.getBoolean(5);
+                                ventas[i][4] = (r.getBoolean(5)) ? "SÍ" : "NO";
                                 ventas[i][5] = r.getDouble(6);
                                 ventas[i][6] = r.getString(7);
                                 i++;
@@ -723,8 +768,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener las ventas de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener las ventas de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -745,11 +790,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Compra;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -760,26 +805,27 @@ public class ReadDB implements properties.Constantes {
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT Compra.id, Proveedores.nombre, cantidad, "
-                                + "monto, fecha "
+                        sql = "SELECT Compra.id, Proveedores.rif, "
+                                + "Proveedores.nombre, cantidad, monto, fecha "
                                 + "FROM Compra "
                                 + "INNER JOIN Proveedores "
                                 + "ON id_prov = Proveedores.id "
                                 + "ORDER BY Compra.id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
-                            Object compras[][] = new Object[count][5];
+                            Object compras[][] = new Object[count][6];
                             int i = 0;
 
                             while (r.next()) {
                                 compras[i][0] = r.getInt(1);
                                 compras[i][1] = r.getString(2);
-                                compras[i][2] = r.getInt(3);
-                                compras[i][3] = r.getDouble(4);
-                                compras[i][4] = r.getString(5);
+                                compras[i][2] = r.getString(3);
+                                compras[i][3] = r.getInt(4);
+                                compras[i][4] = r.getDouble(5);
+                                compras[i][5] = r.getString(6);
                                 i++;
                             }
 
@@ -800,8 +846,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener las recargas de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener las recargas de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -822,11 +868,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Pedido WHERE id NOT IN (SELECT id FROM Pedido_Entregado)";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -840,7 +886,7 @@ public class ReadDB implements properties.Constantes {
                             Sentencia SQL para obtener los pedidos activos:
                                 Seleccioname los pedidos CUANDO su id NO esté
                                 dentro de la tabla de los pedidos pagados
-                        */
+                         */
                         sql = "SELECT Pedido.id, Cliente.cedula, servicio, "
                                 + "cantidad, tipo_pago, fecha, direccion "
                                 + "FROM Pedido "
@@ -852,7 +898,7 @@ public class ReadDB implements properties.Constantes {
                                 + "ON Pedido.id NOT IN (SELECT id FROM Pedido_Entregado) "
                                 + "ORDER BY Pedido.id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -896,8 +942,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener los pedidos de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener los pedidos de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -919,11 +965,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Transferencia;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -936,7 +982,7 @@ public class ReadDB implements properties.Constantes {
                         //Sentencia SQL para obtener los trasvasos
                         sql = "SELECT * FROM Transferencia ORDER BY id DESC";
 
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -969,8 +1015,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener las transferencias de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener las transferencias de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -991,11 +1037,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT id FROM Cliente WHERE cedula = \"" + cedula + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea null
@@ -1017,14 +1063,14 @@ public class ReadDB implements properties.Constantes {
                 return -1;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el id del cliente. Error: " + e);
+            Mensaje.msjError("No se pudo obtener el id del cliente.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
         //En caso de NO obtener ningún dato, retornar el número de error
-        return ERROR_NUMBER;
+        return ERROR_VALUE;
     }
 
     /**
@@ -1039,11 +1085,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT id FROM Proveedores WHERE rif = \"" + rif + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea null
@@ -1065,14 +1111,14 @@ public class ReadDB implements properties.Constantes {
                 return -1;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el id del proveedor. Error: " + e);
+            Mensaje.msjError("No se pudo obtener el id del proveedor.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
         //En caso de NO obtener ningún dato, retornar el número de error
-        return ERROR_NUMBER;
+        return ERROR_VALUE;
     }
 
     // ========== ADMINISTRADOR ==========
@@ -1088,11 +1134,11 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Usuario";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea nula
@@ -1110,7 +1156,7 @@ public class ReadDB implements properties.Constantes {
                                 + "INNER JOIN Cliente "
                                 + "ON id_cliente = Cliente.id "
                                 + "ORDER BY Usuario.id DESC";
-                        r = bdd.ejecutarQuery(sql);
+                        r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
@@ -1122,8 +1168,8 @@ public class ReadDB implements properties.Constantes {
                                 usuarios[i][1] = r.getInt(2);
                                 usuarios[i][3] = r.getString(4);
                                 usuarios[i][4] = r.getString(5);
-                                usuarios[i][6] = r.getString(6);
-                                usuarios[i][7] = r.getString(7);
+                                usuarios[i][5] = r.getString(6);
+                                usuarios[i][6] = r.getString(7);
                                 //Determinar el rol
                                 int rol = r.getInt(3);
                                 usuarios[i][2] = (rol == EMPLEADO) ? "EMPLEADO"
@@ -1150,8 +1196,8 @@ public class ReadDB implements properties.Constantes {
                 return new Object[][]{};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener los clientes de la base de"
-                    + "datos. Error: " + ex);
+            Mensaje.msjError("No se pudieron obtener los usuarios de la base de "
+                    + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
@@ -1175,11 +1221,11 @@ public class ReadDB implements properties.Constantes {
                 + "AND id_cliente = Cliente.id";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB();
+        ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.ejecutarQuery(sql);
+        ResultSet r = bdd.selectQuery(sql);
 
         try {
             //Validar que la respuesta NO sea null
@@ -1201,14 +1247,59 @@ public class ReadDB implements properties.Constantes {
                 return -1;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el id del usuario. Error: " + e);
+            Mensaje.msjError("No se pudo obtener el id del usuario.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
         bdd.desconectar();
 
         //En caso de NO obtener ningún dato, retornar el número de error
-        return ERROR_NUMBER;
+        return ERROR_VALUE;
+    }
+
+    public static int getUserRol(String identificacion) {
+        //Preparar la sentencia SQL para obtener el id del cliente
+        String sql = "SELECT Usuario.rol FROM Usuario "
+                + "INNER JOIN Cliente "
+                + "ON (cedula = \"" + identificacion + "\" "
+                + "OR correo = \"" + identificacion + "\")"
+                + "AND id_cliente = Cliente.id";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener el id
+                    int id = r.getInt(1);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return id;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el id como -1
+                return -1;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el rol del usuario.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_VALUE;
     }
 
     // ========== REPORTES ==========

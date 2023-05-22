@@ -1,7 +1,6 @@
 package main;
 
 import components.PanelNotificaciones;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -92,14 +91,12 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //LISTA DE COSAS PENDIENTES
         //- Hacer los ajustes
-        //- Crear el rol de "operador"
+        //- Crear el rol de "encargado"
         //- Cancelar un pedido
         //- Reajustar reportes por sucursales
         //- Reajustar reporte de trasvasos
         //- Reporte de pedidos
         //- Dar formulario a los RIF
-        //CAMBIOS EN LA BASE DE DATOS
-        //- proceso para crear usuario (creando cliente al mismo tiempo)
     }
 
     /**

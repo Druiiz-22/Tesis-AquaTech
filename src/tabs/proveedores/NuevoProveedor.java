@@ -1,4 +1,4 @@
-package tabs;
+package tabs.proveedores;
 
 import components.Boton;
 import components.CampoTexto;
@@ -7,6 +7,8 @@ import components.Logo;
 import database.CreateDB;
 import database.ReadDB;
 import database.UpdateDB;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -17,8 +19,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import static java.awt.Font.BOLD;
+import java.awt.Graphics;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import static javax.swing.SwingConstants.HORIZONTAL;
+import main.Frame;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
@@ -92,7 +97,7 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
 
         //WINDOW LISTENER
         this.addWindowListener(new WindowAdapter() {
-            
+
             @Override
             public void windowOpened(WindowEvent e) {
                 //Obtener el tamaño del panel contenedor + los bordes de la 
@@ -100,12 +105,12 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
                 //tamaño al Dialog
                 int w = paneSize.width + getInsets().left + getInsets().right;
                 int h = paneSize.height + getInsets().top + getInsets().bottom;
-                
+
                 //Asignar el tamaño y centrar el Dialog
                 setSize(w, h);
                 setLocation(centerLocation());
             }
-            
+
             @Override
             public void windowClosing(WindowEvent e) {
                 salir();
@@ -117,64 +122,83 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
      * Función para crear un nuevo cliente en la base de datos
      */
     private void crear() {
-        if (validarCampos()) {
-            if (validarDatos()) {
-                //Mensaje de confirmación
-                if (msjYesNo("¿Está seguro de realizar el registro del nuevo proveedor?")) {
+        new Thread() {
+            @Override
+            public void run() {
+                glass.setVisible(true);
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de realizar el registro del nuevo proveedor?")) {
 
-                    //Intentar crear el cliente en la base de datos
-                    if (CreateDB.createProveedor(rif, nombre, telefono)) {
+                            //Intentar crear el cliente en la base de datos
+                            if (CreateDB.createProveedor(rif, nombre, telefono)) {
 
-                        //Ya que puede dar muchos problemas el alterar o agregar
-                        //un dato a una tabla (y no a su Model), la forma de 
-                        //visualizar los cambios será actualizando los datos 
-                        //de la tabla con la base de datos
-                        Proveedores.actualizarDatos();
+                                //Ya que puede dar muchos problemas el alterar o agregar
+                                //un dato a una tabla (y no a su Model), la forma de 
+                                //visualizar los cambios será actualizando los datos 
+                                //de la tabla con la base de datos
+                                Proveedores.actualizarDatos();
 
-                        msjInformativo("Se creó el nuevo proveedor con éxito.");
+                                msjInformativo("Se creó el nuevo proveedor con éxito.");
 
-                        dispose();
-                        vaciarCampos();
+                                dispose();
+                                vaciarCampos();
 
-                        Compras.vaciarCampos();
+                                Compras.vaciarCampos();
+                            }
+                        }
+                        //Cerrar el glassPane, se registre el proveedor o no
+                        glass.setVisible(false);
                     }
                 }
+
             }
-        }
+        }.start();
+
     }
 
     /**
      * Función para actualizar un cliente en la base de datos
      */
     private void actualizar() {
-        //Validar la existencia del proveedor
-        if (validarProveedor()) {
-            //Validar que los campos no estén vacíos
-            if (validarCampos()) {
-                //Validar que los datos estén correctos
-                if (validarDatos()) {
-                    //Mensaje de confirmación
-                    if (msjYesNo("¿Está seguro de actualizar los datos del proveedor?")) {
-                        //Intentar editar el proveedor en la base de datos
-                        if (UpdateDB.updateProveedor(id, rif, nombre, telefono)) {
+        new Thread() {
+            @Override
+            public void run() {
+                glass.setVisible(true);
+                //Validar la existencia del proveedor
+                if (validarProveedor()) {
+                    //Validar que los campos no estén vacíos
+                    if (validarCampos()) {
+                        //Validar que los datos estén correctos
+                        if (validarDatos()) {
+                            //Mensaje de confirmación
+                            if (msjYesNo("¿Está seguro de actualizar los datos del proveedor?")) {
+                                //Intentar editar el proveedor en la base de datos
+                                if (UpdateDB.updateProveedor(id, rif, nombre, telefono)) {
 
-                            //Ya que puede dar muchos problemas el alterar o agregar
-                            //un dato a una tabla (y no a su Model), la forma de 
-                            //visualizar los cambios será actualizando los datos 
-                            //de la tabla con la base de datos
-                            Proveedores.actualizarDatos();
+                                    //Ya que puede dar muchos problemas el alterar o agregar
+                                    //un dato a una tabla (y no a su Model), la forma de 
+                                    //visualizar los cambios será actualizando los datos 
+                                    //de la tabla con la base de datos
+                                    Proveedores.actualizarDatos();
 
-                            msjInformativo("Se actualizaron los datos del proveedor con éxito.");
+                                    msjInformativo("Se actualizaron los datos del proveedor con éxito.");
 
-                            dispose();
-                            vaciarCampos();
+                                    dispose();
+                                    vaciarCampos();
 
-                            Compras.vaciarCampos();
+                                    Compras.vaciarCampos();
+                                }
+                            }
+                            //Cerrar el glassPane, se registre el proveedor o no
+                            glass.setVisible(false);
                         }
                     }
                 }
             }
-        }
+        }.start();
+
     }
 
     /**
@@ -206,7 +230,10 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
         } else {
             msj = "El nombre no puede estar vacío." + msj;
         }
-
+        
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
         msjError(msj);
 
         return false;
@@ -223,6 +250,13 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
         //Validar los formatos de los datos
         if (formatoNombreEmpresa(nombre)) {
             if (formatoTelefono(telefono)) {
+
+                //Asignar un '0' al comienzo del teléfono si este 
+                //NO empieza con cero.
+                if (!telefono.startsWith("0")) {
+                    telefono = "0" + telefono;
+                }
+
                 if (formatoRIF(rif)) {
 
                     return true;
@@ -238,6 +272,9 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
             msj = "El nombre debe tener un rango de 2 a 25 letras." + msj;
         }
 
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
         msjError(msj);
 
         return false;
@@ -250,7 +287,7 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
      * @return
      */
     private boolean validarProveedor() {
-
+        String msj;
         id = ReadDB.getProveedorID(rifViejo);
 
         //Validar que el ID sea mayor a 0
@@ -259,11 +296,16 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
             return true;
 
         } else {
-            msjError("No se encontró registro del cliente a editar en la base de datos.\n"
+            msj = "No se encontró registro del cliente a editar en la base de datos.\n"
                     + "Por favor, actualice la tabla de los clientes registrados\n"
-                    + "y verifique su registro en la tabla.");
+                    + "y verifique su registro en la tabla.";
         }
-
+        
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
+        msjError(msj);
+        
         return false;
     }
 
@@ -276,8 +318,6 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un proveedor
-     * @param parent
-     * @param modal
      */
     public NuevoProveedor() {
         super(main.Run.getFrameRoot(), true);
@@ -296,11 +336,27 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
      * Función para iniciar los componentes de la ventana
      */
     private void initComponents() {
+        //GlassPane para cargar
+        this.setGlassPane(new JComponent() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                //Pinter un fondo oscuro en el contenedor
+                g.setColor(new java.awt.Color(0, 0, 0, 0.1f));
+                g.fillRect(0, 0, getContentPane().getWidth(), getContentPane().getHeight());
+            }
+        });
+        //Obtener el glassPane
+        glass = (Container) (this.getGlassPane());
+        glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        glass.addMouseListener(new MouseAdapter() {
+        });
 
+        //Propiedades del logo
         logo.setForeground(CELESTE);
         logo.setSize(logo.getPreferredSize());
         logo.setFont(segoe(32, BOLD));
 
+        //Propiedades del título
         lblTitulo.setVerticalAlignment(javax.swing.JLabel.TOP);
 
         this.add(logo);
@@ -321,15 +377,15 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
     private void relocateComponents() {
         int width = paneSize.width;
         int height = paneSize.height;
-        
+
         int gapV = 2;
         int paddingH = 40;
         int paddingV = 20;
         int fieldH = 40;
-        int fieldW = width/2 - paddingH - paddingV / 2;
+        int fieldW = width / 2 - paddingH - paddingV / 2;
 
         //Posición del logo
-        int x = width/2 - logo.getWidth() / 2;
+        int x = width / 2 - logo.getWidth() / 2;
         logo.setLocation(x, paddingV);
 
         //Posición y tamaño del título
@@ -396,7 +452,7 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
 
         //Preparar los campos
         vaciarCampos();
-        
+
         //Propiedades de la ventana 
         this.setTitle("Agregar un proveedor - AquaTech");
         this.relocateComponents();
@@ -418,7 +474,7 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
         //Label para el título
         lblTitulo.setText("<html>Ingrese los nuevos datos del proveedor "
                 + "que desea actualizar.</html>");
-        
+
         //Logo para la ventana
         logo.setText("Editar Proveedor");
         logo.setSize(logo.getPreferredSize());
@@ -428,12 +484,12 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
         txtRif.setText(rif);
         txtNombre.setText(nombre);
         txtTelefono.setText(telefono);
-        
+
         //Propiedades de la ventana
         this.setTitle("Editar un proveedor - AquaTech");
         this.relocateComponents();
         this.setVisible(true);
-        
+
         //Redimensionar los componentes
     }
 
@@ -468,23 +524,25 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
     /**
      * Función para obtener las coordenadas necesarias para posicionar la
      * ventana en el centro de la pantalla
-     * @return 
+     *
+     * @return
      */
-    private java.awt.Point centerLocation(){
-        
+    private java.awt.Point centerLocation() {
+
         //Obtener el tamaño de la pantalla
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
         //Posición en X del frame
-        int x = screen.width/2 - this.getWidth()/2;
+        int x = screen.width / 2 - this.getWidth() / 2;
         //Posición en Y del frame
-        int y = screen.height/2 - this.getHeight()/2;
+        int y = screen.height / 2 - this.getHeight() / 2;
 
         //Retornar el tamaño mínimo
         return new java.awt.Point(x, y);
     }
-    
+
     //COMPONENTES
+    private static Container glass;
     private static final Dimension paneSize = new Dimension(425, 440);
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final Label lblTitulo = new Label("", TITULO, 16);

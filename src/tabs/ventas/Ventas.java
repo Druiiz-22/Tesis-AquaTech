@@ -22,12 +22,14 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.BorderFactory.createLineBorder;
+import main.Frame;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static main.MenuLateral.clickButton;
+import tabs.historial.Historial;
 
 /**
  * Clase para la creación del apartado de ventas a los clientes, esta clase
@@ -219,9 +221,19 @@ public class Ventas extends JPanel implements properties.Constantes, properties.
      * @return
      */
     public static boolean actualizarDatos() {
+        boolean status = panelTrasvasos.actualizarDatos()
+                && panelVentas.actualizarDatos()
+                && panelPedidos.actualizarDatos();
+
+        //Comprobar si se están actualizando desde la ventana de cargando
+        if (login.IniciarPrograma.isActivated()) {
+            //Enviar el porcentaje de carga
+            login.IniciarPrograma.setPercent((main.Frame.getUserRol() == EMPLEADO) ? 20 : 17);
+        }
+
         //retornar como busqueda exitosa cuando todas las actualizaciones
         //se hayan completado.
-        return panelTrasvasos.actualizarDatos() && panelVentas.actualizarDatos() && panelPedidos.actualizarDatos();
+        return status;
     }
 
     //COMPONENTES
@@ -245,31 +257,50 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
     // ========== BACKEND ==========
     private void registrar() {
-        //Mensaje de confirmación
-        if (msjYesNo("¿Está seguro de realizar el registro de la venta?")) {
+        new Thread() {
+            @Override
+            public void run() {
+                Frame.openGlass(0);
 
-            if (validarCampos()) {
-                if (validarDatos()) {
+                //Validar los campos y sus datos
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de realizar el registro de la venta?")) {
+                            //Booleano auxiliar
+                            boolean realizar = true;
 
-                    //Validar que el registro NO sea de números más grandes de 100
-                    if (cantidad > 100) {
+                            //Validar que el registro NO sea de números más grandes de 100
+                            if (cantidad > 100) {
+                                //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
+                                String msj = "Está apunto de realizar un registro con una alta\n"
+                                        + "cantidad de botellones, ¿Está seguro de realizar el registro?";
+                                
+                                realizar = msjYesNoWarning(msj);
 
-                        //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
-                        String msj = "Está apunto de realizar un registro con una alta\n"
-                                + "cantidad de botellones, ¿Está seguro de realizar el registro?";
-
-                        if (msjYesNoWarning(msj)) {
-                            CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), cedula);
-                        }
-
-                    } else {
-                        CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), cedula);
+                            }
+                            
+                            //Validar si se realizará o no
+                            if(realizar){
+                                //Intentar crear el registro
+                                if(CreateDB.createVenta(cantidad, tipoPago, checkDelivery.isSelected(), cedula)){
+                                    //Actualizar los datos con la base de datos
+                                    Ventas.actualizarDatos();
+                                    Historial.actualizarDatos();
+                                    
+                                    //Vaciar los campos
+                                    vaciarCampos();
+                                    
+                                    
+                                }
+                            }
+                        } 
+                        //Cerrar el glassPane, se realice o no la venta
+                        Frame.closeGlass();
                     }
-
-                    vaciarCampos();
                 }
             }
-        }
+        }.start();
     }
 
     /**
@@ -279,7 +310,8 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
      * @return TRUE en caso de que todos los campos estén validos
      */
     private boolean validarCampos() {
-
+        String msj;
+        
         //Validar que los campos NO estén vacíos y que 
         //se haya seleccionado un tipo de pago
         if (!txtCantidad.getText().trim().isEmpty()) {
@@ -288,17 +320,20 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
                     return true;
 
                 } else {
-                    msjError("Debe seleccionar un cliente");
+                    msj = "Debe seleccionar un cliente";
                 }
             } else {
-                msjError("Debe seleccionar un tipo de pago");
-                boxTipoPago.requestFocus();
+                msj = "Debe seleccionar un tipo de pago";
             }
         } else {
-            msjError("La cantidad de botellones a vender no puede estár vacío.");
-            txtCantidad.requestFocus();
+            msj = "La cantidad de botellones a vender no puede estár vacío.";
         }
 
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no retornar true anteriormente
         return false;
     }
@@ -309,18 +344,23 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
      * @return TRUE en caso de que los datos sean válidos
      */
     private boolean validarDatos() {
-
+        String msj;
+        
         //Validar que la cantidad de botellones esté dentro del rango correcto
         if (cantidad > 0 && cantidad < 8388607) {
 
             return true;
 
         } else {
-            msjError("La cantidad de botellones a vender es inválido."
-                    + "\nPor favor, verifique la cantidad.");
-            txtCantidad.requestFocus();
+            msj = "La cantidad de botellones a vender es inválido."
+                    + "\nPor favor, verifique la cantidad.";
         }
 
+        //Cerrar el glassPane
+        Frame.closeGlass();
+        //Mostrar mensaje de error
+        msjError(msj);
+        
         //Retornar falso en caso de no haber retornado true anteriormente
         return false;
     }
@@ -415,7 +455,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
         //Validar que el precio y el panel informativo, hayan buscado sus datos
         //en la base de datos exitosamente
-        if (informacion.actualizarDatos() && precio != ERROR_NUMBER) {
+        if (informacion.actualizarDatos() && precio != ERROR_VALUE) {
             //Reposicionar el panel de información, según el 
             //ancho del contenedor
             if (width < 600) {
@@ -432,7 +472,7 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
 
         } else {
             precio = 0;
-            
+
             //Retornar busqueda incompleta
             return false;
         }

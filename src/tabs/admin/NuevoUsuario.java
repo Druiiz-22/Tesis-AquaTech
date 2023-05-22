@@ -10,7 +10,10 @@ import database.CreateDB;
 import database.EmailCode;
 import database.ReadDB;
 import database.UpdateDB;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
@@ -19,9 +22,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Calendar;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import static javax.swing.SwingConstants.HORIZONTAL;
+import main.Frame;
 import properties.Encript;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
@@ -69,7 +74,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                 //tamaño al Dialog
                 int w = paneSize.width + getInsets().left + getInsets().right;
                 int h = paneSize.height + getInsets().top + getInsets().bottom;
-                
+
                 //Asignar el tamaño y centrar el Dialog
                 setSize(w, h);
                 setLocation(centerLocation());
@@ -86,71 +91,91 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
      * Función para crear un nuevo usuario en la base de datos
      */
     private void crear() {
-        if (validarCampos()) {
-            if (validarDatos()) {
-                //Mensaje de confirmación
-                if (msjYesNo("¿Está seguro de realizar el registro del nuevo usuario?")) {
-                    //Confirmar cuenta de administrador
-                    if (AdminDB.validateAdminUser()) {
-                        //Enviar el código de seguridad al correo
-                        if (codigoSeguridad()) {
-                            //Intentar crear el cliente en la base de datos
-                            if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, claveFinal, rol)) {
+        new Thread() {
+            @Override
+            public void run() {
+                glass.setVisible(true);
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de realizar el registro del nuevo usuario?")) {
+                            //Confirmar cuenta de administrador
+                            if (AdminDB.validateAdminUser()) {
+                                //Enviar el código de seguridad al correo
+                                if (codigoSeguridad()) {
+                                    //Intentar crear el cliente en la base de datos
+                                    if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, claveFinal, rol)) {
 
-                                //Ya que puede dar muchos problemas el alterar o agregar
-                                //un dato a una tabla (y no a su Model), la forma de 
-                                //visualizar los cambios será actualizando los datos 
-                                //de la tabla con la base de datos
-                                Usuarios.actualizarDatos();
+                                        //Ya que puede dar muchos problemas el alterar o agregar
+                                        //un dato a una tabla (y no a su Model), la forma de 
+                                        //visualizar los cambios será actualizando los datos 
+                                        //de la tabla con la base de datos
+                                        Usuarios.actualizarDatos();
 
-                                msjInformativo("Se creó el nuevo usuario con éxito.");
+                                        msjInformativo("Se creó el nuevo usuario con éxito.");
 
-                                dispose();
-                                vaciarCampos();
+                                        dispose();
+                                        vaciarCampos();
+
+                                        Frame.closeGlass();
+                                    }
+                                }
                             }
                         }
+                        //Cerrar el glassPane, se registre el usuario o no
+                        glass.setVisible(false);
                     }
                 }
             }
-        }
+        }.start();
+
     }
 
     /**
      * Función para actualizar un usuario en la base de datos
      */
     private void actualizar() {
-        //Validar la existencia del proveedor
-        if (validarUsuario()) {
-            //Validar que los campos no estén vacíos
-            if (validarCampos()) {
-                //Validar que los datos estén correctos
-                if (validarDatos()) {
-                    //Mensaje de confirmación
-                    if (msjYesNo("¿Está seguro de actualizar los datos del usuario?")) {
-                        //Confirmar cuenta de administrador 
-                        if (AdminDB.validateAdminUser()) {
-                            //Confirmar código de seguridad
-                            if (codigoSeguridad()) {
-                                //Intentar editar el proveedor en la base de datos
-                                if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo, rol)) {
+        new Thread() {
+            @Override
+            public void run() {
+                glass.setVisible(true);
+                //Validar la existencia del proveedor
+                if (validarUsuario()) {
+                    //Validar que los campos no estén vacíos
+                    if (validarCampos()) {
+                        //Validar que los datos estén correctos
+                        if (validarDatos()) {
+                            //Mensaje de confirmación
+                            if (msjYesNo("¿Está seguro de actualizar los datos del usuario?")) {
+                                //Confirmar cuenta de administrador 
+                                if (AdminDB.validateAdminUser()) {
+                                    //Confirmar código de seguridad
+                                    if (codigoSeguridad()) {
+                                        //Intentar editar el proveedor en la base de datos
+                                        if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo, rol)) {
 
-                                    //Ya que puede dar muchos problemas el alterar o agregar
-                                    //un dato a una tabla (y no a su Model), la forma de 
-                                    //visualizar los cambios será actualizando los datos 
-                                    //de la tabla con la base de datos
-                                    Usuarios.actualizarDatos();
+                                            //Ya que puede dar muchos problemas el alterar o agregar
+                                            //un dato a una tabla (y no a su Model), la forma de 
+                                            //visualizar los cambios será actualizando los datos 
+                                            //de la tabla con la base de datos
+                                            Usuarios.actualizarDatos();
 
-                                    msjInformativo("Se actualizaron los datos del usuario con éxito.");
+                                            msjInformativo("Se actualizaron los datos del usuario con éxito.");
 
-                                    dispose();
-                                    vaciarCampos();
+                                            dispose();
+                                            vaciarCampos();
+                                        }
+                                    }
                                 }
                             }
+                            //Cerrar el glassPane, se actualice el usuario o no
+                            glass.setVisible(false);
                         }
                     }
                 }
             }
-        }
+        }.start();
+
     }
 
     /**
@@ -212,6 +237,9 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
             return true;
         }
 
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
         msjError(msj);
 
         return false;
@@ -238,10 +266,17 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         } else if (!formatoNombre(apellido)) {
             msj = "El apellido solo puede llevar letras, entre 2 a 25." + msj;
 
-        } else if (formatoTelefono(telefono)) {
+        } else if (!formatoTelefono(telefono)) {
             msj = "El teléfono ingresado no cumple con el\n"
                     + "formato de un número telefónico." + msj;
         } else {
+
+            //Asignar un '0' al comienzo del teléfono si este 
+            //NO empieza con cero.
+            if (!telefono.startsWith("0")) {
+                telefono = "0" + telefono;
+            }
+
             try {
                 //Validar que la cédula se pueda convertir a un entero y esté
                 //dentro del rango correcto
@@ -286,6 +321,9 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
             }
         }
 
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
         msjError(msj);
 
         return false;
@@ -298,7 +336,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
      * @return
      */
     private boolean validarUsuario() {
-
+        String msj;
         id_usuario = ReadDB.getUserID(cedulaVieja);
         id_cliente = ReadDB.getClienteID(cedulaVieja);
 
@@ -308,10 +346,15 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
             return true;
 
         } else {
-            msjError("No se encontró registro del usuario a editar en la base de datos.\n"
+            msj = "No se encontró registro del usuario a editar en la base de datos.\n"
                     + "Por favor, actualice la tabla de los clientes registrados\n"
-                    + "y verifique su registro en la tabla.");
+                    + "y verifique su registro en la tabla.";
         }
+        
+        //Ocultar el glassPane
+        glass.setVisible(false);
+        //Mostrar mensaje de errorr
+        msjError(msj);
 
         return false;
     }
@@ -480,9 +523,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
     // ========== FRONTEND ==========
     /**
      * Constructor de la ventana para agregar o editar un proveedor
-     *
-     * @param parent
-     * @param modal
      */
     public NuevoUsuario() {
         super(main.Run.getFrameRoot(), true);
@@ -501,11 +541,29 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
      * Función para iniciar los componentes de la ventana
      */
     private void initComponents() {
+        //GlassPane para cargar
+        this.setGlassPane(new JComponent() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                //Pinter un fondo oscuro en el contenedor
+                g.setColor(new java.awt.Color(0, 0, 0, 0.1f));
+                g.fillRect(0, 0, getContentPane().getWidth(), getContentPane().getHeight());
+            }
+        });
+        //Obtener el glassPane
+        glass = (Container) (this.getGlassPane());
+        glass.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        glass.addMouseListener(new MouseAdapter() {
+        });
+
+        //Propiedades del logo
         logo.setForeground(CELESTE);
         logo.setSize(logo.getPreferredSize());
 
+        //Propiedades del título
         lblTitulo.setVerticalAlignment(javax.swing.JLabel.TOP);
 
+        //Propiedades de los roles
         boxRoles.setFont(properties.Fuentes.segoe(16, java.awt.Font.PLAIN));
 
         this.add(logo);
@@ -671,7 +729,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Logo para la ventana
         logo.setText("Agregar Usuario");
         logo.setSize(logo.getPreferredSize());
-        
+
         //Preparar los campos
         vaciarCampos();
         txtClave.setEnabled(true);
@@ -753,27 +811,29 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
             dispose();
         }
     }
-    
+
     /**
      * Función para obtener las coordenadas necesarias para posicionar la
      * ventana en el centro de la pantalla
-     * @return 
+     *
+     * @return
      */
-    private java.awt.Point centerLocation(){
-        
+    private java.awt.Point centerLocation() {
+
         //Obtener el tamaño de la pantalla
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 
         //Posición en X del frame
-        int x = screen.width/2 - this.getWidth()/2;
+        int x = screen.width / 2 - this.getWidth() / 2;
         //Posición en Y del frame
-        int y = screen.height/2 - this.getHeight()/2;
+        int y = screen.height / 2 - this.getHeight() / 2;
 
         //Retornar el tamaño mínimo
         return new java.awt.Point(x, y);
     }
-    
+
     //COMPONENTES
+    private static Container glass;
     private static final Dimension paneSize = new Dimension(640, 450);
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final Label lblTitulo = new Label("", TITULO, 16);

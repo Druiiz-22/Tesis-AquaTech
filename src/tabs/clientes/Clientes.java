@@ -131,9 +131,17 @@ public class Clientes extends JPanel implements properties.Constantes, propertie
      * @return 
      */
     public static boolean actualizarDatos() {
+        boolean status = PanelClientes.actualizarDatos() && Deudas.actualizarDatos();
+        
+        //Comprobar si se están actualizando desde la ventana de cargando
+        if(status && login.IniciarPrograma.isActivated()){
+            //Enviar el porcentaje de carga
+            login.IniciarPrograma.setPercent((main.Frame.getUserRol() == EMPLEADO)? 20 : 17);
+        }
+        
         //retornar como busqueda exitosa cuando los dos se hayan completado
         //correctamente.
-        return PanelClientes.actualizarDatos() && Deudas.actualizarDatos();
+        return status;
     }
 
     //COMPONENTES

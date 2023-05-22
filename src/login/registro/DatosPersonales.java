@@ -3,9 +3,11 @@ package login.registro;
 import components.Boton;
 import components.CampoTexto;
 import components.Label;
+import database.ReadDB;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import login.Frame;
 import static login.Frame.replacePanel;
 import static login.Registro.getContentSize;
 import static login.Registro.replaceContainer;
@@ -25,17 +27,38 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
      * Función para guardar los datos del usuario
      */
     private void guardarDatos() {
-        //Validar los campos y sus datos
-        if (validarCampos()) {
-            if (validarDatos()) {
+        new Thread(){
+            @Override
+            public void run(){
+                //Validar los campos y sus datos
+                if (validarCampos()) {
+                    if (validarDatos()) {
+                        //Abrir el glassPane
+                        Frame.openGlass(true);
+                        
+                        //Buscar la cédula en la base de datos
+                        int count = ReadDB.cedulaExists(Integer.parseInt(cedula));
+                        
+                        //Validar que la cédula NO esté registrar
+                        if(count == 0){
+                            //Guardar los datos
+                            setDatosPersonales(nombre, apellido, Integer.parseInt(cedula), telefono);
 
-                //Guardar los datos
-                setDatosPersonales(nombre, apellido, Integer.parseInt(cedula), telefono);
-
-                //Avanzar hacia el correo
-                replaceContainer(CORREO);
+                            //Avanzar hacia el correo
+                            replaceContainer(CORREO);
+                            
+                        //Comprobar que NO fue un error de conexión
+                        } else if(count != ERROR_VALUE){
+                            msjError("La cédula ingresada ya está registrada en "
+                                    + "el sistema.\nNo se podrá crear un usuario "
+                                    + "nuevo con una cédula repetida.\nPor favor, "
+                                    + "verifique sus datos.");
+                        }
+                        Frame.openGlass(false);
+                    }
+                }
             }
-        }
+        }.start();
     }
 
     /**
@@ -88,6 +111,12 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
         if (formatoNombre(nombre)) {
             if (formatoNombre(apellido)) {
                 if (formatoTelefono(telefono)) {
+                    
+                    //Asignar un '0' al comienzo del teléfono si este 
+                    //NO empieza con cero.
+                    if(!telefono.startsWith("0")){
+                        telefono = "0" + telefono;
+                    }
 
                     //Validar que la cédula se pueda convertir a un entero
                     //y que esté dentro del rango correcto

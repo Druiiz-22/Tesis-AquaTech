@@ -10,7 +10,7 @@ public class Run {
 
     public static void main(String[] args) {
         
-//        iniciarLogin();
+        iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
 

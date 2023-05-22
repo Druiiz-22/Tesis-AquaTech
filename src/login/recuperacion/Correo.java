@@ -11,8 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import login.Frame;
 import login.Recuperacion;
 import static login.Frame.replacePanel;
@@ -37,14 +35,6 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
                 Frame.openGlass(true);
                 //Validar el campo de texto
                 if (validarCampo()) {
-                    
-                    //Pausar el programa por un segundo
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Correo.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
                     //Validar que el correo SÍ exista en la base de datos
                     if (ReadDB.emailExists(correoUsuario) == 1) {
 
@@ -75,10 +65,9 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
 
                             //Avanzar a la pestaña de validación de código
                             replaceContainer(CODIGO);
-                            
-                            //Cerrar el GlassPane
-                            Frame.openGlass(false);
                         }
+                        //Cerrar el GlassPane
+                        Frame.openGlass(false);
                     } else {
                         //Cerrar el GlassPane
                         Frame.openGlass(false);

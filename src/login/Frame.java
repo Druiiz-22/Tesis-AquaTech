@@ -9,14 +9,9 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import static properties.Mensaje.msjAdvertencia;
@@ -55,7 +50,7 @@ public class Frame extends JFrame implements properties.Constantes {
             @Override
             protected void paintComponent(Graphics g) {
                 //Pinter un fondo oscuro en el contenedor
-                g.setColor(new java.awt.Color(0, 0, 0, 0.05f));
+                g.setColor(new java.awt.Color(0, 0, 0, 0.1f));
                 //Rellenar un rectangulo del tamaño del panel contenedor
                 g.fillRect(0, 0, getContentPane().getWidth(), getContentPane().getHeight());
             }

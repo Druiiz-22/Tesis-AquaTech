@@ -18,7 +18,7 @@ import tabs.compras.Compras;
 import tabs.compras.Recargas;
 import database.DeleteDB;
 import java.awt.Desktop;
-import tabs.Proveedores;
+import tabs.proveedores.Proveedores;
 import tabs.clientes.PanelClientes;
 import static java.awt.Font.PLAIN;
 import java.awt.event.MouseEvent;
@@ -733,7 +733,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case HISTORIAL_VENTA:
                 //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "Cedula", "Cantidad", "Tipo pago",
-                    "Monto Total", "Fecha"};
+                    "Delivery","Monto Total", "Fecha"};
                 break;
 
             case HISTORIAL_COMPRA:
