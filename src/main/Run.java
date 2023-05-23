@@ -1,7 +1,5 @@
 package main;
 
-import login.IniciarPrograma;
-
 public class Run {
 
     /**
@@ -12,6 +10,12 @@ public class Run {
     private static login.IniciarPrograma iniciar;
 
     public static void main(String[] args) {
+        
+//        database.UpdateDB.updateCliente(10, 999, "THOR", "ODINSON", "04240126454");
+        
+        
+        
+        
         iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }
@@ -45,7 +49,7 @@ public class Run {
 
     public static boolean actualizarPrograma() {
         if (mainFrame != null) {
-            return mainFrame.actualizarPrograma();
+            return Frame.actualizarPrograma();
 
         } else {
             return false;

@@ -478,17 +478,15 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 case ADMIN_USUARIOS: {
                     //Obtener los datos del usuario seleccionado
                     Object cedula = tabla.getValueAt(index, 1);
-                    Object rol = tabla.getValueAt(index, 2);
-                    Object nombre = tabla.getValueAt(index, 3);
-                    Object apellido = tabla.getValueAt(index, 4);
-                    Object telefono = tabla.getValueAt(index, 5);
-                    Object correo = tabla.getValueAt(index, 6);
-
+                    Object nombre = tabla.getValueAt(index, 2);
+                    Object apellido = tabla.getValueAt(index, 3);
+                    Object telefono = tabla.getValueAt(index, 4);
+                    Object correo = tabla.getValueAt(index, 5);
+                    
                     //Enviar el usuario a la pestaña de usuarios, que será 
                     //enviado a la ventana de nuevos usuarios para su edición
                     Usuarios.editUsuario(
                             cedula.toString(),
-                            rol.toString(),
                             nombre.toString(),
                             apellido.toString(),
                             telefono.toString(),
@@ -742,7 +740,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case ADMIN_USUARIOS:
-                cabecera = new String[]{"ID", "Cedula", "Rol", "Nombre",
+                cabecera = new String[]{"ID", "Cedula", "Nombre",
                     "Apellido", "Telefono", "Correo"};
                 break;
         }
@@ -1075,6 +1073,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case HISTORIAL_COMPRA:
+                //Buscar la coincidencia entre todos los indices
+                sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5));
+                break;
+            
+            case ADMIN_USUARIOS:
                 //Buscar la coincidencia entre todos los indices
                 sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5));
                 break;

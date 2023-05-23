@@ -240,17 +240,23 @@ public class ReadDB implements properties.Constantes {
      *
      * @param user
      * @param pass
+     * @param sucursal
      * @return
      */
-    public static Object[] getUser(String user, String pass) {
+    public static Object[] getUser(String user, String pass, int sucursal) {
         //Preparar la sentencia SQL para obtener el trasvaso
         String sql = "SELECT nombre, apellido, rol "
-                + "FROM Usuario "
+                + "FROM Empleado "
+                + "INNER JOIN Usuario "
+                + "	ON id_usuario = Usuario.id "
                 + "INNER JOIN Cliente "
-                + "ON (correo = \"" + user + "\" "
-                + "OR cedula = " + user + ") "
-                + "AND contraseña = \"" + pass + "\" "
-                + "AND id_cliente = Cliente.id";
+                + "	ON id_cliente = Cliente.id "
+                + "INNER JOIN Sucursal "
+                + "	ON id_sucursal = Sucursal.id "
+                + "    AND Sucursal.id = " + sucursal + " "
+                + "WHERE (correo = \"" + user + "\" "
+                + "   	OR cedula = " + user + ") "
+                + "	AND contraseña = \"" + pass + "\";";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -277,13 +283,13 @@ public class ReadDB implements properties.Constantes {
 
                     //Terminar la conexión con la base de datos
                     bdd.desconectar();
-
+                    
                     //Retornar el rol y el nombre del usuario
                     return new Object[]{rol, name};
                 } else {
                     Mensaje.msjError(
                             "El usuario o contraseña es incorrecto.\n"
-                            + "Por favor, verifique sus datos"
+                            + "Por favor, verifique sus datos."
                     );
                 }
             }
@@ -1129,7 +1135,7 @@ public class ReadDB implements properties.Constantes {
      * @return
      */
     public static Object[][] getUsers() {
-        //"ID", "Cedula", "Rol", "Nombre", "Apellido", "Telefono", "Correo"
+        //"ID", "Cedula", "Nombre", "Apellido", "Telefono", "Correo"
 
         //Preparar la sentencia SQL para obtener la cantidad de clientes
         String sql = "SELECT COUNT(*) FROM Usuario";
@@ -1151,7 +1157,7 @@ public class ReadDB implements properties.Constantes {
                     if (count > 0) {
 
                         //Sentencia SQL para obtener todos los clientes
-                        sql = "SELECT Usuario.id, cedula, rol, nombre, "
+                        sql = "SELECT Usuario.id, cedula, nombre, "
                                 + "apellido, telefono, correo "
                                 + "FROM Usuario "
                                 + "INNER JOIN Cliente "
@@ -1161,23 +1167,16 @@ public class ReadDB implements properties.Constantes {
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
-                            Object usuarios[][] = new Object[count][7];
+                            Object usuarios[][] = new Object[count][6];
                             int i = 0;
 
                             while (r.next()) {
                                 usuarios[i][0] = r.getInt(1);
                                 usuarios[i][1] = r.getInt(2);
+                                usuarios[i][2] = r.getString(3);
                                 usuarios[i][3] = r.getString(4);
                                 usuarios[i][4] = r.getString(5);
                                 usuarios[i][5] = r.getString(6);
-                                usuarios[i][6] = r.getString(7);
-                                //Determinar el rol
-                                int rol = r.getInt(3);
-                                usuarios[i][2]
-                                        = (rol == EMPLEADO) ? "EMPLEADO"
-                                                : (rol == ENCARGADO) ? "ENCARGADO"
-                                                        : (rol == ADMINISTRADOR) ? "ADMIN"
-                                                                : "CLIENTE";
 
                                 i++;
                             }
@@ -1262,11 +1261,13 @@ public class ReadDB implements properties.Constantes {
 
     public static int getUserRol(String identificacion) {
         //Preparar la sentencia SQL para obtener el id del cliente
-        String sql = "SELECT Usuario.rol FROM Usuario "
+        String sql = "SELECT rol FROM Empleado "
+                + "INNER JOIN Usuario "
+                + "	ON id_usuario = Usuario.id "
                 + "INNER JOIN Cliente "
-                + "ON (cedula = \"" + identificacion + "\" "
-                + "OR correo = \"" + identificacion + "\")"
-                + "AND id_cliente = Cliente.id";
+                + "	ON id_cliente = Cliente.id "
+                + "WHERE correo = \""+identificacion+"\" "
+                + "	OR cedula = \""+identificacion+"\"";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);

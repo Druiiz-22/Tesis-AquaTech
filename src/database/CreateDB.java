@@ -139,15 +139,14 @@ public class CreateDB implements properties.Constantes {
      * @param telefono
      * @param correo
      * @param clave
-     * @param rol
      *
      * @return
      */
-    public static boolean createUsuario(int cedula, String nombre, String apellido, String telefono, String correo, String clave, int rol) {
+    public static boolean createUsuario(int cedula, String nombre, String apellido, String telefono, String correo, String clave) {
         //Preparar la sentencia SQL para crear el usuario
         String sql = "SELECT REGISTRAR_USUARIO(" + cedula + ", \"" + nombre + "\", "
                 + "\"" + apellido + "\", \"" + telefono + "\", \"" + correo + "\", "
-                + "\"" + clave + "\", " + rol + ");";
+                + "\"" + clave + "\")";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);

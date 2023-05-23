@@ -104,7 +104,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                                 //Enviar el código de seguridad al correo
                                 if (codigoSeguridad()) {
                                     //Intentar crear el cliente en la base de datos
-                                    if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, claveFinal, rol)) {
+                                    if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, claveFinal)) {
 
                                         //Ya que puede dar muchos problemas el alterar o agregar
                                         //un dato a una tabla (y no a su Model), la forma de 
@@ -150,18 +150,16 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                                     //Confirmar código de seguridad
                                     if (codigoSeguridad()) {
                                         //Intentar editar el proveedor en la base de datos
-                                        if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo, rol)) {
+                                        if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo)) {
 
+                                            dispose();
+                                            vaciarCampos();
+                                            
                                             //Ya que puede dar muchos problemas el alterar o agregar
                                             //un dato a una tabla (y no a su Model), la forma de 
                                             //visualizar los cambios será actualizando los datos 
                                             //de la tabla con la base de datos
                                             Usuarios.actualizarDatos();
-
-                                            msjInformativo("Se actualizaron los datos del usuario con éxito.");
-
-                                            dispose();
-                                            vaciarCampos();
                                         }
                                     }
                                 }
@@ -190,7 +188,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         nombre = txtNombre.getText().trim().toUpperCase();
         apellido = txtApellido.getText().trim().toUpperCase();
         telefono = txtTelefono.getText().trim();
-        rol = boxRoles.getSelectedIndex() - 1;
         
         //Validar que los campos NO estén vacíos
         if (correo.isEmpty()) {
@@ -206,9 +203,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
         } else if (ci.isEmpty()) {
             msj = "La cédula no puede estár vacía." + msj;
-
-        } else if (rol < 0 || rol > 3) {
-            msj = "Debe seleccionar un rol para el usuario." + msj;
 
         } else if (crearUsuario) {
 
@@ -254,9 +248,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Validar lso formatos de los campos
         if (!formatoCorreo(correo)) {
             msj = "El correo ingresado es inválido." + msj;
-
-        } else if (rol < 1 || rol > 3) {
-            msj = "El rol seleccionado es inválido." + msj;
 
         } else if (!formatoNombre(nombre)) {
             msj = "El nombre solo puede llevar letras, entre 2 a 25." + msj;
@@ -516,7 +507,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
     private static String nombre;
     private static String apellido;
     private static String telefono;
-    private static int id_usuario, id_cliente, rol = 0;
+    private static int id_usuario, id_cliente;
 
     // ========== FRONTEND ==========
     /**
@@ -703,7 +694,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
         correo = null;
         correoViejo = null;
-        rol = 0;
 
         nombre = null;
         apellido = null;
@@ -749,26 +739,14 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
      * @param correo
      * @param rol
      */
-    protected void editar(String cedula, String rol, String nombre, String apellido, String telefono, String correo) {
-        crearUsuario = false;
-
+    protected void editar(String cedula, String nombre, String apellido, String telefono, String correo) {
+        //Vaciar todos los campos antes de iniciar
+        vaciarCampos();
+        
         //Atributos
+        crearUsuario = false;
         NuevoUsuario.cedulaVieja = cedula;
         NuevoUsuario.correoViejo = correo;
-        switch (rol.toUpperCase()) {
-            case "EMPLEADO":
-                NuevoUsuario.rol = 2;
-                break;
-            case "ENCARGADO":
-                NuevoUsuario.rol = 3;
-                break;
-            case "ADMIN":
-                NuevoUsuario.rol = 4;
-                break;
-            default:
-                NuevoUsuario.rol = 1;
-                break;
-        }
 
         //Label para el título
         lblTitulo.setText("Ingrese los datos necesarios para registrar un "
@@ -779,7 +757,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         logo.setSize(logo.getPreferredSize());
 
         //Sobreescribir los campos
-        vaciarCampos();
         txtCorreo.setText(correo);
         txtNombre.setText(nombre);
         txtApellido.setText(apellido);
@@ -791,7 +768,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         txtClaveRepetida.setText("");
         txtClaveRepetida.hidePassword();
 
-        boxRoles.setSelectedIndex(NuevoUsuario.rol);
+        boxRoles.setSelectedIndex(0);
 
         txtClave.setEnabled(false);
         txtClaveRepetida.setEnabled(false);
@@ -799,7 +776,12 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Propiedades de la ventana
         this.setTitle("Editar un proveedor - AquaTech");
         this.relocateComponents();
-        this.setVisible(true);
+        
+        try {
+            this.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Luego de set visible.\n"+e);
+        }
     }
 
     /**

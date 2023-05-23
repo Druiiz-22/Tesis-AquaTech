@@ -32,28 +32,30 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      */
     private boolean validarUsuario() {
         //Validar la existencia del usuario
-        Object[] cuenta = ReadDB.getUser(identificacion, clave);
+        Object[] cuenta = ReadDB.getUser(identificacion, clave, 1);
 
         //Comprobar la existencia del usuario
         if (cuenta != null) {
 
             Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
-            
-            if(rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO){
-                //Reiniciar los intentos
-                intentos = 0;
 
-                return true;
-                
-            } else{
-                msjError(
-                    "Usted no cuenta con los permisos necesarios para acceder"
-                            + "al programa."
-                );
+            //Validar que el usuario tenga los permisos para acceder al software
+            switch (rol) {
+                case EMPLEADO:
+                case ENCARGADO:
+                case ADMINISTRADOR:
+
+                    return true;
+                default:
+                    msjError(
+                            "Usted no cuenta con los permisos necesarios para "
+                                    + "acceder al programa."
+                    );
+                    break;
             }
         }
-        
+
         //Sumar un intento fallido
         intentos++;
 
@@ -124,7 +126,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
         //Encriptar la contraseña
         clave = Encript.encriptar(txtClave.getPassword());
-        
+
         //Validar que el usuario NO esté vacío
         if (!identificacion.isEmpty()) {
 
@@ -300,11 +302,11 @@ public final class Inicio extends JPanel implements properties.Colores, properti
         txtClave.hidePassword();
     }
 
-    protected void habilitarComponentes(boolean estado){
+    protected void habilitarComponentes(boolean estado) {
         txtUsuario.setEnabled(estado);
         txtClave.setEnabled(estado);
     }
-    
+
     //COMPONENTES
     private static final Logo lblLogo = new Logo(VERTICAL);
     private static final Label lblIniciar = new Label("Iniciar Sesion", TITULO, 20);

@@ -187,7 +187,7 @@ public class Registro extends JPanel implements properties.Colores, properties.C
                 if (!clave.isEmpty()) {
 
                     //Intentar crear el usuario
-                    if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, clave, EMPLEADO)) {
+                    if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, clave)) {
                         //Mensaje de éxito
                         msjInformativo("El usuario se ha creado exitosamente.");
 

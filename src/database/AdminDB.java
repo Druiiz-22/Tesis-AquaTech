@@ -90,7 +90,7 @@ public class AdminDB implements properties.Constantes {
 
                 //Validar que coincida la clave ingresada con el usuario que 
                 //tiene la sesión iniciada
-                Object[] cuenta = ReadDB.getUser(Frame.getUserIdentified(), password);
+                Object[] cuenta = ReadDB.getUser(Frame.getUserIdentified(), password, 1);
 
                 //Validar que se haya obtenido respuesta
                 if (cuenta != null) {
@@ -99,7 +99,7 @@ public class AdminDB implements properties.Constantes {
                     int rol_2 = (int) (cuenta[0]);
                     
                     //Validar que el usuario obtenido REALMENTE sea administrador
-                    if (rol_2 == ADMINISTRADOR || rol_2 == EMPLEADO) {
+                    if (rol_2 == ADMINISTRADOR || rol_2 == ENCARGADO) {
                         intentos = 0;
                         return true;
 
