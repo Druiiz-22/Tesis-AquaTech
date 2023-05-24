@@ -23,7 +23,6 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import static javax.swing.SwingConstants.HORIZONTAL;
-import main.Frame;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
@@ -170,10 +169,10 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
                 if (validarProveedor()) {
                     //Validar que los campos no estén vacíos
                     if (validarCampos()) {
-                        //Validar que los datos estén correctos
-                        if (validarDatos()) {
-                            //Mensaje de confirmación
-                            if (msjYesNo("¿Está seguro de actualizar los datos del proveedor?")) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de actualizar los datos del proveedor?")) {
+                            //Validar que los datos estén correctos
+                            if (validarDatos()) {
                                 //Intentar editar el proveedor en la base de datos
                                 if (UpdateDB.updateProveedor(id, rif, nombre, telefono)) {
 
@@ -230,7 +229,7 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
         } else {
             msj = "El nombre no puede estar vacío." + msj;
         }
-        
+
         //Ocultar el glassPane
         glass.setVisible(false);
         //Mostrar mensaje de errorr
@@ -300,12 +299,12 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
                     + "Por favor, actualice la tabla de los clientes registrados\n"
                     + "y verifique su registro en la tabla.";
         }
-        
+
         //Ocultar el glassPane
         glass.setVisible(false);
         //Mostrar mensaje de errorr
         msjError(msj);
-        
+
         return false;
     }
 
@@ -467,6 +466,9 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
      * @param telefono
      */
     protected void editar(String rif, String nombre, String telefono) {
+        
+        vaciarCampos();
+        
         //Atributos
         rifViejo = rif;
         crearProveedor = false;
@@ -480,7 +482,6 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
         logo.setSize(logo.getPreferredSize());
 
         //Sobreescribir los campos
-        vaciarCampos();
         txtRif.setText(rif);
         txtNombre.setText(nombre);
         txtTelefono.setText(telefono);

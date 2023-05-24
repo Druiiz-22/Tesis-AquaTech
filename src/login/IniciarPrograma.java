@@ -51,7 +51,7 @@ public class IniciarPrograma extends JFrame {
             dispose();
 
             //Hacer visible el programa
-            Run.setFrameVisible(true);
+            Run.setFrameVisible();
 
         } else {
             Mensaje.msjError("No se pudo establecer la conexión con el programa.\n"

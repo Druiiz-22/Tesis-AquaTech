@@ -136,42 +136,43 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         new Thread() {
             @Override
             public void run() {
+                boolean cerrar = false;
                 glass.setVisible(true);
-                //Validar la existencia del proveedor
-                if (validarUsuario()) {
-                    //Validar que los campos no estén vacíos
-                    if (validarCampos()) {
-                        //Validar que los datos estén correctos
-                        if (validarDatos()) {
-                            //Mensaje de confirmación
-                            if (msjYesNo("¿Está seguro de actualizar los datos del usuario?")) {
+                //Validar que los campos no estén vacíos
+                if (validarCampos()) {
+                    //Validar que los datos estén correctos
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de actualizar los datos del usuario?")) {
+                            //Validar la existencia del usuario
+                            if (validarUsuario()) {
                                 //Confirmar cuenta de administrador 
                                 if (AdminDB.validateAdminUser()) {
                                     //Confirmar código de seguridad
                                     if (codigoSeguridad()) {
                                         //Intentar editar el proveedor en la base de datos
                                         if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo)) {
-
-                                            dispose();
                                             vaciarCampos();
-                                            
-                                            //Ya que puede dar muchos problemas el alterar o agregar
-                                            //un dato a una tabla (y no a su Model), la forma de 
-                                            //visualizar los cambios será actualizando los datos 
-                                            //de la tabla con la base de datos
-                                            Usuarios.actualizarDatos();
+                                            glass.setVisible(false);
+                                            dispose();
                                         }
+                                    } else {
+                                        //Cerrar el glassPane
+                                        glass.setVisible(false);
                                     }
+                                } else {
+                                    //Cerrar el glassPane
+                                    glass.setVisible(false);
                                 }
                             }
-                            //Cerrar el glassPane, se actualice el usuario o no
+                        } else {
+                            //Cerrar el glassPane
                             glass.setVisible(false);
                         }
                     }
                 }
             }
         }.start();
-
     }
 
     /**
@@ -188,7 +189,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         nombre = txtNombre.getText().trim().toUpperCase();
         apellido = txtApellido.getText().trim().toUpperCase();
         telefono = txtTelefono.getText().trim();
-        
+
         //Validar que los campos NO estén vacíos
         if (correo.isEmpty()) {
             msj = "El correo no puede estár vacío." + msj;
@@ -339,7 +340,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                     + "Por favor, actualice la tabla de los clientes registrados\n"
                     + "y verifique su registro en la tabla.";
         }
-        
+
         //Ocultar el glassPane
         glass.setVisible(false);
         //Mostrar mensaje de errorr
@@ -737,12 +738,11 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
      * @param apellido
      * @param telefono
      * @param correo
-     * @param rol
      */
     protected void editar(String cedula, String nombre, String apellido, String telefono, String correo) {
         //Vaciar todos los campos antes de iniciar
         vaciarCampos();
-        
+
         //Atributos
         crearUsuario = false;
         NuevoUsuario.cedulaVieja = cedula;
@@ -776,11 +776,11 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Propiedades de la ventana
         this.setTitle("Editar un proveedor - AquaTech");
         this.relocateComponents();
-        
+
         try {
             this.setVisible(true);
         } catch (Exception e) {
-            System.out.println("Luego de set visible.\n"+e);
+            System.out.println("Luego de set visible.\n" + e);
         }
     }
 

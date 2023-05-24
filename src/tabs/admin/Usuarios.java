@@ -136,10 +136,10 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         //Aumentar 15px al ancho y alto de los paneles
         width += 15;
         panelHeight += 15;
-        
+
         //Ancho máximo para el panel informativo
         int infoMaxWidth = 300;
-        
+
         //Asignar el tamaño a la información
         informacion.setSize(infoMaxWidth, panelHeight);
 
@@ -188,7 +188,8 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
 
     /**
      * Función para actualizar el panel de usuarios y la ventana
-     * @return 
+     *
+     * @return
      */
     protected static boolean actualizarDatos() {
         txtBuscar.setText("");
@@ -205,13 +206,33 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      * @param correo Correo del usuario
      */
     public static void editUsuario(String cedula, String nombre, String apellido, String telefono, String correo) {
-        nuevo.editar(cedula, nombre, apellido, telefono, correo);
+        try {
+            new Thread() {
+                @Override
+                public void run() {
+                    nuevo.editar(cedula, nombre, apellido, telefono, correo);
+
+                    //Abrir el glassPane para actualizar los datos
+                    main.Frame.openGlass(0);
+                    //Ya que puede dar muchos problemas el alterar o agregar
+                    //un dato a una tabla (y no a su Model), la forma de 
+                    //visualizar los cambios será actualizando los datos 
+                    //de la tabla con la base de datos
+                    Usuarios.actualizarDatos();
+                    //Cerrar el glassPane
+                    main.Frame.closeGlass();
+                }
+            }.start();
+        } catch (Exception e) {
+            System.out.println("Error durante el edit = "+e);
+        }
+
     }
-    
-    protected void habilitarComponents(boolean estado){
+
+    protected void habilitarComponents(boolean estado) {
         txtBuscar.setEnabled(estado);
     }
-    
+
     //ATRIBUTOS
     private static int width, panelHeight;
     private static final int padding = 20;

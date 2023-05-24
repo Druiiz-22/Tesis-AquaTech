@@ -1306,120 +1306,7 @@ public class ReadDB implements properties.Constantes {
         return ERROR_VALUE;
     }
 
-    // ========== REPORTES ==========
-    /**
-     * Función para obtener el historial de las deudas, en una fecha determinada
-     *
-     * @param initDate Fecha de inicio
-     * @param finalDate Fecha final
-     * @return Historial de las deudas
-     */
-    public static Object[][] getDeudas(String initDate, String finalDate) {
-
-        int id = 1;
-
-        //Cédula minima y máxima
-        int ci_min = 5000000;
-        int ci_max = 35000000;
-
-        String[] columnas = new String[]{"ID", "Factura", "Cedula", "Debe pagar", "Debemos dar", "Fecha"};
-        Object[][] historial = {
-            columnas,
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "124", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 4, "14-3-2023 9:37 AM"},
-            {id++, "154", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 4, 0, "14-3-2023 9:37 AM"},
-            {id++, "198", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 1, "14-3-2023 9:37 AM"},
-            {id++, "201", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 0, 2, "14-3-2023 9:37 AM"},
-            {id++, "264", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 3, 0, "14-3-2023 9:37 AM"},
-            {id++, "287", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 2, 0, "14-3-2023 9:37 AM"},
-            {id++, "354", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 7, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"},
-            {id++, "369", (int) (Math.random() * (ci_max - ci_min + 1) + ci_min), 1, 0, "14-3-2023 9:37 AM"}
-        };
-
-        return historial;
-    }
-
+        // ========== REPORTES ==========
     /**
      * Función para obtener el registro de los trasvasos, en una fecha
      * determninada
@@ -1442,7 +1329,7 @@ public class ReadDB implements properties.Constantes {
                 + "     ON id_sucursal = Sucursal.id "
                 + "     AND Sucursal.id = " + sucursal + " "
                 + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                + "     AND fecha <= '" + finalDate + " 23:59:59'"
+                + "     AND fecha <= '" + finalDate + " 23:59:59' "
                 + "ORDER BY Trasvaso.id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
@@ -1455,6 +1342,11 @@ public class ReadDB implements properties.Constantes {
         try {
             //Validar que la respuesta NO sea nula
             if (r != null) {
+
+                //Header para los trasvasos
+                Object[] header = {"#", "ID", "Cedula", "Pagados",
+                    "Entregados", "Tipo Pago", "Delivery", "Monto", "Fecha"};
+
                 //Validar que haya obtenido algún dato
                 if (r.next()) {
                     //Obtener la cantidad de clientes y validar la cantidad
@@ -1480,17 +1372,11 @@ public class ReadDB implements properties.Constantes {
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
-                            Object trasvasos[][] = new Object[count + 1][9];
-                            //Header de los trasvasos
-                            trasvasos[0][0] = "#";
-                            trasvasos[0][1] = "ID";
-                            trasvasos[0][2] = "Cedula";
-                            trasvasos[0][3] = "Pagados";
-                            trasvasos[0][4] = "Entregados";
-                            trasvasos[0][5] = "Tipo Pago";
-                            trasvasos[0][6] = "Delivery";
-                            trasvasos[0][7] = "Monto";
-                            trasvasos[0][8] = "Fecha";
+                            //Instanciar la lista para los trasvasos
+                            Object trasvasos[][] = new Object[count + 1][header.length];
+
+                            //Header de la lista
+                            trasvasos[0] = header;
 
                             int i = 1;
                             while (r.next()) {
@@ -1518,10 +1404,9 @@ public class ReadDB implements properties.Constantes {
                 bdd.desconectar();
 
                 //Si el result NO fue null, implica que SÍ se estableció una 
-                //conexión. Sin embargo, pudo no haber traído algún dato o
-                //traer la cantidad de 0 registros, por lo tanto, se retornará
-                //un objeto vacío, en cualquiera de ambos casos.
-                return new Object[][]{};
+                //conexión. Sin embargo, pudo no haber traído algún dato; en ese
+                //caso, se retornará una lista vacía, únicamente con el header
+                return new Object[][]{{header}};
             }
         } catch (Exception ex) {
             Mensaje.msjError("No se pudieron obtener los trasvasos de la base de "
@@ -1531,7 +1416,7 @@ public class ReadDB implements properties.Constantes {
         //Desconectar la base de datos
         bdd.desconectar();
 
-        //Retornar la lista
+        //Retornar un dato nulo
         return null;
     }
 
@@ -1546,326 +1431,102 @@ public class ReadDB implements properties.Constantes {
      * @return Registro de las recargas
      */
     public static Object[][] getRecargas(String initDate, String finalDate, int sucursal) {
-        //ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
+        //#, ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
-        String[] header = new String[]{"#", "ID", "RIF", "Proveedor", "Cantidad", "Monto Total", "Fecha"};
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Recarga "
+                + "INNER JOIN Proveedores "
+                + "	ON id_prov = Proveedores.id "
+                + "INNER JOIN Almacen "
+                + "	ON id_almacen = Almacen.id "
+                + "INNER JOIN Sucursal "
+                + "	ON id_sucursal = Sucursal.id "
+                + "    AND Sucursal.id = " + sucursal + " "
+                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                + "ORDER BY Recarga.id DESC";
 
-        int i = 1;
-        int x = 4897;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
 
-        Object[][] historial = {
-            header,
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "20", "100.0", "14-3-2023 9:37 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "19", "95.0", "15-3-2023 10:01 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "21", "105.0", "16-3-2023 9:04 AM"},
-            {i++, x++, "J-516510", "AGUA BLANCA", "17", "85.0", "17-3-2023 2:48 PM"}
-        };
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
 
-        return historial;
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+
+                //Header para las recargas
+                Object[] header = {"#", "ID", "RIF", "Proveedor",
+                    "Cantidad", "Monto Total", "Fecha"};
+
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Recarga.id, rif, nombre, cantidad, monto, fecha "
+                                + "FROM Recarga "
+                                + "INNER JOIN Proveedores "
+                                + "	ON id_prov = Proveedores.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "    AND Sucursal.id = " + sucursal + " "
+                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                                + "ORDER BY Recarga.id DESC";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            //Instanciar la lista para las compras
+                            Object recargas[][] = new Object[count + 1][header.length];
+                            //Header de la lista
+                            recargas[0] = header;
+
+                            int i = 1;
+                            while (r.next()) {
+                                //#, ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
+                                recargas[i][0] = i;
+                                recargas[i][1] = r.getInt(1);
+                                recargas[i][2] = r.getString(2);
+                                recargas[i][3] = r.getString(3);
+                                recargas[i][4] = r.getInt(4);
+                                recargas[i][5] = r.getDouble(5);
+                                recargas[i][6] = r.getString(6);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return recargas;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato; en ese
+                //caso, se retornará una lista vacía, únicamente con el header
+                return new Object[][]{{header}};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las ventas de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        //Retornar un dato nulo
+        return null;
     }
 
     /**
@@ -1878,266 +1539,104 @@ public class ReadDB implements properties.Constantes {
      * @return Registro de las ventas
      */
     public static Object[][] getVentas(String initDate, String finalDate, int sucursal) {
-        //ID, Cedula, Cantidad, Tipo pago, Monto Total, Fecha
+        //#, ID, Cedula, Cantidad, Tipo pago, Monto Total, Fecha
 
-        String[] header = new String[]{"#", "ID", "Cedula", "Cantidad", "Tipo Pago", "Monto Total", "Fecha"};
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Venta "
+                + "INNER JOIN Cliente "
+                + "	ON id_cliente = Cliente.id "
+                + "INNER JOIN Almacen "
+                + "	ON id_almacen = Almacen.id "
+                + "INNER JOIN Sucursal "
+                + "	ON id_sucursal = Sucursal.id "
+                + "     AND Sucursal.id = " + sucursal + " "
+                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                + "     AND fecha <= '" + finalDate + " 23:59:59' "
+                + "ORDER BY Venta.id DESC";
 
-        int i = 1;
-        int x = 1098;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
 
-        Object[][] historial = {
-            header,
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"},
-            {i++, x++, "27909011", "1", "DOLAR", "120", "14-12-2022 10:08 AM"},
-            {i++, x++, "20154005", "2", "TRNSF", "300", "20-2-2023 10:24 AM"}
-        };
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
 
-        return historial;
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+
+                //Header para las ventas
+                Object[] header = {"#", "ID", "Cedula", "Cantidad",
+                    "Tipo Pago", "Delivery", "Monto", "Fecha"};
+
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Venta.id, cedula, cantidad, "
+                                + "	tipo_pago, delivery, monto, fecha "
+                                + "FROM Venta "
+                                + "INNER JOIN Cliente "
+                                + "	ON id_cliente = Cliente.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "     AND Sucursal.id = " + sucursal + " "
+                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                + "AND fecha <= '" + finalDate + " 23:59:59' "
+                                + "ORDER BY Venta.id DESC";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            //Instanciar la lista para las ventas
+                            Object ventas[][] = new Object[count + 1][header.length];
+                            //Header de la lista
+                            ventas[0] = header;
+
+                            int i = 1;
+                            while (r.next()) {
+                                //#, ID, Cedula, Cantidad, Tipo pago, Delivery, Monto Total, Fecha
+                                ventas[i][0] = i;
+                                ventas[i][1] = r.getInt(1);
+                                ventas[i][2] = r.getInt(2);
+                                ventas[i][3] = r.getInt(3);
+                                ventas[i][4] = r.getString(4);
+                                ventas[i][5] = (r.getBoolean(5)) ? "SÍ" : "NO";
+                                ventas[i][6] = r.getDouble(6);
+                                ventas[i][7] = r.getString(7);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return ventas;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato; en ese
+                //caso, se retornará una lista vacía, únicamente con el header
+                return new Object[][]{{header}};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las ventas de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        //Retornar un dato nulo
+        return null;
     }
 
     /**
@@ -2151,219 +1650,101 @@ public class ReadDB implements properties.Constantes {
      * @return Registro de las compras
      */
     public static Object[][] getCompras(String initDate, String finalDate, int sucursal) {
-        //ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
+        //#, ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
-        String[] header = new String[]{"#", "ID", "RIF", "Proveedor", "Cantidad", "Monto Total", "Fecha"};
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Compra "
+                + "INNER JOIN Proveedores "
+                + "	ON id_prov = Proveedores.id "
+                + "INNER JOIN Almacen "
+                + "	ON id_almacen = Almacen.id "
+                + "INNER JOIN Sucursal "
+                + "	ON id_sucursal = Sucursal.id "
+                + "    AND Sucursal.id = " + sucursal + " "
+                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                + "ORDER BY Compra.id DESC";
 
-        int i = 1;
-        int x = 1098;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
 
-        Object[][] historial = {
-            header,
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "1", "100.0", "16-12-2022 2:21 PM"},
-            {i++, x++, "J-671164", "MANANTIAL", "2", "250.0", "20-2-2023 3:30 PM"}
-        };
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
 
-        return historial;
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+
+                //Header para las recargas
+                Object[] header = {"#", "ID", "RIF", "Proveedor",
+                    "Cantidad", "Monto Total", "Fecha"};
+
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT Compra.id, rif, nombre, cantidad, monto, fecha "
+                                + "FROM Compra "
+                                + "INNER JOIN Proveedores "
+                                + "	ON id_prov = Proveedores.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "    AND Sucursal.id = " + sucursal + " "
+                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                                + "ORDER BY Compra.id DESC";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            //Instanciar la lista para las compras
+                            Object compras[][] = new Object[count + 1][header.length];
+                            //Header de la lista
+                            compras[0] = header;
+
+                            int i = 1;
+                            while (r.next()) {
+                                //#, ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
+                                compras[i][0] = i;
+                                compras[i][1] = r.getInt(1);
+                                compras[i][2] = r.getString(2);
+                                compras[i][3] = r.getString(3);
+                                compras[i][4] = r.getInt(4);
+                                compras[i][5] = r.getDouble(5);
+                                compras[i][6] = r.getString(6);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return compras;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato; en ese
+                //caso, se retornará una lista vacía, únicamente con el header
+                return new Object[][]{{header}};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las ventas de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        //Retornar un dato nulo
+        return null;
     }
 }

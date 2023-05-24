@@ -506,10 +506,6 @@ public class CrearReporte {
                 datos = ReadDB.getTrasvasos(initialDate, finalDate, sucursal);
                 break;
 
-            case REP_DEUDAS:
-                datos = ReadDB.getDeudas();
-                break;
-
             case REP_RECARGAS:
                 datos = ReadDB.getRecargas(initialDate, finalDate, sucursal);
                 break;
@@ -522,47 +518,79 @@ public class CrearReporte {
                 datos = ReadDB.getVentas(initialDate, finalDate, sucursal);
                 break;
 
+            case REP_DEUDAS:
+                //Crear la cabecera para las deudas
+                Object[] header = {"ID", "Factura", "Cedula",
+                    "Debe Pagar", "Debemos Entregar", "Fecha"};
+                //Lista para obtener las deudas
+                Object[][] tabla = ReadDB.getDeudas();
+
+                //Validar que la respuesta NO sea nula
+                if (tabla != null) {
+                    //Instanciar la lista que tendrá todas las deudas
+                    datos = new Object[tabla.length + 1][header.length];
+                    //Asignar la primera fila como la cabecera
+                    datos[0] = header;
+
+                    //Ciclo que iterará la cantidad de deudas obtenidos.
+                    for (int i = 0; i < tabla.length; i++) {
+                        //Copiar la fila actual de deudas obtenidas a la tabla
+                        System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
+                    }
+                } else {
+                    datos = new Object[][]{{header}};
+                }
+                break;
+
             case REP_CLIENTES:
                 //Crear la cabecera para los clientes
-                String[] campos = new String[]{"ID", "Cedula", "Nombre", "Apellido", "Telefono"};
-                //Lista de clientes obtenida de la base de datos
-                Object[][] lista = ReadDB.getClientes();
+                header = new String[]{"ID", "Cedula", "Nombre", "Apellido", "Telefono"};
+                //Lista para obtener los clientes
+                tabla = ReadDB.getClientes();
 
-                //Instanciar la matriz de datos, según la cantidad de clientes 
-                //obtenidos, más la cabecera.
-                datos = new Object[lista.length + 1][campos.length];
-                //Asignar la primera fila como la cabecera
-                datos[0] = campos;
+                //Validar que la respuesta NO sea nula
+                if (tabla != null) {
+                    //Instanciar la tabla que tendrá todos los clientes
+                    datos = new Object[tabla.length + 1][header.length];
+                    //Asignar la primera fila como la cabecera
+                    datos[0] = header;
 
-                //Ciclo que iterará la cantidad de clientes obtenidos.
-                for (int i = 0; i < lista.length; i++) {
-                    //Copiar la fila actual de clientes obtenidos a la matriz
-                    System.arraycopy(lista[i], 0, datos[i + 1], 0, lista[0].length);
+                    //Ciclo que iterará la cantidad de clientes obtenidos.
+                    for (int i = 0; i < tabla.length; i++) {
+                        //Copiar la fila actual de clientes obtenidos a la tabla
+                        System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
+                    }
+                } else {
+                    datos = new Object[][]{{header}};
                 }
                 break;
 
             case REP_PROVEEDORES:
                 //Crear la cabecera para los clientes
-                campos = new String[]{"ID", "RIF", "Nombre", "Telefono"};
-                //Lista de clientes obtenida de la base de datos
-                lista = ReadDB.getProveedores();
+                header = new String[]{"ID", "RIF", "Nombre", "Telefono"};
+                //Lista para obtener los proveedores
+                tabla = ReadDB.getProveedores();
 
-                //Instanciar la matriz de datos, según la cantidad de proveedores 
-                //obtenidos, más la cabecera.
-                datos = new Object[lista.length + 1][campos.length];
-                //Asignar la primera fila como la cabecera
-                datos[0] = campos;
+                //Validar que la respuesta NO sea nula
+                if (tabla != null) {
+                    //Instanciar la tabla que tendrá todos los proveedores
+                    datos = new Object[tabla.length + 1][header.length];
+                    //Asignar la primera fila como la cabecera
+                    datos[0] = header;
 
-                //Ciclo que iterará la cantidad de proveedores obtenidos.
-                for (int i = 0; i < lista.length; i++) {
-                    //Copiar la fila actual de clientes obtenidos a la matriz
-                    System.arraycopy(lista[i], 0, datos[i + 1], 0, lista[0].length);
+                    //Ciclo que iterará la cantidad de proveedores obtenidos.
+                    for (int i = 0; i < tabla.length; i++) {
+                        //Copiar la fila actual de proveedores obtenidos a la tabla
+                        System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
+                    }
+                } else {
+                    datos = new Object[][]{{header}};
                 }
                 break;
         }
 
         //Comprobar si los datos NO están vacíos y retornar el resultado
-        return (datos == null)? Constantes.ERROR_VALUE : datos.length;
+        return (datos == null) ? Constantes.ERROR_VALUE : datos.length;
     }
 
     //ATRIBUTOS BACKEND
@@ -642,7 +670,7 @@ public class CrearReporte {
             //Tabla para las fechas de filtros
             Table fechas = getDates();
             tabla.addCell(customCell(fechas, TextAlignment.RIGHT));
-            
+
         } else {
             //Si el reporte no tiene fechas de filtro, solo mostrará
             //la fecha en que fue generado el reporte
@@ -801,7 +829,7 @@ public class CrearReporte {
                     //Sumar todas las cantidades de ventas realizados
                     cantidad += Float.valueOf(datos[i][3].toString());
                     //Sumar todos los precios de venta asignados
-                    ganancias += Float.valueOf(datos[i][5].toString());
+                    ganancias += Float.valueOf(datos[i][6].toString());
                 }
 
                 //Añadir las ganancias al párrafo, mostrando la cantidad de
@@ -824,12 +852,10 @@ public class CrearReporte {
                 int cantidadEntregada = 0;
                 //Variable para el monto total
                 int ganacias = 0;
-        
-                
-                
+
                 //Ciclo para recorrer los datos de la tabla
                 for (int i = 1; i < datos.length; i++) {
-                    
+
                     //Sumar la cantidad de botellones pagados
                     cantidadPagada += Integer.valueOf(datos[i][3].toString());
                     //Sumar la cantidad de botellones entergados
@@ -1006,7 +1032,7 @@ public class CrearReporte {
 
         //Dividir la información de la fecha
         int year = calendario.get(Calendar.YEAR);
-        int month = calendario.get(Calendar.MONTH)+1;
+        int month = calendario.get(Calendar.MONTH) + 1;
         int day = calendario.get(Calendar.DAY_OF_MONTH);
         int hour = calendario.get(Calendar.HOUR_OF_DAY);
         int minute = calendario.get(Calendar.MINUTE);
@@ -1040,10 +1066,10 @@ public class CrearReporte {
         Calendar calendario = new java.util.GregorianCalendar();
         //Asignar la fecha actual
         calendario.setTime(date);
-        
+
         //Dividir la información de la fecha
         int year = calendario.get(Calendar.YEAR);
-        int month = calendario.get(Calendar.MONTH)+1;
+        int month = calendario.get(Calendar.MONTH) + 1;
         int day = calendario.get(Calendar.DAY_OF_MONTH);
         int hour = calendario.get(Calendar.HOUR_OF_DAY);
         int minute = calendario.get(Calendar.MINUTE);
@@ -1088,7 +1114,7 @@ public class CrearReporte {
             //los conceptos y sintaxis de un PDF real, solo es el lugar donde 
             //se crea el contenido de un documento que será convertido a PDF.
             documento = new Document(pdfDoc);
-            
+
             //Asignar los márgenes del documento, teniendo en cuenta que iText
             //maneja el tamaño en UnitValu, siendo 72 UnitValue = 1 Inch.
             //Para asignar el margen a centímetros, se aplicó la formula:
@@ -1147,12 +1173,21 @@ public class CrearReporte {
         CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
 
         int result = getDatos();
-        
-        if (result > 0) {
+
+        //Validar que exista, al menos, un registro (sin contar el header)
+        if (result > 1) {
             crearPDF();
-        } else if (result == 0){
-            Mensaje.msjError("No existe ningún dato en el rango de fecha "
-                    + "seleccionado, \npor lo que no se generó el reporte.");
+        } else if (result == 1) {
+            //Si no se obtuvo ningún registro, mostrar un mensaje de advertencia
+            String adv = "No se obtuvo ningún registro de la base de datos.\n"
+                    + "¿Quiere crear el reporte de igual forma?";
+
+            //Validar si se creará el reporte o no
+            if (Mensaje.msjYesNo(adv)) {
+                crearPDF();
+            }
+
+            //Si el resultado fue menor de 1, implica un error de conexión con la BDD
         } else {
             Mensaje.msjError("No se pudo extraer los registros de la base de "
                     + "datos\npara la generación del reporte.\n"
@@ -1171,7 +1206,7 @@ public class CrearReporte {
      * @param path Ruta en que será generado el PDF (sin el nombre del archivo)
      * @param initialDate Fecha desde donde será filtrado los registros
      * @param finalDate Fecha final hasta donde se mostrarán los registros
-     * @param Sucursal
+     * @param sucursal
      */
     public static void crear(int type, String path, String initialDate, String finalDate, int sucursal) {
 
@@ -1184,13 +1219,23 @@ public class CrearReporte {
         CrearReporte.finalDate = finalDate;
         CrearReporte.sucursal = sucursal;
 
+        //Buscar los datos y obtener el número de datos obtenidos
         int result = getDatos();
-        
-        if (result > 0) {
+
+        //Validar que exista, al menos, un registro (sin contar el header)
+        if (result > 1) {
             crearPDF();
-        } else if (result == 0){
-            Mensaje.msjError("No existe ningún dato en el rango de fecha "
-                    + "seleccionado, \npor lo que no se generó el reporte.");
+        } else if (result == 1) {
+            //Si no se obtuvo ningún registro, mostrar un mensaje de advertencia
+            String adv = "No se obtuvo ningún registro de la base de datos.\n"
+                    + "¿Quiere crear el reporte de igual forma?";
+
+            //Validar si se creará el reporte o no
+            if (Mensaje.msjYesNo(adv)) {
+                crearPDF();
+            }
+
+            //Si el resultado fue menor de 1, implica un error de conexión con la BDD
         } else {
             Mensaje.msjError("No se pudo extraer los registros de la base de "
                     + "datos\npara la generación del reporte.\n"

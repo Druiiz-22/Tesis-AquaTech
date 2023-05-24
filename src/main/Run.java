@@ -56,9 +56,9 @@ public class Run {
         }
     }
 
-    public static void setFrameVisible(boolean visible) {
+    public static void setFrameVisible() {
         if (mainFrame != null) {
-            mainFrame.setVisible(visible);
+            mainFrame.setVisible(true);
         }
     }
 

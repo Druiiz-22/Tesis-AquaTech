@@ -108,6 +108,7 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         //Validar que la tabla y las transferencias hayan realizado sus busquedas
         //de manera exitosa
         if(tabla.actualizarDatos() && transferencias != null){
+            
             mapa.actualizarPuntos();
 
             //Enviar la cantidad de pedidos para notificaciones

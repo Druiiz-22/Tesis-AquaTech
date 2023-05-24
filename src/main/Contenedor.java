@@ -167,9 +167,6 @@ public class Contenedor extends JPanel implements properties.Constantes {
             busquedas = Admin.actualizarDatos();
         }
         
-        //Reiniciar el conteo de mensajes de error
-        ConexionDB.resetErrorCount();
-        
         //Obtener el estado de las busquedas realizadas
         return busquedas;
     }

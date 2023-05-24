@@ -24,7 +24,6 @@ import javax.swing.JDialog;
 import properties.Mensaje;
 import tabs.ventas.Ventas;
 import static javax.swing.SwingConstants.HORIZONTAL;
-import main.Frame;
 import static properties.Constantes.ESCALA_SUAVE;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
@@ -167,14 +166,14 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
             @Override
             public void run() {
                 glass.setVisible(true);
-                //Validar la existencia del cliente
-                if (validarCliente()) {
-                    //Validar que los campos no estén vacíos
-                    if (validarCampos()) {
-                        //Validar que los datos estén correctos
-                        if (validarDatos()) {
-                            //Mensaje de confirmación
-                            if (msjYesNo("¿Está seguro de actualizar los datos del cliente?")) {
+                //Validar que los campos no estén vacíos
+                if (validarCampos()) {
+                    //Validar que los datos estén correctos
+                    if (validarDatos()) {
+                        //Mensaje de confirmación
+                        if (msjYesNo("¿Está seguro de actualizar los datos del cliente?")) {
+                            //Validar la existencia del cliente
+                            if (validarCliente()) {
                                 //Intentar editar el cliente en la base de datos
                                 if (UpdateDB.updateCliente(id, cedula, nombre, apellido, telefono)) {
 
@@ -252,7 +251,7 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      */
     private boolean validarDatos() {
         String msj = "\nPor favor, revise sus datos.";
-
+        
         //Validar los formatos de los datos
         if (formatoNombre(nombre)) {
             if (formatoNombre(apellido)) {
@@ -493,6 +492,8 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      * @param direc
      */
     protected void editar(String cedula, String nombre, String apellido, String telefono) {
+        vaciarCampos();
+        
         //Atributos
         cedulaVieja = cedula;
         crearCliente = false;
@@ -506,7 +507,6 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
         logo.setSize(logo.getPreferredSize());
 
         //Sobreescribir los campos
-        vaciarCampos();
         txtCedula.setText(cedula);
         txtNombre.setText(nombre);
         txtApellido.setText(apellido);

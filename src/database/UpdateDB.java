@@ -34,6 +34,8 @@ public class UpdateDB implements properties.Constantes {
                     + "telefono = \"" + telefono + "\" "
                     + "WHERE id = " + id;
 
+            System.out.println(sql);
+            
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
             bdd.conectar();
@@ -190,7 +192,7 @@ public class UpdateDB implements properties.Constantes {
 
                     return true;
 
-                } else {
+                } else if(msj.contains("")){
                     Mensaje.msjError(msj);
                 }
                 

@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import static javax.swing.RowFilter.regexFilter;
+import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
 import static properties.Mensaje.msjYesNo;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
@@ -81,7 +83,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
-                
+
                 Object cedula = tabla.getValueAt(index, 1);
                 Object apellido = tabla.getValueAt(index, 3);
 
@@ -300,7 +302,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 }
             }
         });
-        itemInformacion.addActionListener((e) ->{
+        itemInformacion.addActionListener((e) -> {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
@@ -308,10 +310,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             }
         });
     }
-    
+
     /**
      * Función privada para pagar un pedido de una fila
-     * @param index 
+     *
+     * @param index
      */
     public void pagarPedido(int index) {
         if (type == VENTAS_PEDIDOS) {
@@ -357,7 +360,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             }
         }
     }
-    
+
     /**
      * <h2>Función para eliminar una fila de la tabla</h2>
      * <p>
@@ -447,10 +450,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             switch (type) {
                 case CLIENTES: {
                     //Obtener los datos del cliente seleccionado
-                    Object cedula = tabla.getValueAt(index, 0);
-                    Object nombre = tabla.getValueAt(index, 1);
-                    Object apellido = tabla.getValueAt(index, 2);
-                    Object telefono = tabla.getValueAt(index, 3);
+                    Object cedula = tabla.getValueAt(index, 1);
+                    Object nombre = tabla.getValueAt(index, 2);
+                    Object apellido = tabla.getValueAt(index, 3);
+                    Object telefono = tabla.getValueAt(index, 4);
                     //Enviar el cliente a la pestaña de clientes, que será 
                     //enviado a la ventana de nuevos clientes para su edición
                     PanelClientes.editCliente(
@@ -463,9 +466,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 }
                 case PROVEEDOR: {
                     //Obtener los datos del proveedor seleccionado
-                    Object rif = tabla.getValueAt(index, 0);
-                    Object nombre = tabla.getValueAt(index, 1);
-                    Object telefono = tabla.getValueAt(index, 2);
+                    Object rif = tabla.getValueAt(index, 1);
+                    Object nombre = tabla.getValueAt(index, 2);
+                    Object telefono = tabla.getValueAt(index, 3);
                     //Enviar el proveedor a la pestaña de proveedores, que será 
                     //enviado a la ventana de nuevos proveedores para su edición
                     Proveedores.editProveedor(
@@ -482,7 +485,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     Object apellido = tabla.getValueAt(index, 3);
                     Object telefono = tabla.getValueAt(index, 4);
                     Object correo = tabla.getValueAt(index, 5);
-                    
+
                     //Enviar el usuario a la pestaña de usuarios, que será 
                     //enviado a la ventana de nuevos usuarios para su edición
                     Usuarios.editUsuario(
@@ -523,11 +526,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     /**
      * Función para insertar una lista de datos entera a la tabla, mediante una
      * única llamada a una función.
-     * @return 
+     *
+     * @return
      */
     public boolean actualizarDatos() {
         //Matriz para guardar los datos retornados de la base de datos
-        Object[][] datos = null;
+        datos = null;
 
         //Determinar el tipo de la tabla y buscar sus registros en la base de datos
         switch (type) {
@@ -598,34 +602,42 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 datos = ReadDB.getUsers();
                 break;
         }
-        
+
         //Si los datos obtenidos es nulo, retornar busqueda incompleta
-        if(datos == null){
+        if (datos == null) {
             return false;
         }
-        
+
+        //Deseleccionar cualquier selección en la tabla
+        tabla.clearSelection();
         //Eliminar todos los componentes de la tabla
         tabla.removeAll();
 
         //Insertar un modelo nuevo en blanco ineditable
-        modelo = new DefaultTableModel() {
+        this.modelo = null;
+        this.modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        //Insertar su header
-        modelo.setColumnIdentifiers(cabecera);
+        SwingUtilities.invokeLater(() -> {
+            //Insertar su header
+            for (String campo : cabecera) {
+                modelo.addColumn(campo);
+            }
+            
+            //Insertar todos los datos en el modelo de la tabla
+            for (int i = 0; i < datos.length; i++) {
+                modelo.addRow(datos[i]);
+            }
+//            modelo.fireTableDataChanged();
+            
+            //Insertar el modelo en la tabla
+            tabla.setModel(modelo);
+        });
 
-        //Insertar todos los datos en el modelo de la tabla
-        for (Object[] row : datos) {
-            modelo.addRow(row);
-        }
-
-        //Insertar el modelo en la tabla
-        tabla.setModel(modelo);
-        
         //Retornar busqueda exitosa
         return true;
     }
@@ -648,7 +660,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     public Object[][] getDireccionPedidos() {
         if (type == VENTAS_PEDIDOS) {
             Object[][] puntos = new Object[tabla.getRowCount()][3];
-
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 puntos[i] = new Object[]{
                     tabla.getValueAt(i, 1),
@@ -656,23 +667,22 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     longitudes[i]
                 };
             }
-
             return puntos;
         }
-
         return null;
     }
 
     /**
      * Función para obtener un dato en una celda en específico de la tabla.
+     *
      * @param row
      * @param column
-     * @return 
+     * @return
      */
-    public Object getValueAt(int row, int column){
+    public Object getValueAt(int row, int column) {
         return tabla.getValueAt(row, column);
     }
-    
+
     //ATRIBUTOS BACK-END
     private double[] latitudes, longitudes;
 
@@ -731,7 +741,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case HISTORIAL_VENTA:
                 //Establecer las columnas de la tabla
                 cabecera = new String[]{"ID", "Cedula", "Cantidad", "Tipo pago",
-                    "Delivery","Monto Total", "Fecha"};
+                    "Delivery", "Monto Total", "Fecha"};
                 break;
 
             case HISTORIAL_COMPRA:
@@ -1076,7 +1086,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Buscar la coincidencia entre todos los indices
                 sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5));
                 break;
-            
+
             case ADMIN_USUARIOS:
                 //Buscar la coincidencia entre todos los indices
                 sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5));
@@ -1180,6 +1190,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private TableRowSorter sorter;
 
     //COMPONENTES
+    private Object[][] datos;
     private String cabecera[];
     private JTable tabla;
     private final JPopupMenu menuPopup = new JPopupMenu();

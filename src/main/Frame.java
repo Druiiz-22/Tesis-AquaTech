@@ -265,7 +265,6 @@ public class Frame extends JFrame implements properties.Constantes {
 
         //Validar si va a cerrar la sesión
         if (opcion == 0) {
-
             vaciarFrame();
 
             Run.cerrarPrograma();
