@@ -10,41 +10,39 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JPanel;
 import static javax.swing.BorderFactory.createLineBorder;
+import javax.swing.JPanel;
+import properties.Colores;
+import static properties.Colores.BLANCO;
+import static properties.Colores.GRIS;
+import static properties.Constantes.CUALQUIER;
 
-/**
- * Clase para la creación del panel de los usuarios registrados en el sistema
- */
-public class Usuarios extends JPanel implements properties.Constantes, properties.Colores {
-
-    /**
-     * Constructor del panel de los ajustes
-     */
-    public Usuarios() {
+public class Empleados extends JPanel implements properties.Constantes{
+    
+    public Empleados(){
         this.setLayout(null);
         this.setOpaque(false);
 
         initComponents();
         listeners();
     }
-
+    
     /**
      * Función para iniciar los componentes
      */
     private void initComponents() {
-        btnAgregar.setToolTipText("Agregar un nuevo usuario");
-        txtBuscar.setToolTipText("Buscar algún usuario");
+        btnAgregar.setToolTipText("Agregar un nuevo empleado");
+        txtBuscar.setToolTipText("Buscar algún empleado");
 
-        panelUsuarios.setBackground(BLANCO);
-        panelUsuarios.setBorder(createLineBorder(GRIS));
+        panelEmpleados.setBackground(BLANCO);
+        panelEmpleados.setBorder(createLineBorder(GRIS));
 
-        panelUsuarios.add(lblTitulo);
-        panelUsuarios.add(txtBuscar);
-        panelUsuarios.add(btnAgregar);
-        panelUsuarios.add(tabla);
+        panelEmpleados.add(lblTitulo);
+        panelEmpleados.add(txtBuscar);
+        panelEmpleados.add(btnAgregar);
+        panelEmpleados.add(tabla);
 
-        this.add(panelUsuarios);
+        this.add(panelEmpleados);
         this.add(informacion);
 
     }
@@ -56,7 +54,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                nuevo.agregar();
+                //nuevo.agregar();
             }
         });
 
@@ -75,8 +73,8 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      * @param height Alto del parent content
      */
     protected void relocateComponents(int width, int height) {
-        Usuarios.width = width;
-        Usuarios.panelHeight = height - padding * 2;
+        Empleados.width = width;
+        Empleados.panelHeight = height - padding * 2;
 
         //Posicion de la información fija
         informacion.setLocation(padding, padding);
@@ -121,7 +119,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         //Altura del panel de usuarios
         int y = padding * 2 + informacion.getHeight();
         //Asignar la posición y el tamaño al panel de usuarios
-        panelUsuarios.setBounds(padding, y, panelWidth, panelHeight);
+        panelEmpleados.setBounds(padding, y, panelWidth, panelHeight);
 
         //Altura absoluta del panel
         int absoluteHeight = padding * 3 + panelHeight + informacion.getHeight();
@@ -148,7 +146,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         //Ancho del panel de usuarios
         int w = width - x - padding;
         //Asignar la posición y el tamaño al panel de usuarios
-        panelUsuarios.setBounds(x, padding, w, panelHeight);
+        panelEmpleados.setBounds(x, padding, w, panelHeight);
     }
 
     /**
@@ -165,25 +163,25 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         //Posición en y del botón y campo de texto
         int y = padding * 2 + lblTitulo.getHeight();
         //Posición en x a la derecha del panel
-        int x = panelUsuarios.getWidth() - padding - w;
+        int x = panelEmpleados.getWidth() - padding - w;
         btnAgregar.setBounds(x, y, w, h);
 
         //Ancho del campo de texto
-        w = panelUsuarios.getWidth() - padding * 3 - w;
+        w = panelEmpleados.getWidth() - padding * 3 - w;
         txtBuscar.setBounds(padding, y, w, h);
 
         y += h + padding;
-        w = panelUsuarios.getWidth() - padding * 2;
-        h = panelUsuarios.getHeight() - y - padding;
+        w = panelEmpleados.getWidth() - padding * 2;
+        h = panelEmpleados.getHeight() - y - padding;
         tabla.setBounds(padding, y, w, h);
     }
-
+    
     /**
      * Función para vaciar todos los campos
      */
     public static void vaciarCampos() {
         txtBuscar.setText("");
-        nuevo.vaciarCampos();
+        //nuevo.vaciarCampos();
     }
 
     /**
@@ -195,20 +193,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         txtBuscar.setText("");
         return tabla.actualizarDatos();
     }
-
-    /**
-     * Función para editar un usuario seleccionado
-     *
-     * @param cedula Cédula del usuario
-     * @param nombre
-     * @param apellido
-     * @param telefono
-     * @param correo Correo del usuario
-     */
-    public static void editUsuario(String cedula, String nombre, String apellido, String telefono, String correo) {
-        nuevo.editar(cedula, nombre, apellido, telefono, correo);
-    }
-
+    
     protected void habilitarComponents(boolean estado) {
         txtBuscar.setEnabled(estado);
     }
@@ -218,11 +203,11 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     private static final int padding = 20;
 
     //COMPONENTES
-    private static final PanelInfo informacion = new PanelInfo(ADMIN_USUARIOS);
-    private static final JPanel panelUsuarios = new JPanel(null);
-    private static final Tabla tabla = new Tabla(ADMIN_USUARIOS);
-    private static final Label lblTitulo = new Label("Usuarios", TITULO, 24);
-    private static final CampoTexto txtBuscar = new CampoTexto("Buscar usuario", CUALQUIER);
-    private static final Boton btnAgregar = new Boton("Agregar", VERDE);
-    private static final NuevoUsuario nuevo = new NuevoUsuario();
+    private static final PanelInfo informacion = new PanelInfo(ADMIN_EMPLEADOS);
+    private static final JPanel panelEmpleados = new JPanel(null);
+    private static final Tabla tabla = new Tabla(ADMIN_EMPLEADOS);
+    private static final Label lblTitulo = new Label("Empleados", TITULO, 24);
+    private static final CampoTexto txtBuscar = new CampoTexto("Buscar empleado", CUALQUIER);
+    private static final Boton btnAgregar = new Boton("Agregar", Colores.VERDE);
+    private static final NuevoEmpleado nuevo = new NuevoEmpleado();
 }

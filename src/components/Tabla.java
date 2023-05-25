@@ -27,13 +27,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import static javax.swing.RowFilter.regexFilter;
 import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumn;
 import static properties.Mensaje.msjYesNo;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
-import static properties.Mensaje.msjInformativo;
+import tabs.admin.Empleados;
 import tabs.admin.Usuarios;
 import tabs.historial.HistorialTrasvasos;
 import tabs.ventas.Pedidos;
@@ -377,20 +376,18 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             if (msjYesNo("¿Está seguro de borrar el registro seleccionado?")) {
                 try {
                     //Obtener la identificación del cliente o proveedor
-                    Object dni = tabla.getValueAt(index, 0);
+                    Object id = tabla.getValueAt(index, 0);
 
                     //Comprobar el tipo de la tabla
                     switch (type) {
                         case CLIENTES:
                             //Intentar eliminarlo de la base de datos
-                            if (DeleteDB.removeCliente(dni)) {
+                            if (DeleteDB.removeCliente(id)) {
 
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
-
-                                msjInformativo("Se eliminó al cliente con éxito.");
 
                                 Ventas.vaciarCampos();
                             }
@@ -398,13 +395,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
                         case PROVEEDOR:
                             //Intentar eliminarlo de la base de datos
-                            if (DeleteDB.removeProveedor(dni)) {
+                            if (DeleteDB.removeProveedor(id)) {
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
-
-                                msjInformativo("Se eliminó el proveedor con éxito.");
 
                                 Compras.vaciarCampos();
                             }
@@ -416,18 +411,32 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                             //Validar el rol de administrador y su clave para
                             //intentar eliminar el usuario
                             if (AdminDB.validateAdminUser()) {
-                                if (DeleteDB.removeUsuario(dni, cedula)) {
+                                if (DeleteDB.removeUsuario(id, cedula)) {
+                                    //Ya que no es posible eliminar una fila de una tabla
+                                    //sin acceder a su Model, al eliminar la final en la
+                                    //base de datos, se actualizará la tabla
+                                    actualizarDatos();
+                                    
+                                    Usuarios.vaciarCampos();
+                                }
+                            }
+                            break;
+                            
+                        case ADMIN_EMPLEADOS:
+                            cedula = tabla.getValueAt(index, 1);
+
+                            //Validar el rol de administrador y su clave para
+                            //intentar eliminar el usuario
+                            if (AdminDB.validateAdminUser()) {
+                                if (DeleteDB.removeUsuario(id, cedula)) {
                                     //Ya que no es posible eliminar una fila de una tabla
                                     //sin acceder a su Model, al eliminar la final en la
                                     //base de datos, se actualizará la tabla
                                     actualizarDatos();
 
-                                    msjInformativo("Se eliminó al usuario con éxito.");
-
-                                    Usuarios.vaciarCampos();
+                                    Empleados.vaciarCampos();
                                 }
                             }
-
                             break;
                     }
                 } catch (Exception e) {
@@ -601,6 +610,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case ADMIN_USUARIOS:
                 datos = ReadDB.getUsers();
                 break;
+                
+            case ADMIN_EMPLEADOS:
+                datos = ReadDB.getEmpleados();
+                break;
         }
 
         //Si los datos obtenidos es nulo, retornar busqueda incompleta
@@ -627,13 +640,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             for (String campo : cabecera) {
                 modelo.addColumn(campo);
             }
-            
+
             //Insertar todos los datos en el modelo de la tabla
-            for (int i = 0; i < datos.length; i++) {
-                modelo.addRow(datos[i]);
+            for (Object[] dato : datos) {
+                modelo.addRow(dato);
             }
 //            modelo.fireTableDataChanged();
-            
+
             //Insertar el modelo en la tabla
             tabla.setModel(modelo);
         });
@@ -753,6 +766,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 cabecera = new String[]{"ID", "Cedula", "Nombre",
                     "Apellido", "Telefono", "Correo"};
                 break;
+
+            case ADMIN_EMPLEADOS:
+                cabecera = new String[]{"ID", "Cedula", "Nombre",
+                    "Apellido", "Telefono", "Cargo laboral", "Rol", "Sucursal"};
+                break;
         }
     }
 
@@ -810,6 +828,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 listeners();
                 break;
 
+            case ADMIN_EMPLEADOS:
             case ADMIN_USUARIOS:
                 usuariosMenu();
                 listeners();

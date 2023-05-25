@@ -23,7 +23,7 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
 
         initComponents();
         mouseListeners();
-        
+
     }
 
     /**
@@ -38,16 +38,19 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         btnUsuarios.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnReportes.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnRespaldo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnEmpleados.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         //Agregar el tooltiptext a cada botón
         btnAjustes.setToolTipText("Ajustes generales del programa");
-        btnUsuarios.setToolTipText("Lista de los usuarios registrados en el sistema");
+        btnUsuarios.setToolTipText("Lista de los usuarios registrados");
         btnReportes.setToolTipText("Generación de reportes");
         btnRespaldo.setToolTipText("Respaldo e importación de la base de datos");
+        btnEmpleados.setToolTipText("Lista de los empleados de la empresa");
 
         //Propiedades del menú de navegación superior
         menu.setBackground(GRIS);
         menu.add(btnAjustes);
+        menu.add(btnEmpleados);
         menu.add(btnUsuarios);
         menu.add(btnReportes);
         menu.add(btnRespaldo);
@@ -56,12 +59,13 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         //entre los distintos paneles
         contenedor.setLayout(card);
         contenedor.setOpaque(false);
-        contenedor.add(panelAjustes, "1");
-        contenedor.add(panelUsuarios, "2");
-        contenedor.add(panelReportes, "3");
-        contenedor.add(panelRespaldo, "4");
-        card.show(contenedor, "1");
-        
+        contenedor.add(panelAjustes, "ajustes");
+        contenedor.add(panelEmpleados, "empleados");
+        contenedor.add(panelUsuarios, "usuarios");
+        contenedor.add(panelReportes, "reportes");
+        contenedor.add(panelRespaldo, "respaldo");
+        card.show(contenedor, "ajustes");
+
         scroll.setOpaque(false);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(8);
@@ -113,10 +117,20 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
                 }
             }
         });
+        btnEmpleados.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //Comprobar que el botón NO esté presionado
+                if (!btnEmpleados.getForeground().equals(AZUL_PRINCIPAL)) {
+                    replacePanel(ADMIN_EMPLEADOS);
+                }
+            }
+        });
     }
 
     /**
      * Función para reposicionar y redimensionar los componentes de la clase
+     *
      * @param size tamaño del parent contenedor
      */
     public void relocateComponents(java.awt.Dimension size) {
@@ -132,14 +146,14 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         //en 20px horizontal y vertical
         int scrollW = scroll.getWidth() - 20;
         int scrollY = scroll.getHeight() - 20;
-        
+
         //Redimencionar los paneles
         panelAjustes.relocateComponents(scrollW, scrollY);
         panelReportes.relocateComponents(scrollW, scrollY);
         panelUsuarios.relocateComponents(scrollW, scrollY);
         panelRespaldo.relocateComponents(scrollW, scrollY);
-        
-        
+        panelEmpleados.relocateComponents(scrollW, scrollY);
+
         //Determinar el preferred size según cuál panel sea visible
         if (btnAjustes.getForeground().equals(AZUL_PRINCIPAL)) {
             contenedor.setPreferredSize(panelAjustes.getPreferredSize());
@@ -149,14 +163,18 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
 
         } else if (btnReportes.getForeground().equals(AZUL_PRINCIPAL)) {
             contenedor.setPreferredSize(panelReportes.getPreferredSize());
-            
-        } else if (btnRespaldo.getForeground().equals(AZUL_PRINCIPAL)){
+
+        } else if (btnRespaldo.getForeground().equals(AZUL_PRINCIPAL)) {
             contenedor.setPreferredSize(panelRespaldo.getPreferredSize());
+
+        } else if (btnEmpleados.getForeground().equals(AZUL_PRINCIPAL)) {
+            contenedor.setPreferredSize(panelEmpleados.getPreferredSize());
         }
     }
 
     /**
      * Función para navegar entre los distintos paneles
+     *
      * @param type Panel que será mostrado
      */
     private static void replacePanel(int type) {
@@ -166,15 +184,28 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         btnUsuarios.setForeground((type == ADMIN_USUARIOS) ? AZUL_PRINCIPAL : NEGRO);
         btnReportes.setForeground((type == ADMIN_REPORTES) ? AZUL_PRINCIPAL : NEGRO);
         btnRespaldo.setForeground((type == ADMIN_RESPALDO) ? AZUL_PRINCIPAL : NEGRO);
+        btnEmpleados.setForeground((type == ADMIN_EMPLEADOS) ? AZUL_PRINCIPAL : NEGRO);
 
         //Determinar qué botón fue presionado para desplegar su
         //respectivo panel
-        card.show(contenedor,
-                (type == ADMIN_USUARIOS) ? "2"
-                        : (type == ADMIN_REPORTES) ? "3"
-                                : (type == ADMIN_RESPALDO) ? "4" : "1"
-        );
-        
+        switch (type) {
+            case ADMIN_AJUSTES:
+                card.show(contenedor, "ajustes");
+                break;
+            case ADMIN_USUARIOS:
+                card.show(contenedor, "usuarios");
+                break;
+            case ADMIN_REPORTES:
+                card.show(contenedor, "reportes");
+                break;
+            case ADMIN_RESPALDO:
+                card.show(contenedor, "respaldo");
+                break;
+            case ADMIN_EMPLEADOS:
+                card.show(contenedor, "empleados");
+                break;
+        }
+
         //Determinar el preferred size según cuál panel sea visible
         if (btnAjustes.getForeground().equals(AZUL_PRINCIPAL)) {
             contenedor.setPreferredSize(panelAjustes.getPreferredSize());
@@ -184,43 +215,48 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
 
         } else if (btnReportes.getForeground().equals(AZUL_PRINCIPAL)) {
             contenedor.setPreferredSize(panelReportes.getPreferredSize());
-            
-        } else if (btnRespaldo.getForeground().equals(AZUL_PRINCIPAL)){
+
+        } else if (btnRespaldo.getForeground().equals(AZUL_PRINCIPAL)) {
             contenedor.setPreferredSize(panelRespaldo.getPreferredSize());
+
+        } else if (btnEmpleados.getForeground().equals(AZUL_PRINCIPAL)) {
+            contenedor.setPreferredSize(panelEmpleados.getPreferredSize());
         }
     }
 
     /**
      * Función para vaciar todos los campos de todos los paneles
-     */ 
-    public static void vaciarCampos(){
+     */
+    public static void vaciarCampos() {
         Ajustes.vaciarCampos();
         Reportes.vaciarCampos();
         Respaldo.vaciarCampos();
         Usuarios.vaciarCampos();
-        
+        Empleados.vaciarCampos();
+
         replacePanel(ADMIN_AJUSTES);
     }
-    
-    public static boolean actualizarDatos(){
-        boolean status = Usuarios.actualizarDatos();
-        
+
+    public static boolean actualizarDatos() {
+        boolean status = Usuarios.actualizarDatos() && Empleados.actualizarDatos();
+
         //Comprobar si se están actualizando desde la ventana de cargando
-        if(status && login.IniciarPrograma.isActivated()){
+        if (status && login.IniciarPrograma.isActivated()) {
             //Enviar el porcentaje de carga
             login.IniciarPrograma.setPercent(16);
         }
-        
+
         return status;
     }
-    
-    public static void habilitarComponents(boolean estado){
+
+    public static void habilitarComponents(boolean estado) {
         panelAjustes.habilitarComponents(estado);
         panelUsuarios.habilitarComponents(estado);
         panelReportes.habilitarComponents(estado);
         panelRespaldo.habilitarComponents(estado);
+        panelEmpleados.habilitarComponents(estado);
     }
-    
+
     //COMPONENTES
     private static final JScrollPane scroll = new JScrollPane();
     private static final JPanel menu = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
@@ -230,8 +266,10 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
     private static final Label btnUsuarios = new Label("Usuarios", TITULO, 18);
     private static final Label btnReportes = new Label("Reportes", TITULO, 18);
     private static final Label btnRespaldo = new Label("Respaldo", TITULO, 18);
+    private static final Label btnEmpleados = new Label("Empleados", TITULO, 18);
     private static final Ajustes panelAjustes = new Ajustes();
     private static final Usuarios panelUsuarios = new Usuarios();
     private static final Reportes panelReportes = new Reportes();
     private static final Respaldo panelRespaldo = new Respaldo();
+    private static final Empleados panelEmpleados = new Empleados();
 }

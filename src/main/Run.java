@@ -7,15 +7,10 @@ public class Run {
      */
     private static login.Frame login;
     private static main.Frame mainFrame;
-    private static login.IniciarPrograma iniciar;
 
     public static void main(String[] args) {
-        
+
 //        database.UpdateDB.updateCliente(10, 999, "THOR", "ODINSON", "04240126454");
-        
-        
-        
-        
         iniciarLogin();
 //        iniciarPrograma("DIEGO", 1);
     }

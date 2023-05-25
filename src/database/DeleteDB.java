@@ -10,10 +10,10 @@ public class DeleteDB {
      * Función para intentar eliminar un cliente seleccionado de la base de
      * datos
      *
-     * @param cedula Cedula del cliente a eliminar
+     * @param id ID del cliente
      * @return
      */
-    public static boolean removeCliente(Object cedula) {
+    public static boolean removeCliente(Object id) {
 
         return true;
     }
@@ -22,10 +22,10 @@ public class DeleteDB {
      * Función para intentar eliminar un proveedor seleccionado de la base de
      * datos
      *
-     * @param rif RIF del proveedor a eliminar
+     * @param id ID del proveedor
      * @return
      */
-    public static boolean removeProveedor(Object rif) {
+    public static boolean removeProveedor(Object id) {
 
         return true;
     }
@@ -39,12 +39,20 @@ public class DeleteDB {
      * @return
      */
     public static boolean removeUsuario(Object id, Object cedula) {
+   
+        return true;
+    }
+    
+    /**
+     * Función para intentar eliminar un usuario seleccionado en la base de
+     * datos
+     *
+     * @param id ID del usuario a eliminar
+     * @param cedula Cédula para eliminar el usuario en clientes
+     * @return
+     */
+    public static boolean removeEmpleado(Object id, Object cedula) {
 
-        //Remover el cliente con la cédula del usuario
-        if(removeCliente(cedula)){
-            
-        }
-        
         return true;
     }
 }

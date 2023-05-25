@@ -136,7 +136,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         new Thread() {
             @Override
             public void run() {
-                boolean cerrar = false;
                 glass.setVisible(true);
                 //Validar que los campos no estén vacíos
                 if (validarCampos()) {
@@ -153,22 +152,13 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                                         //Intentar editar el proveedor en la base de datos
                                         if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo)) {
                                             vaciarCampos();
-                                            glass.setVisible(false);
                                             dispose();
                                         }
-                                    } else {
-                                        //Cerrar el glassPane
-                                        glass.setVisible(false);
                                     }
-                                } else {
-                                    //Cerrar el glassPane
-                                    glass.setVisible(false);
                                 }
                             }
-                        } else {
-                            //Cerrar el glassPane
-                            glass.setVisible(false);
                         }
+                        glass.setVisible(false);
                     }
                 }
             }

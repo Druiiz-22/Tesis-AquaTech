@@ -283,7 +283,7 @@ public class ReadDB implements properties.Constantes {
 
                     //Terminar la conexión con la base de datos
                     bdd.desconectar();
-                    
+
                     //Retornar el rol y el nombre del usuario
                     return new Object[]{rol, name};
                 } else {
@@ -1208,6 +1208,97 @@ public class ReadDB implements properties.Constantes {
         return null;
     }
 
+    public static Object[][] getEmpleados() {
+        //ID, Cedula, Nombre, Apellido, Telefono, Cargo laboral, Rol, Sucursal
+
+        //Preparar la sentencia SQL para obtener la cantidad de clientes
+        String sql = "SELECT COUNT(*) "
+                + "FROM Empleado "
+                + "INNER JOIN Usuario "
+                + "	ON id_usuario = Usuario.id "
+                + "INNER JOIN Cliente "
+                + "	ON id_cliente = Cliente.id "
+                + "INNER JOIN Sucursal "
+                + "	ON id_sucursal = Sucursal.id "
+                + "	AND Sucursal.id = 1";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+
+                        //ID, Cedula, Nombre, Apellido, Telefono, Cargo laboral, Rol, Sucursal
+                        //Sentencia SQL para obtener todos los clientes
+                        sql = "SELECT Empleado.id, cedula, nombre, apellido,"
+                                + " Cliente.telefono, cargo_laboral, rol, descripcion "
+                                + "FROM Empleado "
+                                + "INNER JOIN Usuario "
+                                + "	ON id_usuario = Usuario.id "
+                                + "INNER JOIN Cliente "
+                                + "	ON id_cliente = Cliente.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "	AND Sucursal.id = 1";
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object empleados[][] = new Object[count][8];
+                            int i = 0;
+
+                            while (r.next()) {
+                                empleados[i][0] = r.getInt(1);
+                                empleados[i][1] = r.getInt(2);
+                                empleados[i][2] = r.getString(3);
+                                empleados[i][3] = r.getString(4);
+                                empleados[i][4] = r.getString(5);
+                                empleados[i][5] = r.getString(6);
+                                empleados[i][7] = r.getString(8);
+
+                                int rol = r.getInt(7);
+                                empleados[i][6] = (rol == ADMINISTRADOR) ? "ADMINISTRADOR"
+                                        : (rol == ENCARGADO) ? "OPERADOR" : "EMPLEADO";
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return empleados;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los usuarios de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
+    }
+
     /**
      * Función para obtener el id de un usuario mediante su cédula
      *
@@ -1266,8 +1357,8 @@ public class ReadDB implements properties.Constantes {
                 + "	ON id_usuario = Usuario.id "
                 + "INNER JOIN Cliente "
                 + "	ON id_cliente = Cliente.id "
-                + "WHERE correo = \""+identificacion+"\" "
-                + "	OR cedula = \""+identificacion+"\"";
+                + "WHERE correo = \"" + identificacion + "\" "
+                + "	OR cedula = \"" + identificacion + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1306,7 +1397,7 @@ public class ReadDB implements properties.Constantes {
         return ERROR_VALUE;
     }
 
-        // ========== REPORTES ==========
+    // ========== REPORTES ==========
     /**
      * Función para obtener el registro de los trasvasos, en una fecha
      * determninada

@@ -191,9 +191,9 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
                                     Ventas.vaciarCampos();
                                 }
                             }
-                            //Cerrar el glassPane, se actualice el usuario o no
-                            glass.setVisible(false);
                         }
+                        //Cerrar el glassPane, se actualice el usuario o no
+                        glass.setVisible(false);
                     }
                 }
             }
@@ -251,7 +251,7 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      */
     private boolean validarDatos() {
         String msj = "\nPor favor, revise sus datos.";
-        
+
         //Validar los formatos de los datos
         if (formatoNombre(nombre)) {
             if (formatoNombre(apellido)) {
@@ -493,7 +493,7 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
      */
     protected void editar(String cedula, String nombre, String apellido, String telefono) {
         vaciarCampos();
-        
+
         //Atributos
         cedulaVieja = cedula;
         crearCliente = false;

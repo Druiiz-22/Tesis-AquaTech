@@ -208,12 +208,25 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
                         + "<p>"
                         + "El apartado de usuarios permite acceder a la "
                         + "información básica de los usuarios registrados en "
-                        + "el sistema, así como eliminarlos, ascender o "
-                        + "revocarles sus roles."
+                        + "el sistema, así como modificarlos y eliminarlos."
                         + "</p><br>"
                         + "<p>"
                         + "<b>Solo los administradores tienen permitido "
                         + "realizar cambios en los usuarios</b>"
+                        + "</p>"
+                        + "</html>";
+                break;
+                
+            case ADMIN_EMPLEADOS:
+                info = "<html>"
+                        + "<p>"
+                        + "El apartado de empleados permite acceder a la "
+                        + "información básica de los empleados de la empresa, "
+                        + "así como modificar su información, cargos y roles."
+                        + "</p><br>"
+                        + "<p>"
+                        + "<b>Solo los administradores tienen permitido "
+                        + "realizar cambios a los empleados</b>"
                         + "</p>"
                         + "</html>";
                 break;
