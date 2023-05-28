@@ -177,7 +177,7 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
      *
      * @param type Panel que será mostrado
      */
-    private static void replacePanel(int type) {
+    public static void replacePanel(int type) {
         //Comprobar si se debe activar o desactivar el botón,
         //según el botón presionado
         btnAjustes.setForeground((type == ADMIN_AJUSTES) ? AZUL_PRINCIPAL : NEGRO);

@@ -137,6 +137,17 @@ public class PanelClientes extends JPanel implements properties.Colores, propert
         return tabla.getClienteApellido(cedula);
     }
 
+    public static void buscarCliente(String cedula){
+        //Asignar el texto en la barra de busqueda para filtrar
+        txtBusqueda.setText(cedula);
+
+        //Filtrar la tabla
+        tabla.buscar(cedula);
+
+        //Enfocar la tabla con la factura enviada
+        tabla.enfocarFila(cedula);
+    }
+    
     public void habilitarComponents(boolean estado){
         txtBusqueda.setEnabled(estado);
     }

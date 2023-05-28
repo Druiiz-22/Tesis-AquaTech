@@ -34,13 +34,13 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      */
     private void initComponents() {
         btnAgregar.setToolTipText("Agregar un nuevo usuario");
-        txtBuscar.setToolTipText("Buscar algún usuario");
+        txtBusqueda.setToolTipText("Buscar algún usuario");
 
         panelUsuarios.setBackground(BLANCO);
         panelUsuarios.setBorder(createLineBorder(GRIS));
 
         panelUsuarios.add(lblTitulo);
-        panelUsuarios.add(txtBuscar);
+        panelUsuarios.add(txtBusqueda);
         panelUsuarios.add(btnAgregar);
         panelUsuarios.add(tabla);
 
@@ -60,10 +60,10 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
             }
         });
 
-        txtBuscar.addKeyListener(new KeyAdapter() {
+        txtBusqueda.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                tabla.buscar(txtBuscar.getText());
+                tabla.buscar(txtBusqueda.getText());
             }
         });
     }
@@ -170,7 +170,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
 
         //Ancho del campo de texto
         w = panelUsuarios.getWidth() - padding * 3 - w;
-        txtBuscar.setBounds(padding, y, w, h);
+        txtBusqueda.setBounds(padding, y, w, h);
 
         y += h + padding;
         w = panelUsuarios.getWidth() - padding * 2;
@@ -182,7 +182,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      * Función para vaciar todos los campos
      */
     public static void vaciarCampos() {
-        txtBuscar.setText("");
+        txtBusqueda.setText("");
         nuevo.vaciarCampos();
     }
 
@@ -192,7 +192,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
      * @return
      */
     protected static boolean actualizarDatos() {
-        txtBuscar.setText("");
+        txtBusqueda.setText("");
         return tabla.actualizarDatos();
     }
 
@@ -209,8 +209,19 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
         nuevo.editar(cedula, nombre, apellido, telefono, correo);
     }
 
+    public static void buscarUsuario(String cedula){
+        //Asignar el texto en la barra de busqueda para filtrar
+        txtBusqueda.setText(cedula);
+
+        //Filtrar la tabla
+        tabla.buscar(cedula);
+
+        //Enfocar la tabla con la factura enviada
+        tabla.enfocarFila(cedula);
+    }
+    
     protected void habilitarComponents(boolean estado) {
-        txtBuscar.setEnabled(estado);
+        txtBusqueda.setEnabled(estado);
     }
 
     //ATRIBUTOS
@@ -222,7 +233,7 @@ public class Usuarios extends JPanel implements properties.Constantes, propertie
     private static final JPanel panelUsuarios = new JPanel(null);
     private static final Tabla tabla = new Tabla(ADMIN_USUARIOS);
     private static final Label lblTitulo = new Label("Usuarios", TITULO, 24);
-    private static final CampoTexto txtBuscar = new CampoTexto("Buscar usuario", CUALQUIER);
+    private static final CampoTexto txtBusqueda = new CampoTexto("Buscar usuario", CUALQUIER);
     private static final Boton btnAgregar = new Boton("Agregar", VERDE);
     private static final NuevoUsuario nuevo = new NuevoUsuario();
 }

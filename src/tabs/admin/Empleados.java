@@ -198,6 +198,10 @@ public class Empleados extends JPanel implements properties.Constantes{
         txtBuscar.setEnabled(estado);
     }
 
+    public static void contratarUsuario(String cedula){
+        
+    }
+    
     //ATRIBUTOS
     private static int width, panelHeight;
     private static final int padding = 20;

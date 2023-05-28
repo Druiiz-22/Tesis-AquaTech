@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import static main.MenuSuperior.setTabTitle;
 import static main.Run.setFrameTitle;
+import tabs.admin.Admin;
 import tabs.clientes.Clientes;
 import tabs.compras.Compras;
 import tabs.ventas.Ventas;
@@ -233,9 +234,13 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
             }
         }
         //Validar que el botón presionado fue el de Administración
-        if (type == ADMIN) {
+        if (type == ADMIN || type == ADMIN_USUARIOS || type == ADMIN_EMPLEADOS) {
             btnAdmin.setBackground(AZUL_OSCURO);
             Frame.replacePanel(ADMIN);
+            
+            //Validar si se presionó Administración u otro tipo
+            Admin.replacePanel((type == ADMIN) ? ADMIN_AJUSTES : type);
+            
             setTabTitle("Administración");
             setFrameTitle("Administración");
 

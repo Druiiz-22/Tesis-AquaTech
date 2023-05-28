@@ -134,7 +134,7 @@ public class MyWaypoint extends DefaultWaypoint {
             img = new ImageIcon(getClass().getResource("/icons/popup/informacion.png"));
             informacion.setIcon(new ImageIcon(img.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
 
-            img = new ImageIcon(getClass().getResource("/icons/popup/factura.png"));
+            img = new ImageIcon(getClass().getResource("/icons/popup/buscar.png"));
             pedido.setIcon(new ImageIcon(img.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH)));
 
             img = new ImageIcon(getClass().getResource("/icons/popup/web.png"));

@@ -15,10 +15,10 @@ public class ConexionDB {
 
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     
-    private String bd = "diazmava_aquatech";
-    private String url = "jdbc:mysql://diazmavarez.site/";
-    private String user = "diazmava_admin";
-    private String password = "Jere05032001.";
+    private String bd;
+    private String url;
+    private String user;
+    private String password;
     private Connection cx;
 
     public ConexionDB(boolean web) {
@@ -68,14 +68,6 @@ public class ConexionDB {
                 return result;
             }
         } catch (SQLException e) {
-            String msj = e.getMessage().toUpperCase();
-
-            //Comprobar si el error fue por un dato duplicado
-            if (msj.contains("DUPLICATE ENTRY") && msj.contains("CEDULA")) {
-                Mensaje.msjError("La cédula ingresada ya se encuentra registrada"
-                        + " en el sistema.\nPor favor, verifique sus datos.");
-            }
-
             //Si no, mostrar con detalles el error
             Mensaje.msjError("No se pudo ejecutar la sentencia SQL en la base de"
                     + " datos.\nError: " + e);

@@ -101,23 +101,21 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                         if (msjYesNo("¿Está seguro de realizar el registro del nuevo usuario?")) {
                             //Confirmar cuenta de administrador
                             if (AdminDB.validateAdminUser()) {
-                                //Enviar el código de seguridad al correo
-                                if (codigoSeguridad()) {
-                                    //Intentar crear el cliente en la base de datos
-                                    if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, claveFinal)) {
+                                //Intentar crear el cliente en la base de datos
+                                if (CreateDB.createUsuario(cedula, nombre, apellido, telefono, correo, claveFinal)) {
 
-                                        //Ya que puede dar muchos problemas el alterar o agregar
-                                        //un dato a una tabla (y no a su Model), la forma de 
-                                        //visualizar los cambios será actualizando los datos 
-                                        //de la tabla con la base de datos
-                                        Usuarios.actualizarDatos();
+                                    //Ya que puede dar muchos problemas el alterar o agregar
+                                    //un dato a una tabla (y no a su Model), la forma de 
+                                    //visualizar los cambios será actualizando los datos 
+                                    //de la tabla con la base de datos
+                                    Usuarios.actualizarDatos();
 
-                                        dispose();
-                                        vaciarCampos();
+                                    dispose();
+                                    vaciarCampos();
 
-                                        Frame.closeGlass();
-                                    }
+                                    Frame.closeGlass();
                                 }
+
                             }
                         }
                         //Cerrar el glassPane, se registre el usuario o no
@@ -147,14 +145,18 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                             if (validarUsuario()) {
                                 //Confirmar cuenta de administrador 
                                 if (AdminDB.validateAdminUser()) {
-                                    //Confirmar código de seguridad
-                                    if (codigoSeguridad()) {
-                                        //Intentar editar el proveedor en la base de datos
-                                        if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo)) {
-                                            vaciarCampos();
-                                            dispose();
-                                        }
+                                    //Intentar editar el proveedor en la base de datos
+                                    if (UpdateDB.updateUsuario(id_usuario, id_cliente, cedula, nombre, apellido, telefono, correo)) {
+                                        //Ya que puede dar muchos problemas el alterar o agregar
+                                        //un dato a una tabla (y no a su Model), la forma de 
+                                        //visualizar los cambios será actualizando los datos 
+                                        //de la tabla con la base de datos
+                                        Usuarios.actualizarDatos();
+
+                                        vaciarCampos();
+                                        dispose();
                                     }
+
                                 }
                             }
                         }
@@ -339,161 +341,11 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         return false;
     }
 
-    /**
-     * Función para enviar un código de seguridad al correo del usuario
-     * ingresado, sea para agregar o para editar un usuario.
-     *
-     * @return
-     */
-    private boolean codigoSeguridad() {
-        //Validar si se le hizo algún cambio al correo ingresado del usuario
-        if (crearUsuario || !correo.equals(correoViejo)) {
-            String msj;
-            String[] botones = {"Volver a enviar", "Cancelar"};
-
-            //Ciclo para enviar el código de seguridad hasta que se complete
-            while (true) {
-
-                //Generar un número aleatorio de 6 dígitos
-                int codigoSeguridad = (int) (Math.random() * (999999 - 100000) + 100000);
-
-                //Enviar el código al correo
-                if (EmailCode.comprobarCorreo(correo, codigoSeguridad)) {
-
-                    //Obtener la fecha actual
-                    java.util.Date actual = new java.util.Date();
-                    Calendar fechaSalida = new java.util.GregorianCalendar();
-                    fechaSalida.setTime(actual);
-                    //Sumar 10 minutos a la fecha
-                    fechaSalida.add(Calendar.MINUTE, 30);
-
-                    //Obtener la fecha máxima de validación del código de seguridad
-                    Calendar fechaExpiracion = new java.util.GregorianCalendar();
-                    fechaExpiracion.setTime(fechaSalida.getTime());
-
-                    //Reasignar la fecha actual
-                    fechaSalida.setTime(actual);
-
-                    //Pedir el código de seguridad al usuario
-                    msj = "Se envió un código de seguridad al correo:\n" + correo
-                            + "\n\nPor favor, ingrese el código enviado.";
-                    String codigo = JOptionPane.showInputDialog(null, msj, "Verificación del correo", JOptionPane.QUESTION_MESSAGE);
-
-                    //Comprobar que se presionó el botón de "Aceptar"
-                    if (codigo != null) {
-
-                        //Obtener la fecha en que se presionó el botón
-                        Calendar fechaActual = new java.util.GregorianCalendar();
-                        fechaActual.setTime(new java.util.Date());
-
-                        //Comprobar que la fecha actual NO sea menor que la fecha
-                        //de generación del código
-                        if (fechaActual.compareTo(fechaSalida) >= 0) {
-                            //Comprobar que la fecha actual sea menor a la fecha
-                            //de expiración del código
-                            if (fechaActual.compareTo(fechaExpiracion) < 0) {
-                                //Comprobar que el campo NO esté vacío
-                                if (!codigo.isEmpty()) {
-
-                                    //Comprobar que el código ingresado, sea el mismo 
-                                    //código enviado al correo
-                                    if (codigo.equals(String.valueOf(codigoSeguridad))) {
-
-                                        //Mensaje de éxito y retornar true
-                                        msjInformativo("Se comprobó el código de seguridad con éxito.");
-                                        return true;
-
-                                    } else {
-                                        //Mensaje de error
-                                        msj = "El código ingresado es inválido.\nVuelva a intentarlo "
-                                                + "con un nuevo código o cancele la operación";
-                                        //Mensaje de error con opción de salir
-                                        int opcion = JOptionPane.showOptionDialog(
-                                                null,
-                                                msj,
-                                                "Error de conexión",
-                                                0,
-                                                JOptionPane.ERROR_MESSAGE,
-                                                null,
-                                                botones,
-                                                botones[0]);
-
-                                        //Si se da cualquier opción que NO sea "aceptar", romper el ciclo
-                                        if (opcion != 0) {
-                                            break;
-                                        }
-                                    }
-
-                                } else {
-                                    //Mensaje de error
-                                    msj = "El campo no puede estar vacío.";
-                                    //Mensaje de error con opción de salir
-                                    int opcion = JOptionPane.showOptionDialog(
-                                            null,
-                                            msj,
-                                            "Error de conexión",
-                                            0,
-                                            JOptionPane.ERROR_MESSAGE,
-                                            null,
-                                            botones,
-                                            botones[0]);
-
-                                    //Si se da cualquier opción que NO sea "aceptar", romper el ciclo
-                                    if (opcion != 0) {
-                                        break;
-                                    }
-                                }
-                            } else {
-                                msjError("El código ha superado el tiempo de expiracion (30 min)."
-                                        + "\nPor favor, vuelva a solicitar un nuevo código.");
-                                //Romper el ciclo si la fecha es inválida
-                                break;
-                            }
-                        } else {
-                            msjError("La fecha actual es menor a la fecha de generación de "
-                                    + "código.\nPor favor, ajuste su calendario a la fecha actual.");
-                            //Romper el ciclo si la fecha es inválida
-                            break;
-                        }
-                    } else {
-                        //Si se da cualquier opción que NO sea "aceptar", 
-                        //romper el ciclo
-                        break;
-                    }
-                } else {
-                    //Mensaje de error con opción de salir
-                    msj = "No se pudo enviar el código de seguridad al"
-                            + "correo del usuario.\nPor favor, revise su "
-                            + "conexión internet y con la base de datos, y vuelva "
-                            + "a intentarlo.";
-                    int opcion = JOptionPane.showOptionDialog(
-                            null,
-                            msj,
-                            "Error de conexión",
-                            0,
-                            JOptionPane.ERROR_MESSAGE,
-                            null,
-                            botones,
-                            botones[0]);
-
-                    //Si se da cualquier opción que NO sea "aceptar", romper el ciclo
-                    if (opcion != 0) {
-                        break;
-                    }
-                }
-            }
-            return false;
-
-        } else {
-            return true;
-        }
-    }
-
     //ATRIBUTOS BACKEND
     private static Boolean crearUsuario;
     private static int cedula;
     private static String cedulaVieja;
-    private static String correo, correoViejo;
+    private static String correo;
     private static String claveFinal;
     private static String nombre;
     private static String apellido;
@@ -543,9 +395,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Propiedades del título
         lblTitulo.setVerticalAlignment(javax.swing.JLabel.TOP);
 
-        //Propiedades de los roles
-        boxRoles.setFont(properties.Fuentes.segoe(16, java.awt.Font.PLAIN));
-
         this.add(logo);
         this.add(lblTitulo);
         this.add(lblCedula);
@@ -558,8 +407,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         this.add(txtApellido);
         this.add(lblTelefono);
         this.add(txtTelefono);
-        this.add(lblRol);
-        this.add(boxRoles);
         this.add(lblClave);
         this.add(txtClave);
         this.add(lblClaveRepetida);
@@ -592,14 +439,9 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Label y campo de texto del correo
         int lblY = y + lblTitulo.getHeight() + padding;
         int txtY = lblY + lblCorreo.getHeight() + gap;
-        int w = width - margin * 2 - fieldW - padding;
+        int w = width - margin * 2;
         lblCorreo.setLocation(margin, lblY);
         txtCorreo.setBounds(margin, txtY, w, fieldH);
-
-        //Label y campo de texto del rol del usuario
-        x = margin + txtCorreo.getWidth() + padding;
-        lblRol.setLocation(x, lblY);
-        boxRoles.setBounds(x, txtY, fieldW, fieldH);
 
         //Label y campo de texto del nombre
         lblY = txtY + fieldH + padding;
@@ -674,7 +516,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         txtClave.hidePassword();
         txtClaveRepetida.setText("");
         txtClaveRepetida.hidePassword();
-        boxRoles.setSelectedIndex(0);
 
         //Vaciar los atributos
         id_usuario = 0;
@@ -684,7 +525,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         cedulaVieja = null;
 
         correo = null;
-        correoViejo = null;
 
         nombre = null;
         apellido = null;
@@ -736,7 +576,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Atributos
         crearUsuario = false;
         NuevoUsuario.cedulaVieja = cedula;
-        NuevoUsuario.correoViejo = correo;
 
         //Label para el título
         lblTitulo.setText("Ingrese los datos necesarios para registrar un "
@@ -757,8 +596,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         txtClave.hidePassword();
         txtClaveRepetida.setText("");
         txtClaveRepetida.hidePassword();
-
-        boxRoles.setSelectedIndex(0);
 
         txtClave.setEnabled(false);
         txtClaveRepetida.setEnabled(false);
@@ -825,10 +662,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
     private static final Label lblTelefono = new Label("Telefono", PLANO, 16);
     private static final CampoTexto txtTelefono = new CampoTexto("Telefono del usuario", NUMERO);
-
-    private static final Label lblRol = new Label("Rol del usuario", PLANO, 16);
-    private static final String[] opciones = {"Seleccionar", "Cliente", "Empleado", "Encargado", "Administrador"};
-    private static final JComboBox boxRoles = new JComboBox(opciones);
 
     private static final Label lblClave = new Label("Clave nueva", PLANO, 16);
     private static final CampoClave txtClave = new CampoClave("Clave del usuario");

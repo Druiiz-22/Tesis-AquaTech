@@ -1161,8 +1161,7 @@ public class ReadDB implements properties.Constantes {
                                 + "apellido, telefono, correo "
                                 + "FROM Usuario "
                                 + "INNER JOIN Cliente "
-                                + "ON id_cliente = Cliente.id "
-                                + "ORDER BY Usuario.id DESC";
+                                + "ON id_cliente = Cliente.id";
                         r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
@@ -1209,8 +1208,9 @@ public class ReadDB implements properties.Constantes {
     }
 
     public static Object[][] getEmpleados() {
-        //ID, Cedula, Nombre, Apellido, Telefono, Cargo laboral, Rol, Sucursal
-
+        //ID, Cedula, Nombre, Apellido, Cargo laboral, Rol, Sucursal
+        int sucursal = 1;
+        
         //Preparar la sentencia SQL para obtener la cantidad de clientes
         String sql = "SELECT COUNT(*) "
                 + "FROM Empleado "
@@ -1220,7 +1220,7 @@ public class ReadDB implements properties.Constantes {
                 + "	ON id_cliente = Cliente.id "
                 + "INNER JOIN Sucursal "
                 + "	ON id_sucursal = Sucursal.id "
-                + "	AND Sucursal.id = 1";
+                + "	AND Sucursal.id = "+sucursal;
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1241,7 +1241,7 @@ public class ReadDB implements properties.Constantes {
                         //ID, Cedula, Nombre, Apellido, Telefono, Cargo laboral, Rol, Sucursal
                         //Sentencia SQL para obtener todos los clientes
                         sql = "SELECT Empleado.id, cedula, nombre, apellido,"
-                                + " Cliente.telefono, cargo_laboral, rol, descripcion "
+                                + " cargo_laboral, rol, descripcion "
                                 + "FROM Empleado "
                                 + "INNER JOIN Usuario "
                                 + "	ON id_usuario = Usuario.id "
@@ -1249,7 +1249,7 @@ public class ReadDB implements properties.Constantes {
                                 + "	ON id_cliente = Cliente.id "
                                 + "INNER JOIN Sucursal "
                                 + "	ON id_sucursal = Sucursal.id "
-                                + "	AND Sucursal.id = 1";
+                                + "	AND Sucursal.id = "+sucursal;
                         r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
@@ -1263,11 +1263,10 @@ public class ReadDB implements properties.Constantes {
                                 empleados[i][2] = r.getString(3);
                                 empleados[i][3] = r.getString(4);
                                 empleados[i][4] = r.getString(5);
-                                empleados[i][5] = r.getString(6);
-                                empleados[i][7] = r.getString(8);
+                                empleados[i][6] = r.getString(7);
 
-                                int rol = r.getInt(7);
-                                empleados[i][6] = (rol == ADMINISTRADOR) ? "ADMINISTRADOR"
+                                int rol = r.getInt(6);
+                                empleados[i][5] = (rol == ADMINISTRADOR) ? "ADMINISTRADOR"
                                         : (rol == ENCARGADO) ? "OPERADOR" : "EMPLEADO";
                                 i++;
                             }
