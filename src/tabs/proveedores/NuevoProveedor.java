@@ -295,8 +295,8 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
             return true;
 
         } else {
-            msj = "No se encontró registro del cliente a editar en la base de datos.\n"
-                    + "Por favor, actualice la tabla de los clientes registrados\n"
+            msj = "No se encontró registro del proveedor a editar en la base de datos.\n"
+                    + "Por favor, actualice la tabla de los proveedores registrados\n"
                     + "y verifique su registro en la tabla.";
         }
 

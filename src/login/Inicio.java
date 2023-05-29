@@ -126,8 +126,6 @@ public final class Inicio extends JPanel implements properties.Colores, properti
 
         //Encriptar la contraseña
         clave = Encript.encriptar(txtClave.getPassword());
-
-        System.out.println("clave = "+clave);
         
         //Validar que el usuario NO esté vacío
         if (!identificacion.isEmpty()) {

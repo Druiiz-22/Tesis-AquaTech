@@ -241,65 +241,43 @@ public class UpdateDB implements properties.Constantes {
 
             //Comprobar si se encontró el cliente y se aplicaron los cambios
         } else if (status == 0) {
-            //Mensaje de error por falta de permisos
-            Mensaje.msjError("No se encontró el proveedor por su id y no se "
-                    + "aplicaron los cambios.\nPor favor, actualice los "
-                    + "registro y verifique la existencia del proveedor.");
-
-            //Comprobar si fue un error de duplicación
-        } else if (status == DUPLICATE_ERROR) {
-            Mensaje.msjError("El rif ingresado ya se encuentra registrado"
-                    + " en el sistema.\nPor favor, verifique los datos.");
+            //Mensaje de error
+            Mensaje.msjError("No se encontró el usuario registrado.\nPor favor"
+                    + " actualice y verifique sus datos.");
         }
 
         return false;
     }
 
-    public static boolean updateEmpleado(int id_empleado, int cedula, String cargo, int sucursal, int rol) {
-        //Preparar la sentencia SQL para actualizar el usuario
-        String sql = "SELECT EDITAR_EMPLEADO(" + id_empleado + ", " + cedula + ", \""
-                + cargo + "\", " + rol + ", " + sucursal + ")";
+    public static boolean updateEmpleado(int id_empleado, String cargo, int sucursal, int rol) {
+        //Preparar la sentencia SQL para actualizar el empleado
+        String sql = "UPDATE Empleado SET "
+                + "cargo_laboral = \"" + cargo + "\", "
+                + "rol = " + rol + ", "
+                + "id_sucursal = " + sucursal
+                + " WHERE id = " + id_empleado;
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
-        ResultSet r = bdd.selectQuery(sql);
+        int status = bdd.executeQuery(sql);
 
-        try {
-            //Validar que la respuesta NO sea null
-            if (r != null) {
-                //Avanzar en el resultado
-                r.next();
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
 
-                //Obtener el mensaje
-                String msj = r.getString(1).toUpperCase();
+        //Si el status es mayor que 0, entonces la conexión y ejecución 
+        //fue exitosa
+        if (status > 0) {
 
-                //Comprobar si fue exitoso o no
-                if (msj.contains("ÉXITO")) {
-                    //Terminar la conexión con la base de datos
-                    bdd.desconectar();
+            return true;
 
-                    //Capitalizar el mensaje
-                    msj = msj.substring(0, 1).toUpperCase() + msj.substring(1).toLowerCase();
-
-                    //Mensaje de éxito
-                    Mensaje.msjInformativo(msj);
-
-                    return true;
-
-                } else if (msj.contains("")) {
-                    Mensaje.msjError(msj);
-                }
-
-                //Terminar la conexión con la base de datos
-                bdd.desconectar();
-
-                return false;
-            }
-        } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+            //Comprobar si se encontró el cliente y se aplicaron los cambios
+        } else if (status == 0) {
+            //Mensaje de error 
+            Mensaje.msjError("No se encontró el empleado seleccionado.\nPor favor, actualice los "
+                    + "registro y verifique la existencia del empleado.");
         }
 
         //Terminar la conexión con la base de datos

@@ -109,10 +109,6 @@ public class CreateDB implements properties.Constantes {
                 //Mensaje de error
                 Mensaje.msjError("El RIF ingresado ya se encuentra registrado en"
                         + "el sistema.\nPor favor, verifique sus datos.");
-            } else {
-                //Mensaje de error
-                Mensaje.msjError("No se pudo registrar el proveedor.\nPor favor, verifique su "
-                        + "conexión.");
             }
 
         } else {
@@ -185,7 +181,7 @@ public class CreateDB implements properties.Constantes {
                 return false;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+            Mensaje.msjError("No se pudo crear el usuario.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
@@ -237,7 +233,7 @@ public class CreateDB implements properties.Constantes {
                 return false;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+            Mensaje.msjError("No se pudo crear el empleado.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos

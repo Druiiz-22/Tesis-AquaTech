@@ -29,6 +29,7 @@ import static properties.Colores.VERDE;
 import static properties.Constantes.ADMINISTRADOR;
 import static properties.Constantes.OPERADOR;
 import static properties.Fuentes.segoe;
+import properties.Mensaje;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
@@ -117,12 +118,14 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
                         //Mensaje de confirmación
                         if (msjYesNo("¿Está seguro de actualizar los datos del empleado?")) {
                             if (validarEmpleado()) {
-                                if (UpdateDB.updateEmpleado(id_empleado, cedula, cargo, sucursal, rol)) {
+                                if (UpdateDB.updateEmpleado(id_empleado, cargo, sucursal, rol)) {
                                     //Ya que puede dar muchos problemas el alterar o agregar
                                     //un dato a una tabla (y no a su Model), la forma de 
                                     //visualizar los cambios será actualizando los datos 
                                     //de la tabla con la base de datos
                                     Empleados.actualizarDatos();
+
+                                    Mensaje.msjInformativo("Se actualizó el empleado con éxito.");
 
                                     dispose();
                                     vaciarCampos();
@@ -185,7 +188,7 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
      * @return TRUE en caso de que los datos sean válidos
      */
     private boolean validarDatos() {
-        String msj = "\nPor favor, revise sus datos.";
+        String msj;
 
         //Validar el rol del usuario
         int userRol = Frame.getUserRol();
@@ -194,14 +197,14 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
         if (userRol == ADMINISTRADOR || userRol == OPERADOR) {
             //Validar que un operador NO asigne un administrador
             if (userRol == OPERADOR && rol == ADMINISTRADOR) {
-                msj = "su usuario no cuenta con el permiso de asignar a un "
-                        + "empleado como administrador.\nSolo un administrador"
-                        + "tiene permitido agregar, modificar o eliminar otro "
-                        + "administrador.";
+                msj = "Su usuario no cuenta con el permiso de agregar a un "
+                        + "administrador.\nSolo un administrador puede agregar,"
+                        + " modificar o eliminar otro administrador.";
+                //Validar que un operador NO modifique un administrador
             } else {
                 try {
                     //Intentar convertir la cédula
-                    cedula = Integer.valueOf(txtCedula.getText());
+                    cedula = Integer.parseInt(txtCedula.getText());
 
                     if (cedula > 0 && cedula <= 99999999) {
                         return true;
@@ -243,12 +246,29 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
     private boolean validarEmpleado() {
         String msj;
         id_empleado = ReadDB.getEmpleadoID(cedula);
+        rol_empleado = ReadDB.getEmpleadoRol(cedula);
+        int userRol = Frame.getUserRol();
 
-        //Validar que el id de usuario y el id de cliente, sea mayor a 0
+        //Validar que el id del empleado sea mayor a 0
         if (id_empleado > 0) {
-
-            return true;
-
+            //Validar que se obtuvo el rol del empleado
+            if (rol_empleado > 0) {
+                //Validar que el usuario TENGA el permiso de modificar el empleado
+                if (userRol == OPERADOR && rol_empleado == ADMINISTRADOR) {
+                    //Si el usuario es un operador y el empleado es un
+                    //administrador, el usuario NO tendrá permitido modificarlo
+                    msj = "Su usuario no cuenta con el permiso de modificar a un "
+                        + "administrador.\nSolo un administrador puede agregar,"
+                        + " modificar o eliminar otro administrador.";
+                    
+                } else {
+                    return true;
+                }
+            } else {
+                msj = "No se encontró el rol del empleado ingresado.\n"
+                        + "Por favor, actualice la tabla de los empleados registrados\n"
+                        + "y verifique su registro en la tabla.";
+            }
         } else {
             msj = "La cédula ingresada del empleado, no se encuentra registrada.\n"
                     + "Por favor, actualice la tabla de los empleados y\n"
@@ -266,7 +286,7 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
     //ATRIBUTOS
     private static boolean crearEmpleado;
     private static String cargo;
-    private static int id_empleado, cedula, rol, sucursal;
+    private static int id_empleado, cedula, rol, rol_empleado, sucursal;
 
     // ========== FRONTEND ==========
     /**
