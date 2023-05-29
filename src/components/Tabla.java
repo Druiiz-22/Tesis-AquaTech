@@ -555,19 +555,17 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 case ADMIN_EMPLEADOS: {
                     //Obtener los datos del usuario seleccionado
                     Object cedula = tabla.getValueAt(index, 1);
-                    Object nombre = tabla.getValueAt(index, 2);
-                    Object apellido = tabla.getValueAt(index, 3);
-                    Object telefono = tabla.getValueAt(index, 4);
-                    Object correo = tabla.getValueAt(index, 5);
+                    Object cargo = tabla.getValueAt(index, 4);
+                    Object rol = tabla.getValueAt(index, 5);
+                    Object sucursal = tabla.getValueAt(index, 6);
 
-                    //Enviar el usuario a la pestaña de usuarios, que será 
-                    //enviado a la ventana de nuevos usuarios para su edición
-                    Usuarios.editUsuario(
+                    //Enviar el empleado a la pestaña de empleados, que será 
+                    //enviado a la ventana de nuevos empleados para su edición
+                    Empleados.editEmpleado(
                             cedula.toString(),
-                            nombre.toString(),
-                            apellido.toString(),
-                            telefono.toString(),
-                            correo.toString()
+                            cargo.toString(),
+                            rol.toString(),
+                            sucursal.toString()
                     );
                     break;
                 }

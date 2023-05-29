@@ -116,7 +116,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
                 break;
             case ADMIN:
                 int rol = main.Frame.getUserRol();
-                if (rol == ADMINISTRADOR || rol == ENCARGADO) {
+                if (rol == ADMINISTRADOR || rol == OPERADOR) {
                     this.add(panelAdmin, BorderLayout.CENTER);
                     panelAdmin.relocateComponents(this.getSize());
                 } else {
@@ -142,7 +142,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
         Compras.vaciarCampos();
         
         int rol = main.Frame.getUserRol();
-        if (rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == ADMINISTRADOR || rol == OPERADOR) {
             Admin.vaciarCampos();
         }
     }
@@ -163,7 +163,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
         //Comprobar que el usuario sea administrador y que se hayan completado
         //TODAS las busquedas, hasta este punto
         int rol = Frame.getUserRol();
-        if (busquedas && rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (busquedas && rol == ADMINISTRADOR || rol == OPERADOR) {
             busquedas = Admin.actualizarDatos();
         }
         

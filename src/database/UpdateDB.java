@@ -25,7 +25,7 @@ public class UpdateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
         //Validar que el usuario que realiza la acción, cuente con los permisos
         //o si se está creando un usuario desde el login
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para actualizar el cliente
             String sql = "UPDATE Cliente SET "
                     + "cedula = " + cedula + ", "
@@ -35,7 +35,7 @@ public class UpdateDB implements properties.Constantes {
                     + "WHERE id = " + id;
 
             System.out.println(sql);
-            
+
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
             bdd.conectar();
@@ -93,7 +93,7 @@ public class UpdateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
         //Validar que el usuario que realiza la acción, cuente con los permisos
         //o si se está creando un usuario desde el login
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para actualizar el proveedor
             String sql = "UPDATE `Proveedores` SET "
                     + "id = " + id + ", "
@@ -183,27 +183,26 @@ public class UpdateDB implements properties.Constantes {
                 if (msj.contains("ÉXITO")) {
                     //Terminar la conexión con la base de datos
                     bdd.desconectar();
-                    
+
                     //Capitalizar el mensaje
                     msj = msj.substring(0, 1).toUpperCase() + msj.substring(1).toLowerCase();
-                    
+
                     //Mensaje de éxito
                     Mensaje.msjInformativo(msj);
 
                     return true;
 
-                } else if(msj.contains("")){
+                } else if (msj.contains("")) {
                     Mensaje.msjError(msj);
                 }
-                
+
                 //Terminar la conexión con la base de datos
                 bdd.desconectar();
-                
-                
+
                 return false;
             }
         } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+            Mensaje.msjError("No se pudo actualizar el usuario.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
@@ -253,6 +252,60 @@ public class UpdateDB implements properties.Constantes {
                     + " en el sistema.\nPor favor, verifique los datos.");
         }
 
+        return false;
+    }
+
+    public static boolean updateEmpleado(int id_empleado, int cedula, String cargo, int sucursal, int rol) {
+        //Preparar la sentencia SQL para actualizar el usuario
+        String sql = "SELECT EDITAR_EMPLEADO(" + id_empleado + ", " + cedula + ", \""
+                + cargo + "\", " + rol + ", " + sucursal + ")";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Avanzar en el resultado
+                r.next();
+
+                //Obtener el mensaje
+                String msj = r.getString(1).toUpperCase();
+
+                //Comprobar si fue exitoso o no
+                if (msj.contains("ÉXITO")) {
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Capitalizar el mensaje
+                    msj = msj.substring(0, 1).toUpperCase() + msj.substring(1).toLowerCase();
+
+                    //Mensaje de éxito
+                    Mensaje.msjInformativo(msj);
+
+                    return true;
+
+                } else if (msj.contains("")) {
+                    Mensaje.msjError(msj);
+                }
+
+                //Terminar la conexión con la base de datos
+                bdd.desconectar();
+
+                return false;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el precio del trasvaso.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
         return false;
     }
 }

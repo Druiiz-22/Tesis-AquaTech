@@ -26,7 +26,7 @@ public class CreateDB implements properties.Constantes {
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
         //o si se está creando un usuario desde el login
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para obtener el trasvaso
             String sql = "INSERT INTO Cliente"
                     + "     (cedula, nombre, apellido, telefono)"
@@ -83,7 +83,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para obtener el trasvaso
             String sql = "INSERT INTO Proveedores"
                     + "     (rif, nombre, telefono)"
@@ -195,7 +195,7 @@ public class CreateDB implements properties.Constantes {
         return false;
     }
 
-    public static boolean createEmpleado(int cedula, String cargo, String sucursal, int rol) {
+    public static boolean createEmpleado(int cedula, String cargo, int sucursal, int rol) {
         //Preparar la sentencia SQL para crear el usuario
         String sql = "SELECT REGISTRAR_EMPLEADO(" + cedula + ", \""
                 + cargo + "\", " + sucursal + ", " + rol + ")";
@@ -263,7 +263,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
 
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_TRASVASO"
@@ -346,7 +346,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_VENTA"
                     + "(" + cedula + ", 1, " + cantidad + ", \"" + tipoPago
@@ -426,7 +426,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_RECARGA"
                     + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";
@@ -505,7 +505,7 @@ public class CreateDB implements properties.Constantes {
         int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
-        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_COMPRA"
                     + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";

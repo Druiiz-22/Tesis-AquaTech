@@ -54,7 +54,7 @@ public class Empleados extends JPanel implements properties.Constantes{
         btnAgregar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                //nuevo.agregar();
+                nuevo.agregar();
             }
         });
 
@@ -191,7 +191,7 @@ public class Empleados extends JPanel implements properties.Constantes{
      */
     protected static boolean actualizarDatos() {
         txtBuscar.setText("");
-        return tabla.actualizarDatos();
+        return tabla.actualizarDatos() && nuevo.actualizarDatos();
     }
     
     protected void habilitarComponents(boolean estado) {
@@ -199,7 +199,11 @@ public class Empleados extends JPanel implements properties.Constantes{
     }
 
     public static void contratarUsuario(String cedula){
-        
+        nuevo.contratar(cedula);
+    }
+    
+    public static void editEmpleado(String cedula, String cargo, String rol, String sucursal){
+        nuevo.editar(cedula, cargo, rol, sucursal);
     }
     
     //ATRIBUTOS

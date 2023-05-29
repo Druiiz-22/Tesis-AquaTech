@@ -43,7 +43,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
             //Validar que el usuario tenga los permisos para acceder al software
             switch (rol) {
                 case EMPLEADO:
-                case ENCARGADO:
+                case OPERADOR:
                 case ADMINISTRADOR:
 
                     return true;
@@ -127,6 +127,8 @@ public final class Inicio extends JPanel implements properties.Colores, properti
         //Encriptar la contraseña
         clave = Encript.encriptar(txtClave.getPassword());
 
+        System.out.println("clave = "+clave);
+        
         //Validar que el usuario NO esté vacío
         if (!identificacion.isEmpty()) {
 

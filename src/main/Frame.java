@@ -53,7 +53,7 @@ public class Frame extends JFrame implements properties.Constantes {
         //Presionar el botón de inicio
         clickButton(INICIO);
 
-        if (rol == ADMINISTRADOR || rol == ENCARGADO) {
+        if (rol == ADMINISTRADOR || rol == OPERADOR) {
             lateral.addAdminButton();
         } else {
             lateral.removeAdminButton();

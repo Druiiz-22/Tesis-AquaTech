@@ -7,7 +7,6 @@ import components.Label;
 import components.Logo;
 import database.AdminDB;
 import database.CreateDB;
-import database.EmailCode;
 import database.ReadDB;
 import database.UpdateDB;
 import java.awt.Container;
@@ -20,18 +19,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Calendar;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import static javax.swing.SwingConstants.HORIZONTAL;
-import main.Frame;
 import properties.Encript;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
-import static properties.Mensaje.msjInformativo;
 import static properties.ValidarTexto.formatoCorreo;
 import static properties.ValidarTexto.formatoNombre;
 import static properties.ValidarTexto.formatoTelefono;
@@ -112,10 +106,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
                                     dispose();
                                     vaciarCampos();
-
-                                    Frame.closeGlass();
                                 }
-
                             }
                         }
                         //Cerrar el glassPane, se registre el usuario o no
@@ -156,7 +147,6 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
                                         vaciarCampos();
                                         dispose();
                                     }
-
                                 }
                             }
                         }
@@ -477,8 +467,8 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
         //Botones
         fieldH = 40;
-        fieldW = 120;
-        y = height - padding * 2 - fieldH;
+        fieldW = 200;
+        y = height - fieldH*2;
         x = width / 2 - (fieldW * 2 + padding) / 2;
         btnCancelar.setBounds(x, y, fieldW, fieldH);
         x += fieldW + padding * 2;
@@ -578,11 +568,11 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         NuevoUsuario.cedulaVieja = cedula;
 
         //Label para el título
-        lblTitulo.setText("Ingrese los datos necesarios para registrar un "
-                + "nuevo usuario al sistema.");
+        lblTitulo.setText("Ingrese los nuevos datos del usuario "
+                + "seleccionado que desea actualizar.");
         lblTitulo.setSize(lblTitulo.getPreferredSize());
         //Logo para la ventana
-        logo.setText("Agregar Usuario");
+        logo.setText("Modificar Usuario");
         logo.setSize(logo.getPreferredSize());
 
         //Sobreescribir los campos
@@ -603,12 +593,8 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
         //Propiedades de la ventana
         this.setTitle("Editar un proveedor - AquaTech");
         this.relocateComponents();
-
-        try {
-            this.setVisible(true);
-        } catch (Exception e) {
-            System.out.println("Luego de set visible.\n" + e);
-        }
+        
+        this.setVisible(true);
     }
 
     /**
@@ -644,7 +630,7 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
 
     //COMPONENTES
     private static Container glass;
-    private static final Dimension paneSize = new Dimension(640, 450);
+    private static final Dimension paneSize = new Dimension(600, 450);
     private static final Logo logo = new Logo(HORIZONTAL);
     private static final Label lblTitulo = new Label("", TITULO, 16);
 

@@ -1210,7 +1210,7 @@ public class ReadDB implements properties.Constantes {
     public static Object[][] getEmpleados() {
         //ID, Cedula, Nombre, Apellido, Cargo laboral, Rol, Sucursal
         int sucursal = 1;
-        
+
         //Preparar la sentencia SQL para obtener la cantidad de clientes
         String sql = "SELECT COUNT(*) "
                 + "FROM Empleado "
@@ -1220,7 +1220,7 @@ public class ReadDB implements properties.Constantes {
                 + "	ON id_cliente = Cliente.id "
                 + "INNER JOIN Sucursal "
                 + "	ON id_sucursal = Sucursal.id "
-                + "	AND Sucursal.id = "+sucursal;
+                + "	AND Sucursal.id = " + sucursal;
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1249,7 +1249,7 @@ public class ReadDB implements properties.Constantes {
                                 + "	ON id_cliente = Cliente.id "
                                 + "INNER JOIN Sucursal "
                                 + "	ON id_sucursal = Sucursal.id "
-                                + "	AND Sucursal.id = "+sucursal;
+                                + "	AND Sucursal.id = " + sucursal;
                         r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
@@ -1267,7 +1267,7 @@ public class ReadDB implements properties.Constantes {
 
                                 int rol = r.getInt(6);
                                 empleados[i][5] = (rol == ADMINISTRADOR) ? "ADMINISTRADOR"
-                                        : (rol == ENCARGADO) ? "OPERADOR" : "EMPLEADO";
+                                        : (rol == OPERADOR) ? "OPERADOR" : "EMPLEADO";
                                 i++;
                             }
 
@@ -1387,6 +1387,53 @@ public class ReadDB implements properties.Constantes {
             }
         } catch (NumberFormatException | SQLException e) {
             Mensaje.msjError("No se pudo obtener el rol del usuario.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return ERROR_VALUE;
+    }
+
+    public static int getEmpleadoID(int cedula) {
+        //Preparar la sentencia SQL para obtener el id del cliente
+        String sql = "SELECT Empleado.id "
+                + "FROM Empleado "
+                + "INNER JOIN Usuario "
+                + "	ON id_usuario = Usuario.id "
+                + "INNER JOIN Cliente "
+                + "     ON id_cliente = Cliente.id "
+                + "     AND cedula = "+cedula;
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener el id
+                    int id = r.getInt(1);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return id;
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el id como -1
+                return -1;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener el id del empleado.\nError: " + e);
         }
 
         //Terminar la conexión con la base de datos
@@ -1835,6 +1882,72 @@ public class ReadDB implements properties.Constantes {
         bdd.desconectar();
 
         //Retornar un dato nulo
+        return null;
+    }
+
+    public static Object[][] getSucursales() {
+        //ID, descripción, teléfonos, coordenadas
+
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Sucursal;";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT * FROM Sucursal";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object sucursales[][] = new Object[count][4];
+                            int i = 0;
+
+                            while (r.next()) {
+                                sucursales[i][0] = r.getInt(1);
+                                sucursales[i][1] = r.getString(2);
+                                sucursales[i][2] = r.getString(3);
+                                sucursales[i][3] = r.getString(4);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return sucursales;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las sucursales de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
         return null;
     }
 }
