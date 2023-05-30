@@ -240,6 +240,8 @@ public interface Constantes {
     public static final int CUALQUIER = 43;
     
     public static final int ADMIN_EMPLEADOS = 44;
+    public static final int TODAS_SUCURSALES = -97;
+    
     
     /**
      * Constante para determinar cuando una busqueda de un número en la base de 

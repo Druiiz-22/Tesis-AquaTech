@@ -89,7 +89,7 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
                         if (msjYesNo("¿Está seguro de contratar el nuevo empleado?")) {
                             //Confirmar cuenta de administrador
                             if (AdminDB.validateAdminUser()) {
-                                if (CreateDB.createEmpleado(cedula, cargo, sucursal, rol)) {
+                                if (CreateDB.createEmpleado(cedula, cargo, id_sucursal, rol)) {
                                     //Ya que puede dar muchos problemas el alterar o agregar
                                     //un dato a una tabla (y no a su Model), la forma de 
                                     //visualizar los cambios será actualizando los datos 
@@ -118,7 +118,7 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
                         //Mensaje de confirmación
                         if (msjYesNo("¿Está seguro de actualizar los datos del empleado?")) {
                             if (validarEmpleado()) {
-                                if (UpdateDB.updateEmpleado(id_empleado, cargo, sucursal, rol)) {
+                                if (UpdateDB.updateEmpleado(id_empleado, cargo, id_sucursal, rol)) {
                                     //Ya que puede dar muchos problemas el alterar o agregar
                                     //un dato a una tabla (y no a su Model), la forma de 
                                     //visualizar los cambios será actualizando los datos 
@@ -145,19 +145,18 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
      * @return TRUE si los campos no están vacíos
      */
     private boolean validarCampos() {
-
         String msj = "\nPor favor, ingrese los datos.";
 
         String ci = txtCedula.getText().trim();
         cargo = txtCargo.getText().trim().toUpperCase();
         rol = boxRol.getSelectedIndex();
-        sucursal = boxSucursal.getSelectedIndex();
-
+        int index = boxSucursal.getSelectedIndex();
+        
         if (!ci.isEmpty()) {
             if (!cargo.isEmpty()) {
                 if (rol > 0 && rol < 4) {
-                    if (sucursal > 0) {
-
+                    if (index > 0) {                       
+                        
                         return true;
 
                     } else {
@@ -203,11 +202,32 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
                 //Validar que un operador NO modifique un administrador
             } else {
                 try {
-                    //Intentar convertir la cédula
+                    //Intentar convertir la cédula y validar su rango
                     cedula = Integer.parseInt(txtCedula.getText());
-
                     if (cedula > 0 && cedula <= 99999999) {
-                        return true;
+                        
+                        //Intentar obtener el ID de la sucursal seleccionada
+                        Object sucursal = boxSucursal.getSelectedItem();
+                        String id = ((ComboItem)sucursal).getValue();
+                        
+                        //Validar que el id obtenido NO sea nulo
+                        if(!id.isEmpty()){
+                            //Convertir de String a Entero y validar su valor 
+                            id_sucursal = Integer.valueOf(id);
+                            if(id_sucursal > 0){
+                                    
+                                return true;
+                                
+                            } else {
+                                msj = "El ID de la sucursal seleccionada es "
+                                        + "inválida.\nPor favor, actualice el"
+                                        + "programa y valide la existencia de"
+                                        + "la sucursal.";
+                            }
+                        } else {
+                            msj = "No se pudo obtener el ID de la sucursal "
+                                    + "seleccionada.";
+                        }
                     } else {
                         throw new NumberFormatException();
                     }
@@ -286,7 +306,7 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
     //ATRIBUTOS
     private static boolean crearEmpleado;
     private static String cargo;
-    private static int id_empleado, cedula, rol, rol_empleado, sucursal;
+    private static int id_empleado, cedula, rol, rol_empleado, id_sucursal;
 
     // ========== FRONTEND ==========
     /**

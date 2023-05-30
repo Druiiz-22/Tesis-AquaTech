@@ -1528,19 +1528,36 @@ public class ReadDB implements properties.Constantes {
      * @return Registro de los trasvasos
      */
     public static Object[][] getTrasvasos(String initDate, String finalDate, int sucursal) {
-        //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, Monto, Fecha
+        //#, ID, Cedula, Pago, Entr, TipoPago, Delivery, Monto, Fecha, Sucursal*
+
         //Preparar la sentencia SQL para obtener la cantidad de trasvasos
-        String sql = "SELECT COUNT(*) FROM Trasvaso "
-                + "INNER JOIN Cliente "
-                + "     ON id_cliente = Cliente.id "
-                + "INNER JOIN Almacen "
-                + "     ON id_almacen = Almacen.id "
-                + "INNER JOIN Sucursal "
-                + "     ON id_sucursal = Sucursal.id "
-                + "     AND Sucursal.id = " + sucursal + " "
-                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                + "     AND fecha <= '" + finalDate + " 23:59:59' "
-                + "ORDER BY Trasvaso.id DESC";
+        String sql;
+        //Validar si se van a mostrar todas las sucursales o si será filtrado
+        if (sucursal == TODAS_SUCURSALES) {
+            sql = "SELECT COUNT(*) FROM Trasvaso "
+                    + "INNER JOIN Cliente "
+                    + "     ON id_cliente = Cliente.id "
+                    + "INNER JOIN Almacen "
+                    + "     ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "     ON id_sucursal = Sucursal.id "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "     AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Trasvaso.id DESC";
+
+        } else {
+            sql = "SELECT COUNT(*) FROM Trasvaso "
+                    + "INNER JOIN Cliente "
+                    + "     ON id_cliente = Cliente.id "
+                    + "INNER JOIN Almacen "
+                    + "     ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "     ON id_sucursal = Sucursal.id "
+                    + "     AND Sucursal.id = " + sucursal + " "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "     AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Trasvaso.id DESC";
+        }
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1554,8 +1571,8 @@ public class ReadDB implements properties.Constantes {
             if (r != null) {
 
                 //Header para los trasvasos
-                Object[] header = {"#", "ID", "Cedula", "Pagados",
-                    "Entregados", "Tipo Pago", "Delivery", "Monto", "Fecha"};
+                Object[] header = {"#", "ID", "Cedula", "Pagados", "Entregados",
+                    "Tipo Pago", "Delivery", "Monto", "Fecha", "Sucursal"};
 
                 //Validar que haya obtenido algún dato
                 if (r.next()) {
@@ -1563,20 +1580,37 @@ public class ReadDB implements properties.Constantes {
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT Trasvaso.id, cedula, cant_pagada, "
-                                + "cant_entregada, tipo_pago, delivery, "
-                                + "monto, fecha "
-                                + "FROM Trasvaso "
-                                + "INNER JOIN Cliente "
-                                + "     ON id_cliente = Cliente.id "
-                                + "INNER JOIN Almacen "
-                                + "     ON id_almacen = Almacen.id "
-                                + "INNER JOIN Sucursal "
-                                + "     ON id_sucursal = Sucursal.id "
-                                + "     AND Sucursal.id = " + sucursal + " "
-                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                                + "AND fecha <= '" + finalDate + " 23:59:59' "
-                                + "ORDER BY Trasvaso.id DESC";
+                        if (sucursal == TODAS_SUCURSALES) {
+                            sql = "SELECT Trasvaso.id, cedula, cant_pagada, "
+                                    + "cant_entregada, tipo_pago, delivery, "
+                                    + "monto, fecha, descripcion "
+                                    + "FROM Trasvaso "
+                                    + "INNER JOIN Cliente "
+                                    + "     ON id_cliente = Cliente.id "
+                                    + "INNER JOIN Almacen "
+                                    + "     ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "     ON id_sucursal = Sucursal.id "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Trasvaso.id DESC";
+
+                        } else {
+                            sql = "SELECT Trasvaso.id, cedula, cant_pagada, "
+                                    + "cant_entregada, tipo_pago, delivery, "
+                                    + "monto, fecha, descripcion "
+                                    + "FROM Trasvaso "
+                                    + "INNER JOIN Cliente "
+                                    + "     ON id_cliente = Cliente.id "
+                                    + "INNER JOIN Almacen "
+                                    + "     ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "     ON id_sucursal = Sucursal.id "
+                                    + "     AND Sucursal.id = " + sucursal + " "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Trasvaso.id DESC";
+                        }
 
                         r = bdd.selectQuery(sql);
 
@@ -1600,6 +1634,7 @@ public class ReadDB implements properties.Constantes {
                                 trasvasos[i][6] = (r.getBoolean(6)) ? "SÍ" : "NO";
                                 trasvasos[i][7] = r.getDouble(7);
                                 trasvasos[i][8] = r.getString(8);
+                                trasvasos[i][9] = r.getString(9);
                                 i++;
                             }
 
@@ -1616,7 +1651,7 @@ public class ReadDB implements properties.Constantes {
                 //Si el result NO fue null, implica que SÍ se estableció una 
                 //conexión. Sin embargo, pudo no haber traído algún dato; en ese
                 //caso, se retornará una lista vacía, únicamente con el header
-                return new Object[][]{{header}};
+                return new Object[][]{header};
             }
         } catch (Exception ex) {
             Mensaje.msjError("No se pudieron obtener los trasvasos de la base de "
@@ -1644,17 +1679,32 @@ public class ReadDB implements properties.Constantes {
         //#, ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
         //Preparar la sentencia SQL para obtener la cantidad de trasvasos
-        String sql = "SELECT COUNT(*) FROM Recarga "
-                + "INNER JOIN Proveedores "
-                + "	ON id_prov = Proveedores.id "
-                + "INNER JOIN Almacen "
-                + "	ON id_almacen = Almacen.id "
-                + "INNER JOIN Sucursal "
-                + "	ON id_sucursal = Sucursal.id "
-                + "    AND Sucursal.id = " + sucursal + " "
-                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                + "	AND fecha <= '" + finalDate + " 23:59:59' "
-                + "ORDER BY Recarga.id DESC";
+        String sql;
+        if (sucursal == TODAS_SUCURSALES) {
+            sql = "SELECT COUNT(*) FROM Recarga "
+                    + "INNER JOIN Proveedores "
+                    + "	ON id_prov = Proveedores.id "
+                    + "INNER JOIN Almacen "
+                    + "	ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Recarga.id DESC";
+
+        } else {
+            sql = "SELECT COUNT(*) FROM Recarga "
+                    + "INNER JOIN Proveedores "
+                    + "	ON id_prov = Proveedores.id "
+                    + "INNER JOIN Almacen "
+                    + "	ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + "    AND Sucursal.id = " + sucursal + " "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Recarga.id DESC";
+        }
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1669,7 +1719,7 @@ public class ReadDB implements properties.Constantes {
 
                 //Header para las recargas
                 Object[] header = {"#", "ID", "RIF", "Proveedor",
-                    "Cantidad", "Monto Total", "Fecha"};
+                    "Cantidad", "Monto Total", "Fecha", "Sucursal"};
 
                 //Validar que haya obtenido algún dato
                 if (r.next()) {
@@ -1677,18 +1727,36 @@ public class ReadDB implements properties.Constantes {
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT Recarga.id, rif, nombre, cantidad, monto, fecha "
-                                + "FROM Recarga "
-                                + "INNER JOIN Proveedores "
-                                + "	ON id_prov = Proveedores.id "
-                                + "INNER JOIN Almacen "
-                                + "	ON id_almacen = Almacen.id "
-                                + "INNER JOIN Sucursal "
-                                + "	ON id_sucursal = Sucursal.id "
-                                + "    AND Sucursal.id = " + sucursal + " "
-                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                                + "	AND fecha <= '" + finalDate + " 23:59:59' "
-                                + "ORDER BY Recarga.id DESC";
+                        if (sucursal == TODAS_SUCURSALES) {
+                            sql = "SELECT Recarga.id, rif, nombre, cantidad, "
+                                    + "monto, fecha, descripcion "
+                                    + "FROM Recarga "
+                                    + "INNER JOIN Proveedores "
+                                    + "	ON id_prov = Proveedores.id "
+                                    + "INNER JOIN Almacen "
+                                    + "	ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Recarga.id DESC";
+
+                        } else {
+                            sql = "SELECT Recarga.id, rif, nombre, cantidad, "
+                                    + "monto, fecha, descripcion "
+                                    + "FROM Recarga "
+                                    + "INNER JOIN Proveedores "
+                                    + "	ON id_prov = Proveedores.id "
+                                    + "INNER JOIN Almacen "
+                                    + "	ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "    AND Sucursal.id = " + sucursal + " "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Recarga.id DESC";
+
+                        }
 
                         r = bdd.selectQuery(sql);
 
@@ -1709,9 +1777,10 @@ public class ReadDB implements properties.Constantes {
                                 recargas[i][4] = r.getInt(4);
                                 recargas[i][5] = r.getDouble(5);
                                 recargas[i][6] = r.getString(6);
+                                recargas[i][7] = r.getString(7);
                                 i++;
                             }
-
+                            
                             //Desconectar la base de datos
                             bdd.desconectar();
 
@@ -1725,7 +1794,7 @@ public class ReadDB implements properties.Constantes {
                 //Si el result NO fue null, implica que SÍ se estableció una 
                 //conexión. Sin embargo, pudo no haber traído algún dato; en ese
                 //caso, se retornará una lista vacía, únicamente con el header
-                return new Object[][]{{header}};
+                return new Object[][]{header};
             }
         } catch (Exception ex) {
             Mensaje.msjError("No se pudieron obtener las ventas de la base de "
@@ -1752,17 +1821,32 @@ public class ReadDB implements properties.Constantes {
         //#, ID, Cedula, Cantidad, Tipo pago, Monto Total, Fecha
 
         //Preparar la sentencia SQL para obtener la cantidad de trasvasos
-        String sql = "SELECT COUNT(*) FROM Venta "
-                + "INNER JOIN Cliente "
-                + "	ON id_cliente = Cliente.id "
-                + "INNER JOIN Almacen "
-                + "	ON id_almacen = Almacen.id "
-                + "INNER JOIN Sucursal "
-                + "	ON id_sucursal = Sucursal.id "
-                + "     AND Sucursal.id = " + sucursal + " "
-                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                + "     AND fecha <= '" + finalDate + " 23:59:59' "
-                + "ORDER BY Venta.id DESC";
+        String sql;
+        if (sucursal == TODAS_SUCURSALES) {
+            sql = "SELECT COUNT(*) FROM Venta "
+                    + "INNER JOIN Cliente "
+                    + "	ON id_cliente = Cliente.id "
+                    + "INNER JOIN Almacen "
+                    + "	ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "     AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Venta.id DESC";
+
+        } else {
+            sql = "SELECT COUNT(*) FROM Venta "
+                    + "INNER JOIN Cliente "
+                    + "	ON id_cliente = Cliente.id "
+                    + "INNER JOIN Almacen "
+                    + "	ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + "     AND Sucursal.id = " + sucursal + " "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "     AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Venta.id DESC";
+        }
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1777,7 +1861,7 @@ public class ReadDB implements properties.Constantes {
 
                 //Header para las ventas
                 Object[] header = {"#", "ID", "Cedula", "Cantidad",
-                    "Tipo Pago", "Delivery", "Monto", "Fecha"};
+                    "Tipo Pago", "Delivery", "Monto", "Fecha", "Sucursal"};
 
                 //Validar que haya obtenido algún dato
                 if (r.next()) {
@@ -1785,19 +1869,35 @@ public class ReadDB implements properties.Constantes {
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT Venta.id, cedula, cantidad, "
-                                + "	tipo_pago, delivery, monto, fecha "
-                                + "FROM Venta "
-                                + "INNER JOIN Cliente "
-                                + "	ON id_cliente = Cliente.id "
-                                + "INNER JOIN Almacen "
-                                + "	ON id_almacen = Almacen.id "
-                                + "INNER JOIN Sucursal "
-                                + "	ON id_sucursal = Sucursal.id "
-                                + "     AND Sucursal.id = " + sucursal + " "
-                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                                + "AND fecha <= '" + finalDate + " 23:59:59' "
-                                + "ORDER BY Venta.id DESC";
+                        if (sucursal == TODAS_SUCURSALES) {
+                            sql = "SELECT Venta.id, cedula, cantidad, tipo_pago,"
+                                    + " delivery, monto, fecha, descripcion "
+                                    + "FROM Venta "
+                                    + "INNER JOIN Cliente "
+                                    + "	ON id_cliente = Cliente.id "
+                                    + "INNER JOIN Almacen "
+                                    + "	ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Venta.id DESC";
+
+                        } else {
+                            sql = "SELECT Venta.id, cedula, cantidad, tipo_pago,"
+                                    + " delivery, monto, fecha, descripcion "
+                                    + "FROM Venta "
+                                    + "INNER JOIN Cliente "
+                                    + "	ON id_cliente = Cliente.id "
+                                    + "INNER JOIN Almacen "
+                                    + "	ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "     AND Sucursal.id = " + sucursal + " "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Venta.id DESC";
+                        }
 
                         r = bdd.selectQuery(sql);
 
@@ -1819,6 +1919,7 @@ public class ReadDB implements properties.Constantes {
                                 ventas[i][5] = (r.getBoolean(5)) ? "SÍ" : "NO";
                                 ventas[i][6] = r.getDouble(6);
                                 ventas[i][7] = r.getString(7);
+                                ventas[i][8] = r.getString(8);
                                 i++;
                             }
 
@@ -1835,7 +1936,7 @@ public class ReadDB implements properties.Constantes {
                 //Si el result NO fue null, implica que SÍ se estableció una 
                 //conexión. Sin embargo, pudo no haber traído algún dato; en ese
                 //caso, se retornará una lista vacía, únicamente con el header
-                return new Object[][]{{header}};
+                return new Object[][]{header};
             }
         } catch (Exception ex) {
             Mensaje.msjError("No se pudieron obtener las ventas de la base de "
@@ -1863,17 +1964,32 @@ public class ReadDB implements properties.Constantes {
         //#, ID, RIF, Proveedor, Cantidad, Monto Total, Fecha
 
         //Preparar la sentencia SQL para obtener la cantidad de trasvasos
-        String sql = "SELECT COUNT(*) FROM Compra "
-                + "INNER JOIN Proveedores "
-                + "	ON id_prov = Proveedores.id "
-                + "INNER JOIN Almacen "
-                + "	ON id_almacen = Almacen.id "
-                + "INNER JOIN Sucursal "
-                + "	ON id_sucursal = Sucursal.id "
-                + "    AND Sucursal.id = " + sucursal + " "
-                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                + "	AND fecha <= '" + finalDate + " 23:59:59' "
-                + "ORDER BY Compra.id DESC";
+        String sql;
+        if (sucursal == TODAS_SUCURSALES) {
+            sql = "SELECT COUNT(*) FROM Compra "
+                    + "INNER JOIN Proveedores "
+                    + "	ON id_prov = Proveedores.id "
+                    + "INNER JOIN Almacen "
+                    + "	ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Compra.id DESC";
+
+        } else {
+            sql = "SELECT COUNT(*) FROM Compra "
+                    + "INNER JOIN Proveedores "
+                    + "	ON id_prov = Proveedores.id "
+                    + "INNER JOIN Almacen "
+                    + "	ON id_almacen = Almacen.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + "    AND Sucursal.id = " + sucursal + " "
+                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                    + "ORDER BY Compra.id DESC";
+        }
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -1888,7 +2004,7 @@ public class ReadDB implements properties.Constantes {
 
                 //Header para las recargas
                 Object[] header = {"#", "ID", "RIF", "Proveedor",
-                    "Cantidad", "Monto Total", "Fecha"};
+                    "Cantidad", "Monto Total", "Fecha", "Sucursal"};
 
                 //Validar que haya obtenido algún dato
                 if (r.next()) {
@@ -1896,18 +2012,36 @@ public class ReadDB implements properties.Constantes {
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT Compra.id, rif, nombre, cantidad, monto, fecha "
-                                + "FROM Compra "
-                                + "INNER JOIN Proveedores "
-                                + "	ON id_prov = Proveedores.id "
-                                + "INNER JOIN Almacen "
-                                + "	ON id_almacen = Almacen.id "
-                                + "INNER JOIN Sucursal "
-                                + "	ON id_sucursal = Sucursal.id "
-                                + "    AND Sucursal.id = " + sucursal + " "
-                                + "WHERE fecha >= '" + initDate + " 00:00:00' "
-                                + "	AND fecha <= '" + finalDate + " 23:59:59' "
-                                + "ORDER BY Compra.id DESC";
+                        if (sucursal == TODAS_SUCURSALES) {
+                            sql = "SELECT Compra.id, rif, nombre, cantidad, "
+                                    + "monto, fecha, descripcion "
+                                    + "FROM Compra "
+                                    + "INNER JOIN Proveedores "
+                                    + "	ON id_prov = Proveedores.id "
+                                    + "INNER JOIN Almacen "
+                                    + "	ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Compra.id DESC";
+
+                        } else {
+                            sql = "SELECT Compra.id, rif, nombre, cantidad, "
+                                    + "monto, fecha, descripcion "
+                                    + "FROM Compra "
+                                    + "INNER JOIN Proveedores "
+                                    + "	ON id_prov = Proveedores.id "
+                                    + "INNER JOIN Almacen "
+                                    + "	ON id_almacen = Almacen.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "    AND Sucursal.id = " + sucursal + " "
+                                    + "WHERE fecha >= '" + initDate + " 00:00:00' "
+                                    + "	AND fecha <= '" + finalDate + " 23:59:59' "
+                                    + "ORDER BY Compra.id DESC";
+
+                        }
 
                         r = bdd.selectQuery(sql);
 
@@ -1928,6 +2062,7 @@ public class ReadDB implements properties.Constantes {
                                 compras[i][4] = r.getInt(4);
                                 compras[i][5] = r.getDouble(5);
                                 compras[i][6] = r.getString(6);
+                                compras[i][7] = r.getString(7);
                                 i++;
                             }
 
@@ -1944,7 +2079,7 @@ public class ReadDB implements properties.Constantes {
                 //Si el result NO fue null, implica que SÍ se estableció una 
                 //conexión. Sin embargo, pudo no haber traído algún dato; en ese
                 //caso, se retornará una lista vacía, únicamente con el header
-                return new Object[][]{{header}};
+                return new Object[][]{header};
             }
         } catch (Exception ex) {
             Mensaje.msjError("No se pudieron obtener las ventas de la base de "

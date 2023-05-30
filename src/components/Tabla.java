@@ -29,6 +29,7 @@ import static javax.swing.RowFilter.regexFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import main.Frame;
 import static properties.Mensaje.msjYesNo;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
@@ -53,13 +54,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Obtener la cédula
                 Object cedula = tabla.getValueAt(index, 1);
                 //Validar que NO esté vacía
-                if(!cedula.toString().isEmpty()){
+                if (!cedula.toString().isEmpty()) {
                     //Cambiar al panel de clientes
                     MenuLateral.clickButton(CLIENTES);
 
                     //Buscar el cliente en la tabla de clientes
                     PanelClientes.buscarCliente(cedula.toString());
-                    
+
                 } else {
                     msjError("No se pudo seleccionar el usuario.");
                 }
@@ -72,13 +73,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Obtener la cédula
                 Object cedula = tabla.getValueAt(index, 1);
                 //Validar que NO esté vacía
-                if(!cedula.toString().isEmpty()){
+                if (!cedula.toString().isEmpty()) {
                     //Cambiar al panel de clientes
                     MenuLateral.clickButton(ADMIN_EMPLEADOS);
 
                     //Buscar el cliente en la tabla de clientes
                     Empleados.contratarUsuario(cedula.toString());
-                    
+
                 } else {
                     msjError("No se pudo seleccionar el usuario.");
                 }
@@ -336,13 +337,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Obtener la cédula
                 Object cedula = tabla.getValueAt(index, 1);
                 //Validar que NO esté vacía
-                if(!cedula.toString().isEmpty()){
+                if (!cedula.toString().isEmpty()) {
                     //Cambiar al panel de clientes
                     MenuLateral.clickButton(ADMIN_USUARIOS);
 
                     //Buscar el cliente en la tabla de clientes
                     Usuarios.buscarUsuario(cedula.toString());
-                    
+
                 } else {
                     msjError("No se pudo seleccionar el usuario.");
                 }
@@ -429,64 +430,84 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                         case CLIENTES:
                             //Intentar eliminarlo de la base de datos
                             if (DeleteDB.removeCliente(id)) {
-
+                                //Abrir el GlassPane de carga
+                                Frame.openGlass(0);
+                                
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
 
                                 Ventas.vaciarCampos();
+
+                                //Cerrar el GlassPane de carga
+                                Frame.closeGlass();
                             }
                             break;
 
                         case PROVEEDOR:
                             //Intentar eliminarlo de la base de datos
                             if (DeleteDB.removeProveedor(id)) {
+                                //Abrir el GlassPane de carga
+                                Frame.openGlass(0);
+
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
 
                                 Compras.vaciarCampos();
+
+                                //Cerrar el GlassPane de carga
+                                Frame.closeGlass();
                             }
                             break;
 
                         case ADMIN_USUARIOS:
-                            Object cedula = tabla.getValueAt(index, 1);
-
                             //Validar el rol de administrador y su clave para
                             //intentar eliminar el usuario
                             if (AdminDB.validateAdminUser()) {
-                                if (DeleteDB.removeUsuario(id, cedula)) {
+                                if (DeleteDB.removeUsuario(id)) {
+                                    //Abrir el GlassPane de carga
+                                    Frame.openGlass(0);
+
                                     //Ya que no es posible eliminar una fila de una tabla
                                     //sin acceder a su Model, al eliminar la final en la
                                     //base de datos, se actualizará la tabla
                                     actualizarDatos();
 
                                     Usuarios.vaciarCampos();
+
+                                    //Cerrar el GlassPane de carga
+                                    Frame.closeGlass();
                                 }
                             }
                             break;
 
                         case ADMIN_EMPLEADOS:
-                            cedula = tabla.getValueAt(index, 1);
-
                             //Validar el rol de administrador y su clave para
                             //intentar eliminar el usuario
                             if (AdminDB.validateAdminUser()) {
-                                if (DeleteDB.removeEmpleado(id, cedula)) {
+                                if (DeleteDB.removeEmpleado(id)) {
+                                    //Abrir el GlassPane de carga
+                                    Frame.openGlass(0);
+
                                     //Ya que no es posible eliminar una fila de una tabla
                                     //sin acceder a su Model, al eliminar la final en la
                                     //base de datos, se actualizará la tabla
                                     actualizarDatos();
 
                                     Empleados.vaciarCampos();
+
+                                    //Cerrar el GlassPane de carga
+                                    Frame.closeGlass();
                                 }
                             }
                             break;
                     }
                 } catch (Exception e) {
-                    msjError("No se pudo eliminar el cliente.\nError: " + e);
+                    msjError("No se pudo eliminar el registro de la tabla."
+                            + "\nError: " + e);
                 }
             }
         }
@@ -1017,7 +1038,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             itemBuscar.setIcon(getMenuIcon("buscar"));
 
         } catch (Exception e) {
-            System.out.println("e = "+e);
+            System.out.println("e = " + e);
             msjAdvertencia("No se pudo cargar los íconos del menú desplegable en los usuarios.\n"
                     + "El software seguirá funcionando sin los íconos.");
 
@@ -1226,7 +1247,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Buscar la coincidencia entre todos los indices
                 sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5));
                 break;
-                
+
             case ADMIN_EMPLEADOS:
                 //Buscar la coincidencia entre todos los indices
                 sorter.setRowFilter(regexFilter(txt, 0, 1, 2, 3, 4, 5, 6, 7));
@@ -1246,7 +1267,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         int row = ERROR_VALUE;
         int index = ERROR_VALUE;
         String msj = "La tabla seleccionada no puede enfocar algún dato.";
-        
+
         //Determinar el index que será buscado y el mensaje de error
         switch (type) {
             case HISTORIAL:
@@ -1259,17 +1280,17 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case VENTAS_PEDIDOS:
                 index = 1;
                 msj = "No se encontró el pedido en los registros.\nPor favor, "
-                            + "actualice los datos y verifique la existencia de "
-                            + "la deuda.";
+                        + "actualice los datos y verifique la existencia de "
+                        + "la deuda.";
                 break;
-                
+
             case CLIENTES:
                 index = 1;
                 msj = "No se encontró el cliente seleccionado.\nPor favor, "
                         + "actualice los datos y verifique la existencia del"
                         + "cliente.";
                 break;
-                
+
             case ADMIN_USUARIOS:
                 index = 1;
                 msj = "No se encontró el usuario seleccionado.\nPor favor, "

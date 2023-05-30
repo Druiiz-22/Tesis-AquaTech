@@ -38,177 +38,224 @@ public class CrearReporte {
      */
     private static void cuerpo() {
 
-        //Número de columnas según la cabecera
-        int columnas = datos[0].length;
-        //Lista de datos sin la cabecera
-        Object[][] datosSinHeader = new Object[datos.length - 1][columnas];
-        //Cantidad de registros en la tabla
-        int filas = datosSinHeader.length;
-        //Copiar los registros en la nueva lista sin la cabecera
-        System.arraycopy(datos, 1, datosSinHeader, 0, filas);
+        //Validar que haya algún dato obtenido (además del header)
+        if (datos.length == 1) {
+            //Tabla contenedora
+            Table tabla = new Table(datos[0].length);
+            //Asignar un ancho del 100% del documento
+            tabla.setWidth(UnitValue.createPercentValue(100));
 
-        //Asignar el primer límite de registros, según el tipo de reporte
-        int primerLimite = (type == REP_CLIENTES || type == REP_PROVEEDORES) ? 42 : 40;
-        //Asignar el límite para la segunda hoja en adelante
-        int limiteMaximo = 50;
-
-        //Declaración de la tabla de los datos
-        Table tabla;
-
-        //Validar si la cantidad de registros NO supera el primer límite
-        if (filas <= primerLimite) {
-            //Crear la tabla con los datos
-            tabla = getTable(datosSinHeader);
-            //Añadir la única tabla al documento
-            documento.add(tabla);
-
-        } else {
-            //Si supera el límite, entonces el documento tendrá de dos a más hojas
-            //Calcular la cantidad de registros DESPUÉS de la primera hoja
-            int filasRestantes = filas - primerLimite;
-            //Cantidad de hojas con 50 registros (límite máximo)
-            int hojasCompletas = filasRestantes / limiteMaximo;
-            //Comprobar que la última hoja terminó con 50 datos. En ese caso, 
-            //la división entre las hojas restantes y el límite máximo, sería
-            //divisible
-            boolean divisible = filasRestantes % limiteMaximo == 0;
-            //Cantidad de registros en la última hoja (puede ser 0)
-            int ultimasFilas = filasRestantes - hojasCompletas * limiteMaximo;
-
-            //Variable para contar la cantidad de hojas en total
-            int cantidadHojas;
-
-            if ((type == REP_CLIENTES || type == REP_PROVEEDORES) && divisible) {
-                //Si el reporte es de clientes o proveedores Y es divisible,
-                //implica que la cantidad de hojas será la primera hoja MÁS la
-                //cantidad de hojas completas
-                cantidadHojas = hojasCompletas + 1;
-            } else {
-
-                /**
-                 * Si el reporte es de otro tipo, la cantidad de hojas será la
-                 * primera hoja, más las hojas completas, más la última hoja.
-                 * Aunque la cantidad de hojas completas PUEDA SER divisible, la
-                 * última NUNCA llegaría a los 50 datos; sino que se partiría la
-                 * tabla en el dato 48, para mostrar el total en una hoja
-                 * siguiente con los dos últimos datos, para NO sobrepasar el
-                 * margen del documento con el total.
-                 */
-                cantidadHojas = hojasCompletas + 2;
+            //Estilo para la cabecera
+            Style headerStyle = new Style(titleStyle)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setPadding(0)
+                    .setBorder(Border.NO_BORDER)
+                    .setBorderBottom(new SolidBorder(azul, 1));
+            //Ciclo para añadir la cabecera con su estilo
+            for (Object campo : datos[0]) {
+                tabla.addCell(
+                        new Cell().add(
+                                new Paragraph(campo.toString())
+                        ).addStyle(headerStyle)
+                );
             }
 
-            //PRIMERA HOJA
-            //Lista de los datos de la primera hoja
-            Object[][] listaDatos = new Object[primerLimite][columnas];
-            //Copiar los primeros datos de la tabla
-            System.arraycopy(datosSinHeader, 0, listaDatos, 0, primerLimite);
-            //Obtener la tabla para la primera hoja
-            tabla = getTable(listaDatos);
+            //Agregar un parrafo centrado (dentro de una tabla invisible), para
+            //mostrar que no se obtuvo ningún dato
+            Table noRegistros = new Table(1);
+            noRegistros.setWidth(UnitValue.createPercentValue(100));
 
-            //Parrafo para la enumeración de las páginas
-            Paragraph enumeracion = new Paragraph("Pagina 1 de " + cantidadHojas);
-            //Asignar el estílo de los títulos
-            enumeracion.addStyle(titleStyle);
-            //Tabla para contener la enumeración centrada y al final del documento
-            Table footer = new Table(1).addCell(customCell(enumeracion, TextAlignment.CENTER));
-            //Posiciones absolutas para la tabla
-            float x = documento.getLeftMargin();
-            float y = documento.getBottomMargin();
-            //Ancho de la tabla, restando los márgenes
-            float w = defaultSize.getWidth() - x * 2;
-            //Asignar la posición absoluta al final del documento
-            footer.setFixedPosition(x, y, w);
+            //Estilo para el dato
+            Style dataStyle = new Style()
+                    .setFont(segoe)
+                    .setFontSize(8)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setPadding(0)
+                    .setBorder(Border.NO_BORDER);
+            noRegistros.addCell(
+                    new Cell().add(
+                            new Paragraph("-- SIN REGISTROS --")
+                    ).addStyle(dataStyle)
+            );
 
-            //Añadir la primera tabla a la hoja
+            //Añadir la única tabla al documento
             documento.add(tabla);
-            //Añadir la enumeración
-            documento.add(footer);
-            //Añadir un salto de página
-            documento.add(new AreaBreak());
+            documento.add(noRegistros);
 
-            //Número del registro actual
-            int filaActual = primerLimite;
-            //Número de la hoja actual
-            int hojaActual = 2;
+        } else {
+            //Número de columnas según la cabecera
+            int columnas = datos[0].length;
+            //Lista de datos sin la cabecera
+            Object[][] datosSinHeader = new Object[datos.length - 1][columnas];
+            //Cantidad de registros en la tabla
+            int filas = datosSinHeader.length;
+            //Copiar los registros en la nueva lista sin la cabecera
+            System.arraycopy(datos, 1, datosSinHeader, 0, filas);
 
-            //Ciclo que recorerrá la cantidad de hojas completas calculadas
-            for (int i = 0; i < hojasCompletas; i++) {
+            //Asignar el primer límite de registros, según el tipo de reporte
+            int primerLimite = (type == REP_CLIENTES || type == REP_PROVEEDORES) ? 42 : 40;
+            //Asignar el límite para la segunda hoja en adelante
+            int limiteMaximo = 50;
 
-                if (divisible && i == hojasCompletas - 1 && type != REP_CLIENTES && type != REP_PROVEEDORES) {
+            //Declaración de la tabla de los datos
+            Table tabla;
+
+            //Validar si la cantidad de registros NO supera el primer límite
+            if (filas <= primerLimite) {
+                //Crear la tabla con los datos
+                tabla = getTable(datosSinHeader);
+                //Añadir la única tabla al documento
+                documento.add(tabla);
+
+            } else {
+                //Si supera el límite, entonces el documento tendrá de dos a más hojas
+                //Calcular la cantidad de registros DESPUÉS de la primera hoja
+                int filasRestantes = filas - primerLimite;
+                //Cantidad de hojas con 50 registros (límite máximo)
+                int hojasCompletas = filasRestantes / limiteMaximo;
+                //Comprobar que la última hoja terminó con 50 datos. En ese caso, 
+                //la división entre las hojas restantes y el límite máximo, sería
+                //divisible
+                boolean divisible = filasRestantes % limiteMaximo == 0;
+                //Cantidad de registros en la última hoja (puede ser 0)
+                int ultimasFilas = filasRestantes - hojasCompletas * limiteMaximo;
+
+                //Variable para contar la cantidad de hojas en total
+                int cantidadHojas;
+
+                if ((type == REP_CLIENTES || type == REP_PROVEEDORES) && divisible) {
+                    //Si el reporte es de clientes o proveedores Y es divisible,
+                    //implica que la cantidad de hojas será la primera hoja MÁS la
+                    //cantidad de hojas completas
+                    cantidadHojas = hojasCompletas + 1;
+                } else {
+
                     /**
-                     * Si la cantidad de hojas comletas es divisible, i equivale
-                     * a la última hoja completa y el reporte es distinto de
-                     * clientes y proveedores; entonces el límite máximo se
-                     * reduce en dos registros, para pasar estos dos últimos
-                     * datos a una hoja siguiente y mostrar el total
+                     * Si el reporte es de otro tipo, la cantidad de hojas será
+                     * la primera hoja, más las hojas completas, más la última
+                     * hoja. Aunque la cantidad de hojas completas PUEDA SER
+                     * divisible, la última NUNCA llegaría a los 50 datos; sino
+                     * que se partiría la tabla en el dato 48, para mostrar el
+                     * total en una hoja siguiente con los dos últimos datos,
+                     * para NO sobrepasar el margen del documento con el total.
                      */
-                    limiteMaximo -= 2;
-                    ultimasFilas = 2;
+                    cantidadHojas = hojasCompletas + 2;
                 }
 
-                //Instanciar una nueva lista de datos para el resto de hojas
-                listaDatos = new Object[limiteMaximo][columnas];
-                //Copiar los datos a la nueva lista
-                System.arraycopy(datosSinHeader, filaActual, listaDatos, 0, limiteMaximo);
-                //Crear una nueva tabla con los nuevos datos
+                //PRIMERA HOJA
+                //Lista de los datos de la primera hoja
+                Object[][] listaDatos = new Object[primerLimite][columnas];
+                //Copiar los primeros datos de la tabla
+                System.arraycopy(datosSinHeader, 0, listaDatos, 0, primerLimite);
+                //Obtener la tabla para la primera hoja
                 tabla = getTable(listaDatos);
 
-                //Instanciar una nueva enumeración con la hoja actual y la cantidad
-                //de hojas en total
-                enumeracion = new Paragraph("Pagina " + hojaActual + " de " + cantidadHojas);
-                //Asignar el estilo de títulos
+                //Parrafo para la enumeración de las páginas
+                Paragraph enumeracion = new Paragraph("Pagina 1 de " + cantidadHojas);
+                //Asignar el estílo de los títulos
                 enumeracion.addStyle(titleStyle);
-                //Instanciar una nueva tabla para la nueva enumeración
-                footer = new Table(1).addCell(customCell(enumeracion, TextAlignment.CENTER));
-                //Posicionar la tabla al final del documento
+                //Tabla para contener la enumeración centrada y al final del documento
+                Table footer = new Table(1).addCell(customCell(enumeracion, TextAlignment.CENTER));
+                //Posiciones absolutas para la tabla
+                float x = documento.getLeftMargin();
+                float y = documento.getBottomMargin();
+                //Ancho de la tabla, restando los márgenes
+                float w = defaultSize.getWidth() - x * 2;
+                //Asignar la posición absoluta al final del documento
                 footer.setFixedPosition(x, y, w);
 
-                //Añadir la tabla actual y la enumeración actual al documento
+                //Añadir la primera tabla a la hoja
                 documento.add(tabla);
+                //Añadir la enumeración
                 documento.add(footer);
+                //Añadir un salto de página
+                documento.add(new AreaBreak());
 
-                //En caso de que el reporte sea de cliente o proveedores, NO 
-                //siempre se le agregará un salto de línea
-                if (type == REP_CLIENTES || type == REP_PROVEEDORES) {
+                //Número del registro actual
+                int filaActual = primerLimite;
+                //Número de la hoja actual
+                int hojaActual = 2;
 
-                    if (!(divisible && i == hojasCompletas - 1)) {
+                //Ciclo que recorerrá la cantidad de hojas completas calculadas
+                for (int i = 0; i < hojasCompletas; i++) {
+
+                    if (divisible && i == hojasCompletas - 1 && type != REP_CLIENTES && type != REP_PROVEEDORES) {
                         /**
-                         * Si la cantidad de hojas completas ES divisible Y la
-                         * hoja actual es la ÚLTIMA hoja completa, entonces NO
-                         * se le agrega un salto de línea. En caso contrario, SÍ
-                         * se le agrega un salto de línea.
+                         * Si la cantidad de hojas comletas es divisible, i
+                         * equivale a la última hoja completa y el reporte es
+                         * distinto de clientes y proveedores; entonces el
+                         * límite máximo se reduce en dos registros, para pasar
+                         * estos dos últimos datos a una hoja siguiente y
+                         * mostrar el total
                          */
+                        limiteMaximo -= 2;
+                        ultimasFilas = 2;
+                    }
+
+                    //Instanciar una nueva lista de datos para el resto de hojas
+                    listaDatos = new Object[limiteMaximo][columnas];
+                    //Copiar los datos a la nueva lista
+                    System.arraycopy(datosSinHeader, filaActual, listaDatos, 0, limiteMaximo);
+                    //Crear una nueva tabla con los nuevos datos
+                    tabla = getTable(listaDatos);
+
+                    //Instanciar una nueva enumeración con la hoja actual y la cantidad
+                    //de hojas en total
+                    enumeracion = new Paragraph("Pagina " + hojaActual + " de " + cantidadHojas);
+                    //Asignar el estilo de títulos
+                    enumeracion.addStyle(titleStyle);
+                    //Instanciar una nueva tabla para la nueva enumeración
+                    footer = new Table(1).addCell(customCell(enumeracion, TextAlignment.CENTER));
+                    //Posicionar la tabla al final del documento
+                    footer.setFixedPosition(x, y, w);
+
+                    //Añadir la tabla actual y la enumeración actual al documento
+                    documento.add(tabla);
+                    documento.add(footer);
+
+                    //En caso de que el reporte sea de cliente o proveedores, NO 
+                    //siempre se le agregará un salto de línea
+                    if (type == REP_CLIENTES || type == REP_PROVEEDORES) {
+
+                        if (!(divisible && i == hojasCompletas - 1)) {
+                            /**
+                             * Si la cantidad de hojas completas ES divisible Y
+                             * la hoja actual es la ÚLTIMA hoja completa,
+                             * entonces NO se le agrega un salto de línea. En
+                             * caso contrario, SÍ se le agrega un salto de
+                             * línea.
+                             */
+                            documento.add(new AreaBreak());
+                        }
+
+                    } else {
+                        //En otro caso, se agregará un salto de línea al final
                         documento.add(new AreaBreak());
                     }
 
-                } else {
-                    //En otro caso, se agregará un salto de línea al final
-                    documento.add(new AreaBreak());
+                    //Obtener el índice del registro actual
+                    filaActual += limiteMaximo;
+                    //Sumar la hoja actual
+                    hojaActual++;
                 }
 
-                //Obtener el índice del registro actual
-                filaActual += limiteMaximo;
-                //Sumar la hoja actual
-                hojaActual++;
+                //Validar que las últimas filas sean mayor a 0
+                if (ultimasFilas > 0) {
+                    //ÚLTIMA HOJA
+                    listaDatos = new Object[ultimasFilas][columnas];
+
+                    System.arraycopy(datosSinHeader, filaActual, listaDatos, 0, ultimasFilas);
+                    tabla = getTable(listaDatos);
+
+                    enumeracion = new Paragraph("Pagina " + hojaActual + " de " + cantidadHojas);
+                    enumeracion.addStyle(titleStyle);
+                    footer = new Table(1).addCell(customCell(enumeracion, TextAlignment.CENTER));
+                    footer.setFixedPosition(x, y, w);
+
+                    documento.add(tabla);
+                    documento.add(footer);
+                }
             }
-
-            //Validar que las últimas filas sean mayor a 0
-            if (ultimasFilas > 0) {
-                //ÚLTIMA HOJA
-                listaDatos = new Object[ultimasFilas][columnas];
-
-                System.arraycopy(datosSinHeader, filaActual, listaDatos, 0, ultimasFilas);
-                tabla = getTable(listaDatos);
-
-                enumeracion = new Paragraph("Pagina " + hojaActual + " de " + cantidadHojas);
-                enumeracion.addStyle(titleStyle);
-                footer = new Table(1).addCell(customCell(enumeracion, TextAlignment.CENTER));
-                footer.setFixedPosition(x, y, w);
-
-                documento.add(tabla);
-                documento.add(footer);
-            }
-
         }
 
         if (type != REP_CLIENTES && type != REP_PROVEEDORES) {
@@ -239,7 +286,7 @@ public class CrearReporte {
                 .setPadding(0)
                 .setBorder(Border.NO_BORDER)
                 .setBorderBottom(new SolidBorder(azul, 1));
-        //Ciclo para añadir las de para la cabecera con su estilo
+        //Ciclo para añadir la cabecera con su estilo
         for (Object campo : datos[0]) {
             tabla.addCell(
                     new Cell().add(
@@ -406,7 +453,7 @@ public class CrearReporte {
                     //Sumar todas las cantidades de ventas realizados
                     cantidad += Integer.valueOf(datos[i][3].toString());
                     //Sumar todos los precios de venta asignados
-                    ganancias += Float.valueOf(datos[i][5].toString());
+                    ganancias += Float.valueOf(datos[i][6].toString());
                 }
 
                 //Añadir el título de los botellones vendidos
@@ -503,19 +550,19 @@ public class CrearReporte {
     private static int getDatos() {
         switch (type) {
             case REP_TRASVASOS:
-                datos = ReadDB.getTrasvasos(initialDate, finalDate, sucursal);
+                datos = ReadDB.getTrasvasos(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_RECARGAS:
-                datos = ReadDB.getRecargas(initialDate, finalDate, sucursal);
+                datos = ReadDB.getRecargas(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_COMPRAS:
-                datos = ReadDB.getCompras(initialDate, finalDate, sucursal);
+                datos = ReadDB.getCompras(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_VENTAS:
-                datos = ReadDB.getVentas(initialDate, finalDate, sucursal);
+                datos = ReadDB.getVentas(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_DEUDAS:
@@ -538,7 +585,7 @@ public class CrearReporte {
                         System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
                     }
                 } else {
-                    datos = new Object[][]{{header}};
+                    datos = new Object[][]{header};
                 }
                 break;
 
@@ -561,7 +608,7 @@ public class CrearReporte {
                         System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
                     }
                 } else {
-                    datos = new Object[][]{{header}};
+                    datos = new Object[][]{header};
                 }
                 break;
 
@@ -584,7 +631,7 @@ public class CrearReporte {
                         System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
                     }
                 } else {
-                    datos = new Object[][]{{header}};
+                    datos = new Object[][]{header};
                 }
                 break;
         }
@@ -597,7 +644,7 @@ public class CrearReporte {
     private static Object[][] datos;
     private static String initialDate;
     private static String finalDate;
-    private static int sucursal;
+    private static int id_sucursal;
 
     // ========== FRONTEND ==========
     /**
@@ -1186,12 +1233,6 @@ public class CrearReporte {
             if (Mensaje.msjYesNo(adv)) {
                 crearPDF();
             }
-
-            //Si el resultado fue menor de 1, implica un error de conexión con la BDD
-        } else {
-            Mensaje.msjError("No se pudo extraer los registros de la base de "
-                    + "datos\npara la generación del reporte.\n"
-                    + "Por favor, verifique su conexión con la base de datos.");
         }
 
         vaciarDatos();
@@ -1217,7 +1258,7 @@ public class CrearReporte {
         CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
         CrearReporte.initialDate = initialDate;
         CrearReporte.finalDate = finalDate;
-        CrearReporte.sucursal = sucursal;
+        CrearReporte.id_sucursal = sucursal;
 
         //Buscar los datos y obtener el número de datos obtenidos
         int result = getDatos();
@@ -1234,12 +1275,6 @@ public class CrearReporte {
             if (Mensaje.msjYesNo(adv)) {
                 crearPDF();
             }
-
-            //Si el resultado fue menor de 1, implica un error de conexión con la BDD
-        } else {
-            Mensaje.msjError("No se pudo extraer los registros de la base de "
-                    + "datos\npara la generación del reporte.\n"
-                    + "Por favor, verifique su conexión con la base de datos.");
         }
 
         vaciarDatos();
@@ -1255,7 +1290,7 @@ public class CrearReporte {
         initialDate = null;
         finalDate = null;
         datos = null;
-        sucursal = -1;
+        id_sucursal = -1;
     }
 
     /**

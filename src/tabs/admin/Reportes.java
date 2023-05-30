@@ -5,12 +5,15 @@ import components.Boton;
 import components.CampoTexto;
 import components.Label;
 import components.PanelInfo;
+import database.ReadDB;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import properties.Fuentes;
@@ -63,8 +66,12 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                                 String finalDate = fechaFin.getSelectedDate();
 
                                 //Crear el reporte con los datos ingresados
-                                CrearReporte.crear(type, path, initialDate, finalDate, 1);
+                                CrearReporte.crear(type, path, initialDate, finalDate, id_sucursal);
                             }
+
+                            //Reposicionar el combobox
+                            boxTipoReporte.setSelectedIndex(0);
+                            boxSucursales.setSelectedIndex(0);
                             //Cerrar el GlassPane
                             Frame.closeGlass();
                         }
@@ -144,13 +151,51 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             if (!fechaInicio.getSelectedDate().trim().isEmpty()) {
                 if (!fechaFin.getSelectedDate().trim().isEmpty()) {
 
-                    return true;
+                    int index = boxSucursales.getSelectedIndex();
+                    //Validar que la sucursal sea mayor que 0
+                    if (index > 0) {
 
+                        //Comprobar si se seleccionaron TODAS las sucursales
+                        if (index == 1) {
+                            id_sucursal = TODAS_SUCURSALES;
+                            return true;
+
+                        } else {
+                            try {
+                                //Intentar obtener el ID de la sucursal seleccionada
+                                Object sucursal = boxSucursales.getSelectedItem();
+                                String id = ((ComboItem) sucursal).getValue();
+
+                                //Validar que el id obtenido NO sea nulo
+                                if (!id.isEmpty()) {
+                                    //Convertir de String a Entero y validar su valor 
+                                    id_sucursal = Integer.valueOf(id);
+                                    if (id_sucursal > 0) {
+
+                                        return true;
+
+                                    } else {
+                                        throw new NumberFormatException();
+                                    }
+                                } else {
+                                    msjError("No se pudo obtener el ID de la sucursal "
+                                            + "seleccionada.");
+                                }
+                            } catch (NumberFormatException e) {
+                                msjError("El ID de la sucursal seleccionada es "
+                                        + "inválida.\nPor favor, actualice el"
+                                        + "programa y valide la existencia de"
+                                        + "la sucursal.");
+                            }
+                        }
+                    } else {
+                        msjError("Debe seleccionar una sucursal válida.");
+                    }
                 } else {
-                    msjError("La fecha final final no puede estar vacía");
+                    msjError("La fecha final final no puede estar vacía.");
                 }
             } else {
-                msjError("La fecha inicial no puede estar vacía");
+                msjError("La fecha inicial no puede estar vacía.");
             }
         } else {
             msjError("Debe seleccionar el tipo de reporte.");
@@ -286,6 +331,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     }
 
     //CONSTANTES BACKEND
+    private int id_sucursal;
     private static final int REP_TRASVASOS = 1;
     private static final int REP_DEUDAS = 2;
     private static final int REP_RECARGAS = 3;
@@ -317,10 +363,11 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
         //Asignar la fuente al comboBox
         boxTipoReporte.setFont(Fuentes.segoe(16, PLANO));
+        boxSucursales.setFont(Fuentes.segoe(16, PLANO));
 
         //Asignar los tooltip texts
         lblTipoReporte.setToolTipText("Determinar el tipo de información e "
-                + "historial que mostrará el reporte generado");
+                + "historial que mostrará el reporte generado.");
         lblUbicacion.setToolTipText(
                 "<html>"
                 + "<p>"
@@ -331,6 +378,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                 + "</p>"
                 + "</html>"
         );
+        lblSucursales.setToolTipText("Filtrar los reportes por sucursal.");
 
         //Asignar las propiedades al panel de reportes
         panelReportes.setBackground(BLANCO);
@@ -343,8 +391,10 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         panelReportes.add(lblUbicacion);
         panelReportes.add(txtUbicacion);
         panelReportes.add(btnUbicacion);
-        panelReportes.add(btnAceptar);
+        panelReportes.add(lblSucursales);
+        panelReportes.add(boxSucursales);
         panelReportes.add(btnCancelar);
+        panelReportes.add(btnAceptar);
 
         this.add(informacion);
         this.add(panelReportes);
@@ -544,7 +594,8 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
      * Función para reposicionar los componentes dentro del panel de reportes
      */
     private void relocateReporte() {
-        int txtHeight = 40;
+        boolean alturaBaja = panelHeight < 410;
+        int txtHeight = (alturaBaja) ? 30 : 40;
         int gapV = 5;
         int repW = panelReportes.getWidth();
         int txtWidth = repW - padding * 2;
@@ -552,8 +603,9 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         //Asignar el tamaño a los componentes que requieran
         //declarar sus tamaños
         boxTipoReporte.setSize(txtWidth, txtHeight);
-        btnUbicacion.setSize(txtHeight, txtHeight);
         txtUbicacion.setSize(txtWidth - txtHeight - gapV * 2, txtHeight);
+        btnUbicacion.setSize(txtHeight, txtHeight);
+        boxSucursales.setSize(txtWidth, txtHeight);
 
         //Posición del título del panel para los datos
         lblTitulo.setLocation(padding, padding);
@@ -562,21 +614,29 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         //primero se obtiene le punto medio del panel
         int middleY = panelReportes.getHeight() / 2;
         //Luego la suma de la altura de TODOS los componentes y sus labels
-        int allHeights = txtHeight * 2 + lblTipoReporte.getHeight() * 2;
+        int allHeights = txtHeight * 3 + lblTipoReporte.getHeight() * 3;
         //Finalmente calcular el punto medio, sumando, además, los padding utilizados 
-        int positionY = middleY - (allHeights + padding * 3) / 2;
+        int positionY = middleY - (allHeights + ((alturaBaja) ? padding / 2 : padding) * 4) / 2;
         lblTipoReporte.setLocation(padding, positionY);
 
         //Posición vertical para el primer campo de texto
-        positionY = positionY + lblTipoReporte.getHeight() + gapV;
+        positionY += lblTipoReporte.getHeight() + ((alturaBaja) ? gapV / 2 : gapV);
         boxTipoReporte.setLocation(padding, positionY);
 
         //Posición vertical del segundo label para su campo de texto
-        positionY = positionY + txtHeight + padding;
-        lblUbicacion.setLocation(padding, positionY);
+        positionY += txtHeight + ((alturaBaja) ? padding / 2 : padding);
+        lblSucursales.setLocation(padding, positionY);
 
         //Posición vertical para el segundo campo de texto y su botón
-        positionY = positionY + lblUbicacion.getHeight() + gapV;
+        positionY += lblSucursales.getHeight() + ((alturaBaja) ? gapV / 2 : gapV);
+        boxSucursales.setLocation(padding, positionY);
+
+        //Posición vertical del tercer label para su campo de texto
+        positionY += txtHeight + ((alturaBaja) ? padding / 2 : padding);
+        lblUbicacion.setLocation(padding, positionY);
+
+        //Posición vertical para el tercer campo de texto y su botón
+        positionY = positionY + lblUbicacion.getHeight() + ((alturaBaja) ? gapV / 2 : gapV);
         int positionX = repW - padding - txtHeight;
         btnUbicacion.setLocation(positionX, positionY);
         txtUbicacion.setLocation(padding, positionY);
@@ -606,12 +666,45 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
         txtUbicacion.setText("Predeterminado");
     }
 
+    protected boolean actualizarDatos() {
+        //Cargar los sucursales
+        sucursales = ReadDB.getSucursales();
+        //Retornar falso si las sucursales están vacías
+        if (sucursales == null) {
+            return false;
+        }
+
+        //Vaciar el comboBox de las sucursales
+        boxSucursales.removeAllItems();
+
+        //Agregar el primer index
+        boxSucursales.addItem("Seleccionar");
+        boxSucursales.addItem("Todos");
+
+        //Guardar todas las sucursales
+        for (Object[] sucursal : sucursales) {
+            //Capitalizar las sucursales
+            String capitalize = sucursal[1].toString();
+            capitalize = capitalize.substring(0, 1).toUpperCase() + capitalize.substring(1).toLowerCase();
+            //Agregar las sucursales
+            boxSucursales.addItem(
+                    new ComboItem(
+                            capitalize,
+                            sucursal[0].toString()
+                    )
+            );
+        }
+        //Retornar true al final
+        return true;
+    }
+
     protected void habilitarComponents(boolean estado) {
         boxTipoReporte.setEnabled(estado);
+        boxSucursales.setEnabled(estado);
         txtUbicacion.setEnabled(estado);
-        
+
         int box = boxTipoReporte.getSelectedIndex();
-        if(box != REP_CLIENTES && box != REP_PROVEEDORES){
+        if (box != REP_CLIENTES && box != REP_PROVEEDORES) {
             fechaInicio.habilitar(estado);
             fechaFin.habilitar(estado);
         } else {
@@ -637,6 +730,10 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private static final String[] opciones = {"Seleccionar", "Trasvasos", "Deudas", "Recargas", "Compras", "Ventas", "Clientes", "Proveedores"};
     private static final JComboBox boxTipoReporte = new JComboBox(opciones);
 
+    private static Object[][] sucursales;
+    private static final Label lblSucursales = new Label("Tipo de reporte", PLANO, 18, true);
+    private static final JComboBox boxSucursales = new JComboBox();
+
     private static final Label lblUbicacion = new Label("Ubicación del reporte", PLANO, 18, true);
     private static final CampoTexto txtUbicacion = new CampoTexto("Ubicación del reporte", CUALQUIER);
 
@@ -645,6 +742,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
     private static final BotonDirectory btnUbicacion = new BotonDirectory();
 
+    //CLASES PRIVADAS
     /**
      * Clase para los paneles con las fechas
      */
@@ -749,11 +847,43 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             this.txtFecha.setEnabled(estado);
         }
 
+        /**
+         * Función para reiniciar el date chooser y asignar la fecha actual
+         */
+        protected void resetDate() {
+            dateChooser.setDate(new Date());
+            txtFecha.setText(dateFormat.format(dateChooser.getCalendar().getTime()));
+        }
+
         //ATRIBUTOS
-        private static final java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         //COMPONENTES
         private final Label lblTitulo = new Label("", TITULO, 22);
         private final CampoTexto txtFecha = new CampoTexto("99-99-9999", FECHA);
         private final JCalendar dateChooser = new JCalendar();
+    }
+
+    private class ComboItem {
+
+        private String key;
+        private String value;
+
+        public ComboItem(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return key;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

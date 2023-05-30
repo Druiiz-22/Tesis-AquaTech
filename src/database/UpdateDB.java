@@ -34,8 +34,6 @@ public class UpdateDB implements properties.Constantes {
                     + "telefono = \"" + telefono + "\" "
                     + "WHERE id = " + id;
 
-            System.out.println(sql);
-
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
             bdd.conectar();

@@ -8,15 +8,23 @@ public class Run {
     private static login.Frame login;
     private static main.Frame mainFrame;
 
-    public static void main(String[] args) {
-        
-        // - Eliminar un empleado
-        // - Validar que una sucursal NO se quede sin un admin
-        // - Diseñar ajustes
-        
-//        database.UpdateDB.updateCliente(10, 999, "THOR", "ODINSON", "04240126454");
+    public static void main(String[] args) {        
         iniciarLogin();
-//        iniciarPrograma("DIEGO", 1);
+
+        //LISTA DE COSAS PENDIENTES
+        //- Hacer los reporte de pedidos
+        //- Hacer los reportes de los empleados
+        
+        //- Hacer los ajustes
+        //- Cancelar un pedido
+        
+        //- Realizar respaldo e importe de base de datos
+        
+        //- Realizar base de datos local
+        //- Obtener dirección MAC
+        //- Dar formulario a los RIF
+        
+        //- Documentar toda la tesis
     }
 
     /**
