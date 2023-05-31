@@ -44,7 +44,8 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
             //Validar de fechas en caso de que el tipo de reporte seleccionado
             //sea DISTINTO al de clientes, proveedores o deudas
-            if ((index == REP_CLIENTES || index == REP_PROVEEDORES || index == REP_DEUDAS) ? true : validarFechas()) {
+            if ((index == REP_CLIENTES || index == REP_PROVEEDORES
+                    || index == REP_DEUDAS || index == REP_EMPLEADOS) ? true : validarFechas()) {
 
                 if (msjYesNo("¿Está seguro de realizar el reporte?")) {
                     new Thread() {
@@ -58,15 +59,28 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                             //Validar si la ubicación es predeterminada o personalizada
                             path = (path.toUpperCase().equals("PREDETERMINADO")) ? getDefaultFolder() : path;
 
-                            if (index == REP_CLIENTES || index == REP_PROVEEDORES || index == REP_DEUDAS) {
-                                CrearReporte.crear(type, path);
+                            //Switch para crear el reporte, según su tipo
+                            switch (index) {
+                                case REP_CLIENTES:
+                                case REP_PROVEEDORES:
+                                case REP_DEUDAS:
+                                    //Crear reporte sin filtro por fechas y sucursal
+                                    CrearReporte.crear(type, path);
+                                    break;
 
-                            } else {
-                                String initialDate = fechaInicio.getSelectedDate();
-                                String finalDate = fechaFin.getSelectedDate();
+                                case REP_EMPLEADOS:
+                                    //Crear reporte sin filtro por fechas, pero
+                                    //filtrado por sucursal
+                                    CrearReporte.crear(type, path, id_sucursal);
+                                    break;
 
-                                //Crear el reporte con los datos ingresados
-                                CrearReporte.crear(type, path, initialDate, finalDate, id_sucursal);
+                                default:
+                                    //Crear el reporte con filtro por fecha y
+                                    //por sucursal
+                                    String initialDate = fechaInicio.getSelectedDate();
+                                    String finalDate = fechaFin.getSelectedDate();
+                                    CrearReporte.crear(type, path, initialDate, finalDate, id_sucursal);
+                                    break;
                             }
 
                             //Reposicionar el combobox
@@ -151,12 +165,22 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             if (!fechaInicio.getSelectedDate().trim().isEmpty()) {
                 if (!fechaFin.getSelectedDate().trim().isEmpty()) {
 
-                    int index = boxSucursales.getSelectedIndex();
-                    //Validar que la sucursal sea mayor que 0
-                    if (index > 0) {
+                    //Obtener el index del tipo de reporte seleccionado
+                    int tipo = boxTipoReporte.getSelectedIndex();
+                    //Comrobar si el reporte NO llevará filtro por sucursales
+                    if (tipo == REP_CLIENTES || tipo == REP_PROVEEDORES || tipo == REP_DEUDAS) {
+                        return true;
+                    }
+
+                    //Obtener el index de la sucursal seleccionada para filtrarlo
+                    int sucursal_i = boxSucursales.getSelectedIndex();
+
+                    //Validar que la sucursal sea mayor que 0 o que el tipo de 
+                    //reporte seleccionado permita el uso de sucursal
+                    if (sucursal_i > 0) {
 
                         //Comprobar si se seleccionaron TODAS las sucursales
-                        if (index == 1) {
+                        if (sucursal_i == 1) {
                             id_sucursal = TODAS_SUCURSALES;
                             return true;
 
@@ -314,6 +338,9 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             case REP_PROVEEDORES:
                 mainPath += "\\Proveedores";
                 break;
+            case REP_EMPLEADOS:
+                mainPath += "\\Empleados";
+                break;
         }
 
         //Crear un archivo con la ruta de la carpeta donde se almacenarán los
@@ -339,6 +366,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private static final int REP_VENTAS = 5;
     private static final int REP_CLIENTES = 6;
     private static final int REP_PROVEEDORES = 7;
+    private static final int REP_EMPLEADOS = 8;
 
     // ========== FRONTEND ==========
     /**
@@ -437,10 +465,12 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                 case REP_DEUDAS:
                 case REP_CLIENTES:
                 case REP_PROVEEDORES:
+                    boxSucursales.setEnabled(false);
                     fechaInicio.habilitar(false);
                     fechaFin.habilitar(false);
                     break;
                 default:
+                    boxSucursales.setEnabled(true);
                     fechaInicio.habilitar(true);
                     fechaFin.habilitar(true);
             }
@@ -727,7 +757,8 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private static final Label lblTitulo = new Label("Generar Reportes", TITULO, 24);
 
     private static final Label lblTipoReporte = new Label("Tipo de reporte", PLANO, 18, true);
-    private static final String[] opciones = {"Seleccionar", "Trasvasos", "Deudas", "Recargas", "Compras", "Ventas", "Clientes", "Proveedores"};
+    private static final String[] opciones = {"Seleccionar", "Trasvasos", "Deudas",
+        "Recargas", "Compras", "Ventas", "Clientes", "Proveedores", "Empleados"};
     private static final JComboBox boxTipoReporte = new JComboBox(opciones);
 
     private static Object[][] sucursales;

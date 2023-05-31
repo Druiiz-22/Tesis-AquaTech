@@ -13,7 +13,6 @@ public class Run {
 
         //LISTA DE COSAS PENDIENTES
         //- Hacer los reporte de pedidos
-        //- Hacer los reportes de los empleados
         
         //- Hacer los ajustes
         //- Cancelar un pedido

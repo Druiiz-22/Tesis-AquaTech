@@ -37,7 +37,6 @@ public class CrearReporte {
      * con los datos y el total, según el tipo de reporte
      */
     private static void cuerpo() {
-
         //Validar que haya algún dato obtenido (además del header)
         if (datos.length == 1) {
             //Tabla contenedora
@@ -93,7 +92,8 @@ public class CrearReporte {
             System.arraycopy(datos, 1, datosSinHeader, 0, filas);
 
             //Asignar el primer límite de registros, según el tipo de reporte
-            int primerLimite = (type == REP_CLIENTES || type == REP_PROVEEDORES) ? 42 : 40;
+            int primerLimite = (type == REP_CLIENTES || type == REP_PROVEEDORES
+                    || type == REP_EMPLEADOS) ? 42 : 40;
             //Asignar el límite para la segunda hoja en adelante
             int limiteMaximo = 50;
 
@@ -123,13 +123,14 @@ public class CrearReporte {
                 //Variable para contar la cantidad de hojas en total
                 int cantidadHojas;
 
-                if ((type == REP_CLIENTES || type == REP_PROVEEDORES) && divisible) {
-                    //Si el reporte es de clientes o proveedores Y es divisible,
-                    //implica que la cantidad de hojas será la primera hoja MÁS la
-                    //cantidad de hojas completas
+                if ((type == REP_CLIENTES || type == REP_PROVEEDORES
+                        || type == REP_EMPLEADOS) && divisible) {
+                    //Si el reporte es de clientes, proveedores o empleados y es
+                    //divisible, implica que la cantidad de hojas será la primera
+                    //hoja MÁS la cantidad de hojas completas
                     cantidadHojas = hojasCompletas + 1;
-                } else {
 
+                } else {
                     /**
                      * Si el reporte es de otro tipo, la cantidad de hojas será
                      * la primera hoja, más las hojas completas, más la última
@@ -179,14 +180,15 @@ public class CrearReporte {
                 //Ciclo que recorerrá la cantidad de hojas completas calculadas
                 for (int i = 0; i < hojasCompletas; i++) {
 
-                    if (divisible && i == hojasCompletas - 1 && type != REP_CLIENTES && type != REP_PROVEEDORES) {
+                    if (divisible && i == hojasCompletas - 1 && type != REP_CLIENTES
+                            && type != REP_PROVEEDORES && type != REP_EMPLEADOS) {
                         /**
                          * Si la cantidad de hojas comletas es divisible, i
                          * equivale a la última hoja completa y el reporte es
-                         * distinto de clientes y proveedores; entonces el
-                         * límite máximo se reduce en dos registros, para pasar
-                         * estos dos últimos datos a una hoja siguiente y
-                         * mostrar el total
+                         * distinto de clientes, proveedores o empleados;
+                         * entonces el límite máximo se reduce en dos registros,
+                         * para pasar estos dos últimos datos a una hoja
+                         * siguiente y mostrar el total
                          */
                         limiteMaximo -= 2;
                         ultimasFilas = 2;
@@ -215,7 +217,8 @@ public class CrearReporte {
 
                     //En caso de que el reporte sea de cliente o proveedores, NO 
                     //siempre se le agregará un salto de línea
-                    if (type == REP_CLIENTES || type == REP_PROVEEDORES) {
+                    if (type == REP_CLIENTES || type == REP_PROVEEDORES
+                            || type == REP_EMPLEADOS) {
 
                         if (!(divisible && i == hojasCompletas - 1)) {
                             /**
@@ -258,7 +261,8 @@ public class CrearReporte {
             }
         }
 
-        if (type != REP_CLIENTES && type != REP_PROVEEDORES) {
+        //Realizar el total cuando el reporte NO sea de clientes, proveedores o empleados
+        if (type != REP_CLIENTES && type != REP_PROVEEDORES && type != REP_EMPLEADOS) {
             Table total = getTotalTable();
             documento.add(total);
         }
@@ -634,6 +638,10 @@ public class CrearReporte {
                     datos = new Object[][]{header};
                 }
                 break;
+
+            case REP_EMPLEADOS:
+                datos = ReadDB.getEmpleados(id_sucursal);
+                break;
         }
 
         //Comprobar si los datos NO están vacíos y retornar el resultado
@@ -690,6 +698,7 @@ public class CrearReporte {
         switch (type) {
             case REP_CLIENTES:
             case REP_PROVEEDORES:
+            case REP_EMPLEADOS:
             case REP_DEUDAS:
                 columnas = 2;
                 break;
@@ -709,7 +718,8 @@ public class CrearReporte {
         tabla.addCell(customCell(proposito, TextAlignment.LEFT));
 
         //Validar si el reporte llevará fecha de filtro
-        if (type != REP_CLIENTES && type != REP_PROVEEDORES && type != REP_DEUDAS) {
+        if (type != REP_CLIENTES && type != REP_PROVEEDORES
+                && type != REP_DEUDAS && type != REP_EMPLEADOS) {
             //Parrafo para las ganancias
             Paragraph ganancias = getProfits();
             tabla.addCell(customCell(ganancias, TextAlignment.CENTER));
@@ -970,6 +980,7 @@ public class CrearReporte {
             case REP_DEUDAS:
             case REP_CLIENTES:
             case REP_PROVEEDORES:
+            case REP_EMPLEADOS:
                 proposito.setWidth(250);
                 break;
 
@@ -1032,6 +1043,9 @@ public class CrearReporte {
             case REP_PROVEEDORES:
                 return "Reporte para visualizar a todos los proveedores "
                         + "registrados en el sistema";
+            case REP_EMPLEADOS:
+                return "Reporte para visualizar a todos los empleados "
+                        + "contratados en la empresa";
             default:
                 return "";
         }
@@ -1059,6 +1073,8 @@ public class CrearReporte {
                 return "CLIENTES";
             case REP_PROVEEDORES:
                 return "PROVEEDORES";
+            case REP_EMPLEADOS:
+                return "EMPLEADOS";
             default:
                 return "";
         }
@@ -1237,6 +1253,38 @@ public class CrearReporte {
 
         vaciarDatos();
     }
+    
+    /**
+     * Función principal para crear un reporte PDF, sin filtro de fechas
+     *
+     * @param type Tipo de reporte generado (cliente o proveedor)
+     * @param path Ruta donde se generará el reporte (sin el nombre)
+     */
+    public static void crear(int type, String path, int sucursal) {
+        CrearReporte.type = type;
+        CrearReporte.path = path;
+        CrearReporte.fileName = getDefaultName();
+        CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
+        CrearReporte.id_sucursal = sucursal;
+
+        int result = getDatos();
+
+        //Validar que exista, al menos, un registro (sin contar el header)
+        if (result > 1) {
+            crearPDF();
+        } else if (result == 1) {
+            //Si no se obtuvo ningún registro, mostrar un mensaje de advertencia
+            String adv = "No se obtuvo ningún registro de la base de datos.\n"
+                    + "¿Quiere crear el reporte de igual forma?";
+
+            //Validar si se creará el reporte o no
+            if (Mensaje.msjYesNo(adv)) {
+                crearPDF();
+            }
+        }
+
+        vaciarDatos();
+    }
 
     /**
      * Función principal para crear un reporte PDF, filtrado con una fecha
@@ -1372,4 +1420,5 @@ public class CrearReporte {
     private static final int REP_VENTAS = 5;
     private static final int REP_CLIENTES = 6;
     private static final int REP_PROVEEDORES = 7;
+    private static final int REP_EMPLEADOS = 8;
 }

@@ -1033,6 +1033,72 @@ public class ReadDB implements properties.Constantes {
         return null;
     }
 
+    public static Object[][] getSucursales() {
+        //ID, descripción, teléfonos, coordenadas
+
+        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
+        String sql = "SELECT COUNT(*) FROM Sucursal;";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Sentencia SQL para obtener los trasvasos
+                        sql = "SELECT * FROM Sucursal";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object sucursales[][] = new Object[count][4];
+                            int i = 0;
+
+                            while (r.next()) {
+                                sucursales[i][0] = r.getInt(1);
+                                sucursales[i][1] = r.getString(2);
+                                sucursales[i][2] = r.getString(3);
+                                sucursales[i][3] = r.getString(4);
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return sucursales;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las sucursales de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
+    }
+
     /**
      * Función para validar la existencia de un cliente en la base de datos,
      * mediante el uso de su cédula.
@@ -1213,6 +1279,7 @@ public class ReadDB implements properties.Constantes {
 
         //Preparar la sentencia SQL para obtener la cantidad de clientes
         int sucursal = 1;
+
         String sql;
         int userRol = Frame.getUserRol();
         if (userRol == ADMINISTRADOR) {
@@ -1780,7 +1847,7 @@ public class ReadDB implements properties.Constantes {
                                 recargas[i][7] = r.getString(7);
                                 i++;
                             }
-                            
+
                             //Desconectar la base de datos
                             bdd.desconectar();
 
@@ -2093,11 +2160,31 @@ public class ReadDB implements properties.Constantes {
         return null;
     }
 
-    public static Object[][] getSucursales() {
-        //ID, descripción, teléfonos, coordenadas
+    public static Object[][] getEmpleados(int sucursal) {
+        //ID, Cedula, Nombre, Apellido, Cargo laboral, Sucursal
 
         //Preparar la sentencia SQL para obtener la cantidad de trasvasos
-        String sql = "SELECT COUNT(*) FROM Sucursal;";
+        String sql;
+        //Validar si se van a mostrar todas las sucursales o si será filtrado
+        if (sucursal == TODAS_SUCURSALES) {
+            sql = "SELECT COUNT(*) FROM Empleado "
+                    + "INNER JOIN Usuario "
+                    + "	ON id_usuario = Usuario.id "
+                    + "INNER JOIN Cliente "
+                    + "	ON id_cliente = Cliente.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id ";
+
+        } else {
+            sql = "SELECT COUNT(*) FROM Empleado "
+                    + "INNER JOIN Usuario "
+                    + "	ON id_usuario = Usuario.id "
+                    + "INNER JOIN Cliente "
+                    + "	ON id_cliente = Cliente.id "
+                    + "INNER JOIN Sucursal "
+                    + "	ON id_sucursal = Sucursal.id "
+                    + " AND Sucursal.id = " + sucursal;
+        }
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -2109,33 +2196,66 @@ public class ReadDB implements properties.Constantes {
         try {
             //Validar que la respuesta NO sea nula
             if (r != null) {
+                //Header para los trasvasos
+                Object[] header = {"ID", "Cedula", "Nombre", "Apellido",
+                    "Cargo Laboral", "Sucursal"};
+
                 //Validar que haya obtenido algún dato
                 if (r.next()) {
                     //Obtener la cantidad de clientes y validar la cantidad
                     int count = r.getInt(1);
                     if (count > 0) {
                         //Sentencia SQL para obtener los trasvasos
-                        sql = "SELECT * FROM Sucursal";
+                        if (sucursal == TODAS_SUCURSALES) {
+                            sql = "SELECT Empleado.id, cedula, nombre, "
+                                    + "	apellido, cargo_laboral, descripcion "
+                                    + "FROM Empleado "
+                                    + "INNER JOIN Usuario "
+                                    + "	ON id_usuario = Usuario.id "
+                                    + "INNER JOIN Cliente "
+                                    + "	ON id_cliente = Cliente.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id ";
+
+                        } else {
+                            sql = "SELECT Empleado.id, cedula, nombre, "
+                                    + "	apellido, cargo_laboral, descripcion "
+                                    + "FROM Empleado "
+                                    + "INNER JOIN Usuario "
+                                    + "	ON id_usuario = Usuario.id "
+                                    + "INNER JOIN Cliente "
+                                    + "	ON id_cliente = Cliente.id "
+                                    + "INNER JOIN Sucursal "
+                                    + "	ON id_sucursal = Sucursal.id "
+                                    + "    AND Sucursal.id = " + sucursal;
+                        }
 
                         r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
-                            Object sucursales[][] = new Object[count][4];
-                            int i = 0;
+                            //Instanciar la lista para los trasvasos
+                            Object empleados[][] = new Object[count + 1][header.length];
 
+                            //Header de la lista
+                            empleados[0] = header;
+
+                            int i = 1;
                             while (r.next()) {
-                                sucursales[i][0] = r.getInt(1);
-                                sucursales[i][1] = r.getString(2);
-                                sucursales[i][2] = r.getString(3);
-                                sucursales[i][3] = r.getString(4);
+                                //ID, Cedula, Nombre, Apellido, Cargo laboral, Sucursal
+                                empleados[i][0] = r.getInt(1);
+                                empleados[i][1] = r.getInt(2);
+                                empleados[i][2] = r.getString(3);
+                                empleados[i][3] = r.getString(4);
+                                empleados[i][4] = r.getString(5);
+                                empleados[i][5] = r.getString(6);
                                 i++;
                             }
 
                             //Desconectar la base de datos
                             bdd.desconectar();
 
-                            return sucursales;
+                            return empleados;
                         }
                     }
                 }
@@ -2143,19 +2263,19 @@ public class ReadDB implements properties.Constantes {
                 bdd.desconectar();
 
                 //Si el result NO fue null, implica que SÍ se estableció una 
-                //conexión. Sin embargo, pudo no haber traído algún dato o
-                //traer la cantidad de 0 registros, por lo tanto, se retornará
-                //un objeto vacío, en cualquiera de ambos casos.
-                return new Object[][]{};
+                //conexión. Sin embargo, pudo no haber traído algún dato; en ese
+                //caso, se retornará una lista vacía, únicamente con el header
+                return new Object[][]{header};
             }
         } catch (Exception ex) {
-            Mensaje.msjError("No se pudieron obtener las sucursales de la base de "
+            Mensaje.msjError("No se pudieron obtener los empleados de la base de "
                     + "datos.\nError: " + ex);
         }
 
         //Desconectar la base de datos
         bdd.desconectar();
 
+        //Retornar un dato nulo
         return null;
     }
 }
