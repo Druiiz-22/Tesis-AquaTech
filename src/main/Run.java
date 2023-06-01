@@ -12,19 +12,18 @@ public class Run {
         iniciarLogin();
         
         //LISTA DE COSAS PENDIENTES
-        //- Hacer los reporte de pedidos
+        //- Hacer reporte de los pedidos activos
+        //- Hacer reporte de todos los pedidos
+        //- Hacer reporte de todas las deudas
         
-        //- Hacer los ajustes
         //- Cancelar un pedido
+        //- Cancelar una deuda
+        //- Hacer los ajustes
         
         //- Realizar respaldo e importe de base de datos
-        
-        //- Realizar base de datos local
-        //- Obtener dirección MAC
         //- Dar formulario a los RIF
-        
         //- Documentar toda la tesis
-    }
+        }
 
     /**
      * Iniciar login

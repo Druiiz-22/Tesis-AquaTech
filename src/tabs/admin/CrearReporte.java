@@ -309,12 +309,12 @@ public class CrearReporte {
                 .setBorder(Border.NO_BORDER);
         //Declaración de la celda para los datos
         Cell celda;
-
+        
         //Ciclo que iterará la cantidad de datos obtenidos
         for (int i = 0; i < listaDatos.length; i++) {
             //Ciclo que iterará la cantidad de campos de la tabla
             for (int j = 0; j < columnsCount; j++) {
-
+                
                 //Instanciar una nueva celda, con su estilo
                 celda = new Cell().addStyle(dataStyle);
                 //Añadir un parrafo con el dato actual
@@ -585,9 +585,16 @@ public class CrearReporte {
 
                     //Ciclo que iterará la cantidad de deudas obtenidos.
                     for (int i = 0; i < tabla.length; i++) {
-                        //Copiar la fila actual de deudas obtenidas a la tabla
-                        System.arraycopy(tabla[i], 0, datos[i + 1], 0, tabla[0].length);
+                        //Guardar todos los datos, a excepción del
+                        //último dato
+                        datos[i+1][0] = tabla[i][0];
+                        datos[i+1][1] = tabla[i][1];
+                        datos[i+1][2] = tabla[i][2];
+                        datos[i+1][3] = tabla[i][3];
+                        datos[i+1][4] = tabla[i][4];
+                        datos[i+1][5] = tabla[i][5];
                     }
+                    
                 } else {
                     datos = new Object[][]{header};
                 }
@@ -1253,7 +1260,7 @@ public class CrearReporte {
 
         vaciarDatos();
     }
-    
+
     /**
      * Función principal para crear un reporte PDF, sin filtro de fechas
      *
