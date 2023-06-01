@@ -539,15 +539,20 @@ public class ReadDB implements properties.Constantes {
         //ID, Factura, Cedula, Debe Pagar, Debemos Dar, Fecha
 
         //Preparar la sentencia SQL para obtener las deudas activas
-        String sql = "SELECT COUNT(*) "
-                + "FROM Deuda "
-                + "INNER JOIN Trasvaso "
-                + "INNER JOIN Cliente "
-                + "	ON id_trasvaso = Trasvaso.id "
-                + "	AND id_cliente = Cliente.id "
-                + "	AND id_trasvaso IN (SELECT MAX(id) "
-                + "         FROM Trasvaso "
-                + "         WHERE id_cliente = Cliente.id)";
+        String sql = "SELECT COUNT(*)"
+                + "    FROM `Deuda`"
+                + "    INNER JOIN `Trasvaso`"
+                + "        ON `id_trasvaso` = `Trasvaso`.`id`"
+                + "    INNER JOIN Cliente"
+                + "        ON `id_cliente` = `Cliente`.`id`"
+                + "    WHERE (`pago_pendiente` > 0 "
+                + "        OR `entrega_pendiente` > 0)"
+                + "        AND `Deuda`.`id` IN "
+                + "            (SELECT MAX(`Deuda`.`id`)"
+                + "            FROM `Deuda`"
+                + "            INNER JOIN `Trasvaso`"
+                + "                ON `id_trasvaso` = `Trasvaso`.`id`"
+                + "            GROUP BY `id_cliente`)";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -564,32 +569,31 @@ public class ReadDB implements properties.Constantes {
                     //Obtener la cantidad de clientes y validar la cantidad
                     int count = r.getInt(1);
                     if (count > 0) {
-                        /*
-                        Sentencia SQL para obtener las deudas pendientes:
-                            Seleccioname las deudas DONDE su id de trasvaso, sea
-                            el id del ÚLTIMO trasvaso REGISTRADO por el cliente.
-                         */
-                        sql = "SELECT Deuda.id, "
-                                + "     id_trasvaso, "
-                                + "     cedula, "
-                                + "     pago_pendiente, "
-                                + "     entrega_pendiente, "
-                                + "     fecha "
-                                + "FROM Deuda "
-                                + "INNER JOIN Trasvaso "
-                                + "INNER JOIN Cliente "
-                                + "     ON id_trasvaso = Trasvaso.id "
-                                + "     AND id_cliente = Cliente.id "
-                                + "     AND id_trasvaso IN (SELECT MAX(Trasvaso.id) "
-                                + "         FROM Trasvaso "
-                                + "         WHERE id_cliente = Cliente.id) "
-                                + "ORDER BY Deuda.id DESC";
+                        //Obtener las deudas activas, aquellas que sean el 
+                        //último registro del cliente en la tabla deudas y NO
+                        //terminen con pagados y entregados en 0
+                        sql = "SELECT `Deuda`.`id`, `id_trasvaso`, `cedula`,"
+                                + "    `pago_pendiente`, `entrega_pendiente`, `fecha`"
+                                + "    FROM `Deuda`"
+                                + "    INNER JOIN `Trasvaso`"
+                                + "        ON `id_trasvaso` = `Trasvaso`.`id`"
+                                + "    INNER JOIN Cliente"
+                                + "        ON `id_cliente` = `Cliente`.`id`"
+                                + "    WHERE (`pago_pendiente` > 0 "
+                                + "        OR `entrega_pendiente` > 0)"
+                                + "        AND `Deuda`.`id` IN "
+                                + "            (SELECT MAX(`Deuda`.`id`)"
+                                + "            FROM `Deuda`"
+                                + "            INNER JOIN `Trasvaso`"
+                                + "                ON `id_trasvaso` = `Trasvaso`.`id`"
+                                + "            GROUP BY `id_cliente`)"
+                                + "    ORDER BY `Deuda`.`id` DESC";
 
                         r = bdd.selectQuery(sql);
 
                         //Validar que la respuesta NO sea nula
                         if (r != null) {
-                            Object deudas[][] = new Object[count][6];
+                            Object deudas[][] = new Object[count][7];
                             int i = 0;
 
                             while (r.next()) {
@@ -599,9 +603,103 @@ public class ReadDB implements properties.Constantes {
                                 deudas[i][3] = r.getInt(4);
                                 deudas[i][4] = r.getInt(5);
                                 deudas[i][5] = r.getString(6);
+                                deudas[i][6] = true;
                                 i++;
                             }
 
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return deudas;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener las deudas de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
+    }
+
+    public static Object[][] getDeudasSinFiltro() {
+        //ID, Factura, Cedula, Debe Pagar, Debemos Dar, Fecha
+
+        //Preparar la sentencia SQL para obtener todas las deudas
+        String sql = "SELECT COUNT(*)"
+                + " FROM `Deuda`"
+                + " INNER JOIN `Trasvaso`"
+                + "	ON `id_trasvaso` = `Trasvaso`.`id`"
+                + " INNER JOIN `Cliente`"
+                + "	ON `id_cliente` = `Cliente`.`id`";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        //Obtener todos los registros de deudas
+                        sql = "SELECT Deuda.id, id_trasvaso, cedula, "
+                                + "    pago_pendiente, entrega_pendiente, fecha, "
+                                + "    CASE "
+                                + "    WHEN (pago_pendiente > 0 "
+                                + "            OR entrega_pendiente > 0) "
+                                + "            AND Deuda.id IN "
+                                + "                (SELECT MAX(Deuda.id) "
+                                + "                 FROM Deuda "
+                                + "                 INNER JOIN Trasvaso "
+                                + "                    ON id_trasvaso = Trasvaso.id "
+                                + "                 GROUP BY id_cliente) "
+                                + "        THEN TRUE "
+                                + "        ELSE FALSE "
+                                + "    END "
+                                + "FROM Deuda "
+                                + "INNER JOIN Trasvaso "
+                                + "    ON id_trasvaso = Trasvaso.id "
+                                + "INNER JOIN Cliente "
+                                + "    ON id_cliente = Cliente.id "
+                                + "ORDER BY Deuda.id DESC";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object deudas[][] = new Object[count][7];
+                            int i = 0;
+
+                            while (r.next()) {
+                                deudas[i][0] = r.getInt(1);
+                                deudas[i][1] = r.getInt(2);
+                                deudas[i][2] = r.getInt(3);
+                                deudas[i][3] = r.getInt(4);
+                                deudas[i][4] = r.getInt(5);
+                                deudas[i][5] = r.getString(6);
+                                deudas[i][6] = r.getBoolean(7);
+                                i++;
+                            }
+                            
                             //Desconectar la base de datos
                             bdd.desconectar();
 
@@ -870,10 +968,108 @@ public class ReadDB implements properties.Constantes {
      * @return
      */
     public static Object[][] getPedidos() {
-        //ID, cedula, servicio, cantidad, tipo_pago, fecha, latitud, longitud
+        //ID, cedula, servicio, cantidad, tipo_pago, fecha, direccion, (activo)
 
-        //Preparar la sentencia SQL para obtener la cantidad de trasvasos
-        String sql = "SELECT COUNT(*) FROM Pedido WHERE id NOT IN (SELECT id FROM Pedido_Entregado)";
+        //Preparar la sentencia SQL para obtener la cantidad de pedidos activos
+        String sql = "SELECT COUNT(*)"
+                + " FROM Pedido"
+                + " INNER JOIN Usuario"
+                + "	ON id_usuario = Usuario.id"
+                + " INNER JOIN Cliente"
+                + "	ON id_cliente = Cliente.id"
+                + " WHERE Pedido.id NOT IN (SELECT id_pedido FROM Pedido_Entregado)"
+                + " ORDER BY Pedido.id DESC";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        /*
+                            Sentencia SQL para obtener los pedidos activos:
+                                Seleccioname los pedidos CUANDO su id NO esté
+                                dentro de la tabla de los pedidos pagados
+                         */
+                        sql = "SELECT Pedido.id, Cliente.cedula, servicio,"
+                                + "	cantidad, tipo_pago, fecha, direccion"
+                                + " FROM Pedido"
+                                + " INNER JOIN Usuario"
+                                + "	ON id_usuario = Usuario.id"
+                                + " INNER JOIN Cliente"
+                                + "	ON id_cliente = Cliente.id"
+                                + " WHERE Pedido.id NOT IN (SELECT id_pedido FROM Pedido_Entregado)"
+                                + " ORDER BY Pedido.id DESC";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object pedidos[][] = new Object[count][8];
+                            int i = 0;
+
+                            while (r.next()) {
+                                pedidos[i][0] = r.getInt(1);
+                                pedidos[i][1] = r.getInt(2);
+                                pedidos[i][3] = r.getInt(4);
+                                pedidos[i][4] = r.getString(5);
+                                pedidos[i][5] = r.getString(6);
+                                pedidos[i][6] = r.getString(7);
+                                pedidos[i][7] = true;
+
+                                //Si es TRUE (1) es compra, si es FALSE (0) es recarga
+                                boolean servicio = r.getBoolean(3);
+                                pedidos[i][2] = servicio ? "COMPRA" : "RECARGA";
+                                i++;
+                            }
+
+                            //Desconectar la base de datos
+                            bdd.desconectar();
+
+                            return pedidos;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
+
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los pedidos de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
+    }
+
+    public static Object[][] getPedidosSinFiltro() {
+        //ID, cedula, servicio, cantidad, tipo_pago, fecha, direccion, (activo)
+
+        //Preparar la sentencia SQL para obtener la cantidad de pedidos
+        String sql = "SELECT COUNT(*)"
+                + " FROM Pedido"
+                + " INNER JOIN Usuario"
+                + "	ON id_usuario = Usuario.id"
+                + " INNER JOIN Cliente"
+                + "	ON id_cliente = Cliente.id"
+                + " ORDER BY Pedido.id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -896,14 +1092,17 @@ public class ReadDB implements properties.Constantes {
                                 dentro de la tabla de los pedidos pagados
                          */
                         sql = "SELECT Pedido.id, Cliente.cedula, servicio, "
-                                + "cantidad, tipo_pago, fecha, direccion "
+                                + "	cantidad, tipo_pago, fecha, direccion, "
+                                + "    CASE "
+                                + "        WHEN Pedido.id NOT IN (SELECT id_pedido FROM Pedido_Entregado) "
+                                + "            THEN TRUE "
+                                + "            ELSE FALSE "
+                                + "    END AS 'estado' "
                                 + "FROM Pedido "
                                 + "INNER JOIN Usuario "
-                                + "ON id_usuario = Usuario.id "
+                                + "	ON id_usuario = Usuario.id "
                                 + "INNER JOIN Cliente "
-                                + "ON id_cliente = Cliente.id "
-                                + "INNER JOIN Pedido_Entregado "
-                                + "ON Pedido.id NOT IN (SELECT id FROM Pedido_Entregado) "
+                                + "	ON id_cliente = Cliente.id "
                                 + "ORDER BY Pedido.id DESC";
 
                         r = bdd.selectQuery(sql);
@@ -919,24 +1118,105 @@ public class ReadDB implements properties.Constantes {
                                 pedidos[i][3] = r.getInt(4);
                                 pedidos[i][4] = r.getString(5);
                                 pedidos[i][5] = r.getString(6);
+                                pedidos[i][6] = r.getString(7);
+                                pedidos[i][7] = r.getBoolean(8);
 
                                 //Si es TRUE (1) es compra, si es FALSE (0) es recarga
                                 boolean servicio = r.getBoolean(3);
                                 pedidos[i][2] = servicio ? "COMPRA" : "RECARGA";
+                                i++;
+                            }
+                            //Desconectar la base de datos
+                            bdd.desconectar();
 
-                                //Dividir la dirección por su latitud y longitud
-                                String direccion = r.getString(7);
-                                String split[] = direccion.split(", ");
-                                pedidos[i][6] = split[0];
-                                pedidos[i][7] = split[1];
+                            return pedidos;
+                        }
+                    }
+                }
+                //Desconectar la base de datos
+                bdd.desconectar();
 
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato o
+                //traer la cantidad de 0 registros, por lo tanto, se retornará
+                //un objeto vacío, en cualquiera de ambos casos.
+                return new Object[][]{};
+            }
+        } catch (Exception ex) {
+            Mensaje.msjError("No se pudieron obtener los pedidos de la base de "
+                    + "datos.\nError: " + ex);
+        }
+
+        //Desconectar la base de datos
+        bdd.desconectar();
+
+        return null;
+    }
+
+    public static Object[][] getPedidosDirecciones() {
+        //cedula, latitud, longitud
+
+        //Preparar la sentencia SQL para obtener la cantidad de pedidos activos
+        String sql = "SELECT COUNT(*)"
+                + " FROM Pedido"
+                + " INNER JOIN Usuario"
+                + "	ON id_usuario = Usuario.id"
+                + " INNER JOIN Cliente"
+                + "	ON id_cliente = Cliente.id"
+                + " WHERE Pedido.id NOT IN (SELECT id_pedido FROM Pedido_Entregado)"
+                + " ORDER BY Pedido.id DESC";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea nula
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la cantidad de clientes y validar la cantidad
+                    int count = r.getInt(1);
+                    if (count > 0) {
+                        /*
+                            Sentencia SQL para obtener los pedidos activos:
+                                Seleccioname los pedidos CUANDO su id NO esté
+                                dentro de la tabla de los pedidos pagados
+                         */
+                        sql = "SELECT cedula, direccion"
+                                + " FROM Pedido"
+                                + " INNER JOIN Usuario"
+                                + "	ON id_usuario = Usuario.id"
+                                + " INNER JOIN Cliente"
+                                + "	ON id_cliente = Cliente.id"
+                                + " WHERE Pedido.id NOT IN"
+                                + " (SELECT id_pedido FROM Pedido_Entregado)";
+
+                        r = bdd.selectQuery(sql);
+
+                        //Validar que la respuesta NO sea nula
+                        if (r != null) {
+                            Object direcciones[][] = new Object[count][3];
+                            int i = 0;
+
+                            while (r.next()) {
+                                direcciones[i][0] = r.getInt(1);
+                                //Dividir la dirección por la coma
+                                String split[] = r.getString(2).split(", ");
+                                //Obtener la latitud
+                                direcciones[i][1] = split[0];
+                                //Obtener la longitud
+                                direcciones[i][2] = split[1];
                                 i++;
                             }
 
                             //Desconectar la base de datos
                             bdd.desconectar();
 
-                            return pedidos;
+                            return direcciones;
                         }
                     }
                 }

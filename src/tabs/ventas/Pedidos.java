@@ -8,9 +8,12 @@ import database.ReadDB;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import main.Frame;
 import main.MenuSuperior;
 import static properties.Constantes.CUALQUIER;
+import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjError;
 
 /**
@@ -31,9 +34,19 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
 
     private void initComponents() {
         //Agregar el tooltiptext
-        txtBusqueda.setToolTipText("Ingrese cualquier nombre para buscar alguna coincidencia en la tabla");
+        txtBusqueda.setToolTipText("Ingrese cualquier nombre para buscar alguna "
+                + "coincidencia en la tabla");
+
+        //Propiedades del CheckBox
+        checkFiltrar.setSelected(true);
+        checkFiltrar.setFont(segoe(16, PLANO));
+        checkFiltrar.setForeground(NEGRO);
+        checkFiltrar.setSize(checkFiltrar.getPreferredSize());
+        checkFiltrar.setToolTipText("Filtrar los pedidos para que muestre solo "
+                + "los que están activos.");
 
         //Agregar los componentes
+        this.add(checkFiltrar);
         this.add(txtBusqueda);
         this.add(tabla);
         this.add(mapa);
@@ -46,6 +59,21 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
             public void keyReleased(KeyEvent e) {
                 tabla.buscar(txtBusqueda.getText());
             }
+        });
+        checkFiltrar.addActionListener((e) -> {
+            new Thread() {
+                @Override
+                public void run() {
+                    //Seleccionar si se filtrará o no
+                    Pedidos.pedidosFiltrados = checkFiltrar.isSelected();
+                    //Abrir el GlassPane de carga
+                    Frame.openGlass(0);
+                    //Actualizar los datos
+                    actualizarDatos();
+                    //Cerrar el GlassPane de car
+                    Frame.closeGlass();
+                }
+            }.start();
         });
     }
 
@@ -62,10 +90,16 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
     }
 
     private void pequenio(int width, int height) {
-        int w = width - padding * 2;
+
+        int w = width - padding * 3 - checkFiltrar.getWidth();
         txtBusqueda.setBounds(padding, padding, w, fieldHeight);
 
-        int y = padding * 2 + fieldHeight;
+        int x = w + padding * 2;
+        int y = padding + fieldHeight / 2 - checkFiltrar.getHeight() / 2;
+        checkFiltrar.setLocation(x, y);
+
+        w = width - padding * 2;
+        y = padding * 2 + fieldHeight;
         int h = height - y - padding;
         tabla.setBounds(padding, y, w, h);
 
@@ -89,11 +123,16 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         int h = height - padding * 2;
         mapa.setBounds(x, padding, w, h);
 
-        w = width / 2 - padding;
+        w = x - padding * 3 - checkFiltrar.getWidth();
         txtBusqueda.setBounds(padding, padding, w, fieldHeight);
 
-        int y = padding * 2 + fieldHeight;
+        x = w + padding * 2;
+        int y = padding + fieldHeight / 2 - checkFiltrar.getHeight() / 2;
+        checkFiltrar.setLocation(x, y);
+
+        y = padding * 2 + fieldHeight;
         h = height - y - padding;
+        w = width / 2 - padding;
         tabla.setBounds(padding, y, w, h);
     }
 
@@ -104,18 +143,20 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
     public static boolean actualizarDatos() {
         txtBusqueda.setText("");
         transferencias = ReadDB.getTransferencias();
-        
+
         //Validar que la tabla y las transferencias hayan realizado sus busquedas
         //de manera exitosa
-        if(tabla.actualizarDatos() && transferencias != null){
-            
+        if (tabla.actualizarDatos() && transferencias != null && mapa.getDirecciones()) {
+
+            //Actualizar los puntos del mapa
             mapa.actualizarPuntos();
 
-            //Enviar la cantidad de pedidos para notificaciones
-            int rows = tabla.getRowCount();
-            PanelNotificaciones.setPedidos(rows);
-            MenuSuperior.setNotificationCount(rows);
-            
+            //Obtener la cantidad de pedidos activos
+            int count = tabla.getPedidosActivos();
+            //Enviar la cantidad a las notificaciones
+            PanelNotificaciones.setPedidos(count);
+            MenuSuperior.setNotificationCount(count);
+
             //Retornar busqueda exitosa
             return true;
 
@@ -123,10 +164,6 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
             //Retornar busqueda incompleta
             return false;
         }
-    }
-
-    public static Object[][] getTable() {
-        return tabla.getDireccionPedidos();
     }
 
     public static void enfocarPedido(String cedula) {
@@ -221,16 +258,22 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         return row;
     }
 
-    protected void habilitarComponents(boolean estado){
+    protected void habilitarComponents(boolean estado) {
         txtBusqueda.setEnabled(estado);
     }
-    
+
+    public static boolean isPedidosFiltrados() {
+        return pedidosFiltrados;
+    }
+
     //COMPONENTES
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Tabla tabla = new Tabla(VENTAS_PEDIDOS);
     private static final PanelMap mapa = new PanelMap();
+    private static final JCheckBox checkFiltrar = new JCheckBox("Mostrar pedidos activos");
 
     //ATRIBUTOS
+    private static boolean pedidosFiltrados = true;
     private static final int fieldHeight = 40;
     private static final int padding = 20;
     private static final PedidoInformacion info = new PedidoInformacion();

@@ -301,7 +301,7 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
                 Frame.openGlass(1);
             }
         });
-        
+
         //ACTUALIZAR
         btnRefresh.addMouseListener(new MouseAdapter() {
             @Override
@@ -394,8 +394,9 @@ public class MenuSuperior extends JPanel implements properties.Colores, properti
      * @param count Número de notificaciones
      */
     public static void setNotificationCount(int count) {
-        //Guardar el número de notificaciones
-        notificaciones = count;
+        //Guardar el número de notificaciones, siempre y cuando
+        //este último número sea MAYOR al número previamente guardado
+        notificaciones = (count > notificaciones) ? count : notificaciones;
 
         //Obtener el tamaño mínimo del frame
         int mh = Frame.getMinSize().height;

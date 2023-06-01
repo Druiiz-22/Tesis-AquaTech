@@ -181,4 +181,14 @@ public class DeleteDB implements properties.Constantes {
 
         return false;
     }
+    
+    public static boolean removeDeuda(Object id){
+        
+        return false;
+    }
+    
+    public static boolean removePedido(Object id){
+        
+        return false;
+    }
 }

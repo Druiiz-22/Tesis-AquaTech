@@ -33,10 +33,12 @@ import main.Frame;
 import static properties.Mensaje.msjYesNo;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
+import properties.Mensaje;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import tabs.admin.Empleados;
 import tabs.admin.Usuarios;
+import tabs.clientes.Deudas;
 import tabs.historial.HistorialTrasvasos;
 import tabs.ventas.Pedidos;
 
@@ -233,36 +235,40 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
             if (validarSelect(index)) {
+                //Comprobar que la deuda seleccionada ESTÉ PENDIENTE
+                if (deudaActiva[index]) {
+                    //Obtener la cédula de la deuda
+                    String cedula = tabla.getValueAt(index, 2).toString();
 
-                //Obtener la cédula de la deuda
-                String cedula = tabla.getValueAt(index, 2).toString();
+                    //Validar que los campos NO estén vacíos
+                    if (!cedula.isEmpty()) {
 
-                //Validar que los campos NO estén vacíos
-                if (!cedula.isEmpty()) {
+                        //Buscar el apellido del cliente
+                        String apellido = PanelClientes.getApellido(cedula);
 
-                    //Buscar el apellido del cliente
-                    String apellido = PanelClientes.getApellido(cedula);
+                        if (!apellido.isEmpty()) {
+                            try {
+                                //Intentar convertir pagar y entregar en enteros
+                                int pagar = Integer.parseInt(tabla.getValueAt(index, 3).toString());
+                                int entregar = Integer.parseInt(tabla.getValueAt(index, 4).toString());
 
-                    if (!apellido.isEmpty()) {
-                        try {
-                            //Intentar convertir pagar y entregar en enteros
-                            int pagar = Integer.parseInt(tabla.getValueAt(index, 3).toString());
-                            int entregar = Integer.parseInt(tabla.getValueAt(index, 4).toString());
+                                //Enviar los datos para pagar la deuda
+                                Trasvasos.pagarDeuda(cedula, apellido, pagar, entregar);
 
-                            //Enviar los datos para pagar la deuda
-                            Trasvasos.pagarDeuda(cedula, apellido, pagar, entregar);
+                                //Cambiar al panel de trasvasos
+                                MenuLateral.clickButton(VENTAS_TRASVASO);
 
-                            //Cambiar al panel de trasvasos
-                            MenuLateral.clickButton(VENTAS_TRASVASO);
-
-                        } catch (NumberFormatException ex) {
-                            msjError("La cantidad de pagar o entregar, son inválidos."
-                                    + "\nPor favor, actualice los datos y verifique"
-                                    + "que estos campos tengan número enteros válidos.");
+                            } catch (NumberFormatException ex) {
+                                msjError("La cantidad de pagar o entregar, son inválidos."
+                                        + "\nPor favor, actualice los datos y verifique"
+                                        + "que estos campos tengan número enteros válidos.");
+                            }
                         }
+                    } else {
+                        msjError("No se pudo seleccionar el cliente de la deuda.");
                     }
                 } else {
-                    msjError("No se pudo seleccionar el cliente de la deuda.");
+                    msjError("La deuda seleccionada ya se encuentra pagada.");
                 }
             }
         });
@@ -275,8 +281,14 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         itemTrasvaso.addActionListener((e) -> {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
+            //Validar si el index seleccionado es valido
             if (validarSelect(index)) {
-                pagarPedido(index);
+                //Comprobar que el pedido seleccionado ESTÉ ACTIVO
+                if (pedidoActivo[index]) {
+                    pagarPedido(index);
+                } else {
+                    msjError("El pedido seleccionado ya se encuentra pagado.");
+                }
             }
         });
         itemUbicar.addActionListener((e) -> {
@@ -425,41 +437,52 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                     //Obtener la identificación del cliente o proveedor
                     Object id = tabla.getValueAt(index, 0);
 
+                    //Abrir el GlassPane de carga
+                    Frame.openGlass(0);
+
                     //Comprobar el tipo de la tabla
                     switch (type) {
                         case CLIENTES:
                             //Intentar eliminarlo de la base de datos
                             if (DeleteDB.removeCliente(id)) {
-                                //Abrir el GlassPane de carga
-                                Frame.openGlass(0);
-                                
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
 
                                 Ventas.vaciarCampos();
-
-                                //Cerrar el GlassPane de carga
-                                Frame.closeGlass();
                             }
                             break;
 
                         case PROVEEDOR:
                             //Intentar eliminarlo de la base de datos
                             if (DeleteDB.removeProveedor(id)) {
-                                //Abrir el GlassPane de carga
-                                Frame.openGlass(0);
-
                                 //Ya que no es posible eliminar una fila de una tabla
                                 //sin acceder a su Model, al eliminar la final en la
                                 //base de datos, se actualizará la tabla
                                 actualizarDatos();
 
                                 Compras.vaciarCampos();
+                            }
+                            break;
 
-                                //Cerrar el GlassPane de carga
-                                Frame.closeGlass();
+                        case DEUDAS:
+                            //Intentar eliminar la deuda de la base de datos
+                            if (DeleteDB.removeDeuda(id)) {
+                                //Ya que no es posible eliminar una fila de una tabla
+                                //sin acceder a su Model, al eliminar la final en la
+                                //base de datos, se actualizará la tabla
+                                actualizarDatos();
+                            }
+                            break;
+
+                        case VENTAS_PEDIDOS:
+                            //Intentar eliminar la deuda de la base de datos
+                            if (DeleteDB.removePedido(id)) {
+                                //Ya que no es posible eliminar una fila de una tabla
+                                //sin acceder a su Model, al eliminar la final en la
+                                //base de datos, se actualizará la tabla
+                                Pedidos.actualizarDatos();
                             }
                             break;
 
@@ -468,18 +491,12 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                             //intentar eliminar el usuario
                             if (AdminDB.validateAdminUser()) {
                                 if (DeleteDB.removeUsuario(id)) {
-                                    //Abrir el GlassPane de carga
-                                    Frame.openGlass(0);
-
                                     //Ya que no es posible eliminar una fila de una tabla
                                     //sin acceder a su Model, al eliminar la final en la
                                     //base de datos, se actualizará la tabla
                                     actualizarDatos();
 
                                     Usuarios.vaciarCampos();
-
-                                    //Cerrar el GlassPane de carga
-                                    Frame.closeGlass();
                                 }
                             }
                             break;
@@ -489,22 +506,18 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                             //intentar eliminar el usuario
                             if (AdminDB.validateAdminUser()) {
                                 if (DeleteDB.removeEmpleado(id)) {
-                                    //Abrir el GlassPane de carga
-                                    Frame.openGlass(0);
-
                                     //Ya que no es posible eliminar una fila de una tabla
                                     //sin acceder a su Model, al eliminar la final en la
                                     //base de datos, se actualizará la tabla
                                     actualizarDatos();
 
                                     Empleados.vaciarCampos();
-
-                                    //Cerrar el GlassPane de carga
-                                    Frame.closeGlass();
                                 }
                             }
                             break;
                     }
+                    //Cerrar el GlassPane de carga
+                    Frame.closeGlass();
                 } catch (Exception e) {
                     msjError("No se pudo eliminar el registro de la tabla."
                             + "\nError: " + e);
@@ -637,29 +650,65 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case DEUDAS:
-                datos = ReadDB.getDeudas();
+                //Comprobar si se filtrarán las deudas activas o no
+                boolean filtrado = Deudas.isDeudasFiltradas();
+                Object[][] lista = (filtrado) ? ReadDB.getDeudas() : ReadDB.getDeudasSinFiltro();
+
+                //Instanciar los datos
+                datos = new Object[lista.length][cabecera.length];
+                //Instanciar el estado de las deudas
+                deudaActiva = new boolean[lista.length];
+
+                for (int i = 0; i < lista.length; i++) {
+                    //Guardar el estado del pedido actual
+                    deudaActiva[i] = Boolean.parseBoolean(lista[i][6].toString());
+                    //Guardar todos los demás datos de los pedidos
+                    datos[i] = new Object[]{
+                        lista[i][0],
+                        lista[i][1],
+                        lista[i][2],
+                        lista[i][3],
+                        lista[i][4],
+                        lista[i][5]
+                    };
+                }
                 break;
 
             case VENTAS_PEDIDOS:
-                //Obtener los datos en una lista auxiliar
-                Object[][] lista = ReadDB.getPedidos();
+                //Validar si se filtrarán los pedidos activos o no
+                filtrado = Pedidos.isPedidosFiltrados();
+                //Obtener los pedidos en una lista auxiliar
+                lista = (filtrado) ? ReadDB.getPedidos() : ReadDB.getPedidosSinFiltro();
                 //String para unificar las latitudes y longitudes
                 String direccion;
 
-                //Inicializar la lista de los datos y los atributos
+                //Instanciar la lista de los datos
                 datos = new Object[lista.length][cabecera.length];
+                //Instanciar los atributos de latitud y longitud
                 latitudes = new double[lista.length];
                 longitudes = new double[lista.length];
+                pedidoActivo = new boolean[lista.length];
+                //Variable para dividir las direcciones
+                String split[];
 
                 //Recorrer cada dato para unificar la latitud y longitud, del
                 //pedido actual, en una sola cadena de texto
                 for (int i = 0; i < lista.length; i++) {
 
-                    latitudes[i] = Double.parseDouble(lista[i][6].toString());
-                    longitudes[i] = Double.parseDouble(lista[i][7].toString());
+                    //Guardar el estado del pedido
+                    pedidoActivo[i] = Boolean.parseBoolean(lista[i][7].toString());
 
+                    //Obtener la dirección y dividirla
+                    split = lista[i][6].toString().split(", ");
+
+                    //Guardar las latitudes y longitudes
+                    latitudes[i] = Double.parseDouble(split[0]);
+                    longitudes[i] = Double.parseDouble(split[1]);
+
+                    //Redondear las direcciones a 5 dígitos
                     String lat = String.valueOf(Math.round(latitudes[i] * 100000) / 100000.0);
                     String lon = String.valueOf(Math.round(longitudes[i] * 100000) / 100000.0);
+                    //Guardar la nueva dirección redondeada
                     direccion = lat + ", " + lon;
 
                     //Guardar los datos con la nueva dirección
@@ -749,27 +798,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     }
 
     /**
-     * Función para obtener la información necesaria, de la tabla, para asignar
-     * los puntos en el mapa para los pedidos
-     *
-     * @return
-     */
-    public Object[][] getDireccionPedidos() {
-        if (type == VENTAS_PEDIDOS) {
-            Object[][] puntos = new Object[tabla.getRowCount()][3];
-            for (int i = 0; i < tabla.getRowCount(); i++) {
-                puntos[i] = new Object[]{
-                    tabla.getValueAt(i, 1),
-                    latitudes[i],
-                    longitudes[i]
-                };
-            }
-            return puntos;
-        }
-        return null;
-    }
-
-    /**
      * Función para obtener un dato en una celda en específico de la tabla.
      *
      * @param row
@@ -780,8 +808,37 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         return tabla.getValueAt(row, column);
     }
 
+    public int getDeudasActivas(){
+        int count = 0;
+        //Comprobar que la tabla sea realmente de deudas
+        if(type == DEUDAS){
+            //Realizar un ciclo por el tamaño de la cantidad de deudas
+            for (boolean estado : deudaActiva) {
+                //Si la deuda se encuentra activa, sumar 1 al conteo
+                count = (estado) ? count+1 : count;
+            }
+        }
+        //Retornar el conteo
+        return count;
+    }
+    public int getPedidosActivos(){
+        int count = 0;
+        //Comprobar que la tabla sea realmente de deudas
+        if(type == VENTAS_PEDIDOS){
+            //Realizar un ciclo por el tamaño de la cantidad de pedidos
+            for (boolean estado : pedidoActivo) {
+                //Si el pedido se encuentra activa, sumar 1 al conteo
+                count = (estado) ? count+1 : count;
+            }
+        }
+        //Retornar el conteo
+        return count;
+    }
+    
+    
     //ATRIBUTOS BACK-END
     private double[] latitudes, longitudes;
+    private boolean[] deudaActiva, pedidoActivo;
 
     // ========== FRONTEND ==========
     /**
@@ -1264,13 +1321,13 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * @param txt Texto que será buscado dentro de la tabla
      */
     public void enfocarFila(String txt) {
-        int row = ERROR_VALUE;
-        int index = ERROR_VALUE;
+        int row = -1;
+        int index = -1;
         String msj = "La tabla seleccionada no puede enfocar algún dato.";
 
         //Determinar el index que será buscado y el mensaje de error
         switch (type) {
-            case HISTORIAL:
+            case HISTORIAL_TRASVASO:
                 index = 0;
                 msj = "No se encontró la factura en los registros de trasvasos."
                         + "\nPor favor, actualice los datos y verifique la "
@@ -1298,27 +1355,32 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                         + "usuario.";
                 break;
         }
+        //Validar que se obtuvo algún index
+        if (index >= 0) {
+            //Buscar el dato en la columna seleccionada de la tabla
+            for (int i = 0; i < tabla.getRowCount(); i++) {
+                //Obtener el id en cada iteración
+                String columna = tabla.getValueAt(i, index).toString();
 
-        //Buscar el dato en la columna seleccionada de la tabla
-        for (int i = 0; i < tabla.getRowCount(); i++) {
-            //Obtener el id en cada iteración
-            String columna = tabla.getValueAt(i, index).toString();
-
-            //Validar si el id coincide con el id recibido
-            if (columna.equals(txt)) {
-                //Guardar el índice de la fila y romper el cíclo
-                row = i;
-                break;
+                //Validar si el id coincide con el id recibido
+                if (columna.equals(txt)) {
+                    //Guardar el índice de la fila y romper el cíclo
+                    row = i;
+                    break;
+                }
             }
-        }
-        //Comprobar que se seleccionó alguna fila
-        if (row >= 0) {
-            tabla.requestFocus();
-            tabla.setRowSelectionInterval(row, row);
-            tabla.setColumnSelectionInterval(0, tabla.getColumnCount() - 1);
+            //Comprobar que se seleccionó alguna fila
+            if (row >= 0) {
+                tabla.requestFocus();
+                tabla.setRowSelectionInterval(row, row);
+                tabla.setColumnSelectionInterval(0, tabla.getColumnCount() - 1);
+            } else {
+                msjError(msj);
+            }
         } else {
             msjError(msj);
         }
+
     }
 
     /**

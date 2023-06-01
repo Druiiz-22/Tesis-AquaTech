@@ -163,7 +163,7 @@ public class Contenedor extends JPanel implements properties.Constantes {
         //Comprobar que el usuario sea administrador y que se hayan completado
         //TODAS las busquedas, hasta este punto
         int rol = Frame.getUserRol();
-        if (busquedas && rol == ADMINISTRADOR || rol == OPERADOR) {
+        if (busquedas && (rol == ADMINISTRADOR || rol == OPERADOR)) {
             busquedas = Admin.actualizarDatos();
         }
         

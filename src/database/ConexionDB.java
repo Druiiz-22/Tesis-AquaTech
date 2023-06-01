@@ -41,11 +41,18 @@ public class ConexionDB {
         } catch (ClassNotFoundException | SQLException ex) {
             //Validar que NO esté activa la ventana de inicio de programa (no se
             //mostrará este mensaje de error en esa ventana)
+            System.out.println("Conexion ex = "+ex);
             if (!IniciarPrograma.isActivated()) {
-                //Mostrar mensaje de error
-                Mensaje.msjError("No se pudo realizar la conexión con la base de datos."
-                        + "\nPor favor, verifique que su conexión a internet sea\n"
-                        + "estable y vuelva a intentarlo.");
+                
+                if(ex.getMessage().toUpperCase().contains("COMMUNICATIONS LINK FAILURE")){
+                    //Mostrar mensaje de error por conexión
+                    Mensaje.msjError("No se pudo realizar la conexión con la base de datos."
+                            + "\nPor favor, verifique que su conexión a internet sea\n"
+                            + "estable y vuelva a intentarlo.");
+                } else{
+                    Mensaje.msjError("No se pudo realizar la conexión con la base"
+                            + "de datos.\nError: "+ex);
+                }
             }
         }
     }

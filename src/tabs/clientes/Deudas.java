@@ -5,8 +5,12 @@ import components.PanelNotificaciones;
 import components.Tabla;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import main.MenuSuperior;
+import static properties.Colores.NEGRO;
+import static properties.Constantes.PLANO;
+import static properties.Fuentes.segoe;
 
 /**
  * Clase para la creación del panel con las deudas pendientes que posean los
@@ -32,7 +36,16 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
         //Agregar el tooltiptext
         txtBusqueda.setToolTipText("Ingrese cualquier nombre para buscar alguna coincidencia en la tabla");
 
+        //Propiedades del CheckBox
+        checkFiltrar.setSelected(true);
+        checkFiltrar.setFont(segoe(16, PLANO));
+        checkFiltrar.setForeground(NEGRO);
+        checkFiltrar.setSize(checkFiltrar.getPreferredSize());
+        checkFiltrar.setToolTipText("Filtrar las deudas para que muestre solo "
+                + "los que están pendientes.");
+        
         //Agregar los componentes
+        this.add(checkFiltrar);
         this.add(txtBusqueda);
         this.add(tabla);
     }
@@ -48,6 +61,13 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
                 tabla.buscar(txtBusqueda.getText());
             }
         });
+        
+        checkFiltrar.addActionListener((e) -> {
+            Deudas.deudasFiltradas = checkFiltrar.isSelected();
+            main.Frame.openGlass(0);
+            actualizarDatos();
+            main.Frame.closeGlass();
+        });
     }
 
     /**
@@ -60,14 +80,17 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
 
         int padding = 20;
         int fieldHeight = 40;
-        int fieldWidth = this.getWidth() - padding * 2;
+        
+        int w = this.getWidth() - padding * 3 - checkFiltrar.getWidth();
+        txtBusqueda.setBounds(padding, padding, w, fieldHeight);
 
-        txtBusqueda.setBounds(padding, padding, fieldWidth, fieldHeight);
+        int x = w + padding * 2;
+        int y = padding + fieldHeight/2 - checkFiltrar.getHeight()/2;
+        checkFiltrar.setLocation(x, y);
 
-        int y = fieldHeight + padding * 2;
+        y = fieldHeight + padding * 2;
         int h = size.height - y - padding;
-        int w = size.width - padding * 2;
-
+        w = size.width - padding * 2;
         tabla.setBounds(padding, y, w, h);
     }
 
@@ -81,12 +104,14 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
         
         //Validar que la busqueda fue exitosa
         if(busqueda){
-            //Obtener la cantidad de filas de deudas
-            int rows = tabla.getRowCount();
+            //Obtener la cantidad de deudas activas
+            int count = tabla.getDeudasActivas();
+            
             //Asignar la cantidad a las notificaciones
-            PanelNotificaciones.setDeudas(rows);
+            PanelNotificaciones.setDeudas(count);
+            
             //Asignar la cantidad de deudas al menu superior
-            MenuSuperior.setNotificationCount(rows);
+            MenuSuperior.setNotificationCount(count);
             
             //Retornar busqueda exitosa
             return true;
@@ -108,7 +133,13 @@ public class Deudas extends JPanel implements properties.Colores, properties.Con
         txtBusqueda.setEnabled(estado);
     }
     
+    public static boolean isDeudasFiltradas(){
+        return Deudas.deudasFiltradas;
+    }
+    
     //COMPONENTES
+    private static boolean deudasFiltradas = true;
+    private static final JCheckBox checkFiltrar = new JCheckBox("Mostrar deudas pendientes");
     private static final CampoTexto txtBusqueda = new CampoTexto("Buscar Cliente", CUALQUIER);
     private static final Tabla tabla = new Tabla(DEUDAS);
 }

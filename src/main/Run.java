@@ -8,9 +8,9 @@ public class Run {
     private static login.Frame login;
     private static main.Frame mainFrame;
 
-    public static void main(String[] args) {        
+    public static void main(String[] args) {    
         iniciarLogin();
-
+        
         //LISTA DE COSAS PENDIENTES
         //- Hacer los reporte de pedidos
         

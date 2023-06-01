@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.Box;
@@ -166,23 +168,27 @@ public class PanelMap extends JPanel implements properties.Colores {
     /**
      * Función para obtener los pedidos pendientes, seleccionar sus direcciones
      * y mostrar los puntos en el mapa
+     *
+     * @return
      */
-    public static void actualizarPuntos() {
+    public void actualizarPuntos() {
         //Vaciar los puntos del mapa
         borrarPuntos();
 
-        //Obtener la lista de los pedidos
-        pedidos = Pedidos.getTable();
-
-        //Validar que la tabla obtenida NO esté vacía
-        if (pedidos != null) {
-            //Función para recorrer todos los datos
-            for (Object[] pedido : pedidos) {
-                double lat = Double.parseDouble(pedido[1].toString());
-                double lon = Double.parseDouble(pedido[2].toString());
-                agregarPunto(new MyWaypoint(pedido[0].toString(), event, new GeoPosition(lat, lon)));
-            }
+        //Función para recorrer todos los datos
+        for (Object[] pedido : direcciones) {
+            //Obtener la latitud y longitud de los pedidos
+            double lat = Double.parseDouble(pedido[1].toString());
+            double lon = Double.parseDouble(pedido[2].toString());
+            //Agregar los puntos con la cédula del pedido y coordenadas
+            agregarPunto(new MyWaypoint(pedido[0].toString(), event, new GeoPosition(lat, lon)));
         }
+    }
+
+    public static boolean getDirecciones() {
+        //Obtener la lista de los pedidos
+        direcciones = ReadDB.getPedidosDirecciones();
+        return direcciones != null;
     }
 
     /**
@@ -201,7 +207,14 @@ public class PanelMap extends JPanel implements properties.Colores {
      */
     private void listener() {
         btnActualizar.addActionListener((e) -> {
-            actualizarPuntos();
+            new Thread(){
+                @Override
+                public void run() {
+                    if (getDirecciones()) {
+                        actualizarPuntos();
+                    }
+                }
+            }.start();
         });
 
         btnCentrar.addActionListener((e) -> {
@@ -234,15 +247,11 @@ public class PanelMap extends JPanel implements properties.Colores {
     private static final JButton btnActualizar = new JButton("Actualizar");
     private static final JButton btnCentrar = new JButton("Centrar mapa");
 
-    private static final JPopupMenu menu = new JPopupMenu();
-    private static final JMenuItem posicion = new JMenuItem();
-    private static final JMenuItem google = new JMenuItem("Abrir en Google Maps");
-
     //ATRIBUTOS
     private static final double LATITUD_PRINCIPAL = 10.58344935417965;
     private static final double LONGITUD_PRINCIPAL = -71.65015478472176;
     private static final GeoPosition POSICION_PRINCIPAL = new GeoPosition(LATITUD_PRINCIPAL, LONGITUD_PRINCIPAL);
     private static final Set<MyWaypoint> puntos = new HashSet<>();
-    private static Object[][] pedidos;
+    private static Object[][] direcciones;
     private static EventWaypoint event;
 }
