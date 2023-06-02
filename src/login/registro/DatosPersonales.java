@@ -268,25 +268,33 @@ public class DatosPersonales extends javax.swing.JPanel implements properties.Co
         txtNombre.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                txtApellido.requestFocus();
+                if(e.getKeyChar() == TECLA_ENTER){
+                    txtApellido.requestFocus();
+                }
             }
         });
         txtApellido.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                txtCedula.requestFocus();
+                if(e.getKeyChar() == TECLA_ENTER){
+                    txtCedula.requestFocus();
+                }
             }
         });
         txtCedula.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                txtTelefono.requestFocus();
+                if(e.getKeyChar() == TECLA_ENTER){
+                    txtTelefono.requestFocus();
+                }
             }
         });
         txtTelefono.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                guardarDatos();
+                if(e.getKeyChar() == TECLA_ENTER){
+                    guardarDatos();
+                }
             }
         });
     }

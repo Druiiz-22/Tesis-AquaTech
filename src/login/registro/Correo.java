@@ -90,7 +90,7 @@ public class Correo extends javax.swing.JPanel implements properties.Colores, pr
     private boolean validarCampo() {
         String msj;
 
-        correoUsuario = txtCorreo.getText().trim();
+        correoUsuario = txtCorreo.getText().trim().toUpperCase();
 
         //Validar que el campo no esté vacío
         if (!correoUsuario.isEmpty()) {

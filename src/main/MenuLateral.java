@@ -45,7 +45,6 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
         this.add(btnCompras);
         this.add(btnHistorial);
         this.add(btnProveedores);
-        this.add(btnManual);
         this.add(gapBottom);
     }
 
@@ -89,33 +88,7 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
                 clickButton(PROVEEDOR);
             }
         });
-        btnManual.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                btnManual.setBackground(AZUL_OSCURO);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //Obtener el tamaño del botón del manual
-                int maxX = btnManual.getWidth();
-                int maxY = btnManual.getHeight();
-                //Obtener la posición X y Y del cursor con
-                //respecto al botón del manual
-                int pointX = e.getPoint().x;
-                int pointY = e.getPoint().y;
-
-                //Validar que el cursor esté DENTRO del botón
-                if (pointX <= maxX && pointY >= 0 && pointY <= maxY) {
-                    //Si está dentro del botón, asignar el color gris
-                    btnManual.setBackground(GRIS_HOOVER);
-                } else {
-                    //Si está fuera del botón, asignar el color negro
-                    btnManual.setBackground(NEGRO);
-                }
-
-            }
-        });
+        
         btnAdmin.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -291,7 +264,6 @@ public class MenuLateral extends JPanel implements properties.Colores, propertie
     private static final Boton btnCompras = new Boton(COMPRAS);
     private static final Boton btnHistorial = new Boton(HISTORIAL);
     private static final Boton btnProveedores = new Boton(PROVEEDOR);
-    private static final Boton btnManual = new Boton(MANUAL);
     private static final Boton btnAdmin = new Boton(ADMIN);
     private static final JLabel gapTop = new JLabel("");
     private static final JLabel gapBottom = new JLabel("");
