@@ -2,7 +2,6 @@ package components;
 
 import components.map.PanelMap;
 import database.AdminDB;
-import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -27,13 +26,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import static javax.swing.RowFilter.regexFilter;
 import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import main.Frame;
 import static properties.Mensaje.msjYesNo;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
-import properties.Mensaje;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import tabs.admin.Empleados;
@@ -433,95 +429,100 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
             //Mensaje de confirmación
             if (msjYesNo("¿Está seguro de borrar el registro seleccionado?")) {
-                try {
-                    //Obtener la identificación del cliente o proveedor
-                    Object id = tabla.getValueAt(index, 0);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            //Obtener la identificación del cliente o proveedor
+                            Object id = tabla.getValueAt(index, 0);
 
-                    //Abrir el GlassPane de carga
-                    Frame.openGlass(0);
+                            //Abrir el GlassPane de carga
+                            Frame.openGlass(0);
 
-                    //Comprobar el tipo de la tabla
-                    switch (type) {
-                        case CLIENTES:
-                            //Intentar eliminarlo de la base de datos
-                            if (DeleteDB.removeCliente(id)) {
-                                //Ya que no es posible eliminar una fila de una tabla
-                                //sin acceder a su Model, al eliminar la final en la
-                                //base de datos, se actualizará la tabla
-                                actualizarDatos();
+                            //Comprobar el tipo de la tabla
+                            switch (type) {
+                                case CLIENTES:
+                                    //Intentar eliminarlo de la base de datos
+                                    if (DeleteDB.removeCliente(id)) {
+                                        //Ya que no es posible eliminar una fila de una tabla
+                                        //sin acceder a su Model, al eliminar la final en la
+                                        //base de datos, se actualizará la tabla
+                                        actualizarDatos();
 
-                                Ventas.vaciarCampos();
+                                        Ventas.vaciarCampos();
+                                    }
+                                    break;
+
+                                case PROVEEDOR:
+                                    //Intentar eliminarlo de la base de datos
+                                    if (DeleteDB.removeProveedor(id)) {
+                                        //Ya que no es posible eliminar una fila de una tabla
+                                        //sin acceder a su Model, al eliminar la final en la
+                                        //base de datos, se actualizará la tabla
+                                        actualizarDatos();
+
+                                        Compras.vaciarCampos();
+                                    }
+                                    break;
+
+                                case DEUDAS:
+                                    //Intentar eliminar la deuda de la base de datos
+                                    if (DeleteDB.removeDeuda(id)) {
+                                        //Ya que no es posible eliminar una fila de una tabla
+                                        //sin acceder a su Model, al eliminar la final en la
+                                        //base de datos, se actualizará la tabla
+                                        actualizarDatos();
+                                    }
+                                    break;
+
+                                case VENTAS_PEDIDOS:
+                                    //Intentar eliminar la deuda de la base de datos
+                                    if (DeleteDB.removePedido(id)) {
+                                        //Ya que no es posible eliminar una fila de una tabla
+                                        //sin acceder a su Model, al eliminar la final en la
+                                        //base de datos, se actualizará la tabla
+                                        Pedidos.actualizarDatos();
+                                    }
+                                    break;
+
+                                case ADMIN_USUARIOS:
+                                    //Validar el rol de administrador y su clave para
+                                    //intentar eliminar el usuario
+                                    if (AdminDB.validateAdminUser()) {
+                                        if (DeleteDB.removeUsuario(id)) {
+                                            //Ya que no es posible eliminar una fila de una tabla
+                                            //sin acceder a su Model, al eliminar la final en la
+                                            //base de datos, se actualizará la tabla
+                                            actualizarDatos();
+
+                                            Usuarios.vaciarCampos();
+                                        }
+                                    }
+                                    break;
+
+                                case ADMIN_EMPLEADOS:
+                                    //Validar el rol de administrador y su clave para
+                                    //intentar eliminar el usuario
+                                    if (AdminDB.validateAdminUser()) {
+                                        if (DeleteDB.removeEmpleado(id)) {
+                                            //Ya que no es posible eliminar una fila de una tabla
+                                            //sin acceder a su Model, al eliminar la final en la
+                                            //base de datos, se actualizará la tabla
+                                            actualizarDatos();
+
+                                            Empleados.vaciarCampos();
+                                        }
+                                    }
+                                    break;
                             }
-                            break;
-
-                        case PROVEEDOR:
-                            //Intentar eliminarlo de la base de datos
-                            if (DeleteDB.removeProveedor(id)) {
-                                //Ya que no es posible eliminar una fila de una tabla
-                                //sin acceder a su Model, al eliminar la final en la
-                                //base de datos, se actualizará la tabla
-                                actualizarDatos();
-
-                                Compras.vaciarCampos();
-                            }
-                            break;
-
-                        case DEUDAS:
-                            //Intentar eliminar la deuda de la base de datos
-                            if (DeleteDB.removeDeuda(id)) {
-                                //Ya que no es posible eliminar una fila de una tabla
-                                //sin acceder a su Model, al eliminar la final en la
-                                //base de datos, se actualizará la tabla
-                                actualizarDatos();
-                            }
-                            break;
-
-                        case VENTAS_PEDIDOS:
-                            //Intentar eliminar la deuda de la base de datos
-                            if (DeleteDB.removePedido(id)) {
-                                //Ya que no es posible eliminar una fila de una tabla
-                                //sin acceder a su Model, al eliminar la final en la
-                                //base de datos, se actualizará la tabla
-                                Pedidos.actualizarDatos();
-                            }
-                            break;
-
-                        case ADMIN_USUARIOS:
-                            //Validar el rol de administrador y su clave para
-                            //intentar eliminar el usuario
-                            if (AdminDB.validateAdminUser()) {
-                                if (DeleteDB.removeUsuario(id)) {
-                                    //Ya que no es posible eliminar una fila de una tabla
-                                    //sin acceder a su Model, al eliminar la final en la
-                                    //base de datos, se actualizará la tabla
-                                    actualizarDatos();
-
-                                    Usuarios.vaciarCampos();
-                                }
-                            }
-                            break;
-
-                        case ADMIN_EMPLEADOS:
-                            //Validar el rol de administrador y su clave para
-                            //intentar eliminar el usuario
-                            if (AdminDB.validateAdminUser()) {
-                                if (DeleteDB.removeEmpleado(id)) {
-                                    //Ya que no es posible eliminar una fila de una tabla
-                                    //sin acceder a su Model, al eliminar la final en la
-                                    //base de datos, se actualizará la tabla
-                                    actualizarDatos();
-
-                                    Empleados.vaciarCampos();
-                                }
-                            }
-                            break;
+                            //Cerrar el GlassPane de carga
+                            Frame.closeGlass();
+                        } catch (Exception e) {
+                            msjError("No se pudo eliminar el registro de la tabla."
+                                    + "\nError: " + e);
+                        }
                     }
-                    //Cerrar el GlassPane de carga
-                    Frame.closeGlass();
-                } catch (Exception e) {
-                    msjError("No se pudo eliminar el registro de la tabla."
-                            + "\nError: " + e);
-                }
+                }.start();
             }
         }
     }
@@ -808,34 +809,34 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         return tabla.getValueAt(row, column);
     }
 
-    public int getDeudasActivas(){
+    public int getDeudasActivas() {
         int count = 0;
         //Comprobar que la tabla sea realmente de deudas
-        if(type == DEUDAS){
+        if (type == DEUDAS) {
             //Realizar un ciclo por el tamaño de la cantidad de deudas
             for (boolean estado : deudaActiva) {
                 //Si la deuda se encuentra activa, sumar 1 al conteo
-                count = (estado) ? count+1 : count;
+                count = (estado) ? count + 1 : count;
             }
         }
         //Retornar el conteo
         return count;
     }
-    public int getPedidosActivos(){
+
+    public int getPedidosActivos() {
         int count = 0;
         //Comprobar que la tabla sea realmente de deudas
-        if(type == VENTAS_PEDIDOS){
+        if (type == VENTAS_PEDIDOS) {
             //Realizar un ciclo por el tamaño de la cantidad de pedidos
             for (boolean estado : pedidoActivo) {
                 //Si el pedido se encuentra activa, sumar 1 al conteo
-                count = (estado) ? count+1 : count;
+                count = (estado) ? count + 1 : count;
             }
         }
         //Retornar el conteo
         return count;
     }
-    
-    
+
     //ATRIBUTOS BACK-END
     private double[] latitudes, longitudes;
     private boolean[] deudaActiva, pedidoActivo;

@@ -26,42 +26,65 @@ public class UpdateDB implements properties.Constantes {
         //Validar que el usuario que realiza la acción, cuente con los permisos
         //o si se está creando un usuario desde el login
         if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
-            //Preparar la sentencia SQL para actualizar el cliente
-            String sql = "UPDATE Cliente SET "
-                    + "cedula = " + cedula + ", "
-                    + "nombre = \"" + nombre + "\", "
-                    + "apellido = \"" + apellido + "\", "
-                    + "telefono = \"" + telefono + "\" "
-                    + "WHERE id = " + id;
+
+            //Preparar la sentencia SQL para actualizar el usuario
+            String sql = "SELECT EDITAR_CLIENTE(" + id + ", " + cedula + ", \""
+                    + nombre + "\", \"" + apellido + "\", \"" + telefono + "\", "
+                    + rol + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
-            int status = bdd.executeQuery(sql);
+            ResultSet r = bdd.selectQuery(sql);
+
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+                    //Avanzar en el resultado
+                    r.next();
+
+                    //Obtener el mensaje
+                    String msj = r.getString(1);
+
+                    //Comprobar si fue exitoso o no
+                    if (msj.toUpperCase().contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
+
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                        //Determinar si el mensaje de error fue por una entrada duplicada
+                    } else if (msj.toUpperCase().contains("DUPLICATE ENTRY")) {
+                        //Comprobar si el error pudo ser por la cédula u otro
+                        if (msj.toUpperCase().contains("CEDULA")) {
+                            Mensaje.msjError("La cédula ingresada ya se encuentra registrada.");
+
+                        } else {
+                            Mensaje.msjError(msj);
+                        }
+
+                    } else {
+                        //En caso de no ser ninguno de los anteriores, mostrar
+                        //directamente el mensaje arrojado.
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo actualizar el cliente.\nError: " + e);
+            }
 
             //Terminar la conexión con la base de datos
             bdd.desconectar();
-
-            //Si el status es mayor que 0, entonces la conexión y ejecución 
-            //fue exitosa
-            if (status > 0) {
-
-                return true;
-
-                //Comprobar si se encontró el cliente y se aplicaron los cambios
-            } else if (status == 0) {
-                //Mensaje de error por falta de permisos
-                Mensaje.msjError("No se encontró el cliente por su id y no se "
-                        + "aplicaron los cambios.\nPor favor, actualice los "
-                        + "registro y verifique la existencia del cliente.");
-
-                //Comprobar si fue un error de duplicación
-            } else if (status == DUPLICATE_ERROR) {
-                Mensaje.msjError("La cédula ingresada ya se encuentra registrada"
-                        + " en el sistema.\nPor favor, verifique los datos.");
-            }
 
         } else {
             //Mensaje de error por falta de permisos
@@ -156,55 +179,84 @@ public class UpdateDB implements properties.Constantes {
      * @return
      */
     public static boolean updateUsuario(int id_usuario, int id_cliente, int cedula, String nombre, String apellido, String telefono, String correo) {
-        //Preparar la sentencia SQL para actualizar el usuario
-        String sql = "SELECT EDITAR_USUARIO(" + id_usuario + ", " + id_cliente + ", "
-                + "" + cedula + ", \"" + nombre + "\", \"" + apellido + "\", \""
-                + telefono + "\", \"" + correo + "\")";
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
+        
+        //Comprobar que el rol sea válido
+        if (rol > 0) {
+            //Preparar la sentencia SQL para actualizar el usuario
+            String sql = "SELECT EDITAR_USUARIO(" + id_usuario + ", " + id_cliente + ", "
+                    + "" + cedula + ", \"" + nombre + "\", \"" + apellido + "\", \""
+                    + telefono + "\", \"" + correo + "\", " + rol + ")";
 
-        //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
-        bdd.conectar();
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
 
-        //Obtener el resultado de la sentencia
-        ResultSet r = bdd.selectQuery(sql);
+            //Obtener el resultado de la sentencia
+            ResultSet r = bdd.selectQuery(sql);
 
-        try {
-            //Validar que la respuesta NO sea null
-            if (r != null) {
-                //Avanzar en el resultado
-                r.next();
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+                    //Avanzar en el resultado
+                    r.next();
 
-                //Obtener el mensaje
-                String msj = r.getString(1).toUpperCase();
+                    //Obtener el mensaje
+                    String msj = r.getString(1);
 
-                //Comprobar si fue exitoso o no
-                if (msj.contains("ÉXITO")) {
+                    //Comprobar si fue exitoso o no
+                    if (msj.toUpperCase().contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
+
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                        //Determinar si el mensaje de error fue por una entrada duplicada
+                    } else if (msj.toUpperCase().contains("DUPLICATE ENTRY")) {
+                        //Comprobar si el error pudo ser por correo, cédula u otro
+                        if (msj.toUpperCase().contains("CORREO")) {
+                            Mensaje.msjError("El correo ingresado ya se encuentra registrado.");
+
+                        } else if (msj.toUpperCase().contains("CEDULA")) {
+                            Mensaje.msjError("La cédula ingresada ya se encuentra registrada.");
+
+                        } else {
+                            Mensaje.msjError(msj);
+                        }
+
+                    } else {
+                        //En caso de no ser ninguno de los anteriores, mostrar
+                        //directamente el mensaje arrojado.
+                        Mensaje.msjError(msj);
+                    }
+
                     //Terminar la conexión con la base de datos
                     bdd.desconectar();
 
-                    //Capitalizar el mensaje
-                    msj = msj.substring(0, 1).toUpperCase() + msj.substring(1).toLowerCase();
-
-                    //Mensaje de éxito
-                    Mensaje.msjInformativo(msj);
-
-                    return true;
-
-                } else if (msj.contains("")) {
-                    Mensaje.msjError(msj);
+                    return false;
                 }
-
-                //Terminar la conexión con la base de datos
-                bdd.desconectar();
-
-                return false;
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo actualizar el usuario.\nError: " + e);
             }
-        } catch (NumberFormatException | SQLException e) {
-            Mensaje.msjError("No se pudo actualizar el usuario.\nError: " + e);
-        }
 
-        //Terminar la conexión con la base de datos
-        bdd.desconectar();
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+            
+        }else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
 
         //En caso de NO obtener ningún dato, retornar el número de error
         return false;

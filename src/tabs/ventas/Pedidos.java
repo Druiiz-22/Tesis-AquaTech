@@ -77,7 +77,7 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         });
     }
 
-    protected void relocateComponents(int width, int height) {
+    protected void relocateComponents(int width, int height) {        
         //Validar el tamaño del panel contenedor
         if (width < 700) {
             pequenio(width, height);
@@ -115,8 +115,8 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
     }
 
     private void grande() {
-        int width = this.getPreferredSize().width;
-        int height = this.getPreferredSize().height;
+        int width = this.getPreferredSize().width + 15;
+        int height = this.getPreferredSize().height + 15;
 
         int w = width / 2 - padding * 2;
         int x = width / 2 + padding;

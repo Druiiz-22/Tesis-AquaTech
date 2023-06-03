@@ -1,5 +1,7 @@
 package database;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import properties.Mensaje;
 
 /**
@@ -21,35 +23,64 @@ public class DeleteDB implements properties.Constantes {
         //Validar que el usuario que realiza la acción, cuente con los permisos
         //o si se está creando un usuario desde el login
         if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
-            //Preparar la sentencia SQL para actualizar el cliente
-            String sql = "DELETE FROM Cliente WHERE id = " + id;
+
+            //Preparar la sentencia SQL para actualizar el usuario
+            String sql = "SELECT ELIMINAR_CLIENTE(" + id + ", " + rol + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
-            int status = bdd.executeQuery(sql);
+            ResultSet r = bdd.selectQuery(sql);
 
-            //Si el status es mayor que 0, entonces la conexión y ejecución 
-            //fue exitosa
-            if (status > 0) {
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+                    //Avanzar en el resultado
+                    r.next();
 
-                //Mensaje de éxito
-                Mensaje.msjInformativo("El cliente ha sido eliminado con éxito.");
+                    //Obtener el mensaje
+                    String msj = r.getString(1);
 
-                return true;
+                    //Comprobar si fue exitoso o no
+                    if (msj.toUpperCase().contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
 
-                //Comprobar si se encontró el cliente y se aplicaron los cambios
-            } else {
-                //Mensaje de error por falta de permisos
-                Mensaje.msjError("No se encontró el cliente seleccionado y no se "
-                        + "eliminó.\nPor favor, actualice los "
-                        + "registro y verifique la existencia del cliente.");
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                    } else {
+                        //En caso de no ser mensaje de éxito, mostrar como
+                        //mensaje de error
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo eliminar el usuario.\nError: " + e);
             }
 
             //Terminar la conexión con la base de datos
             bdd.desconectar();
+            
+        } else {
+            //Mensaje de error por falta de permisos
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
+
+            //Terminar de ejecutar el programa
+            System.exit(0);
         }
         return false;
     }
@@ -108,35 +139,68 @@ public class DeleteDB implements properties.Constantes {
      * @return
      */
     public static boolean removeUsuario(Object id) {
-        //Preparar la sentencia SQL para actualizar el cliente
-        String sql = "DELETE FROM Usuario WHERE id = " + id;
+        //Obtener el rol del usuario actual
+        int rol = ReadDB.getUserRol(main.Frame.getUserIdentified());
+        //Comprobar que el rol sea válido
+        if (rol > 0) {
+            //Preparar la sentencia SQL para actualizar el usuario
+            String sql = "SELECT ELIMINAR_USUARIO(" + id + ", " + rol + ")";
 
-        //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
-        bdd.conectar();
+            //Instanciar una conexión con la base de datos y conectarla
+            ConexionDB bdd = new ConexionDB(true);
+            bdd.conectar();
 
-        //Obtener el resultado de la sentencia
-        int status = bdd.executeQuery(sql);
+            //Obtener el resultado de la sentencia
+            ResultSet r = bdd.selectQuery(sql);
 
-        //Si el status es mayor que 0, entonces la conexión y ejecución 
-        //fue exitosa
-        if (status > 0) {
+            try {
+                //Validar que la respuesta NO sea null
+                if (r != null) {
+                    //Avanzar en el resultado
+                    r.next();
 
-            //Mensaje de éxito
-            Mensaje.msjInformativo("El usuario ha sido eliminado con éxito.");
+                    //Obtener el mensaje
+                    String msj = r.getString(1);
 
-            return true;
+                    //Comprobar si fue exitoso o no
+                    if (msj.toUpperCase().contains("ÉXITO")) {
+                        //Terminar la conexión con la base de datos
+                        bdd.desconectar();
 
-            //Comprobar si se encontró el cliente y se aplicaron los cambios
+                        //Mensaje de éxito
+                        Mensaje.msjInformativo(msj);
+
+                        return true;
+
+                    } else {
+                        //En caso de no ser mensaje de éxito, mostrar como
+                        //mensaje de error
+                        Mensaje.msjError(msj);
+                    }
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    return false;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                Mensaje.msjError("No se pudo eliminar el usuario.\nError: " + e);
+            }
+
+            //Terminar la conexión con la base de datos
+            bdd.desconectar();
+
         } else {
             //Mensaje de error por falta de permisos
-            Mensaje.msjError("No se encontró el usuario seleccionado y no se "
-                    + "eliminó.\nPor favor, actualice los "
-                    + "registro y verifique la existencia del usuario.");
-        }
+            Mensaje.msjError("Su usuario no cuenta con los permisos para "
+                    + "realizar esta acción.\nPor seguridad, el "
+                    + "programa se cerrará.");
+            //Cerrar el programa
+            main.Run.cerrarPrograma();
 
-        //Terminar la conexión con la base de datos
-        bdd.desconectar();
+            //Terminar de ejecutar el programa
+            System.exit(0);
+        }
 
         return false;
     }
@@ -181,14 +245,14 @@ public class DeleteDB implements properties.Constantes {
 
         return false;
     }
-    
-    public static boolean removeDeuda(Object id){
-        
+
+    public static boolean removeDeuda(Object id) {
+
         return false;
     }
-    
-    public static boolean removePedido(Object id){
-        
+
+    public static boolean removePedido(Object id) {
+
         return false;
     }
 }
