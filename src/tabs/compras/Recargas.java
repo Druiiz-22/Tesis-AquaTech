@@ -20,6 +20,7 @@ import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static properties.ValidarTexto.teclaSueltaDoble;
 import static main.MenuLateral.clickButton;
+import properties.Mensaje;
 import tabs.historial.Historial;
 
 /**
@@ -59,6 +60,9 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
                                     Historial.actualizarDatos();
                                     
                                     vaciarCampos();
+                                    
+                                    //Mensaje de éxito
+                                    Mensaje.msjInformativo("Se registró la compra con éxito.");
                                 }
                             }
                         }
@@ -560,5 +564,5 @@ public class Recargas extends JPanel implements properties.Constantes, propertie
     private static final CampoTexto txtPrecio = new CampoTexto("Precio de la recarga", DECIMAL);
 
     private static final Boton btnAceptar = new Boton("Registrar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

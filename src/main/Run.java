@@ -47,9 +47,10 @@ public class Run {
      * @param identificacion Identificación del usuario
      * @param rol Rol del usuario
      * @param nombre Nombre del usuario
+     * @param sucursal
      */
-    public static void instanciarMain(String identificacion, int rol, String nombre) {
-        mainFrame = new main.Frame(identificacion, rol, nombre);
+    public static void instanciarMain(String identificacion, int rol, String nombre, int sucursal) {
+        mainFrame = new main.Frame(identificacion, rol, nombre, sucursal);
     }
 
     public static boolean actualizarPrograma() {

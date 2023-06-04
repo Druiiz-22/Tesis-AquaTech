@@ -75,8 +75,8 @@ public class Boton extends JLabel implements properties.Colores, properties.Cons
             pressColor = CELESTE_PRESS;
 
             //Validar si el color elegido es el color ROJO
-        } else if (bgColor.equals(ROJO_OSCURO)) {
-            pressColor = ROJO_PRESS;
+        } else if (bgColor.equals(NARANJA)) {
+            pressColor = NARANJA_PRESS;
 
             //En caso de NO ser ninguno de los anteriores,
             //asginar gris claro al color del fondo y gris cuando

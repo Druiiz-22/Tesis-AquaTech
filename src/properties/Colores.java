@@ -66,19 +66,11 @@ public interface Colores {
     /**
      * <b>Usos del color:</b>
      * <ul>
-     * <li>Circulo de notificación en las notificaciones</li>
-     * </ul>
-     */
-    public final static Color NARANJA = new Color(237, 125, 49);
-
-    /**
-     * <b>Usos del color:</b>
-     * <ul>
      * <li>Fondo de ciertos botones.</li>
      * <li>Color de letra en mensajes de advertencia o error.</li>
      * </ul>
      */
-    public final static Color ROJO_OSCURO = new Color(192, 0, 0);
+    public final static Color NARANJA = new Color(255, 75, 43);
     
     /**
      * <b>Usos del color:</b>
@@ -86,7 +78,7 @@ public interface Colores {
      * <li>Fondo de ciertos botones cuando son presionados.</li>
      * </ul>
      */
-    public final static Color ROJO_PRESS = new Color(154, 0, 0);
+    public final static Color NARANJA_PRESS = new Color(217, 64, 37);
 
     /**
      * <b>Usos del color:</b>

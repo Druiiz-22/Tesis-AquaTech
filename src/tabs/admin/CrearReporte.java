@@ -20,6 +20,7 @@ import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
+import database.AdminDB;
 import database.ReadDB;
 import java.awt.Desktop;
 import java.io.File;
@@ -28,6 +29,17 @@ import java.util.Calendar;
 import java.util.Date;
 import properties.Constantes;
 import properties.Mensaje;
+import static tabs.admin.Reportes.REP_TRASVASOS;
+import static tabs.admin.Reportes.REP_VENTAS;
+import static tabs.admin.Reportes.REP_DEUDAS_ACTIVAS;
+import static tabs.admin.Reportes.REP_DEUDAS_TODAS;
+import static tabs.admin.Reportes.REP_PEDIDOS_ACTIVOS;
+import static tabs.admin.Reportes.REP_PEDIDOS_TODOS;
+import static tabs.admin.Reportes.REP_RECARGAS;
+import static tabs.admin.Reportes.REP_COMPRAS;
+import static tabs.admin.Reportes.REP_CLIENTES;
+import static tabs.admin.Reportes.REP_PROVEEDORES;
+import static tabs.admin.Reportes.REP_EMPLEADOS;
 
 public class CrearReporte {
 
@@ -70,6 +82,7 @@ public class CrearReporte {
                     .setFontSize(8)
                     .setTextAlignment(TextAlignment.CENTER)
                     .setPadding(0)
+                    .setFontColor(rojo)
                     .setBorder(Border.NO_BORDER);
             noRegistros.addCell(
                     new Cell().add(
@@ -92,8 +105,20 @@ public class CrearReporte {
             System.arraycopy(datos, 1, datosSinHeader, 0, filas);
 
             //Asignar el primer límite de registros, según el tipo de reporte
-            int primerLimite = (type == REP_CLIENTES || type == REP_PROVEEDORES
-                    || type == REP_EMPLEADOS) ? 42 : 40;
+            int primerLimite;
+            switch (type) {
+                case REP_CLIENTES:
+                case REP_PROVEEDORES:
+                case REP_EMPLEADOS:
+                case REP_PEDIDOS_ACTIVOS:
+                case REP_PEDIDOS_TODOS:
+                    primerLimite = 42;
+                    break;
+                default:
+                    primerLimite = 40;
+                    break;
+            }
+
             //Asignar el límite para la segunda hoja en adelante
             int limiteMaximo = 50;
 
@@ -123,24 +148,39 @@ public class CrearReporte {
                 //Variable para contar la cantidad de hojas en total
                 int cantidadHojas;
 
-                if ((type == REP_CLIENTES || type == REP_PROVEEDORES
-                        || type == REP_EMPLEADOS) && divisible) {
-                    //Si el reporte es de clientes, proveedores o empleados y es
-                    //divisible, implica que la cantidad de hojas será la primera
-                    //hoja MÁS la cantidad de hojas completas
-                    cantidadHojas = hojasCompletas + 1;
-
-                } else {
-                    /**
-                     * Si el reporte es de otro tipo, la cantidad de hojas será
-                     * la primera hoja, más las hojas completas, más la última
-                     * hoja. Aunque la cantidad de hojas completas PUEDA SER
-                     * divisible, la última NUNCA llegaría a los 50 datos; sino
-                     * que se partiría la tabla en el dato 48, para mostrar el
-                     * total en una hoja siguiente con los dos últimos datos,
-                     * para NO sobrepasar el margen del documento con el total.
-                     */
-                    cantidadHojas = hojasCompletas + 2;
+                switch (type) {
+                    case REP_CLIENTES:
+                    case REP_PROVEEDORES:
+                    case REP_EMPLEADOS:
+                    case REP_PEDIDOS_ACTIVOS:
+                    case REP_PEDIDOS_TODOS:
+                        if (divisible) {
+                            /**
+                             * Si el reporte es de clientes, proveedores,
+                             * empleados o pedidos y es divisible, implica que
+                             * la cantidad de hojas será la primera hoja MÁS la
+                             * cantidad de hojas completas. Ya que estos tipos
+                             * de reporte NO cuentan con la tabla final de
+                             * "totales"
+                             */
+                            cantidadHojas = hojasCompletas + 1;
+                            break;
+                        }
+                    //En caso de NO ser divisible, asignar la cantidad
+                    //de hojas en la sentencia de abajo
+                    default:
+                        /**
+                         * Si el reporte es de otro tipo, la cantidad de hojas
+                         * será la primera hoja, más las hojas completas, más la
+                         * última hoja. Aunque la cantidad de hojas completas
+                         * PUEDA SER divisible, la última NUNCA llegaría a los
+                         * 50 datos; sino que se partiría la tabla en el dato
+                         * 48, para mostrar el total en una hoja siguiente con
+                         * los dos últimos datos, para NO sobrepasar el margen
+                         * del documento con el "total".
+                         */
+                        cantidadHojas = hojasCompletas + 2;
+                        break;
                 }
 
                 //PRIMERA HOJA
@@ -181,14 +221,15 @@ public class CrearReporte {
                 for (int i = 0; i < hojasCompletas; i++) {
 
                     if (divisible && i == hojasCompletas - 1 && type != REP_CLIENTES
-                            && type != REP_PROVEEDORES && type != REP_EMPLEADOS) {
+                            && type != REP_PROVEEDORES && type != REP_EMPLEADOS
+                            && type != REP_PEDIDOS_ACTIVOS && type != REP_PEDIDOS_TODOS) {
                         /**
                          * Si la cantidad de hojas comletas es divisible, i
                          * equivale a la última hoja completa y el reporte es
-                         * distinto de clientes, proveedores o empleados;
-                         * entonces el límite máximo se reduce en dos registros,
-                         * para pasar estos dos últimos datos a una hoja
-                         * siguiente y mostrar el total
+                         * distinto de clientes, proveedores, empleados o
+                         * pedidos; entonces el límite máximo se reduce en dos
+                         * registros, para pasar estos dos últimos datos a una
+                         * hoja siguiente y mostrar el total
                          */
                         limiteMaximo -= 2;
                         ultimasFilas = 2;
@@ -215,10 +256,12 @@ public class CrearReporte {
                     documento.add(tabla);
                     documento.add(footer);
 
-                    //En caso de que el reporte sea de cliente o proveedores, NO 
-                    //siempre se le agregará un salto de línea
+                    //En caso de que el reporte sea de cliente, proveedores,
+                    //empleados o pedidos, NO siempre se le agregará un salto
+                    //de línea.
                     if (type == REP_CLIENTES || type == REP_PROVEEDORES
-                            || type == REP_EMPLEADOS) {
+                            || type == REP_EMPLEADOS || type == REP_PEDIDOS_ACTIVOS
+                            || type == REP_PEDIDOS_TODOS) {
 
                         if (!(divisible && i == hojasCompletas - 1)) {
                             /**
@@ -260,11 +303,21 @@ public class CrearReporte {
                 }
             }
         }
-
-        //Realizar el total cuando el reporte NO sea de clientes, proveedores o empleados
-        if (type != REP_CLIENTES && type != REP_PROVEEDORES && type != REP_EMPLEADOS) {
-            Table total = getTotalTable();
-            documento.add(total);
+        //Determinar si se realizará la tabla del total
+        switch (type) {
+            case REP_CLIENTES:
+            case REP_PROVEEDORES:
+            case REP_EMPLEADOS:
+            case REP_PEDIDOS_ACTIVOS:
+            case REP_PEDIDOS_TODOS:
+                //No realizar el total cuando sea de estos tipos
+                break;
+            default:
+                //Realizar el total cuando el reporte NO sea ninguno de
+                //los tipos anteriores
+                Table total = getTotalTable();
+                documento.add(total);
+                break;
         }
     }
 
@@ -309,12 +362,12 @@ public class CrearReporte {
                 .setBorder(Border.NO_BORDER);
         //Declaración de la celda para los datos
         Cell celda;
-        
+
         //Ciclo que iterará la cantidad de datos obtenidos
         for (int i = 0; i < listaDatos.length; i++) {
             //Ciclo que iterará la cantidad de campos de la tabla
             for (int j = 0; j < columnsCount; j++) {
-                
+
                 //Instanciar una nueva celda, con su estilo
                 celda = new Cell().addStyle(dataStyle);
                 //Añadir un parrafo con el dato actual
@@ -400,7 +453,7 @@ public class CrearReporte {
                 );
                 break;
 
-            case REP_DEUDAS:
+            case REP_DEUDAS_ACTIVAS:
                 //Variables para la cantidad de botellones que se deben pagar y entregar
                 int cant_pagar = 0;
                 int cant_entregar = 0;
@@ -422,7 +475,7 @@ public class CrearReporte {
                 parrafo = new Paragraph();
                 //Añadir el título para los botellones que se deben pagar
                 parrafo.add(
-                        new Text("Botellones que deben pagar:\t\t" + cant_pagar)
+                        new Text("Botellones que se deben pagar:\t\t" + cant_pagar)
                                 .addStyle(titleStyle)
                                 .setFontColor((cant_pagar > cant_entregar) ? rojo : verde)
                 );
@@ -447,6 +500,61 @@ public class CrearReporte {
                 );
                 break;
 
+            case REP_DEUDAS_TODAS:
+                //Variables para la cantidad de botellones que se deben pagar y entregar
+                cant_pagar = 0;
+                cant_entregar = 0;
+                boolean estado;
+                
+                //Ciclo para recorrer todos los datos de la tabla
+                for (int i = 1; i < datos.length; i++) {
+                    //Obtener el estado de cada deuda
+                    estado = (datos[i][6].toString().equals("PENDIENTE"));
+                    System.out.println("Estado total = "+estado);
+                    
+                    //Si la deuda está activa, sumar sus valores
+                    if(estado){
+                        //Sumar todas las cantidades de ventas realizados
+                        cant_pagar += Integer.valueOf(datos[i][3].toString());
+                        //Sumar todos los precios de venta asignados
+                        cant_entregar += Integer.valueOf(datos[i][4].toString());
+                    }
+                }
+
+                //Tabla interna para mostrar un dato arriba del otro
+                tablaInterna = new Table(1);
+                //Posicionar la tabla interna en el centro de la tabla
+                tablaInterna.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+                //Vaciar el parrafo instanciando un nuevo parrafo
+                parrafo = new Paragraph();
+                //Añadir el título para los botellones que se deben pagar
+                parrafo.add(
+                        new Text("Botellones que se deben pagar:\t\t" + cant_pagar)
+                                .addStyle(titleStyle)
+                                .setFontColor((cant_pagar > cant_entregar) ? rojo : verde)
+                );
+                //Añadir el parrafo con los botellones pagados
+                tablaInterna.addCell(customCell(parrafo, TextAlignment.RIGHT));
+
+                //Vaciar el parrafo instanciando un nuevo parrafo
+                parrafo = new Paragraph();
+                //Añadir el título para los botellones pagados
+                parrafo.add(
+                        new Text("Botellones que se deben entregar:\t\t" + cant_entregar)
+                                .addStyle(titleStyle)
+                                .setFontColor((cant_pagar > cant_entregar) ? rojo : verde)
+                );
+                //Añadir el parrafo con los botellones pagados
+                tablaInterna.addCell(customCell(parrafo, TextAlignment.RIGHT));
+
+                //Añadir la tabla interna con la alineación hacia la derecha
+                tabla.addCell(
+                        customCell(tablaInterna, TextAlignment.RIGHT)
+                                .setBorderTop(new SolidBorder(azul, 1))
+                );
+                break;
+                
             case REP_VENTAS:
                 //Vaciar las variables para las cantidades y ganancias
                 cantidad = 0;
@@ -554,22 +662,22 @@ public class CrearReporte {
     private static int getDatos() {
         switch (type) {
             case REP_TRASVASOS:
-                datos = ReadDB.getTrasvasos(initialDate, finalDate, id_sucursal);
+                datos = AdminDB.getTrasvasos(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_RECARGAS:
-                datos = ReadDB.getRecargas(initialDate, finalDate, id_sucursal);
+                datos = AdminDB.getRecargas(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_COMPRAS:
-                datos = ReadDB.getCompras(initialDate, finalDate, id_sucursal);
+                datos = AdminDB.getCompras(initialDate, finalDate, id_sucursal);
                 break;
 
             case REP_VENTAS:
-                datos = ReadDB.getVentas(initialDate, finalDate, id_sucursal);
+                datos = AdminDB.getVentas(initialDate, finalDate, id_sucursal);
                 break;
 
-            case REP_DEUDAS:
+            case REP_DEUDAS_ACTIVAS:
                 //Crear la cabecera para las deudas
                 Object[] header = {"ID", "Factura", "Cedula",
                     "Debe Pagar", "Debemos Entregar", "Fecha"};
@@ -587,17 +695,60 @@ public class CrearReporte {
                     for (int i = 0; i < tabla.length; i++) {
                         //Guardar todos los datos, a excepción del
                         //último dato
-                        datos[i+1][0] = tabla[i][0];
-                        datos[i+1][1] = tabla[i][1];
-                        datos[i+1][2] = tabla[i][2];
-                        datos[i+1][3] = tabla[i][3];
-                        datos[i+1][4] = tabla[i][4];
-                        datos[i+1][5] = tabla[i][5];
+                        datos[i + 1][0] = tabla[i][0];
+                        datos[i + 1][1] = tabla[i][1];
+                        datos[i + 1][2] = tabla[i][2];
+                        datos[i + 1][3] = tabla[i][3];
+                        datos[i + 1][4] = tabla[i][4];
+                        datos[i + 1][5] = tabla[i][5];
                     }
-                    
+
                 } else {
                     datos = new Object[][]{header};
                 }
+                break;
+
+            case REP_DEUDAS_TODAS:
+                datos = AdminDB.getDeudas(initialDate, finalDate);
+                break;
+
+            case REP_PEDIDOS_ACTIVOS:
+                //Crear la cabecera para las deudas
+                header = new String[]{"ID", "Cedula", "Servicio", "Cantidad",
+                    "Tipo Pago", "Fecha", "Direccion", "Estado"};
+
+                //Lista para obtener las deudas
+                tabla = ReadDB.getPedidos();
+
+                //Validar que la respuesta NO sea nula
+                if (tabla != null) {
+                    //Instanciar la lista que tendrá todas las deudas
+                    datos = new Object[tabla.length + 1][header.length];
+                    //Asignar la primera fila como la cabecera
+                    datos[0] = header;
+
+                    //Ciclo que iterará la cantidad de deudas obtenidos.
+                    for (int i = 0; i < tabla.length; i++) {
+                        //Guardar todos los datos, a excepción del
+                        //último dato
+                        datos[i + 1][0] = tabla[i][0];
+                        datos[i + 1][1] = tabla[i][1];
+                        datos[i + 1][2] = tabla[i][2];
+                        datos[i + 1][3] = tabla[i][3];
+                        datos[i + 1][4] = tabla[i][4];
+                        datos[i + 1][5] = tabla[i][5];
+                        datos[i + 1][6] = tabla[i][6];
+                        boolean estado = Boolean.valueOf(tabla[i][7].toString());
+                        datos[i + 1][7] = (estado) ? "PENDIENTE" : "PAGADO";
+                    }
+
+                } else {
+                    datos = new Object[][]{header};
+                }
+                break;
+
+            case REP_PEDIDOS_TODOS:
+                datos = AdminDB.getPedidos(initialDate, finalDate);
                 break;
 
             case REP_CLIENTES:
@@ -647,7 +798,7 @@ public class CrearReporte {
                 break;
 
             case REP_EMPLEADOS:
-                datos = ReadDB.getEmpleados(id_sucursal);
+                datos = AdminDB.getEmpleados(id_sucursal);
                 break;
         }
 
@@ -706,7 +857,10 @@ public class CrearReporte {
             case REP_CLIENTES:
             case REP_PROVEEDORES:
             case REP_EMPLEADOS:
-            case REP_DEUDAS:
+            case REP_DEUDAS_ACTIVAS:
+            case REP_DEUDAS_TODAS:
+            case REP_PEDIDOS_ACTIVOS:
+            case REP_PEDIDOS_TODOS:
                 columnas = 2;
                 break;
 
@@ -724,22 +878,37 @@ public class CrearReporte {
         //Agregar el propósito a la tabla
         tabla.addCell(customCell(proposito, TextAlignment.LEFT));
 
-        //Validar si el reporte llevará fecha de filtro
-        if (type != REP_CLIENTES && type != REP_PROVEEDORES
-                && type != REP_DEUDAS && type != REP_EMPLEADOS) {
-            //Parrafo para las ganancias
-            Paragraph ganancias = getProfits();
-            tabla.addCell(customCell(ganancias, TextAlignment.CENTER));
+        //Comprobar la información que llevará el reporte según su tipo
+        switch (type) {
+            //No llevan filtro por fechas ni ganancias
+            case REP_CLIENTES:
+            case REP_EMPLEADOS:
+            case REP_PROVEEDORES:
+            case REP_DEUDAS_ACTIVAS:
+            case REP_PEDIDOS_ACTIVOS:
+                //Crear tabla con la fecha en que se generó el reporte
+                Paragraph fecha = getDate();
+                tabla.addCell(customCell(fecha, TextAlignment.CENTER));
+                break;
 
-            //Tabla para las fechas de filtros
-            Table fechas = getDates();
-            tabla.addCell(customCell(fechas, TextAlignment.RIGHT));
+            //Lleva filtro por fechas, pero NO ganancias
+            case REP_DEUDAS_TODAS:
+            case REP_PEDIDOS_TODOS:
+                //Tabla para las fechas de filtro y generación del reporte
+                Table fechas = getDates();
+                tabla.addCell(customCell(fechas, TextAlignment.RIGHT));
+                break;
 
-        } else {
-            //Si el reporte no tiene fechas de filtro, solo mostrará
-            //la fecha en que fue generado el reporte
-            Paragraph fecha = getDate();
-            tabla.addCell(customCell(fecha, TextAlignment.CENTER));
+            //Lleva filtro por fechas y ganancias
+            default:
+                //Parrafo para las ganancias
+                Paragraph ganancias = getProfits();
+                tabla.addCell(customCell(ganancias, TextAlignment.CENTER));
+
+                //Tabla para las fechas de filtros
+                fechas = getDates();
+                tabla.addCell(customCell(fechas, TextAlignment.RIGHT));
+                break;
         }
 
         //Añadir la tabla de información al documento
@@ -984,11 +1153,17 @@ public class CrearReporte {
                 proposito.setWidth(140);
                 break;
 
-            case REP_DEUDAS:
+            case REP_DEUDAS_ACTIVAS:
+            case REP_PEDIDOS_ACTIVOS:
             case REP_CLIENTES:
             case REP_PROVEEDORES:
             case REP_EMPLEADOS:
                 proposito.setWidth(250);
+                break;
+
+            case REP_PEDIDOS_TODOS:
+            case REP_DEUDAS_TODAS:
+                proposito.setWidth(200);
                 break;
 
             default:
@@ -1030,9 +1205,18 @@ public class CrearReporte {
             case REP_TRASVASOS:
                 return "Reporte para visualizar el registro de los trasvasos "
                         + "realizados a los clientes, en una fecha determinada";
-            case REP_DEUDAS:
+            case REP_DEUDAS_ACTIVAS:
                 return "Reporte para visualizar el registro de las deudas "
-                        + "pendientes con los clientes, en una fecha determinada";
+                        + "pendientes con los clientes";
+            case REP_DEUDAS_TODAS:
+                return "Reporte para visualizar el registro de todas las deudas "
+                        + "realizadas, en una fecha determinada";
+            case REP_PEDIDOS_ACTIVOS:
+                return "Reporte para visualizar el registro de los pedidos "
+                        + "activos de los clientes";
+            case REP_PEDIDOS_TODOS:
+                return "Reporte para visualizar el registro de todos los pedidos "
+                        + "realizados, en una fecha determinada";
             case REP_RECARGAS:
                 return "Reporte para visualizar el registro de las recargas "
                         + "realizadas con los proveedores, en una fecha determinada";
@@ -1068,8 +1252,12 @@ public class CrearReporte {
         switch (type) {
             case REP_TRASVASOS:
                 return "TRASVASOS";
-            case REP_DEUDAS:
+            case REP_DEUDAS_TODAS:
+            case REP_DEUDAS_ACTIVAS:
                 return "DEUDAS";
+            case REP_PEDIDOS_TODOS:
+            case REP_PEDIDOS_ACTIVOS:
+                return "PEDIDOS";
             case REP_RECARGAS:
                 return "RECARGAS";
             case REP_COMPRAS:
@@ -1262,10 +1450,12 @@ public class CrearReporte {
     }
 
     /**
-     * Función principal para crear un reporte PDF, sin filtro de fechas
+     * Función principal para crear un reporte PDF, sin filtro de fechas pero en
+     * una sucursal en específico (empleados)
      *
      * @param type Tipo de reporte generado (cliente o proveedor)
      * @param path Ruta donde se generará el reporte (sin el nombre)
+     * @param sucursal
      */
     public static void crear(int type, String path, int sucursal) {
         CrearReporte.type = type;
@@ -1314,6 +1504,35 @@ public class CrearReporte {
         CrearReporte.initialDate = initialDate;
         CrearReporte.finalDate = finalDate;
         CrearReporte.id_sucursal = sucursal;
+
+        //Buscar los datos y obtener el número de datos obtenidos
+        int result = getDatos();
+
+        //Validar que exista, al menos, un registro (sin contar el header)
+        if (result > 1) {
+            crearPDF();
+        } else if (result == 1) {
+            //Si no se obtuvo ningún registro, mostrar un mensaje de advertencia
+            String adv = "No se obtuvo ningún registro de la base de datos.\n"
+                    + "¿Quiere crear el reporte de igual forma?";
+
+            //Validar si se creará el reporte o no
+            if (Mensaje.msjYesNo(adv)) {
+                crearPDF();
+            }
+        }
+
+        vaciarDatos();
+    }
+
+    public static void crear(int type, String path, String initialDate, String finalDate) {
+        //Almacenar los datos enviados a los atributos de la clase
+        CrearReporte.type = type;
+        CrearReporte.path = path;
+        CrearReporte.fileName = getDefaultName();
+        CrearReporte.absolutePath = CrearReporte.path + "\\" + CrearReporte.fileName;
+        CrearReporte.initialDate = initialDate;
+        CrearReporte.finalDate = finalDate;
 
         //Buscar los datos y obtener el número de datos obtenidos
         int result = getDatos();
@@ -1419,13 +1638,4 @@ public class CrearReporte {
     private static final DeviceRgb rojo = new DeviceRgb(155, 0, 0);
     private static final DeviceRgb blanco = new DeviceRgb(255, 255, 255);
     private static final DeviceRgb gris = new DeviceRgb(238, 238, 238);
-    //TIPOS DE REPORTES
-    private static final int REP_TRASVASOS = 1;
-    private static final int REP_DEUDAS = 2;
-    private static final int REP_RECARGAS = 3;
-    private static final int REP_COMPRAS = 4;
-    private static final int REP_VENTAS = 5;
-    private static final int REP_CLIENTES = 6;
-    private static final int REP_PROVEEDORES = 7;
-    private static final int REP_EMPLEADOS = 8;
 }

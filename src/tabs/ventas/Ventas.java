@@ -29,6 +29,7 @@ import static properties.Mensaje.msjYesNo;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static main.MenuLateral.clickButton;
+import properties.Mensaje;
 import tabs.historial.Historial;
 
 /**
@@ -297,7 +298,8 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
                                     //Vaciar los campos
                                     vaciarCampos();
                                     
-                                    
+                                    //Mensaje de éxito
+                                    Mensaje.msjInformativo("Se registró la venta con éxito.");
                                 }
                             }
                         } 
@@ -462,6 +464,9 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
         //Validar que el precio y el panel informativo, hayan buscado sus datos
         //en la base de datos exitosamente
         if (informacion.actualizarDatos() && precio != ERROR_VALUE) {
+            //Actualizar el monto total de la factura por el precio actualizado
+            factura.setMontoTotal(precio * cantidad);
+            
             //Reposicionar el panel de información, según el 
             //ancho del contenedor
             if (width < 600) {
@@ -875,5 +880,5 @@ class PanelVentas extends JPanel implements properties.Constantes, properties.Co
     private static final JCheckBox checkDelivery = new JCheckBox("Entrega domicilio");
 
     private static final Boton btnAceptar = new Boton("Registrar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

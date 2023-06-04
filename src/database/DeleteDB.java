@@ -255,4 +255,9 @@ public class DeleteDB implements properties.Constantes {
 
         return false;
     }
+    
+    public static boolean removeSucursal(Object id){
+        
+        return false;
+    }
 }

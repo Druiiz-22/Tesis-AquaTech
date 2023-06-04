@@ -32,21 +32,22 @@ public final class Inicio extends JPanel implements properties.Colores, properti
      */
     private boolean validarUsuario() {
         //Validar la existencia del usuario
-        Object[] cuenta = ReadDB.getUser(identificacion, clave, 1);
+        Object[] cuenta = ReadDB.getUser(identificacion, clave);
 
         //Comprobar la existencia del usuario
         if (cuenta != null) {
 
-            Inicio.rol = Integer.parseInt(cuenta[0].toString());
             Inicio.nombre = cuenta[1].toString();
+            Inicio.rol = Integer.parseInt(cuenta[0].toString());
+            Inicio.empleado_sucursal = Integer.parseInt(cuenta[2].toString());
 
             //Validar que el usuario tenga los permisos para acceder al software
             switch (rol) {
                 case EMPLEADO:
                 case OPERADOR:
                 case ADMINISTRADOR:
-
                     return true;
+                    
                 default:
                     msjError(
                             "Usted no cuenta con los permisos necesarios para "
@@ -92,19 +93,28 @@ public final class Inicio extends JPanel implements properties.Colores, properti
                     //Validar que el usuario realmente exista
                     //en la base de datos
                     if (validarUsuario()) {
-                        //Cerrar el login
-                        Run.cerrarLogin();
+                        //Obtener las sucursales de la franquicia
+                        Object[][] sucursales = database.ReadDB.getSucursales();
+                        
+                        //Validar que se hayan obtenido
+                        if(sucursales != null && sucursales.length > 0){
+                            //Cerrar el login
+                            Run.cerrarLogin();
 
-                        //Vaciar los campos del inicio
-                        vaciarCampos();
-
-                        //Cerrar el glasPane
-                        Frame.openGlass(false);
-
-                        //Abrir el splash screen
-                        IniciarPrograma iniciar = new IniciarPrograma(identificacion, rol, nombre);
+                            //Vaciar los campos del inicio
+                            vaciarCampos();
+                            
+                            //Abrir el splash screen
+                            IniciarPrograma iniciar = new IniciarPrograma(identificacion, rol, nombre, sucursales, empleado_sucursal);
+                            
+                        } else {
+                            msjError("No se pudo realizar la conexión con la base"
+                                    + "de datos.\nPor favor, intentelo más tarde.");
+                        }
                     }
                 }
+                //Cerrar el glasPane
+                Frame.openGlass(false);
 
                 //Determinar que ya NO se está logeando
                 logeando = false;
@@ -158,6 +168,7 @@ public final class Inicio extends JPanel implements properties.Colores, properti
     private static String identificacion;
     private static String nombre;
     private static String clave;
+    private static int empleado_sucursal;
     private static int rol;
     private static boolean logeando = false;
 

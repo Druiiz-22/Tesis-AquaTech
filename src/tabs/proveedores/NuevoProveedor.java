@@ -558,5 +558,5 @@ public class NuevoProveedor extends JDialog implements properties.Constantes, pr
     private static final CampoTexto txtNombre = new CampoTexto("Nombre del proveedor", NOMBRE);
 
     private static final Boton btnGuardar = new Boton("Guardar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

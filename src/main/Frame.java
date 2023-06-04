@@ -30,12 +30,14 @@ public class Frame extends JFrame implements properties.Constantes {
      * @param identificacion Nombre de usuario
      * @param rol
      * @param nombre
+     * @param sucursal
      */
-    public Frame(String identificacion, int rol, String nombre) {
+    public Frame(String identificacion, int rol, String nombre, int sucursal) {
         Frame.identificacion = identificacion;
         Frame.rol = rol;
         Frame.nombre = nombre;
-
+        Frame.sucursal = sucursal;
+        
         //Propiedades básicas
         this.getContentPane().setLayout(null);
         this.setMinimumSize(getMinSize());
@@ -382,6 +384,10 @@ public class Frame extends JFrame implements properties.Constantes {
         return Frame.identificacion;
     }
 
+    public static int getSucursal(){
+        return Frame.sucursal;
+    }
+    
     protected static boolean actualizarPrograma() {
         return Contenedor.actualizarDatos();
     }
@@ -389,7 +395,7 @@ public class Frame extends JFrame implements properties.Constantes {
     //ATRIBUTOS
     private static String nombre;
     private static String identificacion;
-    private static int rol;
+    private static int rol, sucursal;
 
     //COMPONENTES
     private static final MenuSuperior menu = new MenuSuperior();

@@ -586,5 +586,5 @@ public class NuevoCliente extends JDialog implements properties.Constantes, prop
     private static final CampoTexto txtTelefono = new CampoTexto("Teléfono del cliente", NUMERO);
 
     private static final Boton btnGuardar = new Boton("Guardar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

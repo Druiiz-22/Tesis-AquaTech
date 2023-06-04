@@ -19,7 +19,6 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
      * @param total Precio total de la venta o trasvaso
      */
     public void setMontoTotal(double total) {
-
         this.lblTotal[1].setText(String.format("%.2f", total) + " Bs");
         this.lblTotal[1].setSize(this.lblTotal[1].getPreferredSize());
 
@@ -157,9 +156,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
      */
     public void setPrecioCadaUno(double precio) {
         //Validar que la factura sea de tipo de compras
-
         if (type == COMPRAS_RECARGA || type == COMPRAS_BOTELLON) {
-
             this.lblDatos[1][1].setText(String.format("%.2f", precio) + " Bs");
             this.lblDatos[1][1].setSize(this.lblDatos[1][1].getPreferredSize());
 
@@ -178,12 +175,23 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
      * @param name Nombre de la empresa o persona
      */
     public void setInformacion(String id, String name) {
-        lblPersona[1][0].setText(id);
-        lblPersona[1][1].setText(name);
-        this.lblPersona[1][0].setSize(this.lblPersona[1][0].getPreferredSize());
-        this.lblPersona[1][1].setSize(this.lblPersona[1][1].getPreferredSize());
+        String capitalize = "";
+        if(!name.isEmpty()){
+            capitalize = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+        }
+        
+        if(type == COMPRAS_BOTELLON || type == COMPRAS_RECARGA){
+            lblPersona[1][0].setText(capitalize);
+            this.lblPersona[1][0].setSize(this.lblPersona[1][0].getPreferredSize());
+            
+        } else {
+            lblPersona[1][0].setText(id);
+            lblPersona[1][1].setText(capitalize);
+            this.lblPersona[1][0].setSize(this.lblPersona[1][0].getPreferredSize());
+            this.lblPersona[1][1].setSize(this.lblPersona[1][1].getPreferredSize());
+        }
     }
-
+    
     // ========== FRONTEND ==========
     /**
      * Constructor del panel para la cuenta
@@ -238,12 +246,18 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         }
 
         //PROPIEDADES DEL DESTINATARIO
-        this.lblPersona = new Label[2][2];
         boolean compras = (this.type == COMPRAS_BOTELLON || this.type == COMPRAS_RECARGA);
-        this.lblPersona[0][0] = new Label((compras) ? "RIF" : "Cédula", GRUESA, fontSize);
-        this.lblPersona[0][1] = new Label((compras) ? "Nombre" : "Apellido", GRUESA, fontSize);
-        this.lblPersona[1][0] = new Label("", PLANO, fontSize);
-        this.lblPersona[1][1] = new Label("", PLANO, fontSize);
+        this.lblPersona = new Label[2][(compras) ? 1 : 2];
+        if (compras) {
+            this.lblPersona[0][0] = new Label("Nombre proveedor", GRUESA, fontSize);
+            this.lblPersona[1][0] = new Label("", PLANO, fontSize);
+
+        } else {
+            this.lblPersona[0][0] = new Label("Cédula", GRUESA, fontSize);
+            this.lblPersona[0][1] = new Label("Apellido", GRUESA, fontSize);
+            this.lblPersona[1][0] = new Label("", PLANO, fontSize);
+            this.lblPersona[1][1] = new Label("", PLANO, fontSize);
+        }
 
         //AGREGAR LOS COMPONENTES
         this.add(this.lblTitulo);
@@ -380,7 +394,7 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         int spHeight = separadores[0].getPreferredSize().height;
 
         //El título de la factura siempre estará en la misma posición
-        this.lblTitulo.setLocation(padding, padding/2);
+        this.lblTitulo.setLocation(padding, padding / 2);
 
         //PRIMERA FILA CABECERA
         //Altura de las primeras celdas
@@ -388,13 +402,19 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         //Posición de la segunda celda
         int cellX = padding + 80;
         lblPersona[0][0].setLocation(padding, cellY);
-        lblPersona[0][1].setLocation(cellX, cellY);
+        if (type == VENTAS_BOTELLON || type == VENTAS_TRASVASO) {
+            lblPersona[0][1].setLocation(cellX, cellY);
+        }
         //Reajustar el tamaño de fuente de letra
         lblPersona[0][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
-        lblPersona[0][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        if (type == VENTAS_BOTELLON || type == VENTAS_TRASVASO) {
+            lblPersona[0][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        }
         //Reajustar el tamaño del label
         lblPersona[0][0].setSize(lblPersona[0][0].getPreferredSize());
-        lblPersona[0][1].setSize(lblPersona[0][1].getPreferredSize());
+        if (type == VENTAS_BOTELLON || type == VENTAS_TRASVASO) {
+            lblPersona[0][1].setSize(lblPersona[0][1].getPreferredSize());
+        }
 
         //alto de las celdas, según el tamaño del label anterior
         int cellHeight = lblPersona[0][0].getHeight();
@@ -408,13 +428,19 @@ public class PanelFactura extends JPanel implements properties.Colores, properti
         //Posición y altura del separador + el gap vertical
         cellY = spY + spHeight + ((alturaBaja) ? gapV / 2 : gapV);
         lblPersona[1][0].setLocation(padding, cellY);
-        lblPersona[1][1].setLocation(cellX, cellY);
+        if (type == VENTAS_BOTELLON || type == VENTAS_TRASVASO) {
+            lblPersona[1][1].setLocation(cellX, cellY);
+        }
         //Reajustar el tamaño de fuente de letra
         lblPersona[1][0].setFontSize((alturaBaja) ? smallFontSize : fontSize);
-        lblPersona[1][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        if (type == VENTAS_BOTELLON || type == VENTAS_TRASVASO) {
+            lblPersona[1][1].setFontSize((alturaBaja) ? smallFontSize : fontSize);
+        }
         //Reajustar el tamaño del label
         lblPersona[1][0].setSize(lblPersona[1][0].getPreferredSize());
-        lblPersona[1][1].setSize(lblPersona[1][1].getPreferredSize());
+        if (type == VENTAS_BOTELLON || type == VENTAS_TRASVASO) {
+            lblPersona[1][1].setSize(lblPersona[1][1].getPreferredSize());
+        }
 
         //SEPARADOR
         //Posición y altura de la última celda + un padding

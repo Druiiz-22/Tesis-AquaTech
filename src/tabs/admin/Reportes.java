@@ -45,7 +45,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             //Validar de fechas en caso de que el tipo de reporte seleccionado
             //sea DISTINTO al de clientes, proveedores o deudas
             if ((index == REP_CLIENTES || index == REP_PROVEEDORES
-                    || index == REP_DEUDAS || index == REP_EMPLEADOS) ? true : validarFechas()) {
+                    || index == REP_DEUDAS_ACTIVAS || index == REP_EMPLEADOS) ? true : validarFechas()) {
 
                 if (msjYesNo("¿Está seguro de realizar el reporte?")) {
                     new Thread() {
@@ -63,7 +63,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
                             switch (index) {
                                 case REP_CLIENTES:
                                 case REP_PROVEEDORES:
-                                case REP_DEUDAS:
+                                case REP_DEUDAS_ACTIVAS:
                                     //Crear reporte sin filtro por fechas y sucursal
                                     CrearReporte.crear(type, path);
                                     break;
@@ -167,9 +167,16 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
                     //Obtener el index del tipo de reporte seleccionado
                     int tipo = boxTipoReporte.getSelectedIndex();
-                    //Comrobar si el reporte NO llevará filtro por sucursales
-                    if (tipo == REP_CLIENTES || tipo == REP_PROVEEDORES || tipo == REP_DEUDAS) {
-                        return true;
+                    
+                    //Comprobar si el reporte NO llevará filtro por sucursales
+                    switch (tipo) {
+                        case REP_CLIENTES:
+                        case REP_PROVEEDORES:
+                        case REP_DEUDAS_ACTIVAS:
+                        case REP_DEUDAS_TODAS:
+                        case REP_PEDIDOS_ACTIVOS:
+                        case REP_PEDIDOS_TODOS:
+                            return true;
                     }
 
                     //Obtener el index de la sucursal seleccionada para filtrarlo
@@ -320,8 +327,17 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             case REP_TRASVASOS:
                 mainPath += "\\Trasvasos";
                 break;
-            case REP_DEUDAS:
-                mainPath += "\\Deudas";
+            case REP_DEUDAS_ACTIVAS:
+                mainPath += "\\Deudas Activas";
+                break;
+            case REP_DEUDAS_TODAS:
+                mainPath += "\\Todas las Deudas";
+                break;
+            case REP_PEDIDOS_ACTIVOS:
+                mainPath += "\\Pedidos Activos";
+                break;
+            case REP_PEDIDOS_TODOS:
+                mainPath += "\\Todos los Pedidos";
                 break;
             case REP_RECARGAS:
                 mainPath += "\\Recargas";
@@ -359,14 +375,6 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
 
     //CONSTANTES BACKEND
     private int id_sucursal;
-    private static final int REP_TRASVASOS = 1;
-    private static final int REP_DEUDAS = 2;
-    private static final int REP_RECARGAS = 3;
-    private static final int REP_COMPRAS = 4;
-    private static final int REP_VENTAS = 5;
-    private static final int REP_CLIENTES = 6;
-    private static final int REP_PROVEEDORES = 7;
-    private static final int REP_EMPLEADOS = 8;
 
     // ========== FRONTEND ==========
     /**
@@ -462,17 +470,33 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
             //Validar si se selecionó clientes o proveedor para deshabilitar
             //las fechas o activarlas en caso contrario
             switch (index) {
-                case REP_DEUDAS:
+                case REP_DEUDAS_ACTIVAS:
+                case REP_PEDIDOS_ACTIVOS:
                 case REP_CLIENTES:
                 case REP_PROVEEDORES:
                     boxSucursales.setEnabled(false);
                     fechaInicio.habilitar(false);
                     fechaFin.habilitar(false);
                     break;
+                
+                case REP_EMPLEADOS:
+                    boxSucursales.setEnabled(true);
+                    fechaInicio.habilitar(false);
+                    fechaFin.habilitar(false);
+                    break;
+                    
+                case REP_DEUDAS_TODAS:
+                case REP_PEDIDOS_TODOS:
+                    boxSucursales.setEnabled(false);
+                    fechaInicio.habilitar(true);
+                    fechaFin.habilitar(true);
+                    break;
+                    
                 default:
                     boxSucursales.setEnabled(true);
                     fechaInicio.habilitar(true);
                     fechaFin.habilitar(true);
+                    break;
             }
         });
     }
@@ -757,10 +781,24 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private static final Label lblTitulo = new Label("Generar Reportes", TITULO, 24);
 
     private static final Label lblTipoReporte = new Label("Tipo de reporte", PLANO, 18, true);
-    private static final String[] opciones = {"Seleccionar", "Trasvasos", "Deudas",
-        "Recargas", "Compras", "Ventas", "Clientes", "Proveedores", "Empleados"};
+    private static final String[] opciones = {"Seleccionar", "Trasvasos", "Ventas",
+        "Deudas activas", "Todas las deudas", "Pedidos activos", "Todos los pedidos",
+        "Recargas", "Compras", "Clientes", "Proveedores", "Empleados"};
     private static final JComboBox boxTipoReporte = new JComboBox(opciones);
 
+    
+    protected static final int REP_TRASVASOS = 1;
+    protected static final int REP_VENTAS = 2;
+    protected static final int REP_DEUDAS_ACTIVAS = 3;
+    protected static final int REP_DEUDAS_TODAS = 4;
+    protected static final int REP_PEDIDOS_ACTIVOS = 5;
+    protected static final int REP_PEDIDOS_TODOS = 6;
+    protected static final int REP_RECARGAS = 7;
+    protected static final int REP_COMPRAS = 8;
+    protected static final int REP_CLIENTES = 9;
+    protected static final int REP_PROVEEDORES = 10;
+    protected static final int REP_EMPLEADOS = 11;
+    
     private static Object[][] sucursales;
     private static final Label lblSucursales = new Label("Tipo de reporte", PLANO, 18, true);
     private static final JComboBox boxSucursales = new JComboBox();
@@ -769,7 +807,7 @@ public class Reportes extends JPanel implements properties.Constantes, propertie
     private static final CampoTexto txtUbicacion = new CampoTexto("Ubicación del reporte", CUALQUIER);
 
     private static final Boton btnAceptar = new Boton("Guardar", CELESTE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 
     private static final BotonDirectory btnUbicacion = new BotonDirectory();
 

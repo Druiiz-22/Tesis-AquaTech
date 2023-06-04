@@ -204,7 +204,7 @@ public class ValidarTexto {
             return false;
         }
     }
-
+    
     /**
      * <p>
      * Función para validar que un <b>número</b> cumpla con el formato:
@@ -224,7 +224,7 @@ public class ValidarTexto {
      * @param number número que será validado.
      * @return <b>TRUE</b> en caso de cumplir con el formato.
      */
-    public static boolean formatoNumerico(String number) {
+    public static boolean formatoDecimal(String number) {
         return number.matches("^[0-9]+([\\.][0-9]{1,2})?$");
     }
 
@@ -251,7 +251,8 @@ public class ValidarTexto {
      * <ul>
      * <li>Solo letras.</li>
      * <li>Todas las letras en mayúscula.</li>
-     * <li>Se permiten acentos y comillas simples</li>
+     * <li>Se permiten acentos y comillas simples.</li>
+     * <li>Se permiten espacios.</li>
      * </ul>
      *
      * @param name

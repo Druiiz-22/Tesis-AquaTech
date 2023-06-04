@@ -261,9 +261,11 @@ public class CreateDB implements properties.Constantes {
         //Validar que el usuario que realiza la acción, cuente con los permisos
         if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
 
+            int sucursal = main.Frame.getSucursal();
+            
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_TRASVASO"
-                    + "(" + cedula + ", 1, " + pagados + ", " + entregados + ", "
+                    + "(" + cedula + ", "+sucursal+", " + pagados + ", " + entregados + ", "
                     + "\"" + tipoPago + "\", " + delivery + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
@@ -287,10 +289,7 @@ public class CreateDB implements properties.Constantes {
                     if (msj.toUpperCase().contains("ÉXITO")) {
                         //Terminar la conexión con la base de datos
                         bdd.desconectar();
-
-                        //Mensaje de éxito
-                        Mensaje.msjInformativo(msj);
-
+                        
                         return true;
 
                     } else {
@@ -343,9 +342,12 @@ public class CreateDB implements properties.Constantes {
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
         if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
+
+            int sucursal = main.Frame.getSucursal();
+            
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_VENTA"
-                    + "(" + cedula + ", 1, " + cantidad + ", \"" + tipoPago
+                    + "(" + cedula + ", "+sucursal+", " + cantidad + ", \"" + tipoPago
                     + "\", " + delivery + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
@@ -369,9 +371,6 @@ public class CreateDB implements properties.Constantes {
                     if (msj.toUpperCase().contains("ÉXITO")) {
                         //Terminar la conexión con la base de datos
                         bdd.desconectar();
-
-                        //Mensaje de éxito
-                        Mensaje.msjInformativo(msj);
 
                         return true;
 
@@ -423,9 +422,12 @@ public class CreateDB implements properties.Constantes {
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
         if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
+
+            int sucursal = main.Frame.getSucursal();
+            
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_RECARGA"
-                    + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";
+                    + "(\"" + rif + "\", "+sucursal+", " + cantidad + ", " + monto + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
@@ -448,9 +450,6 @@ public class CreateDB implements properties.Constantes {
                     if (msj.toUpperCase().contains("ÉXITO")) {
                         //Terminar la conexión con la base de datos
                         bdd.desconectar();
-
-                        //Mensaje de éxito
-                        Mensaje.msjInformativo(msj);
 
                         return true;
 
@@ -502,9 +501,12 @@ public class CreateDB implements properties.Constantes {
 
         //Validar que el usuario que realiza la acción, cuente con los permisos
         if (rol == EMPLEADO || rol == ADMINISTRADOR || rol == OPERADOR) {
+
+            int sucursal = main.Frame.getSucursal();
+            
             //Preparar la sentencia SQL para registrar el trasvaso
             String sql = "SELECT REGISTRAR_COMPRA"
-                    + "(\"" + rif + "\", 1, " + cantidad + ", " + monto + ")";
+                    + "(\"" + rif + "\", "+sucursal+", " + cantidad + ", " + monto + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
             ConexionDB bdd = new ConexionDB(true);
@@ -527,9 +529,6 @@ public class CreateDB implements properties.Constantes {
                     if (msj.toUpperCase().contains("ÉXITO")) {
                         //Terminar la conexión con la base de datos
                         bdd.desconectar();
-
-                        //Mensaje de éxito
-                        Mensaje.msjInformativo(msj);
 
                         return true;
 
@@ -566,5 +565,5 @@ public class CreateDB implements properties.Constantes {
 
         return false;
     }
-
+    
 }

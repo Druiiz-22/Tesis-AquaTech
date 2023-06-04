@@ -25,6 +25,7 @@ import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static main.MenuLateral.clickButton;
+import properties.Mensaje;
 import tabs.clientes.Deudas;
 import tabs.historial.Historial;
 
@@ -40,7 +41,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      * base de datos
      */
     private void registrar() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 Frame.openGlass(0);
@@ -52,7 +53,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
                             //Booleano auxiliar
                             boolean realizar = true;
-                            
+
                             //Validar que el registro NO sea de números más grandes de 100
                             if (entregados > 100 || pagados > 100) {
                                 //En caso de ser alguno mayor de 100, lanzar un mensaje de alerta
@@ -61,18 +62,20 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
                                 realizar = msjYesNoWarning(msj);
                             }
-                            
+
                             //Validar si se realizará o no
-                            if(realizar){
+                            if (realizar) {
                                 //Intentar crear el registro
-                                if(CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula)){
+                                if (CreateDB.createTravaso(entregados, pagados, tipoPago, checkDelivery.isSelected(), cedula)) {
                                     //Actualizar los datos con la base de datos
                                     Ventas.actualizarDatos();
                                     Historial.actualizarDatos();
                                     Deudas.actualizarDatos();
-                                    Pedidos.actualizarDatos();
-                                    
+
                                     vaciarCampos();
+                                    
+                                    //Mensaje de éxito
+                                    Mensaje.msjInformativo("Se registró el trasvaso con éxito.");
                                 }
                             }
                         }
@@ -92,7 +95,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      */
     private boolean validarCampos() {
         String msj;
-        
+
         //Validar que los campos NO estén vacíos y que 
         //se haya seleccionado un tipo de pago
         if (!txtEntregados.getText().trim().isEmpty()) {
@@ -115,12 +118,12 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         } else {
             msj = "La cantidad de botellones entregados no puede estár vacío.";
         }
-        
+
         //Cerrar el glassPane
         Frame.closeGlass();
         //Mostrar mensaje de error
         msjError(msj);
-        
+
         //Retornar falso en caso de no retornar true anteriormente
         return false;
     }
@@ -132,7 +135,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
      */
     private boolean validarDatos() {
         String msj;
-        
+
         //Validar que alguno de los dos tenga un valor
         if (entregados > 0 || pagados > 0) {
 
@@ -154,12 +157,12 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
             msj = "Los dos campos de entregados y pagados no pueden estar vacíos."
                     + "\nPor favor, verifique la cantidad.";
         }
-        
+
         //Cerrar el glassPane
         Frame.closeGlass();
         //Mostrar mensaje de error
         msjError(msj);
-        
+
         //Retornar falso en caso de no haber retornado true anteriormente
         return false;
     }
@@ -246,6 +249,10 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
                     tipoPago = "DOLAR";
                     factura.setTipoPago(tipoPago);
                     break;
+                case 4:
+                    tipoPago = "NOPAG";
+                    factura.setTipoPago(tipoPago);
+                    break;
                 default:
                     tipoPago = "";
                     factura.setTipoPago(tipoPago);
@@ -257,7 +264,8 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     /**
      * Función para actualizar los datos del panel de información cada vez que
      * se visualice el panel de trasvasos
-     * @return 
+     *
+     * @return
      */
     protected boolean actualizarDatos() {
         //Obtener el precio del trasvaso
@@ -266,6 +274,9 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         //Validar que el precio y el panel informativo, hayan buscado sus datos
         //en la base de datos exitosamente
         if (informacion.actualizarDatos() && precio != ERROR_VALUE) {
+            //Actualizar el monto total de la factura por el precio actualizado
+            factura.setMontoTotal(precio * pagados);
+
             //Reposicionar el panel de información, según el 
             //ancho del contenedor
             if (width < 600) {
@@ -282,7 +293,7 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
 
         } else {
             precio = 0;
-            
+
             //Retornar busqueda incompleta
             return false;
         }
@@ -700,14 +711,14 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
         cedula = "";
         apellido = "";
     }
-    
-    protected void habilitarComponents(boolean estado){
+
+    protected void habilitarComponents(boolean estado) {
         txtEntregados.setEnabled(estado);
         txtPagados.setEnabled(estado);
         boxTipoPago.setEnabled(estado);
         checkDelivery.setEnabled(estado);
     }
-    
+
     //ATRIBUTOS FRONTEND
     private int width, facHeight, trasvHeight, facY;
     private final int padding = 20;
@@ -730,11 +741,11 @@ public class Trasvasos extends JPanel implements properties.Colores, properties.
     private static final CampoTexto txtPagados = new CampoTexto("Botellones pagados", NUMERO);
 
     private static final Label lblTipoPago = new Label("Tipo de pago", PLANO, labelFontSize, true);
-    private static final String opciones[] = {"Seleccionar", "Efectivo", "Transferencia", "Dolar en efectivo"};
+    private static final String opciones[] = {"Seleccionar", "Efectivo", "Transferencia", "Dolar en efectivo", "Sin paga"};
     private static final JComboBox boxTipoPago = new JComboBox(opciones);
 
     private static final JCheckBox checkDelivery = new JCheckBox("Entrega domicilio");
 
     private static final Boton btnAceptar = new Boton("Registrar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

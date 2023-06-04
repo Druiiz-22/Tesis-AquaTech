@@ -24,7 +24,6 @@ import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 import main.Frame;
 import main.Run;
-import static properties.Colores.ROJO_OSCURO;
 import static properties.Colores.VERDE;
 import static properties.Constantes.ADMINISTRADOR;
 import static properties.Constantes.OPERADOR;
@@ -33,6 +32,7 @@ import properties.Mensaje;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
+import static properties.Colores.NARANJA;
 
 public class NuevoEmpleado extends JDialog implements properties.Constantes, properties.Colores {
 
@@ -265,8 +265,8 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
      */
     private boolean validarEmpleado() {
         String msj;
-        id_empleado = ReadDB.getEmpleadoID(cedula);
-        rol_empleado = ReadDB.getEmpleadoRol(cedula);
+        id_empleado = AdminDB.getEmpleadoID(cedula);
+        rol_empleado = AdminDB.getEmpleadoRol(cedula);
         int userRol = Frame.getUserRol();
 
         //Validar que el id del empleado sea mayor a 0
@@ -639,7 +639,7 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
     private static final JComboBox boxSucursal = new JComboBox();
 
     private static final Boton btnGuardar = new Boton("Guardar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 
     private class ComboItem {
 

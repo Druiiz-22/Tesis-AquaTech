@@ -183,23 +183,19 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
             case ADMIN_AJUSTES:
                 info = "<html>"
                         + "<p>"
-                        + "El apartado de ajustes permite configurar datos "
-                        + "del programa manualmente:"
+                        + "El apartado de ajustes permite configurar los "
+                        + "siguientes datos:"
                         + "</p>"
                         + "<ul style='list-style-type:none;margin-left:5px'>"
                         + "<li>Precio de trasvase y venta</li>"
-                        + "<li>Sucursales y dispositivos registrados</li>"
+                        + "<li>Datos bancarios</li>"
+                        + "<li>Las Sucursales</li>"
+                        + "<li>La Franquicia</li>"
                         + "</ul>"
                         + "<p>"
                         + "<b>Solo los administradores tienen permitido "
                         + "realizar los cambios.</b>"
                         + "</p><br>"
-                        + "<p>"
-                        + "<font color='#C00000'><b>Advertencia:</b></font> "
-                        + "Los cambios aplicados, <b>se verán reflejados en "
-                        + "todos los dispositivos</b> conectados a la base de "
-                        + "datos local y la nube."
-                        + "</p>"
                         + "</html>";
                 break;
 

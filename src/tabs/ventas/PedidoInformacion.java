@@ -15,9 +15,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import static javax.swing.SwingConstants.HORIZONTAL;
-import static properties.Colores.ROJO_OSCURO;
 import static properties.Colores.VERDE;
 import static properties.Mensaje.msjAdvertencia;
+import static properties.Colores.NARANJA;
 
 public class PedidoInformacion extends JDialog implements properties.Constantes, properties.Colores {
 
@@ -256,5 +256,5 @@ public class PedidoInformacion extends JDialog implements properties.Constantes,
     private static final Label lblFechaEmision = new Label("", PLANO, 16);
     
     private static final Boton btnPagar = new Boton("Pagar pedido", VERDE);
-    private static final Boton btnCerrar = new Boton("Cerrar", ROJO_OSCURO);
+    private static final Boton btnCerrar = new Boton("Cerrar", NARANJA);
 }

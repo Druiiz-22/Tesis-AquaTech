@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.BorderFactory.createLineBorder;
+import javax.swing.JCheckBox;
 import main.Frame;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjYesNo;
@@ -24,6 +25,8 @@ import static properties.Mensaje.msjYesNoWarning;
 import static properties.ValidarTexto.teclaSuelta;
 import static properties.ValidarTexto.teclaSueltaDoble;
 import static main.MenuLateral.clickButton;
+import properties.Fuentes;
+import properties.Mensaje;
 import tabs.historial.Historial;
 
 /**
@@ -243,6 +246,9 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
                                     Historial.actualizarDatos();
                                     
                                     vaciarCampos();
+                                    
+                                    //Mensaje de éxito
+                                    Mensaje.msjInformativo("Se registró la compra con éxito.");
                                 }
                             }
                         }
@@ -393,7 +399,8 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
      */
     protected boolean actualizarDatos() {
         //Validar que el panel informativo se haya actualizado de manera correcta
-        if (informacion.actualizarDatos()) {
+        if (informacion.actualizarDatos()) {           
+            
             //Reposicionar el panel de información, según el 
             //ancho del contenedor
             if (width < 600) {
@@ -463,11 +470,21 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
                 + "</html>"
         );
 
+        //Propiedades del CheckBox
+        checkLleno.setSelected(false);
+        checkLleno.setFont(Fuentes.segoe(18, PLANO));
+        checkLleno.setForeground(NEGRO);
+        checkLleno.setOpaque(false);
+        checkLleno.setSize(checkLleno.getPreferredSize());
+        checkLleno.setToolTipText("Marcar que el botellón comprado vino "
+                + "recargado de agua o vacío.");
+        
         panelCompras.add(lblTitulo);
         panelCompras.add(lblCantidad);
         panelCompras.add(txtCantidad);
         panelCompras.add(lblPrecio);
         panelCompras.add(txtPrecio);
+        panelCompras.add(checkLleno);
         panelCompras.add(btnCancelar);
         panelCompras.add(btnAceptar);
 
@@ -651,8 +668,8 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
     private void relocateCompra() {
         int txtHeight = 40;
         int gapV = 5;
-        int trasW = panelCompras.getWidth();
-        int txtWidth = trasW - padding * 2;
+        int compraW = panelCompras.getWidth();
+        int txtWidth = compraW - padding * 2;
 
         //Asignar el tamaño a los componentes que requieran
         //declarar sus tamaños
@@ -666,23 +683,27 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
         //primero se obtiene le punto medio del panel
         int middleY = panelCompras.getHeight() / 2;
         //Luego la suma de la altura de TODOS los componentes y sus labels
-        int allHeights = txtHeight * 2 + lblCantidad.getHeight() * 2;
+        int allHeights = txtHeight * 2 + lblCantidad.getHeight() * 2 + checkLleno.getHeight();
         //Finalmente calcular el punto medio, sumando, además, los padding utilizados 
-        int positionY = middleY - (allHeights + padding * 3) / 2;
+        int positionY = middleY - (allHeights + padding * 4) / 2;
         lblCantidad.setLocation(padding, positionY);
 
         //Posición vertical para el primer campo de texto
-        positionY = positionY + lblCantidad.getHeight() + gapV;
+        positionY += lblCantidad.getHeight() + gapV;
         txtCantidad.setLocation(padding, positionY);
 
         //Posición vertical del segundo label para su campo de texto
-        positionY = positionY + txtHeight + padding;
+        positionY += txtHeight + padding;
         lblPrecio.setLocation(padding, positionY);
 
         //Posición vertical para el segundo campo de texto
-        positionY = positionY + lblPrecio.getHeight() + gapV;
+        positionY += lblPrecio.getHeight() + gapV;
         txtPrecio.setLocation(padding, positionY);
 
+        int x = compraW/2 - checkLleno.getWidth()/2;
+        positionY += txtHeight + padding;
+        checkLleno.setLocation(x, positionY);
+        
         //Posición vertical de los dos botones inferiores
         txtHeight += 10;
         positionY = panelCompras.getHeight() - txtHeight - padding;
@@ -694,7 +715,7 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
 
         //Ancho del botón de aceptar
         int positionX = padding * 2 + btnW;
-        btnW = trasW - btnCancelar.getWidth() - padding * 3;
+        btnW = compraW - btnCancelar.getWidth() - padding * 3;
         btnAceptar.setSize(btnW, txtHeight);
         btnAceptar.setLocation(positionX, positionY);
     }
@@ -745,6 +766,8 @@ class PanelCompras extends JPanel implements properties.Constantes, properties.C
     private static final Label lblPrecio = new Label("Precio de cada botellón", PLANO, 18, true);
     private static final CampoTexto txtPrecio = new CampoTexto("Precio del botellón", DECIMAL);
 
+    private static final JCheckBox checkLleno = new JCheckBox("Botellón lleno");
+    
     private static final Boton btnAceptar = new Boton("Registrar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

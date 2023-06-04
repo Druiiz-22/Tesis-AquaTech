@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 import properties.Mensaje;
 
 public class EmailCode {
-
+    
     private static String emailEmpresa = "aquatech.tesis@gmail.com";
     private static String claveEmpresa = "xabidfizmcwimsri";
     private static String destino, asunto, contenido;

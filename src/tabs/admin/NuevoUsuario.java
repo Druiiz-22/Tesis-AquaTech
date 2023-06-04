@@ -656,5 +656,5 @@ public class NuevoUsuario extends JDialog implements properties.Constantes, prop
     private static final CampoClave txtClaveRepetida = new CampoClave("Clave repetida");
 
     private static final Boton btnGuardar = new Boton("Guardar", VERDE);
-    private static final Boton btnCancelar = new Boton("Cancelar", ROJO_OSCURO);
+    private static final Boton btnCancelar = new Boton("Cancelar", NARANJA);
 }

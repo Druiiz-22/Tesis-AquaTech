@@ -41,6 +41,7 @@ public class Pedidos extends JPanel implements properties.Colores, properties.Co
         checkFiltrar.setSelected(true);
         checkFiltrar.setFont(segoe(16, PLANO));
         checkFiltrar.setForeground(NEGRO);
+        checkFiltrar.setOpaque(false);
         checkFiltrar.setSize(checkFiltrar.getPreferredSize());
         checkFiltrar.setToolTipText("Filtrar los pedidos para que muestre solo "
                 + "los que están activos.");

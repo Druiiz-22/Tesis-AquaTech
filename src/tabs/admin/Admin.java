@@ -172,6 +172,10 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
         }
     }
 
+    protected static void setAjustesPreferredSize(){
+        contenedor.setPreferredSize(panelAjustes.getPreferredSize());
+    }
+    
     /**
      * Función para navegar entre los distintos paneles
      *
@@ -240,7 +244,8 @@ public class Admin extends JPanel implements properties.Constantes, properties.C
     public static boolean actualizarDatos() {
         boolean status = Usuarios.actualizarDatos() 
                 && Empleados.actualizarDatos()
-                && panelReportes.actualizarDatos();
+                && panelReportes.actualizarDatos()
+                && Ajustes.actualizarDatos();
 
         //Comprobar si se están actualizando desde la ventana de cargando
         if (status && login.IniciarPrograma.isActivated()) {

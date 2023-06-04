@@ -20,6 +20,9 @@ import java.awt.Desktop;
 import tabs.proveedores.Proveedores;
 import tabs.clientes.PanelClientes;
 import static java.awt.Font.PLAIN;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
@@ -32,6 +35,8 @@ import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
+import static properties.Mensaje.msjInformativo;
+import tabs.admin.AjustesSucursales;
 import tabs.admin.Empleados;
 import tabs.admin.Usuarios;
 import tabs.clientes.Deudas;
@@ -234,7 +239,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Comprobar que la deuda seleccionada ESTÉ PENDIENTE
                 if (deudaActiva[index]) {
                     //Obtener la cédula de la deuda
+                    System.out.println("index = "+index);
                     String cedula = tabla.getValueAt(index, 2).toString();
+                    System.out.println("cedula = "+cedula);
 
                     //Validar que los campos NO estén vacíos
                     if (!cedula.isEmpty()) {
@@ -365,6 +372,67 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         });
     }
 
+    private void sucursalesListeners(){
+        itemBorrar.addActionListener((e) -> {
+            eliminar();
+        });
+
+        itemEditar.addActionListener((e) -> {
+            editar();
+        });
+        
+        itemUbicar.addActionListener((e) -> {
+            int index = tabla.getSelectedRow();
+            if(validarSelect(index)){
+                //Obtener la dirección
+                String coords = tabla.getValueAt(index, 4).toString();
+                //Pasarla al portapapele
+                StringSelection selection = new StringSelection(coords);
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(selection, selection);
+                //Mensaje informativo
+                msjInformativo("Se copió la dirección al portapapeles.");
+            }
+        });
+        
+        itemGoogleMaps.addActionListener((e) -> {
+            //Obtener el index de la fila seleccionada en la tabla
+            int index = tabla.getSelectedRow();
+            if (validarSelect(index)) {
+                //Validar que la plataforma sea capaz de usar la clase Desktop
+                if (Desktop.isDesktopSupported()) {
+                    Desktop escritorio = Desktop.getDesktop();
+
+                    //Validar que la plataforma sea capaz de usar un navegador
+                    if (escritorio.isSupported(Desktop.Action.BROWSE)) {
+                        try {
+                            //Obtener las coordenadas de la tabla
+                            String coords[] = tabla.getValueAt(index, 4).toString().split(", ");
+                            
+                            //URL de google maps, abriendo un punto en el mapa, según 
+                            //la latitud y longitud del mismo
+                            URI uri = new URI("https://www.google.es/maps?q=" + coords[0] + "," + coords[1]);
+
+                            //Intentar abrir el navegador y buscar la URL
+                            escritorio.browse(uri);
+
+                        } catch (IOException | URISyntaxException ex) {
+                            msjError("No se pudo abrir el navegador.\nError: " + ex.getMessage());
+                        }
+                    } else {
+                        msjError("La plataforma actual no es compatible para "
+                                + "abrir un navegador.\nDeberá copiar las coordenadas del"
+                                + "punto y buscarlo manualmente en Google Maps.");
+                    }
+                } else {
+                    msjError("La plataforma actual no es compatible con la clase"
+                            + "\"Desktop\", impidiendo\n la posibilidad de abrir ficheros y "
+                            + "sitios web.");
+                }
+            }
+        });
+    }
+    
     /**
      * Función privada para pagar un pedido de una fila
      *
@@ -423,7 +491,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
      * saltará un mensaje de error.</p>
      */
     private void eliminar() {
-
         int index = tabla.getSelectedRow();
         if (validarSelect(index)) {
 
@@ -514,6 +581,21 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                                         }
                                     }
                                     break;
+                                    
+                                case TODAS_SUCURSALES:
+                                    //Validar el rol de administrador y su clave para
+                                    //intentar eliminar el usuario
+                                    if (AdminDB.validateAdminUser()) {
+                                        if (DeleteDB.removeSucursal(id)) {
+                                            //Ya que no es posible eliminar una fila de una tabla
+                                            //sin acceder a su Model, al eliminar la final en la
+                                            //base de datos, se actualizará la tabla
+                                            actualizarDatos();
+
+                                            AjustesSucursales.vaciarCampos();
+                                        }
+                                    }
+                                    break;
                             }
                             //Cerrar el GlassPane de carga
                             Frame.closeGlass();
@@ -601,6 +683,25 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                             cargo.toString(),
                             rol.toString(),
                             sucursal.toString()
+                    );
+                    break;
+                }
+                case TODAS_SUCURSALES: {
+                    //Obtener los datos del usuario seleccionado
+                    Object id = tabla.getValueAt(index, 0);
+                    Object descripcion = tabla.getValueAt(index, 1);
+                    Object telefono = tabla.getValueAt(index, 2);
+                    Object cantidad = tabla.getValueAt(index, 3);
+                    Object coords = tabla.getValueAt(index, 4);
+
+                    //Enviar el empleado a la pestaña de empleados, que será 
+                    //enviado a la ventana de nuevos empleados para su edición
+                    AjustesSucursales.editSucursal(
+                            id.toString(),
+                            descripcion.toString(),
+                            telefono.toString(),
+                            cantidad.toString(),
+                            coords.toString()
                     );
                     break;
                 }
@@ -742,11 +843,15 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 break;
 
             case ADMIN_USUARIOS:
-                datos = ReadDB.getUsers();
+                datos = AdminDB.getUsers();
                 break;
 
             case ADMIN_EMPLEADOS:
-                datos = ReadDB.getEmpleados();
+                datos = AdminDB.getEmpleados();
+                break;
+                
+            case TODAS_SUCURSALES:
+                datos = AdminDB.getSucursales();
                 break;
         }
 
@@ -913,6 +1018,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 cabecera = new String[]{"ID", "Cedula", "Nombre",
                     "Apellido", "Cargo laboral", "Rol", "Sucursal"};
                 break;
+                
+            case TODAS_SUCURSALES:
+                cabecera = new String[]{"ID", "Descripción", "Teléfono", "Botellones", "Coordenadas"};
+                break;
         }
     }
 
@@ -922,7 +1031,6 @@ public class Tabla extends JScrollPane implements properties.Constantes {
     private void initComponents() {
         //Instanciar la tabla con el modelo
         this.tabla = new JTable() {
-
             //Heredar la función getToolTipText para mostrar un mensaje
             //personalizado a cada celda de las tablas
             @Override
@@ -977,6 +1085,11 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case ADMIN_EMPLEADOS:
                 empleadosMenu();
                 empleadosListeners();
+                break;
+                
+            case TODAS_SUCURSALES:
+                sucursalesMenu();
+                sucursalesListeners();
                 break;
         }
     }
@@ -1165,11 +1278,16 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         itemBuscar.setFont(segoe(13, PLAIN));
         itemBuscar.setForeground(NEGRO);
 
+        itemInformacion = new JMenuItem("Ver cliente");
+        itemInformacion.setFont(segoe(13, PLAIN));
+        itemInformacion.setForeground(NEGRO);
+        
         try {
             //Buscar la imagen de cada item
             itemBorrar.setIcon(getMenuIcon("borrar"));
             itemTrasvaso.setIcon(getMenuIcon("vender"));
             itemBuscar.setIcon(getMenuIcon("buscar"));
+            itemInformacion.setIcon(getMenuIcon("profile"));
 
         } catch (Exception e) {
             msjAdvertencia("No se pudo cargar los íconos del menú desplegable en las deudas.\n"
@@ -1177,8 +1295,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
         } finally {
             //Añadir los items al menú
-            menuPopup.add(itemBuscar);
             menuPopup.add(itemTrasvaso);
+            menuPopup.add(itemInformacion);
+            menuPopup.add(itemBuscar);
             menuPopup.addSeparator();
             menuPopup.add(itemBorrar);
 
@@ -1229,6 +1348,44 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         }
     }
 
+    private void sucursalesMenu(){
+        itemEditar.setFont(segoe(13, PLAIN));
+        itemEditar.setForeground(NEGRO);
+        
+        itemBorrar.setFont(segoe(13, PLAIN));
+        itemBorrar.setForeground(NEGRO);
+        
+        itemUbicar = new JMenuItem("Copiar dirección");
+        itemUbicar.setFont(segoe(13, PLAIN));
+        itemUbicar.setForeground(NEGRO);
+        
+        itemGoogleMaps = new JMenuItem("Abrir ubicación");
+        itemGoogleMaps.setFont(segoe(13, PLAIN));
+        itemGoogleMaps.setForeground(NEGRO);
+        
+        try {
+            //Buscar la imagen de cada item
+            itemEditar.setIcon(getMenuIcon("editar"));
+            itemBorrar.setIcon(getMenuIcon("borrar"));
+            itemUbicar.setIcon(getMenuIcon("copiar"));
+            itemGoogleMaps.setIcon(getMenuIcon("web"));
+
+        } catch (Exception e) {
+            msjAdvertencia("No se pudo cargar los íconos del menú desplegable en las sucursales.\n"
+                    + "El software seguirá funcionando sin los íconos.");
+
+        } finally {
+            //Añadir los items al menú
+            menuPopup.add(itemEditar);
+            menuPopup.add(itemBorrar);
+            menuPopup.addSeparator();
+            menuPopup.add(itemUbicar);
+            menuPopup.add(itemGoogleMaps);
+
+            tabla.setComponentPopupMenu(menuPopup);
+        }
+    }
+    
     /**
      * Función para buscar los íconos de los items
      *
