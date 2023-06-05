@@ -342,11 +342,32 @@ public class ValidarTexto {
      * @return
      */
     public static boolean formatoRIF(String rif) {
-        String regex = "";
-        return true;
-
+        String regex = "^(V|E|J|P|G){1}[0-9]{9}$";
+        return rif.matches(regex);
     }
 
+    public static boolean formatoNIT(String nit){
+        String regex = "^[0-9]{9}[1-9]$";
+        return nit.matches(regex);
+    }
+    
+    public static boolean formatoCuentaBancaria(String cuenta){
+        String regex = "^((0001)|((01){1}(02|04|05|08|14|15|28|34|37|38|46|51|56|57|"
+                + "63|66|68|69|71|72|73|74|75|77|91){1})|(0601))[0-9]{16}$";
+        return cuenta.matches(regex);
+    }
+    
+    public static boolean formatoDireccion(String coords){
+        if(coords.contains(", ")){
+            String split[] = coords.split(", ");
+            if(split.length == 2){
+                String regex = "^-?([1-9]|[1-9][0-9]|1[1-7][0-9]){1}(\\.((0+)|(0*[1-9][0-9]*)))?$";
+                return split[0].matches(regex) && split[1].matches(regex);
+            }
+        } 
+        return false;
+    }
+    
     /**
      * Función para comprobar que el texto ingresado es válido para ser
      * convertido en un número entero menor a 8.388.606. Esto se realiza dentro

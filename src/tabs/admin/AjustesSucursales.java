@@ -4,30 +4,155 @@ import components.Boton;
 import components.CampoTexto;
 import components.Label;
 import components.Tabla;
+import database.AdminDB;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import properties.Colores;
+import properties.Constantes;
 import static properties.Constantes.CUALQUIER;
-import static properties.Constantes.DECIMAL;
+import static properties.Constantes.NUMERO;
+import static properties.Constantes.NOMBRE;
 import static properties.Constantes.PLANO;
 import static properties.Constantes.TITULO;
 import static properties.Constantes.TODAS_SUCURSALES;
+import properties.Mensaje;
+import properties.ValidarTexto;
 
 public class AjustesSucursales extends JPanel {
 
     // ========== BACKEND ==========
-    private void listeners() {
+    private void guardar() {
+        new Thread() {
+            @Override
+            public void run() {
+                main.Frame.openGlass(0);
 
+                //Obtener el rol del usuario
+                int rol = database.ReadDB.getUserRol(main.Frame.getUserIdentified());
+
+                if (rol == Constantes.ADMINISTRADOR) {
+                    if (validarCampos()) {
+                        if (validarDatos()) {
+                            if (crearSucursal) {
+                                if (Mensaje.msjYesNo("¿Está seguro de registrar la nueva sucursal?")) {
+                                    AdminDB.createSucursal(descripcion, telefono, direccion, botellones);
+                                }
+                            } else {
+                                if (Mensaje.msjYesNo("¿Está seguro de modificar la sucursal?")) {
+                                    AdminDB.updateSucursal(id_sucursal, descripcion, telefono, direccion, botellones);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Mensaje.msjError("Su usuario no cuenta con los permisos para"
+                            + " realizar esta acción");
+                }
+
+                main.Frame.closeGlass();
+            }
+        }.start();
+    }
+
+    private boolean validarDatos() {
+        String msj;
+
+        if (ValidarTexto.formatoNombreEmpresa(descripcion)) {
+            if (ValidarTexto.formatoTelefono(telefono)) {
+                if (ValidarTexto.formatoDireccion(direccion)) {
+                    try {
+                        botellones = Integer.parseInt(txtBotellones.getText());
+                        if (botellones >= 0) {
+                            if (botellones > 99) {
+                                return Mensaje.msjYesNoWarning("La cantidad de "
+                                        + "botellones, en la sucursal, es muy "
+                                        + "elevada.\n¿Está seguro de asignar esa"
+                                        + "cantidad?");
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            throw new NumberFormatException();
+                        }
+                    } catch (NumberFormatException e) {
+                        msj = "La cantidad de botellones es inválida.\nPor favor, verifique sus datos.";
+                    }
+                } else {
+                    msj = "La dirección de la sucursal es inválida.\nPor favor, verifique sus datos.";
+                }
+            } else {
+                msj = "El formato del teléfono es incorrecto.\nPor favor, verifique sus datos.";
+            }
+        } else {
+            msj = "El formato del nombre es incorrecto.\nPor favor, verifique sus datos.";
+
+        }
+
+        Mensaje.msjError(msj);
+
+        return false;
+    }
+
+    private boolean validarCampos() {
+        String msj;
+        descripcion = txtDescripción.getText().trim().toUpperCase();
+        direccion = txtCoordenadas.getText().trim();
+        telefono = txtTelefono.getText().trim();
+        String bots = txtBotellones.getText().trim();
+
+        if (!descripcion.isEmpty()) {
+            if (!direccion.isEmpty()) {
+                if (!telefono.isEmpty()) {
+                    if (!bots.isEmpty()) {
+
+                        return true;
+
+                    } else {
+                        msj = "La cantidad de botellones de la sucursal no puede estár vacío.\nPor favor, ingrese los datos.";
+                    }
+                } else {
+                    msj = "El teléfono de la sucursal no puede estár vacío.\nPor favor, ingrese los datos.";
+                }
+            } else {
+                msj = "La dirección no puede estár vacío.\nPor favor, ingrese los datos.";
+            }
+        } else {
+            msj = "La descripción no puede estár vacío.\nPor favor, ingrese los datos.";
+        }
+
+        Mensaje.msjError(msj);
+
+        return false;
+    }
+
+    private void listeners() {
+        cancelar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                vaciarCampos();
+                crearSucursal = true;
+            }
+        });
+
+        guardar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                guardar();
+            }
+        });
     }
 
     //ATRIBUTOS BACKEND
     private static boolean crearSucursal = true;
-    private static int id_sucursal;
+    private static int id_sucursal, botellones;
+    private static String descripcion, direccion, telefono;
 
     // ========== FRONTEND ==========
     public AjustesSucursales() {
@@ -35,6 +160,7 @@ public class AjustesSucursales extends JPanel {
         this.setLayout(new BorderLayout());
 
         initComponents();
+        listeners();
     }
 
     private void initComponents() {
@@ -113,7 +239,7 @@ public class AjustesSucursales extends JPanel {
             bag.gridheight = 1;
             bag.weightx = 0.5;
             bag.fill = GridBagConstraints.HORIZONTAL;
-            bag.insets = new Insets(0, PADDING, PADDING/4, 0);
+            bag.insets = new Insets(0, PADDING, PADDING / 4, 0);
             datos.add(txtDescripción, bag);
 
             //Label de las coordenadas
@@ -133,7 +259,7 @@ public class AjustesSucursales extends JPanel {
             bag.gridheight = 1;
             bag.weightx = 0.5;
             bag.fill = GridBagConstraints.HORIZONTAL;
-            bag.insets = new Insets(0, PADDING, PADDING/4, PADDING);
+            bag.insets = new Insets(0, PADDING, PADDING / 4, PADDING);
             datos.add(txtCoordenadas, bag);
 
             // ========== SEGUNDA FILA ==========
@@ -199,7 +325,7 @@ public class AjustesSucursales extends JPanel {
             bag.fill = GridBagConstraints.HORIZONTAL;
             bag.insets = new Insets(0, PADDING, PADDING, PADDING);
             datos.add(cancelar, bag);
-            
+
         } else {
             // ========== PRIMERA FILA ==========
             //Label de la descripción
@@ -345,16 +471,16 @@ public class AjustesSucursales extends JPanel {
     private static final Tabla tabla = new Tabla(TODAS_SUCURSALES);
 
     private static final Label lblDescripción = new Label("Descripción", PLANO, 16);
-    private static final CampoTexto txtDescripción = new CampoTexto("Descripción de la sucursal", DECIMAL);
+    private static final CampoTexto txtDescripción = new CampoTexto("Descripción de la sucursal", NOMBRE);
 
     private static final Label lblTelefono = new Label("Teléfono", PLANO, 16);
-    private static final CampoTexto txtTelefono = new CampoTexto("Teléfono", DECIMAL);
+    private static final CampoTexto txtTelefono = new CampoTexto("Teléfono", NUMERO);
 
     private static final Label lblCoordenadas = new Label("Dirección", PLANO, 16);
     private static final CampoTexto txtCoordenadas = new CampoTexto("Coordenadas de la sucursal", CUALQUIER);
 
     private static final Label lblBotellones = new Label("Botellones", PLANO, 16);
-    private static final CampoTexto txtBotellones = new CampoTexto("Cantidad", CUALQUIER);
+    private static final CampoTexto txtBotellones = new CampoTexto("Cantidad", NUMERO);
 
     private static final Boton guardar = new Boton("Guardar", properties.Colores.VERDE);
     private static final Boton cancelar = new Boton("Cancelar", properties.Colores.NARANJA);

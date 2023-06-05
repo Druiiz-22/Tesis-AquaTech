@@ -33,6 +33,7 @@ import main.Frame;
 import static properties.Mensaje.msjYesNo;
 import static properties.Colores.NEGRO;
 import static properties.Fuentes.segoe;
+import properties.Mensaje;
 import static properties.Mensaje.msjAdvertencia;
 import static properties.Mensaje.msjError;
 import static properties.Mensaje.msjInformativo;
@@ -239,9 +240,9 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 //Comprobar que la deuda seleccionada ESTÉ PENDIENTE
                 if (deudaActiva[index]) {
                     //Obtener la cédula de la deuda
-                    System.out.println("index = "+index);
+                    System.out.println("index = " + index);
                     String cedula = tabla.getValueAt(index, 2).toString();
-                    System.out.println("cedula = "+cedula);
+                    System.out.println("cedula = " + cedula);
 
                     //Validar que los campos NO estén vacíos
                     if (!cedula.isEmpty()) {
@@ -372,7 +373,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         });
     }
 
-    private void sucursalesListeners(){
+    private void sucursalesListeners() {
         itemBorrar.addActionListener((e) -> {
             eliminar();
         });
@@ -380,10 +381,10 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         itemEditar.addActionListener((e) -> {
             editar();
         });
-        
+
         itemUbicar.addActionListener((e) -> {
             int index = tabla.getSelectedRow();
-            if(validarSelect(index)){
+            if (validarSelect(index)) {
                 //Obtener la dirección
                 String coords = tabla.getValueAt(index, 4).toString();
                 //Pasarla al portapapele
@@ -394,7 +395,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 msjInformativo("Se copió la dirección al portapapeles.");
             }
         });
-        
+
         itemGoogleMaps.addActionListener((e) -> {
             //Obtener el index de la fila seleccionada en la tabla
             int index = tabla.getSelectedRow();
@@ -408,7 +409,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                         try {
                             //Obtener las coordenadas de la tabla
                             String coords[] = tabla.getValueAt(index, 4).toString().split(", ");
-                            
+
                             //URL de google maps, abriendo un punto en el mapa, según 
                             //la latitud y longitud del mismo
                             URI uri = new URI("https://www.google.es/maps?q=" + coords[0] + "," + coords[1]);
@@ -432,7 +433,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             }
         });
     }
-    
+
     /**
      * Función privada para pagar un pedido de una fila
      *
@@ -581,19 +582,36 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                                         }
                                     }
                                     break;
-                                    
-                                case TODAS_SUCURSALES:
-                                    //Validar el rol de administrador y su clave para
-                                    //intentar eliminar el usuario
-                                    if (AdminDB.validateAdminUser()) {
-                                        if (DeleteDB.removeSucursal(id)) {
-                                            //Ya que no es posible eliminar una fila de una tabla
-                                            //sin acceder a su Model, al eliminar la final en la
-                                            //base de datos, se actualizará la tabla
-                                            actualizarDatos();
 
-                                            AjustesSucursales.vaciarCampos();
+                                case TODAS_SUCURSALES:
+                                    //Validar el rol SEA administrador
+                                    int rol = main.Frame.getUserRol();
+
+                                    if (rol == ADMINISTRADOR) {
+                                        if (AdminDB.validateAdminUser()) {
+
+                                            String msj = "<html>"
+                                                    + "<p>"
+                                                    + "Al eliminar la sucursal, <b style='color:rgb(190, 0, 0)'>"
+                                                    + "se borrarán TODOS</b> los registros de la<br>base de datos "
+                                                    + "afiliados a la sucursal (incluyendo movimientos y empleados)."
+                                                    + "</p>"
+                                                    + "<p>"
+                                                    + "Se realizará un respaldo de la base de datos antes de<br>"
+                                                    + "eliminar la sucursal por completo."
+                                                    + "</p>"
+                                                    + "<p style='margin-top:8px'><b>"
+                                                    + "¿Está seguro de continuar con la eliminación total?"
+                                                    + "</b></p>"
+                                                    + "</html>";
+                                            if (Mensaje.msjYesNoWarning(msj)) {
+                                                DeleteDB.removeSucursal(id);
+                                            }
                                         }
+                                    } else {
+                                        Mensaje.msjError("Su usuario no cuenta con "
+                                                + "los permisos para realizar "
+                                                + "esta acción.");
                                     }
                                     break;
                             }
@@ -849,7 +867,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             case ADMIN_EMPLEADOS:
                 datos = AdminDB.getEmpleados();
                 break;
-                
+
             case TODAS_SUCURSALES:
                 datos = AdminDB.getSucursales();
                 break;
@@ -1018,7 +1036,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 cabecera = new String[]{"ID", "Cedula", "Nombre",
                     "Apellido", "Cargo laboral", "Rol", "Sucursal"};
                 break;
-                
+
             case TODAS_SUCURSALES:
                 cabecera = new String[]{"ID", "Descripción", "Teléfono", "Botellones", "Coordenadas"};
                 break;
@@ -1086,7 +1104,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
                 empleadosMenu();
                 empleadosListeners();
                 break;
-                
+
             case TODAS_SUCURSALES:
                 sucursalesMenu();
                 sucursalesListeners();
@@ -1281,7 +1299,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         itemInformacion = new JMenuItem("Ver cliente");
         itemInformacion.setFont(segoe(13, PLAIN));
         itemInformacion.setForeground(NEGRO);
-        
+
         try {
             //Buscar la imagen de cada item
             itemBorrar.setIcon(getMenuIcon("borrar"));
@@ -1348,21 +1366,21 @@ public class Tabla extends JScrollPane implements properties.Constantes {
         }
     }
 
-    private void sucursalesMenu(){
+    private void sucursalesMenu() {
         itemEditar.setFont(segoe(13, PLAIN));
         itemEditar.setForeground(NEGRO);
-        
+
         itemBorrar.setFont(segoe(13, PLAIN));
         itemBorrar.setForeground(NEGRO);
-        
+
         itemUbicar = new JMenuItem("Copiar dirección");
         itemUbicar.setFont(segoe(13, PLAIN));
         itemUbicar.setForeground(NEGRO);
-        
+
         itemGoogleMaps = new JMenuItem("Abrir ubicación");
         itemGoogleMaps.setFont(segoe(13, PLAIN));
         itemGoogleMaps.setForeground(NEGRO);
-        
+
         try {
             //Buscar la imagen de cada item
             itemEditar.setIcon(getMenuIcon("editar"));
@@ -1385,7 +1403,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
             tabla.setComponentPopupMenu(menuPopup);
         }
     }
-    
+
     /**
      * Función para buscar los íconos de los items
      *

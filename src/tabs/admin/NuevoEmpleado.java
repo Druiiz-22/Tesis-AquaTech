@@ -155,10 +155,8 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
         if (!ci.isEmpty()) {
             if (!cargo.isEmpty()) {
                 if (rol > 0 && rol < 4) {
-                    if (index > 0) {                       
-                        
+                    if (index > 0) {
                         return true;
-
                     } else {
                         msj = "Debe seleccionar una sucursal válida." + msj;
                     }
@@ -194,11 +192,10 @@ public class NuevoEmpleado extends JDialog implements properties.Constantes, pro
 
         //Validar que el usuario obtenido tenga los roles permitidos
         if (userRol == ADMINISTRADOR || userRol == OPERADOR) {
-            //Validar que un operador NO asigne un administrador
-            if (userRol == OPERADOR && rol == ADMINISTRADOR) {
+            //Validar que un operador NO asigne un rol superior al suyo
+            if (userRol != ADMINISTRADOR && rol > userRol) {
                 msj = "Su usuario no cuenta con el permiso de agregar a un "
-                        + "administrador.\nSolo un administrador puede agregar,"
-                        + " modificar o eliminar otro administrador.";
+                        + "rol superior al suyo.\nPor favor, verifique los datos.";
                 //Validar que un operador NO modifique un administrador
             } else {
                 try {

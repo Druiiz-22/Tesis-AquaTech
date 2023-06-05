@@ -173,6 +173,16 @@ public class IniciarPrograma extends JFrame {
             }
         });
 
+        boxSucursales.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == Constantes.TECLA_ENTER && !iniciando) {
+                    iniciando = true;
+                    validarSucursal();
+                }
+            }
+        });
+        
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

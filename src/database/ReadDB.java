@@ -691,6 +691,8 @@ public class ReadDB implements properties.Constantes {
                     //Obtener la cantidad de clientes y validar la cantidad
                     int count = r.getInt(1);
                     if (count > 0) {
+                        int sucursal = main.Frame.getSucursal();
+
                         //Sentencia SQL para obtener los trasvasos
                         sql = "SELECT Trasvaso.id, cedula, cant_pagada, "
                                 + "cant_entregada, tipo_pago, delivery, "
@@ -698,6 +700,11 @@ public class ReadDB implements properties.Constantes {
                                 + "FROM Trasvaso "
                                 + "INNER JOIN Cliente "
                                 + " ON id_cliente = Cliente.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "WHERE Sucursal.id = " + sucursal
                                 + "ORDER BY Trasvaso.id DESC";
 
                         r = bdd.selectQuery(sql);
@@ -969,12 +976,20 @@ public class ReadDB implements properties.Constantes {
                     //Obtener la cantidad de clientes y validar la cantidad
                     int count = r.getInt(1);
                     if (count > 0) {
+
+                        int sucursal = main.Frame.getSucursal();
+
                         //Sentencia SQL para obtener los trasvasos
                         sql = "SELECT Recarga.id, Proveedores.rif, "
                                 + "Proveedores.nombre, cantidad, monto, fecha "
                                 + "FROM Recarga "
                                 + "INNER JOIN Proveedores "
                                 + "ON id_prov = Proveedores.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "WHERE Sucursal.id = " + sucursal
                                 + "ORDER BY Recarga.id DESC";
 
                         r = bdd.selectQuery(sql);
@@ -1047,12 +1062,20 @@ public class ReadDB implements properties.Constantes {
                     //Obtener la cantidad de clientes y validar la cantidad
                     int count = r.getInt(1);
                     if (count > 0) {
+
+                        int sucursal = main.Frame.getSucursal();
+
                         //Sentencia SQL para obtener los trasvasos
                         sql = "SELECT Venta.id, Cliente.cedula, cantidad, "
                                 + "tipo_pago, delivery, monto, fecha "
                                 + "FROM Venta "
                                 + "INNER JOIN Cliente "
                                 + "ON id_cliente = Cliente.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "WHERE Sucursal.id = " + sucursal
                                 + "ORDER BY Venta.id DESC";
 
                         r = bdd.selectQuery(sql);
@@ -1126,12 +1149,20 @@ public class ReadDB implements properties.Constantes {
                     //Obtener la cantidad de clientes y validar la cantidad
                     int count = r.getInt(1);
                     if (count > 0) {
+                        
+                        int sucursal = main.Frame.getSucursal();
+                        
                         //Sentencia SQL para obtener los trasvasos
                         sql = "SELECT Compra.id, Proveedores.rif, "
                                 + "Proveedores.nombre, cantidad, monto, fecha "
                                 + "FROM Compra "
                                 + "INNER JOIN Proveedores "
                                 + "ON id_prov = Proveedores.id "
+                                + "INNER JOIN Almacen "
+                                + "	ON id_almacen = Almacen.id "
+                                + "INNER JOIN Sucursal "
+                                + "	ON id_sucursal = Sucursal.id "
+                                + "WHERE Sucursal.id = " + sucursal
                                 + "ORDER BY Compra.id DESC";
 
                         r = bdd.selectQuery(sql);
@@ -1690,20 +1721,21 @@ public class ReadDB implements properties.Constantes {
         //En caso de NO obtener ningún dato, retornar el número de error
         return ERROR_VALUE;
     }
-    
+
     /**
      * Función para obtener el id de un usuario mediante su cédula
      *
      * @param cedula
      * @return
      */
-    public static int getUserID(String cedula) {
+    public static int getUserID(String identificacion) {
         //Preparar la sentencia SQL para obtener el id del cliente
         String sql = "SELECT Usuario.id "
                 + "FROM Usuario "
                 + "INNER JOIN Cliente "
-                + "ON cedula = \"" + cedula + "\" "
-                + "AND id_cliente = Cliente.id";
+                + "     ON id_cliente = Cliente.id"
+                + "WHERE cedula = '" + identificacion + "'"
+                + "     OR correo = '" + identificacion + "'";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);

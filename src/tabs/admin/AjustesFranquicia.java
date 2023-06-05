@@ -15,7 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import properties.Colores;
 import properties.Constantes;
-import static properties.Constantes.DECIMAL;
+import static properties.Constantes.NUMERO;
+import static properties.Constantes.NOMBRE;
 import static properties.Constantes.PLANO;
 import static properties.Constantes.TITULO;
 import static properties.Constantes.CUALQUIER;
@@ -59,19 +60,11 @@ public class AjustesFranquicia extends JPanel {
 
         if (ValidarTexto.formatoNombreEmpresa(nombre)) {
             if (ValidarTexto.formatoRIF(rif)) {
-                try {
-                    //Intentar convertir el NIT en entero
-                    nit = Integer.parseInt(txtNIT.getText());
-
-                    //Comprobar que el rango sea correcto
-                    if (nit > 0 && nit <= 999999999) {
-
-                        return true;
-
-                    } else {
-                        throw new NumberFormatException();
-                    }
-                } catch (NumberFormatException e) {
+                if(ValidarTexto.formatoNIT(nit)){
+                    
+                    return true;
+                    
+                } else {
                     msj = "El formato del NIT es incorecto.\nPor favor, verifique sus datos.";
                 }
             } else {
@@ -92,11 +85,11 @@ public class AjustesFranquicia extends JPanel {
         String msj;
         nombre = txtNombre.getText().toUpperCase();
         rif = txtRIF.getText().toUpperCase();
-        String _nit = txtNIT.getText();
+        nit = txtNIT.getText();
 
         if (!nombre.isEmpty()) {
             if (!rif.isEmpty()) {
-                if (!_nit.isEmpty()) {
+                if (!nit.isEmpty()) {
 
                     return true;
 
@@ -132,8 +125,7 @@ public class AjustesFranquicia extends JPanel {
     }
 
     //ATRIBUTOS BACKEND
-    private static String nombre, rif;
-    private static int nit;
+    private static String nombre, rif, nit;
 
     // ========== FRONTEND ==========
     public AjustesFranquicia() {
@@ -286,13 +278,13 @@ public class AjustesFranquicia extends JPanel {
     private static final Label titulo = new Label("Ajustes Franquicia", TITULO, 24);
 
     private static final Label lblNombre = new Label("Nombre", PLANO, 16);
-    private static final CampoTexto txtNombre = new CampoTexto("Nombre de la franquicia", DECIMAL);
+    private static final CampoTexto txtNombre = new CampoTexto("Nombre de la franquicia", NOMBRE);
 
     private static final Label lblRIF = new Label("RIF", PLANO, 16);
-    private static final CampoTexto txtRIF = new CampoTexto("RIF de la franquicia", DECIMAL);
+    private static final CampoTexto txtRIF = new CampoTexto("RIF de la franquicia", CUALQUIER);
 
     private static final Label lblNIT = new Label("NIT", PLANO, 16);
-    private static final CampoTexto txtNIT = new CampoTexto("NIT de la franquicia", CUALQUIER);
+    private static final CampoTexto txtNIT = new CampoTexto("NIT de la franquicia", NUMERO);
 
     private static final Boton guardar = new Boton("Guardar", properties.Colores.VERDE);
     private static final Boton cancelar = new Boton("Cancelar", properties.Colores.NARANJA);

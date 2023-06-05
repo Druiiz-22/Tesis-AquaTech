@@ -210,7 +210,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
                 if (folderTest.exists()) {
 
                     //Intentar la exportación de la base de datos
-                    if (AdminDB.exportDB(fileName, filePath, copiaSeguridad)) {
+                    if (AdminDB.exportDB(fileName, filePath)) {
 
                         //Mostrar el mensaje de éxito cuando NO sea un respaldo
                         //por copia de seguridad
@@ -329,7 +329,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
 
             //Crear un archivo con la ruta de la carpeta de copias de seguridad
             //antes de realizar una importación
-            File securityFolder = new File(documentsPath + mainPath + "\\Copia de Seguridad");
+            File securityFolder = new File(documentsPath + mainPath + "\\Respaldo de Seguridad");
 
             //Validar que NO exista la carpeta para las copias de seguridad
             if (!securityFolder.exists()) {

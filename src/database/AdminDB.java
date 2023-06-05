@@ -19,7 +19,7 @@ public class AdminDB implements properties.Constantes {
 
     private static int intentos = 0;
 
-    public static boolean exportDB(String fileName, String filePath, boolean copiaSeguridad) {
+    public static boolean exportDB(String fileName, String filePath) {
 
         return true;
     }
@@ -345,15 +345,16 @@ public class AdminDB implements properties.Constantes {
         return null;
     }
 
-    public static int getEmpleadoID(int cedula) {
-        //Preparar la sentencia SQL para obtener el id del cliente
+    public static int getEmpleadoID(Object identificacion) {
+        //Preparar la sentencia SQL para obtener el id de un empleado
         String sql = "SELECT Empleado.id "
                 + "FROM Empleado "
                 + "INNER JOIN Usuario "
                 + "	ON id_usuario = Usuario.id "
                 + "INNER JOIN Cliente "
                 + "     ON id_cliente = Cliente.id "
-                + "     AND cedula = " + cedula;
+                + "WHERE correo = '" + identificacion + "' "
+                + "     OR cedula = '" + identificacion + "'";
 
         //Instanciar una conexión con la base de datos y conectarla
         ConexionDB bdd = new ConexionDB(true);
@@ -440,9 +441,51 @@ public class AdminDB implements properties.Constantes {
     }
 
     public static Object[] getAjustes() {
-        Object[] ajustes = {};
+        //Preparar la sentencia SQL para obtener el id del cliente
+        String sql = "SELECT trasvaso_bs, venta_bs, banco, "
+                + "	numero_banco, tlf_banco "
+                + "FROM Franquicia, Precios "
+                + "WHERE Franquicia.id = 1 AND Precios.id = 1";
 
-        return ajustes;
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+                //Validar que haya obtenido algún dato
+                if (r.next()) {
+                    //Obtener la información
+                    double trasvasos = r.getDouble(1);
+                    double ventas = r.getDouble(2);
+                    String banco = r.getString(3);
+                    String cuenta = r.getString(4);
+                    String telefono = r.getString(5);
+
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    //Retornar el precio
+                    return new Object[]{trasvasos, ventas, banco, cuenta, telefono};
+                }
+                //Si el result NO fue null, implica que SÍ se estableció una 
+                //conexión. Sin embargo, pudo no haber traído algún dato, en ese
+                //caso, se retornará el id como -1
+                return new Object[]{};
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo obtener la información general de la franquicia.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //En caso de NO obtener ningún dato, retornar el número de error
+        return null;
     }
 
     public static Object[] getFranquicia() {
@@ -464,7 +507,7 @@ public class AdminDB implements properties.Constantes {
                     //Obtener la información
                     String nombre = r.getString(1);
                     String rif = r.getString(2);
-                    int nit = r.getInt(3);
+                    String nit = r.getString(3);
 
                     //Terminar la conexión con la base de datos
                     bdd.desconectar();
@@ -488,8 +531,7 @@ public class AdminDB implements properties.Constantes {
         return null;
     }
 
-    public static boolean updateFranquicia(String nombre, String rif, int nit) {
-
+    public static boolean updateFranquicia(String nombre, String rif, String nit) {
         //Preparar la sentencia SQL para actualizar el usuario
         String sql = "UPDATE `Franquicia` "
                 + "SET `nombre`='" + nombre + "', "
@@ -510,18 +552,76 @@ public class AdminDB implements properties.Constantes {
         //Si el status es mayor que 0, entonces la conexión y ejecución 
         //fue exitosa
         if (status > 0) {
-
             Mensaje.msjInformativo("Se aplicaron los cambios a la franquicia con éxito.");
-            
             return true;
+        }
 
-            //Comprobar si se encontró el cliente y se aplicaron los cambios
-        } else {
-            //Mensaje de error por falta de permisos
-            Mensaje.msjError("No se pudo realizar los cambios a la franquicia.");
-            
-        } 
+        return false;
+    }
 
+    public static boolean updatePrecios(double trasvasos, double ventas) {
+        //Preparar la sentencia SQL para actualizar el usuario
+        String sql = "UPDATE `Precios` "
+                + "SET `trasvaso_bs`= " + trasvasos + ", "
+                + "	`venta_bs`= " + ventas
+                + "     WHERE `id` = 1";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        int status = bdd.executeQuery(sql);
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //Si el status es mayor que 0, entonces la conexión y ejecución 
+        //fue exitosa
+        if (status > 0) {
+            Mensaje.msjInformativo("Se aplicaron los cambios a los precios con éxito.");
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean updateBanco(String banco, String cuenta, String telefono) {
+        //Preparar la sentencia SQL para actualizar el usuario
+        String sql = "UPDATE `Franquicia` "
+                + "SET `banco`='" + banco + "',"
+                + "	`numero_banco`='" + cuenta + "',"
+                + "     `tlf_banco`='" + telefono + "' "
+                + "WHERE `id` = 1";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB(true);
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        int status = bdd.executeQuery(sql);
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
+
+        //Si el status es mayor que 0, entonces la conexión y ejecución 
+        //fue exitosa
+        if (status > 0) {
+            Mensaje.msjInformativo("Se aplicaron los cambios a los datos bancarios con éxito.");
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean createSucursal(String descripcion, String telefono, String direccion, int botellones){
+        
+        return false;
+    }
+    
+    public static boolean updateSucursal(int id_sucursal, String descripcion, String telefono, String direccion, int botellones){
+        
+        
         return false;
     }
     
@@ -1494,5 +1594,4 @@ public class AdminDB implements properties.Constantes {
         return null;
     }
 
-    
 }
