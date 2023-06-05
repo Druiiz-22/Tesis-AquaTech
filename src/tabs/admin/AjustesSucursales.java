@@ -9,10 +9,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import properties.Colores;
 import properties.Constantes;
@@ -40,13 +42,61 @@ public class AjustesSucursales extends JPanel {
                 if (rol == Constantes.ADMINISTRADOR) {
                     if (validarCampos()) {
                         if (validarDatos()) {
-                            if (crearSucursal) {
-                                if (Mensaje.msjYesNo("¿Está seguro de registrar la nueva sucursal?")) {
-                                    AdminDB.createSucursal(descripcion, telefono, direccion, botellones);
+                            if (Mensaje.msjYesNo("¿La cantidad de botellones en el almacén, es la misma\n"
+                                    + "cantidad de botellones llenos?")) {
+
+                                if (crearSucursal) {
+                                    if (Mensaje.msjYesNo("¿Está seguro de registrar la nueva sucursal?")) {
+
+                                        AdminDB.createSucursal(descripcion, telefono, direccion, botellones, botellones);
+
+                                    }
+                                } else {
+                                    if (Mensaje.msjYesNo("¿Está seguro de modificar la sucursal?")) {
+
+                                        AdminDB.updateSucursal(id_sucursal, descripcion, telefono, direccion, botellones, botellones);
+
+                                    }
                                 }
+
                             } else {
-                                if (Mensaje.msjYesNo("¿Está seguro de modificar la sucursal?")) {
-                                    AdminDB.updateSucursal(id_sucursal, descripcion, telefono, direccion, botellones);
+                                while (true) {
+                                    try {
+                                        String res = JOptionPane.showInputDialog(
+                                                null,
+                                                "Ingrese la cantidad de botellones llenos",
+                                                "Botellones llenos de la sucursal",
+                                                JOptionPane.INFORMATION_MESSAGE
+                                        );
+
+                                        int llenos = Integer.parseInt(res);
+
+                                        if (llenos > 0 || llenos <= botellones) {
+
+                                            if (crearSucursal) {
+                                                if (Mensaje.msjYesNo("¿Está seguro de registrar la nueva sucursal?")) {
+
+                                                    AdminDB.createSucursal(descripcion, telefono, direccion, botellones, llenos);
+
+                                                }
+                                            } else {
+                                                if (Mensaje.msjYesNo("¿Está seguro de modificar la sucursal?")) {
+
+                                                    AdminDB.updateSucursal(id_sucursal, descripcion, telefono, direccion, botellones, llenos);
+
+                                                }
+                                            }
+
+                                            break;
+                                        } else {
+                                            throw new NumberFormatException();
+                                        }
+
+                                    } catch (HeadlessException | NumberFormatException e) {
+                                        Mensaje.msjError("La cantidad de botellones"
+                                                + "ingresadas es inválida.\nPor favor"
+                                                + "vuelva a ingresar el valor");
+                                    }
                                 }
                             }
                         }

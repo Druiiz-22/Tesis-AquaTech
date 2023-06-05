@@ -180,6 +180,8 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Colores
      */
     public void vaciarCampos() {
         txtNueva.setText("");
+        txtRepetida.setText("");
+        claveRepetida = null;
     }
 
     /**

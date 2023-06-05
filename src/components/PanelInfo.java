@@ -253,7 +253,7 @@ public class PanelInfo extends JPanel implements properties.Colores, properties.
                         + "cambios en los usuarios.</b>"
                         + "</p><br>"
                         + "<p>"
-                        + "<font color='#C00000'><b>Advertencia:</b></font> "
+                        + "<b style='color:red;'>Advertencia:</b> "
                         + "Importar una base de datos <b>eliminará todos los "
                         + "datos</b> en ella para importa el respaldo."
                         + "</p>"

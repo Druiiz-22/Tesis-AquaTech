@@ -237,7 +237,7 @@ public class IniciarPrograma extends JFrame {
                                         + "<p>La sucursal seleccionada no le corresponde a usted.</p>"
                                         + "<p>Cualquier accion realizada dentro del "
                                         + "programa,</p>"
-                                        + "<p style='color:rgb(180,0,0);margin-top:0px'>"
+                                        + "<p style='color:red;margin-top:0px'>"
                                         + "será reflejado en la sucursal seleccionada."
                                         + "</p>"
                                         + "<p style='margin-top:8px;'>¿Está seguro "

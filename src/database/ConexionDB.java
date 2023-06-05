@@ -15,28 +15,16 @@ public class ConexionDB {
 
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     
-    private String bd;
-    private String url;
-    private String user;
-    private String password;
+    private static final String bd = "diazmava_aquatech";
+    private static final String host = "jdbc:mysql://diazmavarez.site/";
+    private static final String user = "diazmava_admin";
+    private static final String password = "Jere05032001.";
     private Connection cx;
-
-    public ConexionDB(boolean web) {
-        //Determinar si se conectará a la base de datos en la nube o local
-        if (web) {
-            bd = "diazmava_aquatech";
-            url = "jdbc:mysql://diazmavarez.site/";
-            user = "diazmava_admin";
-            password = "Jere05032001.";
-        } else {
-
-        }
-    }
 
     public void conectar() {
         try {
             Class.forName(DRIVER);
-            cx = getConnection(url + bd, user, password);
+            cx = getConnection(host + bd, user, password);
 
         } catch (ClassNotFoundException | SQLException ex) {
             //Validar que NO esté activa la ventana de inicio de programa (no se
@@ -101,5 +89,23 @@ public class ConexionDB {
                     + " datos.\nError: " + e);
         }
         return properties.Constantes.ERROR_VALUE;
+    }
+    
+    public static String getUserBD(){
+        return user;
+    }
+    
+    public static String getPassBD(){
+        return password;
+    }
+    
+    public static String getHostName(){
+        String name = host.replace("jdbc:mysql://", "");
+        name = name.replace("/", "");
+        return name;
+    }
+    
+    public static String getNameDB(){
+        return bd;
     }
 }

@@ -177,6 +177,8 @@ public class ClaveNueva extends javax.swing.JPanel implements properties.Constan
      */
     public void vaciarCampos() {
         txtNueva.setText("");
+        txtRepetida.setText("");
+        claveRepetida = null;
     }
 
     /**

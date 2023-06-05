@@ -39,7 +39,7 @@ public class DeleteDB implements properties.Constantes {
                     + "	OR correo = '" + ident + "'";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -148,7 +148,7 @@ public class DeleteDB implements properties.Constantes {
             String sql = "DELETE FROM Proveedores WHERE id = " + id;
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -197,7 +197,7 @@ public class DeleteDB implements properties.Constantes {
                 String sql = "SELECT ELIMINAR_USUARIO(" + id + ", " + rol + ")";
 
                 //Instanciar una conexión con la base de datos y conectarla
-                ConexionDB bdd = new ConexionDB(true);
+                ConexionDB bdd = new ConexionDB();
                 bdd.conectar();
 
                 //Obtener el resultado de la sentencia
@@ -292,7 +292,7 @@ public class DeleteDB implements properties.Constantes {
             String sql = "DELETE FROM Empleado WHERE id = " + id;
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -364,7 +364,7 @@ public class DeleteDB implements properties.Constantes {
             String sql = "DELETE FROM Sucursal WHERE id = " + id;
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia

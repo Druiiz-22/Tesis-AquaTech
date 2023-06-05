@@ -1,5 +1,8 @@
 package database;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -20,13 +23,57 @@ public class AdminDB implements properties.Constantes {
     private static int intentos = 0;
 
     public static boolean exportDB(String fileName, String filePath) {
+        String mysqldump = "C:\\xampp\\mysql\\bin\\mysqldump.exe";
+        String comando = mysqldump
+                + " -h " + ConexionDB.getHostName()
+                + " -u diazmava_reporte"
+                + " -preportes_prueba$123"
+                + " --skip-triggers " + ConexionDB.getNameDB()
+                + " -r \"" + filePath + "\\" + fileName + "\"";
 
-        return true;
+        try {
+            //Realizar el respaldo
+            Process p = Runtime.getRuntime().exec(comando);
+
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            reader.close();
+
+            return true;
+
+        } catch (IOException | InterruptedException ex) {
+            Mensaje.msjError("No se pudo realizar el respaldo.\nError: " + ex);
+        }
+        return false;
     }
 
     public static boolean importDB(String filePath) {
+        String mysqldump = "C:\\xampp\\mysql\\bin\\mysql.exe";
 
-        return true;
+        String comando = mysqldump
+                + " -h " + ConexionDB.getHostName()
+                + " -u diazmava_reporte"
+                + " -preportes_prueba$123 "
+                + ConexionDB.getNameDB()
+                + " < \"" + filePath + "\"";
+
+        String cmd = "cmd /c \"" + comando + "\"";
+
+        try {
+            //Realizar el respaldo
+            Process p = Runtime.getRuntime().exec(cmd);
+            
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            reader.close();
+            
+            return true;
+
+        } catch (IOException | InterruptedException ex) {
+            Mensaje.msjError("No se pudo realizar el respaldo.\nError: " + ex);
+        }
+
+        return false;
     }
 
     /**
@@ -162,7 +209,7 @@ public class AdminDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Usuario";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -258,7 +305,7 @@ public class AdminDB implements properties.Constantes {
         }
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -357,7 +404,7 @@ public class AdminDB implements properties.Constantes {
                 + "     OR cedula = '" + identificacion + "'";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -404,7 +451,7 @@ public class AdminDB implements properties.Constantes {
                 + "     AND cedula = " + cedula;
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -448,7 +495,7 @@ public class AdminDB implements properties.Constantes {
                 + "WHERE Franquicia.id = 1 AND Precios.id = 1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -493,7 +540,7 @@ public class AdminDB implements properties.Constantes {
         String sql = "SELECT nombre, rif, nit FROM Franquicia WHERE id = 1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -540,7 +587,7 @@ public class AdminDB implements properties.Constantes {
                 + "WHERE `id` = 1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -567,7 +614,7 @@ public class AdminDB implements properties.Constantes {
                 + "     WHERE `id` = 1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -595,7 +642,7 @@ public class AdminDB implements properties.Constantes {
                 + "WHERE `id` = 1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -614,17 +661,95 @@ public class AdminDB implements properties.Constantes {
         return false;
     }
 
-    public static boolean createSucursal(String descripcion, String telefono, String direccion, int botellones){
-        
+    public static boolean createSucursal(String descripcion, String telefono, String direccion, int botellones, int llenos) {
+        //Preparar la sentencia SQL para registrar el trasvaso
+        String sql = "SELECT REGISTRAR_SUCURSAL('" + descripcion + "', '" + telefono
+                + "', '" + direccion + "', " + botellones + ", " + llenos + ")";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+
+                //Avanzar en el resultado
+                r.next();
+
+                //Obtener el mensaje
+                String msj = r.getString(1);
+
+                //Comprobar si fue exitoso o no
+                if (msj.toUpperCase().contains("ÉXITO")) {
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+                    
+                    Mensaje.msjInformativo(msj);
+
+                    return true;
+
+                } else {
+                    Mensaje.msjError(msj);
+                }
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo registrar la sucursal.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
         return false;
     }
-    
-    public static boolean updateSucursal(int id_sucursal, String descripcion, String telefono, String direccion, int botellones){
-        
-        
+
+    public static boolean updateSucursal(int id_sucursal, String descripcion, String telefono, String direccion, int botellones, int llenos) {
+        //Preparar la sentencia SQL para registrar el trasvaso
+        String sql = "SELECT EDITAR_SUCURSAL(" + id_sucursal + ", '" + descripcion
+                + "', '" + telefono + "', '" + direccion + "', " + botellones
+                + ", " + llenos + ")";
+
+        //Instanciar una conexión con la base de datos y conectarla
+        ConexionDB bdd = new ConexionDB();
+        bdd.conectar();
+
+        //Obtener el resultado de la sentencia
+        ResultSet r = bdd.selectQuery(sql);
+
+        try {
+            //Validar que la respuesta NO sea null
+            if (r != null) {
+
+                //Avanzar en el resultado
+                r.next();
+
+                //Obtener el mensaje
+                String msj = r.getString(1);
+
+                //Comprobar si fue exitoso o no
+                if (msj.toUpperCase().contains("ÉXITO")) {
+                    //Terminar la conexión con la base de datos
+                    bdd.desconectar();
+
+                    Mensaje.msjInformativo(msj);
+                    
+                    return true;
+
+                } else {
+                    Mensaje.msjError(msj);
+                }
+            }
+        } catch (NumberFormatException | SQLException e) {
+            Mensaje.msjError("No se pudo actualizar la sucursal.\nError: " + e);
+        }
+
+        //Terminar la conexión con la base de datos
+        bdd.desconectar();
         return false;
     }
-    
+
     // ========== REPORTES ==========
     /**
      * Función para obtener el registro de los trasvasos, en una fecha
@@ -669,7 +794,7 @@ public class AdminDB implements properties.Constantes {
         }
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -816,7 +941,7 @@ public class AdminDB implements properties.Constantes {
         }
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -958,7 +1083,7 @@ public class AdminDB implements properties.Constantes {
         }
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1101,7 +1226,7 @@ public class AdminDB implements properties.Constantes {
         }
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1229,7 +1354,7 @@ public class AdminDB implements properties.Constantes {
         }
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1334,7 +1459,7 @@ public class AdminDB implements properties.Constantes {
                 + "WHERE fecha >= '" + initDate + " 00:00:00' AND fecha <= '" + finalDate + " 23:59:59'";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1439,7 +1564,7 @@ public class AdminDB implements properties.Constantes {
                 + "WHERE fecha >= '" + initDate + " 00:00:00' AND fecha <= '" + finalDate + " 23:59:59'";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1530,7 +1655,7 @@ public class AdminDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Sucursal;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia

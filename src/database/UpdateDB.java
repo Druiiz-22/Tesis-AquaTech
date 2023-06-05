@@ -33,7 +33,7 @@ public class UpdateDB implements properties.Constantes {
                     + rol + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -124,7 +124,7 @@ public class UpdateDB implements properties.Constantes {
                     + "WHERE id = " + id;
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -194,7 +194,7 @@ public class UpdateDB implements properties.Constantes {
                         + telefono + "\", \"" + correo + "\", " + rol + ")";
 
                 //Instanciar una conexión con la base de datos y conectarla
-                ConexionDB bdd = new ConexionDB(true);
+                ConexionDB bdd = new ConexionDB();
                 bdd.conectar();
 
                 //Obtener el resultado de la sentencia
@@ -218,7 +218,7 @@ public class UpdateDB implements properties.Constantes {
                             if (id != id_usuario) {
                                 //Mensaje de éxito
                                 Mensaje.msjInformativo(msj);
-                                
+
                             } else {
                                 Mensaje.msjInformativo("Se actualizaron los datos del "
                                         + "usuario con éxito.\nPor seguridad, el programa "
@@ -251,14 +251,14 @@ public class UpdateDB implements properties.Constantes {
                             Mensaje.msjError(msj);
                         }
                     }
-                    
+
                 } catch (NumberFormatException | SQLException e) {
                     Mensaje.msjError("No se pudo actualizar el usuario.\nError: " + e);
                 }
 
                 //Terminar la conexión con la base de datos
                 bdd.desconectar();
-                
+
             } else if (id == -1) {
                 //Mensaje de error 
                 Mensaje.msjError("Usted no se encuentra registrado como un"
@@ -296,10 +296,12 @@ public class UpdateDB implements properties.Constantes {
      */
     public static boolean updateUsuarioClave(String correo, String claveNueva) {
         //Preparar la sentencia SQL para actualizar la clave
-        String sql = "UPDATE Usuario SET contraseña = \"" + claveNueva + "\"";
+        String sql = "UPDATE `Usuario` "
+                + "SET `contraseña` = '" + claveNueva + "'"
+                + "WHERE `correo` = '" + correo + "'";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -337,7 +339,7 @@ public class UpdateDB implements properties.Constantes {
                     + " WHERE id = " + id_empleado;
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia

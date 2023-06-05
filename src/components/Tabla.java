@@ -592,7 +592,7 @@ public class Tabla extends JScrollPane implements properties.Constantes {
 
                                             String msj = "<html>"
                                                     + "<p>"
-                                                    + "Al eliminar la sucursal, <b style='color:rgb(190, 0, 0)'>"
+                                                    + "Al eliminar la sucursal, <b style='color:red;'>"
                                                     + "se borrarán TODOS</b> los registros de la<br>base de datos "
                                                     + "afiliados a la sucursal (incluyendo movimientos y empleados)."
                                                     + "</p>"

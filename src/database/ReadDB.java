@@ -21,7 +21,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT trasvaso_bs FROM Precios WHERE id=1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -67,7 +67,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT venta_bs FROM Precios WHERE id=1";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -115,7 +115,7 @@ public class ReadDB implements properties.Constantes {
                 + "WHERE id_sucursal = " + Frame.getSucursal();
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -175,7 +175,7 @@ public class ReadDB implements properties.Constantes {
                 + "        GROUP BY `id_cliente`)";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -235,7 +235,7 @@ public class ReadDB implements properties.Constantes {
                 + "        GROUP BY `id_cliente`)";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -283,7 +283,7 @@ public class ReadDB implements properties.Constantes {
                 + "WHERE id_sucursal = " + Frame.getSucursal();
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -331,7 +331,7 @@ public class ReadDB implements properties.Constantes {
                 + "WHERE id_sucursal = " + Frame.getSucursal();
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -380,7 +380,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Usuario WHERE correo = \"" + correo + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -424,7 +424,7 @@ public class ReadDB implements properties.Constantes {
                 + "AND id_cliente = Cliente.id";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -471,11 +471,11 @@ public class ReadDB implements properties.Constantes {
                 + "INNER JOIN Sucursal "
                 + "	ON id_sucursal = Sucursal.id "
                 + "WHERE (correo = \"" + user + "\" "
-                + "   	OR cedula = " + user + ") "
-                + "	AND contraseña = \"" + pass + "\";";
+                + "   	OR cedula = \"" + user + "\") "
+                + "	AND contraseña = \"" + pass + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -534,7 +534,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Cliente ORDER BY id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -606,7 +606,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Proveedores;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -677,7 +677,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Trasvaso;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -705,7 +705,7 @@ public class ReadDB implements properties.Constantes {
                                 + "INNER JOIN Sucursal "
                                 + "	ON id_sucursal = Sucursal.id "
                                 + "WHERE Sucursal.id = " + sucursal
-                                + "ORDER BY Trasvaso.id DESC";
+                                + " ORDER BY Trasvaso.id DESC";
 
                         r = bdd.selectQuery(sql);
 
@@ -778,7 +778,7 @@ public class ReadDB implements properties.Constantes {
                 + "            GROUP BY `id_cliente`)";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -869,7 +869,7 @@ public class ReadDB implements properties.Constantes {
                 + "	ON `id_cliente` = `Cliente`.`id`";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -962,7 +962,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Recarga";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -990,7 +990,7 @@ public class ReadDB implements properties.Constantes {
                                 + "INNER JOIN Sucursal "
                                 + "	ON id_sucursal = Sucursal.id "
                                 + "WHERE Sucursal.id = " + sucursal
-                                + "ORDER BY Recarga.id DESC";
+                                + " ORDER BY Recarga.id DESC";
 
                         r = bdd.selectQuery(sql);
 
@@ -1048,7 +1048,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Venta;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1076,7 +1076,7 @@ public class ReadDB implements properties.Constantes {
                                 + "INNER JOIN Sucursal "
                                 + "	ON id_sucursal = Sucursal.id "
                                 + "WHERE Sucursal.id = " + sucursal
-                                + "ORDER BY Venta.id DESC";
+                                + " ORDER BY Venta.id DESC";
 
                         r = bdd.selectQuery(sql);
 
@@ -1135,7 +1135,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Compra;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1163,7 +1163,7 @@ public class ReadDB implements properties.Constantes {
                                 + "INNER JOIN Sucursal "
                                 + "	ON id_sucursal = Sucursal.id "
                                 + "WHERE Sucursal.id = " + sucursal
-                                + "ORDER BY Compra.id DESC";
+                                + " ORDER BY Compra.id DESC";
 
                         r = bdd.selectQuery(sql);
 
@@ -1228,7 +1228,7 @@ public class ReadDB implements properties.Constantes {
                 + " ORDER BY Pedido.id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1319,7 +1319,7 @@ public class ReadDB implements properties.Constantes {
                 + " ORDER BY Pedido.id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1414,7 +1414,7 @@ public class ReadDB implements properties.Constantes {
                 + " ORDER BY Pedido.id DESC";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1500,7 +1500,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Transferencia;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1567,7 +1567,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT COUNT(*) FROM Sucursal;";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1638,7 +1638,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT id FROM Cliente WHERE cedula = \"" + cedula + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1686,7 +1686,7 @@ public class ReadDB implements properties.Constantes {
         String sql = "SELECT id FROM Proveedores WHERE rif = \"" + rif + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1738,7 +1738,7 @@ public class ReadDB implements properties.Constantes {
                 + "     OR correo = '" + identificacion + "'";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -1785,7 +1785,7 @@ public class ReadDB implements properties.Constantes {
                 + "	OR cedula = \"" + identificacion + "\"";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia

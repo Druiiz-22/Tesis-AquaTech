@@ -34,7 +34,7 @@ public class CreateDB implements properties.Constantes {
                     + "     (" + cedula + ", \"" + nombre + "\", \"" + apellido + "\", \"" + telefono + "\")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -91,7 +91,7 @@ public class CreateDB implements properties.Constantes {
                     + "     (\"" + rif + "\", \"" + nombre + "\", \"" + telefono + "\")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -145,7 +145,7 @@ public class CreateDB implements properties.Constantes {
                 + "\"" + clave + "\")";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -197,7 +197,7 @@ public class CreateDB implements properties.Constantes {
                 + cargo + "\", " + sucursal + ", " + rol + ")";
 
         //Instanciar una conexión con la base de datos y conectarla
-        ConexionDB bdd = new ConexionDB(true);
+        ConexionDB bdd = new ConexionDB();
         bdd.conectar();
 
         //Obtener el resultado de la sentencia
@@ -269,7 +269,7 @@ public class CreateDB implements properties.Constantes {
                     + "\"" + tipoPago + "\", " + delivery + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -351,7 +351,7 @@ public class CreateDB implements properties.Constantes {
                     + "\", " + delivery + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -430,7 +430,7 @@ public class CreateDB implements properties.Constantes {
                     + "(\"" + rif + "\", "+sucursal+", " + cantidad + ", " + monto + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia
@@ -509,7 +509,7 @@ public class CreateDB implements properties.Constantes {
                     + "(\"" + rif + "\", "+sucursal+", " + cantidad + ", " + monto + ")";
 
             //Instanciar una conexión con la base de datos y conectarla
-            ConexionDB bdd = new ConexionDB(true);
+            ConexionDB bdd = new ConexionDB();
             bdd.conectar();
 
             //Obtener el resultado de la sentencia

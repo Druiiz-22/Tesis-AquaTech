@@ -65,10 +65,10 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
             if (fileName.endsWith("sql")) {
 
                 //Obtener la ruta completa del archivo seleccionado
-                this.respaldoSQL = new File(chooser.getSelectedFile().getAbsolutePath());
+                respaldoSQL = new File(chooser.getSelectedFile().getAbsolutePath());
 
                 //Mostrar el archivo seleccioando en el campo de texto
-                this.txtArchivo.setText(this.respaldoSQL.getName());
+                txtArchivo.setText(this.respaldoSQL.getName());
 
             } else {
                 txtArchivo.setText("");
@@ -104,20 +104,20 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
 
                 //Validar la existencia de la ruta
                 if (validateFile(path)) {
-                    this.txtUbicacion.setText(path);
+                    txtUbicacion.setText(path);
 
                 } else {
                     //Si la ruta no es válida, asignar la ruta por defecto
-                    this.txtUbicacion.setText("Predeterminado");
+                    txtUbicacion.setText("Predeterminado");
                 }
 
             } else {
                 //Si la ruta está vacía, asignar la ruta predeterminada
-                this.txtUbicacion.setText("Predeterminado");
+                txtUbicacion.setText("Predeterminado");
             }
         } else {
             //Si no se seleccionó una carpeta, asignar la ruta predeterminada
-            this.txtUbicacion.setText("Predeterminado");
+            txtUbicacion.setText("Predeterminado");
         }
     }
 
@@ -147,8 +147,8 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
      */
     private boolean exportar(Boolean copiaSeguridad) {
         //Obtener los valores de la ruta y el nombre
-        String fileName = this.txtNombre.getText().trim();
-        String filePath = this.txtUbicacion.getText();
+        String fileName = txtNombre.getText().trim();
+        String filePath = txtUbicacion.getText();
 
         //Obtener la ruta del archivo según si es predeterminada, copia de 
         //seguridad o personalizada
@@ -235,7 +235,6 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
      * en la nube.
      */
     private void importar() {
-
         String path = txtArchivo.getText().trim();
 
         //Validar que el campo de la ruta NO esté vacío
@@ -252,17 +251,25 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
                         //Intentar la importación de la base de datos
                         if (AdminDB.importDB(respaldoSQL.getAbsolutePath())) {
 
-                            //Mensaje de éxito
-                            msjInformativo("¡La base de datos ha sido importada con éxito!");
-                            //Mensaje de aviso de cierre de sesión
-                            msjInformativo("Se va a cerrar la sesión para actualizar los cambios.");
+                            String msj = "<html>"
+                                    + "<p>La base de datos se ha importado con éxito.</p>"
+                                    + "<p>Por seguridad, el programa se cerrará.</p>"
+                                    + "<p style='margin-top:8px'>"
+                                    + "Asegurece que <b>TODOS los dispositivos</b> "
+                                    + "conectados<br>al programa, se reinicien y "
+                                    + "actualicen."
+                                    + "</p>"
+                                    + "</html>";
 
-                            //Vaciar todos los campos
-                            Frame.vaciarFrame();
+                            //Mensaje de éxito
+                            msjInformativo(msj);
 
                             //Cerrar el programa e ir al login
                             Run.cerrarPrograma();
-                            Run.iniciarLogin();
+
+                            //Terminar de ejecutar el programa
+                            System.exit(0);
+
                         }
 
                     }
@@ -361,7 +368,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
 
         //Dividir la información de la fecha
         int year = calendario.get(java.util.Calendar.YEAR);
-        int month = calendario.get(java.util.Calendar.MONTH);
+        int month = calendario.get(java.util.Calendar.MONTH + 1);
         int day = calendario.get(java.util.Calendar.DAY_OF_MONTH);
         int hour = calendario.get(java.util.Calendar.HOUR_OF_DAY);
         int minute = calendario.get(java.util.Calendar.MINUTE);
@@ -499,7 +506,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
                 + "</html>"
         );
         lblArchivo.setToolTipText("Determinar el archivo seleccionado que será importado a la base de datos.");
-        
+
         //Añadir los componentes
         panelExporte.add(lblTituloExp);
         panelExporte.add(lblUbicacion);
@@ -541,14 +548,28 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         btnExportar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                exportar(false);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        main.Frame.openGlass(0);
+                        exportar(false);
+                        main.Frame.closeGlass();
+                    }
+                }.start();
             }
         });
 
         btnImportar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                importar();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        main.Frame.openGlass(0);
+                        importar();
+                        main.Frame.closeGlass();
+                    }
+                }.start();
             }
         });
     }
@@ -625,7 +646,7 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         impH += 8;
         expH += 7;
         infoHeight += 15;
-        
+
         informacion.setSize(infoMaxWidth, infoHeight);
 
         int x = infoMaxWidth + padding * 2;
@@ -666,12 +687,12 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         //Validar si la altura del panel permite agregar el botón debajo del
         //campo del nombre, o si debe colocarlse a su derecha
         if (panelH < 260) {
-            if(expW < 450){
+            if (expW < 450) {
                 btnExportar.setText("Guardar");
             } else {
                 btnImportar.setText("Guardar Respaldo");
             }
-            
+
             w = btnExportar.getPreferredSize().width + 20;
             x = expW - w - padding;
             y += lblNombre.getHeight() + gap;
@@ -703,14 +724,14 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         int panelH = panelImporte.getHeight();
         int gap = 5;
         int h = 35;
-        
+
         int y = padding * 2 + lblTituloImp.getHeight();
         lblArchivo.setLocation(padding, y);
 
         y += lblArchivo.getHeight() + gap;
         int w, x;
         if (panelH < 200) {
-            if(impW < 450){
+            if (impW < 450) {
                 btnImportar.setText("Importar");
             } else {
                 btnImportar.setText("Importar respaldo");
@@ -748,12 +769,12 @@ public class Respaldo extends JPanel implements properties.Constantes, propertie
         txtArchivo.setText("");
     }
 
-    protected void habilitarComponents(boolean estado){
+    protected void habilitarComponents(boolean estado) {
         txtUbicacion.setEnabled(estado);
         txtNombre.setEnabled(estado);
         txtArchivo.setEnabled(estado);
     }
-    
+
     //ATRIBUTOS
     private static int width, infoHeight, expH, impH;
     private static final int padding = 20;
